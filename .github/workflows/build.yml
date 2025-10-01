@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: 2025 Sergio Martins
+# SPDX-License-Identifier: MIT
+
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build (${{ matrix.preset }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: [dev, rel, dev-asan]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Setup vcpkg
+      run: |
+        cd 3rdparty/vcpkg
+        ./bootstrap-vcpkg.sh
+
+    - name: Configure CMake
+      run: cmake --preset=${{ matrix.preset }}
+
+    - name: Build
+      run: cmake --build build-${{ matrix.preset }}
