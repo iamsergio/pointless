@@ -3,6 +3,8 @@
 
 #include "tag.h"
 
+namespace PointlessCore {
+
 Tag::Tag(const std::string &name)
     : m_name(name)
 {
@@ -33,3 +35,5 @@ Tag Tag::fromJson(const nlohmann::json &j)
 {
     return Tag(j.at("name").get<std::string>());
 }
+
+} // namespace PointlessCore

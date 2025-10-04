@@ -4,13 +4,13 @@
 #pragma once
 
 #include "tag.h"
-
 #include <nlohmann/json.hpp>
-
 #include <string>
 #include <vector>
 #include <optional>
 #include <chrono>
+
+namespace PointlessCore {
 
 class Task
 {
@@ -37,3 +37,5 @@ public:
     nlohmann::json toJson() const;
     static Task fromJson(const nlohmann::json &j);
 };
+
+} // namespace PointlessCore

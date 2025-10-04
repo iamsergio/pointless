@@ -4,8 +4,9 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
-
 #include <string>
+
+namespace PointlessCore {
 
 class Tag
 {
@@ -22,3 +23,5 @@ public:
 private:
     std::string m_name;
 };
+
+} // namespace PointlessCore

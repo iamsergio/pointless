@@ -2,7 +2,10 @@
 // SPDX-License-Identifier: MIT
 
 
+
 #include "task.h"
+
+namespace PointlessCore {
 
 Task::Task()
 {
@@ -74,3 +77,5 @@ Task Task::fromJson(const nlohmann::json &j)
         task.deviceCalendarName = j["deviceCalendarName"].get<std::string>();
     return task;
 }
+
+} // namespace PointlessCore
