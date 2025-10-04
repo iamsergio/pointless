@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "item.h"
 #include "tag.h"
 #include <nlohmann/json.hpp>
 #include <string>
@@ -12,7 +13,8 @@
 
 namespace PointlessCore {
 
-class Task
+
+class Task : public Item
 {
 public:
     Task();

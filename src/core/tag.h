@@ -1,14 +1,16 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
+
 #pragma once
 
+#include "item.h"
 #include <nlohmann/json.hpp>
 #include <string>
 
 namespace PointlessCore {
 
-class Tag
+class Tag : public Item
 {
 public:
     Tag() = default;

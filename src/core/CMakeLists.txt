@@ -3,20 +3,26 @@
 
 find_package(nlohmann_json CONFIG REQUIRED)
 
-enable_testing()
-
 add_library(pointless_core SHARED
 	pointless_core.cpp
 	task.cpp
+	task_manager.cpp
 	tag.cpp
 	date_utils.cpp
+	item.cpp
 )
 target_link_libraries(pointless_core PRIVATE quill::quill nlohmann_json::nlohmann_json)
 target_include_directories(pointless_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-# GoogleTest
-find_package(GTest CONFIG REQUIRED)
-add_executable(test_date_utils tests/test_date_utils.cpp)
-target_link_libraries(test_date_utils PRIVATE pointless_core GTest::gtest_main)
-target_include_directories(test_date_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-add_test(NAME test_date_utils COMMAND test_date_utils)
+
+if (POINTLESS_ENABLE_TESTS)
+	add_executable(test_date_utils tests/test_date_utils.cpp)
+	target_link_libraries(test_date_utils PRIVATE pointless_core GTest::gtest_main)
+	target_include_directories(test_date_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+	add_test(NAME test_date_utils COMMAND test_date_utils)
+
+	add_executable(test_taskmanager tests/test_taskmanager.cpp)
+	target_link_libraries(test_taskmanager PRIVATE pointless_core GTest::gtest_main)
+	target_include_directories(test_taskmanager PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+	add_test(NAME test_taskmanager COMMAND test_taskmanager)
+endif()

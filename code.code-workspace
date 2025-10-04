@@ -26,7 +26,13 @@
     "files.insertFinalNewline": true,
     "files.associations": {
       "*.code-workspace.template": "json"
-    }
+    },
+    "files.exclude": {
+      "**/3rdparty/vcpkg": true
+    },
+    "search.exclude": {
+      "**/3rdparty/vcpkg": true
+    },
   },
   "launch": {
     "version": "0.2.0",

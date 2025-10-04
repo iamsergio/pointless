@@ -1,0 +1,66 @@
+{
+    "tags": [
+        {
+            "name": "kde"
+        },
+        {
+            "name": "kdab"
+        },
+        {
+            "name": "soon"
+        }
+    ],
+    "tasks": [
+        {
+            "uuid": "1",
+            "title": "Task 1",
+            "creationTimestamp": 1586385046574,
+            "tags": [
+                "kde",
+                "kdab"
+            ]
+        },
+        {
+            "uuid": "2",
+            "title": "Task 2",
+            "creationTimestamp": 1586385046574
+        },
+        {
+            "uuid": "3",
+            "title": "Task 3",
+            "creationTimestamp": 1586385046574
+        },
+        {
+            "uuid": "5",
+            "title": "Task 5",
+            "creationTimestamp": 1586385046574,
+            "tags": [
+                "current"
+            ]
+        },
+        {
+            "uuid": "6",
+            "title": "Task 6",
+            "creationTimestamp": 1586385046574,
+            "tags": [
+                "kdab"
+            ]
+        },
+        {
+            "uuid": "7",
+            "title": "Task 7",
+            "creationTimestamp": 1586385046574,
+            "tags": [
+                "kde"
+            ]
+        },
+        {
+            "uuid": "8",
+            "title": "Task 8",
+            "creationTimestamp": 1586385046574,
+            "tags": [
+                "soon"
+            ]
+        }
+    ]
+}

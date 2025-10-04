@@ -1,11 +1,10 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
-// SPDX-FileCopyrightText: 2025 Sergio Martins
-// SPDX-License-Identifier: MIT
-
-#include "gtest/gtest.h"
 #include "date_utils.h"
+
+#include <gtest/gtest.h>
+
 #include <chrono>
 #include <ctime>
 

@@ -5,6 +5,7 @@
 
 #include <chrono>
 #include <string>
+#include <string_view>
 
 namespace PointlessCore {
 namespace DateUtils {
@@ -23,7 +24,7 @@ std::chrono::system_clock::time_point trimTime(const std::chrono::system_clock::
 std::chrono::system_clock::time_point thisWeeksMonday(const std::chrono::system_clock::time_point &date);
 bool iMidnight(const std::chrono::system_clock::time_point &date);
 std::chrono::system_clock::time_point nextMonday(const std::chrono::system_clock::time_point &date);
-std::string weekdayName(const std::chrono::system_clock::time_point &date);
+std::string_view weekdayName(const std::chrono::system_clock::time_point &date);
 
 } // namespace DateUtils
 } // namespace PointlessCore

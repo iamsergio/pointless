@@ -14,7 +14,8 @@
       "name": "dev",
       "inherits": "base",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "POINTLESS_DEVELOPER_MODE": "ON"
       }
     },
     {
@@ -29,7 +30,19 @@
       "inherits": "dev",
       "description": "dev-asan",
       "cacheVariables": {
-        "ENABLE_ASAN": "ON"
+        "POINTLESS_ENABLE_ASAN": "ON"
+      }
+    },
+    {
+      "name": "dev-tsan",
+      "inherits": "dev",
+      "description": "dev-tsan",
+      "environment": {
+        "CXX": "clang++",
+        "CC": "clang"
+      },
+      "cacheVariables": {
+        "POINTLESS_ENABLE_TSAN": "ON"
       }
     }
   ]

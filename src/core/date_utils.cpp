@@ -5,6 +5,7 @@
 
 #include <ctime>
 #include <sstream>
+#include <format>
 
 namespace PointlessCore {
 namespace DateUtils {
@@ -28,7 +29,7 @@ std::string dateStr(const std::chrono::system_clock::time_point &date)
     return oss.str();
 }
 
-std::string weekdayName(const std::chrono::system_clock::time_point &date)
+std::string_view weekdayName(const std::chrono::system_clock::time_point &date)
 {
     static const char *names[] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
     std::tm tm = to_tm(date);
@@ -113,15 +114,15 @@ std::chrono::system_clock::time_point nextMonday(const std::chrono::system_clock
 std::string prettyDate(const std::chrono::system_clock::time_point &date, bool includeTime)
 {
     if (isToday(date)) {
-        return includeTime ? "today " + weekdayName(date) : "today";
+        return includeTime ? std::format("today {}", weekdayName(date)) : "today";
     } else if (isTomorrow(date)) {
         return "tomorrow";
     } else if (isYesterday(date)) {
         return "yesterday";
     } else if (isThisWeek(date)) {
-        return "this " + weekdayName(date);
+        return std::format("this {}", weekdayName(date));
     } else if (isNext7Days(date)) {
-        return "next " + weekdayName(date);
+        return std::format("next {}", weekdayName(date));
     } else {
         std::string result = dateStr(date);
         if (includeTime) {
