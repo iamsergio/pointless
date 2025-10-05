@@ -42,3 +42,5 @@
 build-dev
 compile_commands.json
 .cache
+/build-*
+
