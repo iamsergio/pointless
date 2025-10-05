@@ -50,7 +50,7 @@ public:
 
     // Serialization methods
     nlohmann::json toJson() const;
-    static TaskManager fromJson(const nlohmann::json &j);
+    static std::expected<TaskManager, std::string> fromJson(const nlohmann::json &j);
 
 private:
     std::vector<Task> m_tasks;

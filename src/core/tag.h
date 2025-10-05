@@ -6,6 +6,7 @@
 
 #include "item.h"
 #include <nlohmann/json.hpp>
+#include <expected>
 #include <string>
 
 namespace PointlessCore {
@@ -20,7 +21,7 @@ public:
     bool operator==(const Tag &other) const;
     bool isBuiltin() const;
     nlohmann::json toJson() const;
-    static Tag fromJson(const nlohmann::json &j);
+    static std::expected<Tag, std::string> fromJson(const nlohmann::json &j);
 
 private:
     std::string m_name;

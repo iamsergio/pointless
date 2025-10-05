@@ -14,14 +14,15 @@ int main(int argc, char *argv[])
         return 1;
     }
     std::string json_path = argv[1];
-    auto managerOpt = PointlessCore::loadTaskManagerFromJsonFile(json_path);
-    if (!managerOpt) {
-        std::println("Failed to load TaskManager from file: {}", json_path);
+    auto result = PointlessCore::loadTaskManagerFromJsonFile(json_path);
+    if (!result) {
+        std::println("Error: {}", result.error());
         return 1;
     }
+    const auto& manager = result.value();
     std::println("Loaded TaskManager successfully from {}", json_path);
-    std::println("Task count: {}", managerOpt->taskCount());
-    for (const auto &task : managerOpt->getAllTasks()) {
+    std::println("Task count: {}", manager.taskCount());
+    for (const auto& task : manager.getAllTasks()) {
         std::println("Task: {}", task.title);
     }
     return 0;

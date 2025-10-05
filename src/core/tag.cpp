@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "tag.h"
+#include <expected>
 
 namespace PointlessCore {
 
@@ -31,9 +32,13 @@ nlohmann::json Tag::toJson() const
     return nlohmann::json { { "name", m_name } };
 }
 
-Tag Tag::fromJson(const nlohmann::json &j)
+std::expected<Tag, std::string> Tag::fromJson(const nlohmann::json &j)
 {
-    return Tag(j.at("name").get<std::string>());
+    try {
+        return Tag(j.at("name").get<std::string>());
+    } catch (const std::exception& e) {
+        return std::unexpected<std::string>(std::string("Tag::fromJson error: ") + e.what());
+    }
 }
 
 } // namespace PointlessCore

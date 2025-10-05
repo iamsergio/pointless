@@ -229,19 +229,27 @@ nlohmann::json TaskManager::toJson() const
     return j;
 }
 
-TaskManager TaskManager::fromJson(const nlohmann::json &j)
+std::expected<TaskManager, std::string> TaskManager::fromJson(const nlohmann::json &j)
 {
     TaskManager manager;
 
     if (j.contains("tasks")) {
         for (const auto &taskJson : j["tasks"]) {
-            manager.addTask(Task::fromJson(taskJson));
+            auto taskResult = Task::fromJson(taskJson);
+            if (!taskResult.has_value()) {
+                return std::unexpected(taskResult.error());
+            }
+            manager.addTask(taskResult.value());
         }
     }
 
     if (j.contains("tags")) {
         for (const auto &tagJson : j["tags"]) {
-            manager.addTag(Tag::fromJson(tagJson));
+            auto tagResult = Tag::fromJson(tagJson);
+            if (!tagResult.has_value()) {
+                return std::unexpected(tagResult.error());
+            }
+            manager.addTag(tagResult.value());
         }
     }
 

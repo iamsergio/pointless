@@ -4,6 +4,7 @@
 
 
 #include "task.h"
+#include <expected>
 
 namespace PointlessCore {
 
@@ -47,35 +48,39 @@ nlohmann::json Task::toJson() const
     return j;
 }
 
-Task Task::fromJson(const nlohmann::json &j)
+std::expected<Task, std::string> Task::fromJson(const nlohmann::json &j)
 {
     Task task;
-    task.uuid = j.at("uuid").get<std::string>();
-    if (j.contains("parentUuid"))
-        task.parentUuid = j.at("parentUuid").get<std::string>();
-    task.title = j.value("title", "");
-    task.isDone = j.value("isDone", false);
-    task.isImportant = j.value("isImportant", false);
-    task.hideOnWeekends = j.value("hideOnWeekends", false);
-    if (j.contains("tags")) {
-        for (const auto &tagName : j["tags"]) {
-            task.tags.emplace_back(tagName.get<std::string>());
+    try {
+        task.uuid = j.at("uuid").get<std::string>();
+        if (j.contains("parentUuid"))
+            task.parentUuid = j.at("parentUuid").get<std::string>();
+        task.title = j.value("title", "");
+        task.isDone = j.value("isDone", false);
+        task.isImportant = j.value("isImportant", false);
+        task.hideOnWeekends = j.value("hideOnWeekends", false);
+        if (j.contains("tags")) {
+            for (const auto &tagName : j["tags"]) {
+                task.tags.emplace_back(tagName.get<std::string>());
+            }
         }
+        task.creationTimestamp = std::chrono::system_clock::time_point(std::chrono::milliseconds(j.at("creationTimestamp").get<int64_t>()));
+        if (j.contains("dueDate"))
+            task.dueDate = std::chrono::system_clock::time_point(std::chrono::milliseconds(j["dueDate"].get<int64_t>()));
+        if (j.contains("completionDate"))
+            task.completionDate = std::chrono::system_clock::time_point(std::chrono::milliseconds(j["completionDate"].get<int64_t>()));
+        if (j.contains("modificationTimestamp"))
+            task.modificationTimestamp = std::chrono::system_clock::time_point(std::chrono::milliseconds(j["modificationTimestamp"].get<int64_t>()));
+        if (j.contains("uuidInDeviceCalendar"))
+            task.uuidInDeviceCalendar = j["uuidInDeviceCalendar"].get<std::string>();
+        if (j.contains("deviceCalendarUuid"))
+            task.deviceCalendarUuid = j["deviceCalendarUuid"].get<std::string>();
+        if (j.contains("deviceCalendarName"))
+            task.deviceCalendarName = j["deviceCalendarName"].get<std::string>();
+        return task;
+    } catch (const std::exception& e) {
+        return std::unexpected<std::string>(std::string("Task::fromJson error: ") + e.what());
     }
-    task.creationTimestamp = std::chrono::system_clock::time_point(std::chrono::milliseconds(j.at("creationTimestamp").get<int64_t>()));
-    if (j.contains("dueDate"))
-        task.dueDate = std::chrono::system_clock::time_point(std::chrono::milliseconds(j["dueDate"].get<int64_t>()));
-    if (j.contains("completionDate"))
-        task.completionDate = std::chrono::system_clock::time_point(std::chrono::milliseconds(j["completionDate"].get<int64_t>()));
-    if (j.contains("modificationTimestamp"))
-        task.modificationTimestamp = std::chrono::system_clock::time_point(std::chrono::milliseconds(j["modificationTimestamp"].get<int64_t>()));
-    if (j.contains("uuidInDeviceCalendar"))
-        task.uuidInDeviceCalendar = j["uuidInDeviceCalendar"].get<std::string>();
-    if (j.contains("deviceCalendarUuid"))
-        task.deviceCalendarUuid = j["deviceCalendarUuid"].get<std::string>();
-    if (j.contains("deviceCalendarName"))
-        task.deviceCalendarName = j["deviceCalendarName"].get<std::string>();
-    return task;
 }
 
 } // namespace PointlessCore

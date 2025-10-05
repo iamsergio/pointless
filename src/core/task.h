@@ -6,6 +6,7 @@
 #include "item.h"
 #include "tag.h"
 #include <nlohmann/json.hpp>
+#include <expected>
 #include <string>
 #include <vector>
 #include <optional>
@@ -37,7 +38,7 @@ public:
     std::optional<std::string> deviceCalendarName;
 
     nlohmann::json toJson() const;
-    static Task fromJson(const nlohmann::json &j);
+    static std::expected<Task, std::string> fromJson(const nlohmann::json &j);
 };
 
 } // namespace PointlessCore

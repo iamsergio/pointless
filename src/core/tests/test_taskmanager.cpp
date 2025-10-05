@@ -37,7 +37,9 @@ TEST(TaskManagerTest, LoadJsonFile)
     ASSERT_TRUE(j.contains("tags"));
 
     // Try to load into TaskManager
-    TaskManager manager = TaskManager::fromJson(j);
+    auto managerResult = TaskManager::fromJson(j);
+    ASSERT_TRUE(managerResult.has_value()) << managerResult.error();
+    const TaskManager& manager = managerResult.value();
     // Check that the number of tasks and tags matches the JSON
     ASSERT_EQ(manager.taskCount(), j["tasks"].size());
     ASSERT_EQ(manager.tagCount(), j["tags"].size());

@@ -7,10 +7,10 @@
 #include "task_manager.h"
 
 #include <string>
-#include <optional>
+#include <expected>
 
 namespace PointlessCore {
 
-std::optional<TaskManager> loadTaskManagerFromJsonFile(const std::string &filename);
+std::expected<TaskManager, std::string> loadTaskManagerFromJsonFile(const std::string &filename);
 
 } // namespace PointlessCore
