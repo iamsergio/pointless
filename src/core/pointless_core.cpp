@@ -4,9 +4,9 @@
 
 #include "pointless_core.h"
 
-#include <fstream>
-
 #include <nlohmann/json.hpp>
+
+#include <fstream>
 #include <expected>
 
 namespace PointlessCore {

@@ -19,10 +19,10 @@ int main(int argc, char *argv[])
         std::println("Error: {}", result.error());
         return 1;
     }
-    const auto& manager = result.value();
+    const auto &manager = result.value();
     std::println("Loaded TaskManager successfully from {}", json_path);
     std::println("Task count: {}", manager.taskCount());
-    for (const auto& task : manager.getAllTasks()) {
+    for (const auto &task : manager.getAllTasks()) {
         std::println("Task: {}", task.title);
     }
     return 0;

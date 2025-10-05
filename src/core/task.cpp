@@ -78,7 +78,7 @@ std::expected<Task, std::string> Task::fromJson(const nlohmann::json &j)
         if (j.contains("deviceCalendarName"))
             task.deviceCalendarName = j["deviceCalendarName"].get<std::string>();
         return task;
-    } catch (const std::exception& e) {
+    } catch (const std::exception &e) {
         return std::unexpected<std::string>(std::string("Task::fromJson error: ") + e.what());
     }
 }

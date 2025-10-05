@@ -36,7 +36,7 @@ std::expected<Tag, std::string> Tag::fromJson(const nlohmann::json &j)
 {
     try {
         return Tag(j.at("name").get<std::string>());
-    } catch (const std::exception& e) {
+    } catch (const std::exception &e) {
         return std::unexpected<std::string>(std::string("Tag::fromJson error: ") + e.what());
     }
 }
