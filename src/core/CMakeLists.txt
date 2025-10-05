@@ -11,7 +11,7 @@ add_library(pointless_core SHARED
 	date_utils.cpp
 	item.cpp
 )
-target_link_libraries(pointless_core PRIVATE quill::quill nlohmann_json::nlohmann_json)
+target_link_libraries(pointless_core PUBLIC nlohmann_json::nlohmann_json PRIVATE quill::quill)
 target_include_directories(pointless_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 
