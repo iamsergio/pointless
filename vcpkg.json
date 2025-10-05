@@ -4,6 +4,7 @@
     "dependencies": [
         "quill",
         "nlohmann-json",
-        "gtest"
+        "gtest",
+        "cpr"
     ]
 }
