@@ -49,6 +49,7 @@ std::chrono::system_clock::time_point trimTime(const std::chrono::system_clock::
     tm.tm_hour = 0;
     tm.tm_min = 0;
     tm.tm_sec = 0;
+    tm.tm_isdst = -1; // Let mktime determine DST
     std::time_t t = mktime(&tm);
     return std::chrono::system_clock::from_time_t(t);
 }
@@ -79,8 +80,13 @@ std::chrono::system_clock::time_point thisWeeksMonday(const std::chrono::system_
 {
     std::tm tm = to_tm(date);
     int daysBack = (tm.tm_wday == 0 ? 6 : tm.tm_wday - 1);
-    auto monday = trimTime(date) - std::chrono::hours(24 * daysBack);
-    return monday;
+    tm.tm_mday -= daysBack;
+    tm.tm_hour = 0;
+    tm.tm_min = 0;
+    tm.tm_sec = 0;
+    tm.tm_isdst = -1;
+    std::time_t t = mktime(&tm);
+    return std::chrono::system_clock::from_time_t(t);
 }
 
 bool isThisWeek(const std::chrono::system_clock::time_point &date)
@@ -108,7 +114,15 @@ bool iMidnight(const std::chrono::system_clock::time_point &date)
 
 std::chrono::system_clock::time_point nextMonday(const std::chrono::system_clock::time_point &date)
 {
-    return thisWeeksMonday(date) + std::chrono::hours(24 * 7);
+    std::tm tm = to_tm(date);
+    int daysBack = (tm.tm_wday == 0 ? 6 : tm.tm_wday - 1);
+    tm.tm_mday += (7 - daysBack);
+    tm.tm_hour = 0;
+    tm.tm_min = 0;
+    tm.tm_sec = 0;
+    tm.tm_isdst = -1;
+    std::time_t t = mktime(&tm);
+    return std::chrono::system_clock::from_time_t(t);
 }
 
 std::string prettyDate(const std::chrono::system_clock::time_point &date, bool includeTime)
