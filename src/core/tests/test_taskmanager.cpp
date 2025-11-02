@@ -12,12 +12,13 @@ TEST(TaskManagerTest, LoadJsonFile)
     // Try to open test.json from several possible locations
     std::ifstream file;
     std::string json_path;
+    std::string cmake_path = std::string(POINTLESS_SOURCE_DIR) + "/src/core/tests/test.json";
     const char *candidates[] = {
         "src/core/tests/test.json", // most common when running from build-dev
         "../src/core/tests/test.json", // if running from build-dev/src/core/tests
         "test.json", // if running from the test binary's directory
-        "/data/sources/pointless_cpp/src/core/tests/test.json", // absolute path fallback
-        "/data/sources/pointless_cpp/build-dev/src/core/tests/test.json" // absolute build path fallback
+        cmake_path.c_str(), // using cmake source dir
+        "../../src/core/tests/test.json" // relative from build dir
     };
     for (const char *path : candidates) {
         file.open(path);
