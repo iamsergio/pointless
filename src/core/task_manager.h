@@ -14,6 +14,11 @@
 
 namespace PointlessCore {
 
+struct Data {
+    std::vector<Task> tasks;
+    std::vector<Tag> tags;
+};
+
 class TaskManager
 {
 public:
@@ -51,9 +56,7 @@ public:
     // Serialization methods
     static std::expected<TaskManager, std::string> fromJson(const std::string &json_str);
 
-    // Made public for Glaze serialization
-    std::vector<Task> m_tasks;
-    std::vector<Tag> m_tags;
+    Data m_data;
 
 private:
     // Helper methods
@@ -66,10 +69,10 @@ private:
 } // namespace PointlessCore
 
 template <>
-struct glz::meta<PointlessCore::TaskManager> {
-    using T = PointlessCore::TaskManager;
+struct glz::meta<PointlessCore::Data> {
+    using T = PointlessCore::Data;
     static constexpr auto value = object(
-        "tasks", &T::m_tasks,
-        "tags", &T::m_tags
+        "tasks", &T::tasks,
+        "tags", &T::tags
     );
 };
