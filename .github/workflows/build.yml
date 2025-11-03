@@ -26,6 +26,11 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Install libc++ and libc++abi (for x64-linux-libcxx triplet)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libc++-dev libc++abi-dev
+
     - name: Setup vcpkg
       run: |
         cd 3rdparty/vcpkg
