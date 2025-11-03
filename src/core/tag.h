@@ -4,29 +4,34 @@
 
 #pragma once
 
-#include "item.h"
-
-#include <nlohmann/json.hpp>
+#include <glaze/glaze.hpp>
 
 #include <expected>
 #include <string>
 
 namespace PointlessCore {
 
-class Tag : public Item
+class Tag
 {
 public:
-    Tag() = default;
-    explicit Tag(const std::string &name);
-
     const std::string &name() const;
     bool operator==(const Tag &other) const;
     bool isBuiltin() const;
-    nlohmann::json toJson() const;
-    static std::expected<Tag, std::string> fromJson(const nlohmann::json &j);
 
-private:
+    int revision = -1;
+    bool needsSyncToServer = false;
     std::string m_name;
 };
 
 } // namespace PointlessCore
+
+template <>
+struct glz::meta<PointlessCore::Tag> {
+    using T = PointlessCore::Tag;
+    static constexpr auto value = object(
+        "revision", &T::revision,
+        "needsSyncToServer", &T::needsSyncToServer,
+        "name", &T::m_name
+    );
+};
+

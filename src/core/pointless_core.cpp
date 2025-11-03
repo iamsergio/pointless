@@ -4,7 +4,7 @@
 
 #include "pointless_core.h"
 
-#include <nlohmann/json.hpp>
+#include <glaze/glaze.hpp>
 
 #include <fstream>
 #include <expected>
@@ -18,16 +18,15 @@ std::expected<TaskManager, std::string> loadTaskManagerFromJsonFile(const std::s
     if (!file) {
         return std::unexpected("Failed to open file: " + filename);
     }
-    nlohmann::json j;
-    file >> j;
-    if (file.fail()) {
-        return std::unexpected("Failed to parse JSON in file: " + filename);
+    
+    std::string json_content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    file.close();
+    
+    if (json_content.empty()) {
+        return std::unexpected("Failed to read JSON from file: " + filename);
     }
-    try {
-        return TaskManager::fromJson(j);
-    } catch (const std::exception &e) {
-        return std::unexpected(std::string("Failed to convert JSON to TaskManager: ") + e.what());
-    }
+    
+    return TaskManager::fromJson(json_content);
 }
 
 } // namespace PointlessCore

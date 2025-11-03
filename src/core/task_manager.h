@@ -6,7 +6,7 @@
 #include "task.h"
 #include "tag.h"
 
-#include <nlohmann/json.hpp>
+#include <glaze/glaze.hpp>
 
 #include <string>
 #include <vector>
@@ -49,13 +49,13 @@ public:
     void removeUnusedTags();
 
     // Serialization methods
-    nlohmann::json toJson() const;
-    static std::expected<TaskManager, std::string> fromJson(const nlohmann::json &j);
+    static std::expected<TaskManager, std::string> fromJson(const std::string &json_str);
 
-private:
+    // Made public for Glaze serialization
     std::vector<Task> m_tasks;
     std::vector<Tag> m_tags;
 
+private:
     // Helper methods
     std::vector<Task>::iterator findTaskByUuid(const std::string &uuid);
     std::vector<Task>::const_iterator findTaskByUuid(const std::string &uuid) const;
@@ -64,3 +64,12 @@ private:
 };
 
 } // namespace PointlessCore
+
+template <>
+struct glz::meta<PointlessCore::TaskManager> {
+    using T = PointlessCore::TaskManager;
+    static constexpr auto value = object(
+        "tasks", &T::m_tasks,
+        "tags", &T::m_tags
+    );
+};

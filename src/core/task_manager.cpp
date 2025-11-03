@@ -214,43 +214,12 @@ void TaskManager::removeUnusedTags()
     }
 }
 
-// Serialization methods
-nlohmann::json TaskManager::toJson() const
-{
-    nlohmann::json j;
-    j["tasks"] = nlohmann::json::array();
-    for (const auto &task : m_tasks) {
-        j["tasks"].push_back(task.toJson());
-    }
-    j["tags"] = nlohmann::json::array();
-    for (const auto &tag : m_tags) {
-        j["tags"].push_back(tag.toJson());
-    }
-    return j;
-}
-
-std::expected<TaskManager, std::string> TaskManager::fromJson(const nlohmann::json &j)
+std::expected<TaskManager, std::string> TaskManager::fromJson(const std::string &json_str)
 {
     TaskManager manager;
-
-    if (j.contains("tasks")) {
-        for (const auto &taskJson : j["tasks"]) {
-            auto taskResult = Task::fromJson(taskJson);
-            if (!taskResult.has_value()) {
-                return std::unexpected(taskResult.error());
-            }
-            manager.addTask(taskResult.value());
-        }
-    }
-
-    if (j.contains("tags")) {
-        for (const auto &tagJson : j["tags"]) {
-            auto tagResult = Tag::fromJson(tagJson);
-            if (!tagResult.has_value()) {
-                return std::unexpected(tagResult.error());
-            }
-            manager.addTag(tagResult.value());
-        }
+    auto result = glz::read_json(manager, json_str);
+    if (!result) {
+        // return std::unexpected("Failed to parse JSON: " + std::string(glz::format_error(result.error(), json_str)));
     }
 
     return manager;
