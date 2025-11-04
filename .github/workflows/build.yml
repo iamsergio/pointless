@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        preset: [dev, rel, dev-asan, dev-tsan]
+        preset: [dev, rel, dev-asan, dev-tsan, ci-clang-tidy]
 
     steps:
     - name: Checkout code

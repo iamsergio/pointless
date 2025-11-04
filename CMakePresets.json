@@ -56,6 +56,24 @@
         "CMAKE_CXX_FLAGS": "-stdlib=libc++",
         "CMAKE_EXE_LINKER_FLAGS": "-stdlib=libc++"
       }
+    },
+    {
+     "name": "clang-tidy",
+      "inherits": [
+        "base"
+      ],
+      "cacheVariables": {
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy"
+      }
+    },
+    {
+     "name": "ci-clang-tidy",
+      "inherits": [
+        "clang-tidy"
+      ],
+      "cacheVariables": {
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--warnings-as-errors=*"
+      }
     }
   ]
 }
