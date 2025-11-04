@@ -1,0 +1,35 @@
+name: Clang-Tidy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  clang-tidy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang-tidy
+
+    - name: Setup vcpkg
+      run: |
+        cd 3rdparty/vcpkg
+        ./bootstrap-vcpkg.sh
+
+    - name: Configure CMake (dev preset)
+      run: cmake --preset=dev
+
+    - name: Run clang-tidy
+      run: |
+        find src -type f \( -name '*.cpp' -o -name '*.cc' -o -name '*.cxx' \) -print0 | xargs -0 -n1 -P"$(nproc)" clang-tidy -p build-dev
