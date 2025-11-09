@@ -5,7 +5,6 @@ SPDX-PackageDownloadLocation = "https://www.github.com/iamsergio/pointless"
 #misc
 [[annotations]]
 path = [
-    ".github/workflows/clang-tidy.yml",
     "README.md",
     "CMakePresets.json",
     ".gitignore",
