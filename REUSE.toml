@@ -1,0 +1,22 @@
+version = 1
+SPDX-PackageName = "Pointless"
+SPDX-PackageDownloadLocation = "https://www.github.com/iamsergio/pointless"
+
+#misc
+[[annotations]]
+path = [
+    ".github/workflows/clang-tidy.yml",
+    "README.md",
+    "CMakePresets.json",
+    ".gitignore",
+    ".gitmodules",
+    "code.code-workspace",
+    "code.code-workspace.template",
+    "src/core/tests/test.json",
+    "vcpkg.json",
+    ".clang-format",
+    ".clangd"
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Sergio Martins"
+SPDX-License-Identifier = "MIT"

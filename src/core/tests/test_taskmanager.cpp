@@ -1,7 +1,12 @@
+// SPDX-FileCopyrightText: 2025 Sergio Martins
+// SPDX-License-Identifier: MIT
+
 #include "task_manager.h"
+
 #include <gtest/gtest.h>
-#include <fstream>
 #include <glaze/glaze.hpp>
+
+#include <fstream>
 
 using namespace PointlessCore;
 
@@ -37,7 +42,7 @@ TEST(TaskManagerTest, LoadJsonFile)
     auto managerResult = TaskManager::fromJson(json_content);
     ASSERT_TRUE(managerResult.has_value()) << managerResult.error();
     const TaskManager &manager = managerResult.value();
-    
+
     // Basic validation - we should have some tasks and tags
     EXPECT_GT(manager.taskCount(), 0) << "Should have at least one task in test data";
 }
