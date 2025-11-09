@@ -5,7 +5,6 @@
 
 #include <glaze/glaze.hpp>
 
-#include <expected>
 #include <string>
 
 namespace PointlessCore {

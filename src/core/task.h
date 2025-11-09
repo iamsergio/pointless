@@ -4,9 +4,11 @@
 #pragma once
 
 #include "tag.h"
+
+#include <glaze/glaze.hpp>
+
 #include <chrono>
 #include <expected>
-#include <glaze/glaze.hpp>
 #include <optional>
 #include <string>
 #include <vector>

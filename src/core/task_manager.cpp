@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "task_manager.h"
+
 #include <algorithm>
 
 namespace PointlessCore {
