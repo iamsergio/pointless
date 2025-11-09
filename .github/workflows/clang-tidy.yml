@@ -30,7 +30,10 @@ jobs:
         cd 3rdparty/vcpkg
         ./bootstrap-vcpkg.sh
 
-    - name: Configure CMake (dev preset)
+    - name: Configure CMake
+      env:
+        POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
+        POINTLESS_SUPABASE_SERVICE_KEY: ${{ secrets.POINTLESS_SUPABASE_SERVICE_KEY }}
       run: cmake --preset=dev
 
     - name: Run clang-tidy

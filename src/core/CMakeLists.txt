@@ -7,6 +7,22 @@ find_package(cpr CONFIG REQUIRED)
 
 add_library(pointless_core SHARED pointless_core.cpp task.cpp task_manager.cpp
                                   tag.cpp date_utils.cpp)
+
+if(NOT DEFINED ENV{POINTLESS_SUPABASE_SERVICE_KEY})
+  message(
+    FATAL_ERROR "POINTLESS_SUPABASE_SERVICE_KEY environment variable is not set"
+  )
+endif()
+
+if(NOT DEFINED ENV{POINTLESS_SUPABASE_URL})
+  message(FATAL_ERROR "POINTLESS_SUPABASE_URL environment variable is not set")
+endif()
+
+target_compile_definitions(
+  pointless_core
+  PRIVATE POINTLESS_SUPABASE_SERVICE_KEY="$ENV{POINTLESS_SUPABASE_SERVICE_KEY}"
+          POINTLESS_SUPABASE_URL="$ENV{POINTLESS_SUPABASE_URL}")
+
 target_link_libraries(
   pointless_core
   PUBLIC glaze::glaze
