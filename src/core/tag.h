@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
-
 #pragma once
 
 #include <glaze/glaze.hpp>
@@ -11,11 +10,10 @@
 
 namespace PointlessCore {
 
-class Tag
-{
+class Tag {
 public:
-    const std::string &name() const;
-    bool operator==(const Tag &other) const;
+    const std::string& name() const;
+    bool operator==(const Tag& other) const;
     bool isBuiltin() const;
 
     int revision = -1;
@@ -31,7 +29,5 @@ struct glz::meta<PointlessCore::Tag> {
     static constexpr auto value = object(
         "revision", &T::revision,
         "needsSyncToServer", &T::needsSyncToServer,
-        "name", &T::m_name
-    );
+        "name", &T::m_name);
 };
-

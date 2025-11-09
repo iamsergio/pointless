@@ -37,14 +37,14 @@ TEST(TaskTest, SerializeJson)
     tag2.needsSyncToServer = true;
     tag2.m_name = "urgent";
 
-    original_task.tags = {tag1, tag2};
+    original_task.tags = { tag1, tag2 };
 
     auto json_result = glz::write_json(original_task);
     ASSERT_TRUE(json_result.has_value());
-    
+
     std::string json_str = json_result.value();
     EXPECT_FALSE(json_str.empty());
-    
+
     EXPECT_TRUE(json_str.find("\"uuid\":\"test-uuid-12345\"") != std::string::npos);
     EXPECT_TRUE(json_str.find("\"title\":\"Test Task Title\"") != std::string::npos);
     EXPECT_TRUE(json_str.find("\"revision\":123") != std::string::npos);

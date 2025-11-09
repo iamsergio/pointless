@@ -18,14 +18,14 @@ std::expected<TaskManager, std::string> loadTaskManagerFromJsonFile(const std::s
     if (!file) {
         return std::unexpected("Failed to open file: " + filename);
     }
-    
+
     std::string json_content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
-    
+
     if (json_content.empty()) {
         return std::unexpected("Failed to read JSON from file: " + filename);
     }
-    
+
     return TaskManager::fromJson(json_content);
 }
 

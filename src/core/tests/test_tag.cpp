@@ -17,7 +17,7 @@ TEST(TagTest, SerializeDeserializeJson)
 
     auto json_result = glz::write_json(original_tag);
     ASSERT_TRUE(json_result.has_value());
-    
+
     std::string json_str = json_result.value();
     EXPECT_FALSE(json_str.empty());
 
