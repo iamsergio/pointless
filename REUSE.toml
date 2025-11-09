@@ -14,7 +14,8 @@ path = [
     "src/core/tests/test.json",
     "vcpkg.json",
     ".clang-format",
-    ".clangd"
+    ".clangd",
+    ".github/dependabot.yml"
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2025 Sergio Martins"
