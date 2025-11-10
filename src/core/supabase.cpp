@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: MIT
 
 #include "supabase.h"
+#include "logger.h"
 
 #include <cpr/cpr.h>
 #include <zlib.h>
 
-#include <iostream>
 #include <stdexcept>
 
 Supabase::Supabase(const std::string &base_url, const std::string &anon_key, bool is_verbose)
@@ -55,8 +55,8 @@ bool Supabase::login(const std::string &email, const std::string &password)
 
     if (response.status_code != 200) {
         if (_isVerbose) {
-            std::cout << "Login failed: HTTP " << response.status_code << std::endl;
-            std::cout << "Response: " << response.text << std::endl;
+            LOG_ERROR(Logger::getLogger(), "Login failed: HTTP {}", response.status_code);
+            LOG_DEBUG(Logger::getLogger(), "Response: {}", response.text);
         }
         return false;
     }
@@ -64,7 +64,7 @@ bool Supabase::login(const std::string &email, const std::string &password)
     auto json_result = glz::read_json<glz::json_t>(response.text);
     if (!json_result) {
         if (_isVerbose) {
-            std::cout << "Failed to parse login response JSON" << std::endl;
+            LOG_ERROR(Logger::getLogger(), "Failed to parse login response JSON");
         }
         return false;
     }
@@ -77,7 +77,7 @@ bool Supabase::login(const std::string &email, const std::string &password)
     auto access_token_it = json_obj.get_object().find("access_token");
     if (access_token_it == json_obj.get_object().end() || !access_token_it->second.is_string()) {
         if (_isVerbose) {
-            std::cout << "No access_token in login response" << std::endl;
+            LOG_ERROR(Logger::getLogger(), "No access_token in login response");
         }
         return false;
     }
@@ -85,7 +85,7 @@ bool Supabase::login(const std::string &email, const std::string &password)
     auto user_it = json_obj.get_object().find("user");
     if (user_it == json_obj.get_object().end() || !user_it->second.is_object()) {
         if (_isVerbose) {
-            std::cout << "No user object in login response" << std::endl;
+            LOG_ERROR(Logger::getLogger(), "No user object in login response");
         }
         return false;
     }
@@ -94,7 +94,7 @@ bool Supabase::login(const std::string &email, const std::string &password)
     auto id_it = user_obj.find("id");
     if (id_it == user_obj.end() || !id_it->second.is_string()) {
         if (_isVerbose) {
-            std::cout << "No user id in login response" << std::endl;
+            LOG_ERROR(Logger::getLogger(), "No user id in login response");
         }
         return false;
     }
@@ -103,7 +103,7 @@ bool Supabase::login(const std::string &email, const std::string &password)
     _userId = id_it->second.get_string();
 
     if (_isVerbose) {
-        std::cout << "Login successful for user: " << _userId << std::endl;
+        LOG_INFO(Logger::getLogger(), "Login successful for user: {}", _userId);
     }
 
     return true;
@@ -118,7 +118,7 @@ bool Supabase::loginWithDefaults()
 {
     if (_defaultUser.empty() || _defaultPassword.empty()) {
         if (_isVerbose) {
-            std::cout << "No default credentials available" << std::endl;
+            LOG_WARNING(Logger::getLogger(), "No default credentials available");
         }
         return false;
     }
@@ -136,7 +136,7 @@ bool Supabase::updateData(const std::string &data)
 {
     if (!isAuthenticated()) {
         if (_isVerbose) {
-            std::cout << "Cannot update data: not authenticated" << std::endl;
+            LOG_ERROR(Logger::getLogger(), "Cannot update data: not authenticated");
         }
         return false;
     }
@@ -158,8 +158,8 @@ bool Supabase::updateData(const std::string &data)
 
     if (response.status_code != 200 && response.status_code != 201 && response.status_code != 204) {
         if (_isVerbose) {
-            std::cout << "Failed to update data: HTTP " << response.status_code << std::endl;
-            std::cout << "Response: " << response.text << std::endl;
+            LOG_ERROR(Logger::getLogger(), "Failed to update data: HTTP {}", response.status_code);
+            LOG_DEBUG(Logger::getLogger(), "Response: {}", response.text);
         }
         return false;
     }
@@ -197,7 +197,7 @@ std::string Supabase::retrieveRawData()
 {
     if (!isAuthenticated()) {
         if (_isVerbose) {
-            std::cout << "Cannot retrieve data: not authenticated" << std::endl;
+            LOG_ERROR(Logger::getLogger(), "Cannot retrieve data: not authenticated");
         }
         return {};
     }
@@ -213,8 +213,8 @@ std::string Supabase::retrieveRawData()
 
     if (response.status_code != 200) {
         if (_isVerbose) {
-            std::cout << "HTTP request failed with status: " << response.status_code << std::endl;
-            std::cout << "Response: " << response.text << std::endl;
+            LOG_ERROR(Logger::getLogger(), "HTTP request failed with status: {}", response.status_code);
+            LOG_DEBUG(Logger::getLogger(), "Response: {}", response.text);
         }
         return {};
     }
@@ -222,7 +222,7 @@ std::string Supabase::retrieveRawData()
     auto json_result = glz::read_json<glz::json_t>(response.text);
     if (!json_result) {
         if (_isVerbose) {
-            std::cout << "Failed to parse JSON response" << std::endl;
+            LOG_ERROR(Logger::getLogger(), "Failed to parse JSON response");
         }
         return {};
     }
@@ -230,7 +230,7 @@ std::string Supabase::retrieveRawData()
     auto &json_obj = json_result.value();
     if (!json_obj.is_array() || json_obj.get_array().empty()) {
         if (_isVerbose) {
-            std::cout << "Response is empty or not an array" << std::endl;
+            LOG_WARNING(Logger::getLogger(), "Response is empty or not an array");
         }
         return {};
     }
@@ -238,7 +238,7 @@ std::string Supabase::retrieveRawData()
     auto &first_item = json_obj.get_array()[0];
     if (!first_item.is_object()) {
         if (_isVerbose) {
-            std::cout << "First item in response is not an object" << std::endl;
+            LOG_ERROR(Logger::getLogger(), "First item in response is not an object");
         }
         return {};
     }
@@ -246,14 +246,14 @@ std::string Supabase::retrieveRawData()
     auto data_it = first_item.get_object().find("data");
     if (data_it == first_item.get_object().end() || !data_it->second.is_string()) {
         if (_isVerbose) {
-            std::cout << "No 'data' field found in response" << std::endl;
+            LOG_WARNING(Logger::getLogger(), "No 'data' field found in response");
         }
         return {};
     }
 
     std::string data = data_it->second.get_string();
     if (_isVerbose) {
-        std::cout << "Retrieved raw data: " << data.length() << " bytes" << std::endl;
+        LOG_INFO(Logger::getLogger(), "Retrieved raw data: {} bytes", data.length());
     }
 
     return data;

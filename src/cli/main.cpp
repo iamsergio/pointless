@@ -3,14 +3,8 @@
 // SPDX-License-Identifier: MIT
 
 #include "../core/supabase.h"
-#include "../core/local_data.h"
+#include "../core/logger.h"
 
-#include <quill/Backend.h>
-#include <quill/Frontend.h>
-#include <quill/LogMacros.h>
-#include <quill/sinks/ConsoleSink.h>
-
-#include <iostream>
 #include <string>
 
 
@@ -20,51 +14,47 @@ void supabase_test()
         auto supabase = Supabase::createDefault(true);
 
         if (!supabase.isAuthenticated()) {
-            std::cout << "Failed to authenticate with Supabase" << std::endl;
+            LOG_ERROR(Logger::getLogger(), "Failed to authenticate with Supabase");
             return;
         }
 
-        std::cout << "Successfully authenticated with Supabase" << std::endl;
+        LOG_INFO(Logger::getLogger(), "Successfully authenticated with Supabase");
 
         std::string data = supabase.retrieveData();
 
         if (!data.empty()) {
-            std::cout << "Retrieved and decompressed data:\n"
-                      << data << std::endl;
+            LOG_INFO(Logger::getLogger(), "Retrieved and decompressed data:\n{}", data);
         } else {
-            std::cout << "No data retrieved" << std::endl;
+            LOG_WARNING(Logger::getLogger(), "No data retrieved");
         }
     } catch (const std::exception &e) {
-        std::cout << "Error: " << e.what() << std::endl;
+        LOG_ERROR(Logger::getLogger(), "Error: {}", e.what());
     }
 }
 
 int main(int argc, char *argv[])
 {
-    quill::Backend::start();
+    Logger::initialize();
 
-    auto console_sink = quill::Frontend::create_or_get_sink<quill::ConsoleSink>("console_sink");
-    auto logger = quill::Frontend::create_or_get_logger("pointless_cli", console_sink);
-
-    LOG_INFO(logger, "Testing Supabase connection...");
+    P_LOG_INFO("Testing Supabase connection...");
     supabase_test();
 
     // try {
     //     LocalData localData;
     //     auto result = localData.loadTaskManager();
     //     if (!result) {
-    //         LOG_ERROR(logger, "Error: {}", result.error());
+    //         LOG_ERROR(Logger::getLogger(), "Error: {}", result.error());
     //         return 1;
     //     }
 
     //     const auto &manager = result.value();
-    //     LOG_INFO(logger, "Loaded TaskManager successfully from local data");
-    //     LOG_INFO(logger, "Task count: {}", manager.taskCount());
+    //     LOG_INFO(Logger::getLogger(), "Loaded TaskManager successfully from local data");
+    //     LOG_INFO(Logger::getLogger(), "Task count: {}", manager.taskCount());
     //     for (const auto &task : manager.getAllTasks()) {
-    //         LOG_INFO(logger, "Task: {}", task.title);
+    //         LOG_INFO(Logger::getLogger(), "Task: {}", task.title);
     //     }
     // } catch (const std::exception& e) {
-    //     LOG_ERROR(logger, "Error initializing LocalData: {}", e.what());
+    //     LOG_ERROR(Logger::getLogger(), "Error initializing LocalData: {}", e.what());
     //     return 1;
     // }
 

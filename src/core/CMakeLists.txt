@@ -13,7 +13,8 @@ add_library(
   tag.cpp
   date_utils.cpp
   supabase.cpp
-  local_data.cpp)
+  local_data.cpp
+  logger.cpp)
 
 if(NOT DEFINED ENV{POINTLESS_SUPABASE_SERVICE_KEY})
   message(
