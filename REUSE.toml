@@ -15,6 +15,7 @@ path = [
     "vcpkg.json",
     ".clang-format",
     ".clangd",
+    ".cmake-format.yaml",
     ".github/dependabot.yml"
 ]
 precedence = "aggregate"
