@@ -11,6 +11,9 @@ project(pointless_cpp LANGUAGES CXX)
 
 enable_language(CXX)
 
+set(POINTLESS_VERSION "1.0.0")
+set(POINTLESS_APPLE_BUILD_NUMBER "1")
+
 option(POINTLESS_DEVELOPER_MODE "Build with developer options" OFF)
 option(POINTLESS_ENABLE_TESTS "Build tests" ${POINTLESS_DEVELOPER_MODE})
 
@@ -39,6 +42,28 @@ if(POINTLESS_ENABLE_TSAN)
   message(STATUS "Building with Thread Sanitizer")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread -fno-omit-frame-pointer")
   set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fsanitize=thread")
+endif()
+
+if(IOS)
+
+  # cmake-lint: disable=W0106
+  if(NOT DEFINED ENV{APPLE_TEAM_ID})
+    message(FATAL_ERROR "APPLE_TEAM_ID environment variable is not set")
+  endif()
+
+  set(BUNDLE_IDENTIFIER "com.iamsergio.pointless")
+  set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED YES)
+  set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_STYLE
+      "Automatic"
+      CACHE STRING "Sign style")
+  set(CMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM
+      "$ENV{APPLE_TEAM_ID}"
+      CACHE STRING "iOS development team to use for signing")
+  set(CMAKE_OSX_DEPLOYMENT_TARGET
+      "17.0"
+      CACHE STRING "Minimum iOS deployment target" FORCE)
+
+  configure_file(${CMAKE_SOURCE_DIR}/src/ios/Info.plist.in ${CMAKE_BINARY_DIR}/Info.plist @ONLY)
 endif()
 
 add_subdirectory(src)

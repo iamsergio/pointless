@@ -41,3 +41,12 @@ qt_add_qml_module(
   tagmodel.h)
 
 target_link_libraries(pointless PRIVATE Qt6::Core Qt6::Gui Qt6::Quick pointless_core)
+
+if(IOS)
+  set_target_properties(
+    pointless
+    PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER ${BUNDLE_IDENTIFIER}
+               MACOSX_BUNDLE_IDENTIFIER ${BUNDLE_IDENTIFIER}
+               MACOSX_BUNDLE TRUE
+               MACOSX_BUNDLE_INFO_PLIST "${CMAKE_BINARY_DIR}/Info.plist")
+endif()
