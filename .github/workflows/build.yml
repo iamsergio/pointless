@@ -52,10 +52,9 @@ jobs:
       run: cmake --build build-${{ matrix.preset }}
 
     - name: Run tests
-      if: startsWith(matrix.preset, 'dev')
       env:
         POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
         POINTLESS_SUPABASE_ANON_KEY: ${{ secrets.POINTLESS_SUPABASE_ANON_KEY }}
         POINTLESS_DEBUG_USERNAME: ${{ secrets.POINTLESS_DEBUG_USERNAME }}
         POINTLESS_DEBUG_PASSWORD: ${{ secrets.POINTLESS_DEBUG_PASSWORD }}
-      run: ctest --preset=${{ matrix.preset }} --output-on-failure --verbose
+      run: ctest --output-on-failure --verbose
