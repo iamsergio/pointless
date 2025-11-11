@@ -34,7 +34,9 @@ repos:
     hooks:
       - id: cmake-lint
         args: ["--line-width=1000"] # we don't care about line-width
+        additional_dependencies: ['pyyaml']
       - id: cmake-format
+        additional_dependencies: ['pyyaml']
   - repo: https://github.com/fsfe/reuse-tool
     rev: v6.2.0
     hooks:

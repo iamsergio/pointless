@@ -10,12 +10,11 @@ qt_add_executable(pointless main.cpp controller.cpp)
 
 set_target_properties(pointless PROPERTIES AUTOMOC ON AUTORCC ON)
 
-set(qml_singletons Style.qml)
+set(QML_SINGLETONS Style.qml)
 
-set_source_files_properties(${qml_singletons} PROPERTIES QT_QML_SINGLETON_TYPE
-                                                         TRUE)
+set_source_files_properties(${QML_SINGLETONS} PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 
-set(plain_qml_files
+set(PLAIN_QML_FILES
     Main.qml
     WeekNavigator.qml
     Task.qml
@@ -31,11 +30,10 @@ qt_add_qml_module(
   VERSION
   1.0
   QML_FILES
-  ${plain_qml_files}
-  ${qml_singletons}
+  ${PLAIN_QML_FILES}
+  ${QML_SINGLETONS}
   SOURCES
   controller.cpp
   controller.h)
 
-target_link_libraries(pointless PRIVATE Qt6::Core Qt6::Gui Qt6::Quick
-                                        pointless_core)
+target_link_libraries(pointless PRIVATE Qt6::Core Qt6::Gui Qt6::Quick pointless_core)
