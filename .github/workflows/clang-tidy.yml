@@ -25,6 +25,12 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y clang-tidy
 
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: '6.10.0'
+        cache: true
+
     - name: Setup vcpkg
       run: |
         cd 3rdparty/vcpkg
