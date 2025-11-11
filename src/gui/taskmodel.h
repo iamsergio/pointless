@@ -1,0 +1,43 @@
+// SPDX-FileCopyrightText: 2025 Sergio Martins
+// SPDX-License-Identifier: MIT
+
+#pragma once
+
+#include "task.h"
+
+#include <QAbstractListModel>
+#include <QtQml/qqmlregistration.h>
+
+#include <vector>
+
+class TaskModel : public QAbstractListModel {
+    Q_OBJECT
+    QML_ELEMENT
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
+
+public:
+    enum Roles {
+        UuidRole = Qt::UserRole + 1,
+        TitleRole,
+        IsDoneRole,
+        IsImportantRole,
+        DueDateRole
+    };
+
+    explicit TaskModel(QObject* parent = nullptr);
+    explicit TaskModel(const std::vector<PointlessCore::Task>& tasks, QObject* parent = nullptr);
+
+    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+    QHash<int, QByteArray> roleNames() const override;
+
+    int count() const;
+
+    void setTasks(const std::vector<PointlessCore::Task>& tasks);
+
+Q_SIGNALS:
+    void countChanged();
+
+private:
+    std::vector<PointlessCore::Task> _tasks;
+};

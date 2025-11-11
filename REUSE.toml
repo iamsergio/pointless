@@ -16,6 +16,7 @@ path = [
     ".clang-format",
     ".clangd",
     ".cmake-format.yaml",
+    "TODO",
     ".github/dependabot.yml"
 ]
 precedence = "aggregate"

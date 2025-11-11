@@ -6,7 +6,7 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick)
 
 qt_policy(SET QTP0001 NEW)
 
-qt_add_executable(pointless main.cpp controller.cpp)
+qt_add_executable(pointless main.cpp controller.cpp taskmodel.cpp tagmodel.cpp)
 
 set_target_properties(pointless PROPERTIES AUTOMOC ON AUTORCC ON)
 
@@ -34,6 +34,10 @@ qt_add_qml_module(
   ${QML_SINGLETONS}
   SOURCES
   controller.cpp
-  controller.h)
+  controller.h
+  taskmodel.cpp
+  taskmodel.h
+  tagmodel.cpp
+  tagmodel.h)
 
 target_link_libraries(pointless PRIVATE Qt6::Core Qt6::Gui Qt6::Quick pointless_core)

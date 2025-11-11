@@ -4,13 +4,13 @@
 #pragma once
 
 #include <QObject>
-#include <QtQml>
+#include <QtQml/qqmlregistration.h>
 
 class Controller : public QObject {
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
-    Q_PROPERTY(ViewType currentViewType READ currentViewType WRITE setCurrentViewType NOTIFY currentViewTypeChanged)
+    Q_PROPERTY(Controller::ViewType currentViewType READ currentViewType WRITE setCurrentViewType NOTIFY currentViewTypeChanged)
 
 public:
     enum class ViewType {
