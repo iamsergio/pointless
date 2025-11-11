@@ -43,6 +43,12 @@ ApplicationWindow {
                     text: "Later"
                     onClicked: Controller.currentViewType = Controller.Later
                 }
+
+                // To test font awesome button
+                // FontAwesomeButton {
+                //     fontAwesomeIcon: "\uf005"
+                //     onClicked: console.log("FontAwesome button clicked!")
+                // }
             }
 
             WeekView {
