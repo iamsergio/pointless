@@ -58,3 +58,7 @@ jobs:
         POINTLESS_DEBUG_USERNAME: ${{ secrets.POINTLESS_DEBUG_USERNAME }}
         POINTLESS_DEBUG_PASSWORD: ${{ secrets.POINTLESS_DEBUG_PASSWORD }}
       run: ctest --output-on-failure --verbose
+
+    - name: Run qmllint
+      run: |
+        ninja -C ./build-${{ matrix.preset }} all_qmllint

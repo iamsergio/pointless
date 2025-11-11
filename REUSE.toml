@@ -18,7 +18,8 @@ path = [
     ".cmake-format.yaml",
     "TODO",
     ".github/dependabot.yml",
-    "src/ios/Info.plist.in"
+    "src/ios/Info.plist.in",
+    ".qmllint.ini"
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2025 Sergio Martins"
