@@ -16,26 +16,15 @@ add_library(
   local_data.cpp
   logger.cpp)
 
-if(NOT DEFINED ENV{POINTLESS_SUPABASE_SERVICE_KEY})
-  message(
-    FATAL_ERROR "POINTLESS_SUPABASE_SERVICE_KEY environment variable is not set"
-  )
-endif()
-
 if(NOT DEFINED ENV{POINTLESS_SUPABASE_ANON_KEY})
-  message(
-    FATAL_ERROR "POINTLESS_SUPABASE_ANON_KEY environment variable is not set")
+  message(FATAL_ERROR "POINTLESS_SUPABASE_ANON_KEY environment variable is not set")
 endif()
 
 if(NOT DEFINED ENV{POINTLESS_SUPABASE_URL})
   message(FATAL_ERROR "POINTLESS_SUPABASE_URL environment variable is not set")
 endif()
 
-target_compile_definitions(
-  pointless_core
-  PRIVATE POINTLESS_SUPABASE_SERVICE_KEY="$ENV{POINTLESS_SUPABASE_SERVICE_KEY}"
-          POINTLESS_SUPABASE_URL="$ENV{POINTLESS_SUPABASE_URL}"
-          POINTLESS_SUPABASE_ANON_KEY="$ENV{POINTLESS_SUPABASE_ANON_KEY}")
+target_compile_definitions(pointless_core PRIVATE POINTLESS_SUPABASE_URL="$ENV{POINTLESS_SUPABASE_URL}" POINTLESS_SUPABASE_ANON_KEY="$ENV{POINTLESS_SUPABASE_ANON_KEY}")
 
 target_link_libraries(
   pointless_core
@@ -45,19 +34,14 @@ target_include_directories(pointless_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(POINTLESS_ENABLE_TESTS)
   add_executable(test_date_utils tests/test_date_utils.cpp)
-  target_link_libraries(test_date_utils PRIVATE pointless_core
-                                                GTest::gtest_main)
-  target_include_directories(test_date_utils
-                             PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+  target_link_libraries(test_date_utils PRIVATE pointless_core GTest::gtest_main)
+  target_include_directories(test_date_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
   add_test(NAME test_date_utils COMMAND test_date_utils)
 
   add_executable(test_taskmanager tests/test_taskmanager.cpp)
-  target_link_libraries(test_taskmanager PRIVATE pointless_core
-                                                 GTest::gtest_main)
-  target_include_directories(test_taskmanager
-                             PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-  target_compile_definitions(test_taskmanager
-                             PRIVATE POINTLESS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+  target_link_libraries(test_taskmanager PRIVATE pointless_core GTest::gtest_main)
+  target_include_directories(test_taskmanager PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+  target_compile_definitions(test_taskmanager PRIVATE POINTLESS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
   add_test(NAME test_taskmanager COMMAND test_taskmanager)
 
   add_executable(test_tag tests/test_tag.cpp)
