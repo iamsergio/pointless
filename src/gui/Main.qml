@@ -29,26 +29,23 @@ ApplicationWindow {
                 Layout.alignment: Qt.AlignHCenter
                 spacing: 10
 
-                Button {
+                ViewButton {
                     text: "Week"
+                    isActive: Controller.currentViewType === Controller.Week
                     onClicked: Controller.currentViewType = Controller.Week
                 }
 
-                Button {
+                ViewButton {
                     text: "Soon"
+                    isActive: Controller.currentViewType === Controller.Soon
                     onClicked: Controller.currentViewType = Controller.Soon
                 }
 
-                Button {
+                ViewButton {
                     text: "Later"
+                    isActive: Controller.currentViewType === Controller.Later
                     onClicked: Controller.currentViewType = Controller.Later
                 }
-
-                // To test font awesome button
-                // FontAwesomeButton {
-                //     fontAwesomeIcon: "\uf005"
-                //     onClicked: console.log("FontAwesome button clicked!")
-                // }
             }
 
             WeekView {

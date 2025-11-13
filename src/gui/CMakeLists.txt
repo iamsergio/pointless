@@ -22,7 +22,8 @@ set(PLAIN_QML_FILES
     WeekView.qml
     SoonView.qml
     LaterView.qml
-    FontAwesomeButton.qml)
+    FontAwesomeButton.qml
+    ViewButton.qml)
 
 qt_add_qml_module(
   pointless
