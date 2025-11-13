@@ -21,7 +21,8 @@ public:
         TitleRole,
         IsDoneRole,
         IsImportantRole,
-        DueDateRole
+        DueDateRole,
+        TagNameRole
     };
 
     explicit TaskModel(QObject* parent = nullptr);
@@ -34,6 +35,7 @@ public:
     int count() const;
 
     void setTasks(const std::vector<PointlessCore::Task>& tasks);
+    const PointlessCore::Task* taskAt(int row) const;
 
 Q_SIGNALS:
     void countChanged();

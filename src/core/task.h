@@ -20,6 +20,13 @@ public:
     Task();
     Task(const std::string& uuid, const std::chrono::system_clock::time_point& creationTimestamp, const std::string& title = "");
 
+    bool containsTag(std::string_view tagName) const;
+    bool isSoon() const;
+    bool isLater() const;
+    bool isCurrent() const;
+
+    std::string tagName() const;
+
     int revision = -1;
     bool needsSyncToServer = false;
     std::string uuid;

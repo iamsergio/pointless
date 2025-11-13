@@ -18,4 +18,39 @@ Task::Task(const std::string &uuid_, const std::chrono::system_clock::time_point
 {
 }
 
+bool Task::containsTag(std::string_view tagName) const
+{
+    for (const auto &tag : tags) {
+        if (tag.m_name == tagName) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Task::isSoon() const
+{
+    return containsTag("soon");
+}
+
+bool Task::isLater() const
+{
+    return containsTag("later");
+}
+
+bool Task::isCurrent() const
+{
+    return !isSoon() && !isLater();
+}
+
+std::string Task::tagName() const
+{
+    for (const auto &tag : tags) {
+        if (tag.m_name != "soon" && tag.m_name != "later") {
+            return tag.m_name;
+        }
+    }
+    return {};
+}
+
 } // namespace PointlessCore

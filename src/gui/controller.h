@@ -3,9 +3,14 @@
 
 #pragma once
 
+#include "taskfiltermodel.h"
+
 #include <QDate>
 #include <QObject>
 #include <QtQml/qqmlregistration.h>
+
+class TaskModel;
+class TagModel;
 
 class Controller : public QObject {
     Q_OBJECT
@@ -14,8 +19,9 @@ class Controller : public QObject {
     Q_PROPERTY(Controller::ViewType currentViewType READ currentViewType WRITE setCurrentViewType NOTIFY currentViewTypeChanged)
     Q_PROPERTY(QDate navigatorStartDate READ navigatorStartDate NOTIFY navigatorStartDateChanged)
     Q_PROPERTY(QDate navigatorEndDate READ navigatorEndDate NOTIFY navigatorEndDateChanged)
-
+    Q_PROPERTY(TaskFilterModel* taskFilterModel READ taskFilterModel CONSTANT)
 public:
+    TaskFilterModel* taskFilterModel() const;
     enum class ViewType {
         Week,
         Soon,
@@ -43,4 +49,7 @@ Q_SIGNALS:
 private:
     ViewType _currentViewType = ViewType::Week;
     QDate _navigatorStartDate;
+    TaskModel* _taskModel = nullptr;
+    TagModel* _tagModel = nullptr;
+    TaskFilterModel* _taskFilterModel = nullptr;
 };

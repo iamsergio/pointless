@@ -20,10 +20,6 @@ ApplicationWindow {
             anchors.fill: parent
             anchors.margins: 10
 
-            WeekNavigator {
-                Layout.fillWidth: true
-            }
-
             RowLayout {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignHCenter
@@ -46,6 +42,11 @@ ApplicationWindow {
                     isActive: Controller.currentViewType === Controller.Later
                     onClicked: Controller.currentViewType = Controller.Later
                 }
+            }
+
+            WeekNavigator {
+                Layout.fillWidth: true
+                visible: Controller.currentViewType === Controller.Week
             }
 
             WeekView {

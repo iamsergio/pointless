@@ -11,4 +11,7 @@ Item {
     readonly property color background2: "#141b28"
     property color buttonBackground: "#242e3c"
     readonly property color buttonActive: "#135bec"
+    readonly property color sectionBackgroundColor: "#1a2332"
+    readonly property color sectionTextColor: "#ffffff"
+    readonly property int sectionFontSize: 14
 }

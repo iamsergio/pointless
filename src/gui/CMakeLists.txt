@@ -41,6 +41,7 @@ qt_add_qml_module(
   taskmodel.h
   tagmodel.cpp
   tagmodel.h
+  taskfiltermodel.cpp
   RESOURCES
   fonts/FontAwesome7Brands-Regular-400.otf
   fonts/FontAwesome7Free-Regular-400.otf

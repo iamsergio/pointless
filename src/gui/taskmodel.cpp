@@ -44,6 +44,8 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
             return QDateTime::fromSecsSinceEpoch(timeT);
         }
         return QVariant();
+    case TagNameRole:
+        return QString::fromStdString(task.tagName());
     }
 
     return QVariant();
@@ -57,6 +59,7 @@ QHash<int, QByteArray> TaskModel::roleNames() const
     roles[IsDoneRole] = "isDone";
     roles[IsImportantRole] = "isImportant";
     roles[DueDateRole] = "dueDate";
+    roles[TagNameRole] = "tagName";
     return roles;
 }
 
@@ -71,4 +74,11 @@ void TaskModel::setTasks(const std::vector<PointlessCore::Task> &tasks)
     _tasks = tasks;
     endResetModel();
     emit countChanged();
+}
+
+const PointlessCore::Task *TaskModel::taskAt(int row) const
+{
+    if (row < 0 || row >= static_cast<int>(_tasks.size()))
+        return nullptr;
+    return &_tasks[row];
 }

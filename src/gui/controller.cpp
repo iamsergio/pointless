@@ -1,7 +1,11 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
+
 #include "controller.h"
+#include "taskfiltermodel.h"
+#include "taskmodel.h"
+#include "tagmodel.h"
 
 namespace {
 QDate firstMondayOfWeek(const QDate &date)
@@ -13,7 +17,16 @@ QDate firstMondayOfWeek(const QDate &date)
 Controller::Controller(QObject *parent)
     : QObject(parent)
 {
+    _taskModel = new TaskModel(this);
+    _tagModel = new TagModel(this);
+    _taskFilterModel = new TaskFilterModel(this, this);
+    _taskFilterModel->setSourceModel(_taskModel);
     navigatorGotoToday();
+}
+
+TaskFilterModel *Controller::taskFilterModel() const
+{
+    return _taskFilterModel;
 }
 
 
