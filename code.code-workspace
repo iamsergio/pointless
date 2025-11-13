@@ -48,7 +48,7 @@
           "command script import /pub_data/installed/Qt/Tools/QtCreator/share/qtcreator/debugger/lldbbridge.py"
         ],
         "sourceMap": {
-          "/home/qt/work/qt": "$${QT_INSTALL}/../Src"
+          "/home/qt/work/qt": "/pub_data/installed/Qt/6.10.0/Src"
         }
       }
     ]
