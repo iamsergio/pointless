@@ -24,7 +24,8 @@ set(PLAIN_QML_FILES
     LaterView.qml
     TaskView.qml
     FontAwesomeButton.qml
-    ViewButton.qml)
+    ViewButton.qml
+    LoginScreen.qml)
 
 qt_add_qml_module(
   pointless

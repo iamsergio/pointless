@@ -16,6 +16,13 @@ ApplicationWindow {
         anchors.fill: parent
         color: Style.background
 
+        LoginScreen {
+            id: loginScreen
+            anchors.fill: parent
+            visible: true
+            z: 200
+        }
+
         // Overlaid refresh button
         FontAwesomeButton {
             fontAwesomeIcon: "\uf021" // FontAwesome refresh icon

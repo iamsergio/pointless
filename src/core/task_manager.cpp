@@ -218,7 +218,12 @@ void TaskManager::removeUnusedTags()
 std::expected<TaskManager, std::string> TaskManager::fromJson(const std::string &json_str)
 {
     TaskManager manager;
-    auto result = glz::read_json(manager.m_data, json_str);
+    // auto result = glz::read_json(manager.m_data, json_str);
+    auto result = glz::read<glz::opts {
+        .error_on_unknown_keys = true,
+        .error_on_missing_keys = true,
+        .error_on_const_read = true,
+    }>(manager.m_data, json_str);
     if (!result) {
         return std::unexpected("Failed to parse JSON: " + std::string(glz::format_error(result, json_str)));
     }

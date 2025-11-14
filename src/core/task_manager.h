@@ -76,5 +76,7 @@ struct glz::meta<PointlessCore::Data>
     using T = PointlessCore::Data;
     static constexpr auto value = object(
         "tasks", &T::tasks,
-        "tags", &T::tags);
+        "tags", &T::tags
+        // "revision", &T::revision
+    );
 };
