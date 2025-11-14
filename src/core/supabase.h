@@ -11,9 +11,9 @@
 
 class Supabase {
 public:
-    explicit Supabase(const std::string& base_url, const std::string& anon_key, bool is_verbose = false);
+    explicit Supabase(const std::string& base_url, const std::string& anon_key);
 
-    static Supabase createDefault(bool is_verbose = false);
+    static Supabase createDefault();
 
     bool login(const std::string& email, const std::string& password);
     bool loginWithDefaults();
@@ -36,8 +36,6 @@ private:
     std::string _userId;
     std::string _defaultUser;
     std::string _defaultPassword;
-
-    bool _isVerbose;
 
     std::string retrieveRawData();
 

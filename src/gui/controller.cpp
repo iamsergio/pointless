@@ -16,7 +16,7 @@ QDate firstMondayOfWeek(const QDate &date)
 
 Controller::Controller(QObject *parent)
     : QObject(parent)
-    , _supabase(Supabase::createDefault(true))
+    , _supabase(Supabase::createDefault())
 {
     _taskModel = new TaskModel(this);
     _tagModel = new TagModel(this);
