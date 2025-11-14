@@ -30,12 +30,12 @@ TEST(TaskTest, SerializeJson)
     Tag tag1;
     tag1.revision = 1;
     tag1.needsSyncToServer = false;
-    tag1.m_name = "work";
+    tag1.name = "work";
 
     Tag tag2;
     tag2.revision = 2;
     tag2.needsSyncToServer = true;
-    tag2.m_name = "urgent";
+    tag2.name = "urgent";
 
     original_task.tags = { tag1, tag2 };
 

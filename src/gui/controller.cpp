@@ -6,6 +6,8 @@
 #include "taskfiltermodel.h"
 #include "taskmodel.h"
 #include "tagmodel.h"
+#include "../core/task_manager.h"
+#include "../core/logger.h"
 
 namespace {
 QDate firstMondayOfWeek(const QDate &date)
@@ -27,6 +29,33 @@ Controller::Controller(QObject *parent)
 
 void Controller::refresh()
 {
+    if (!_supabase.isAuthenticated()) {
+        P_LOG_ERROR("Cannot refresh: not authenticated");
+        return;
+    }
+
+    std::string json_str = _supabase.retrieveData();
+    if (json_str.empty()) {
+        P_LOG_ERROR("Cannot refresh: no data retrieved");
+        return;
+    }
+
+    auto result = PointlessCore::TaskManager::fromJson(json_str);
+    if (!result) {
+        P_LOG_ERROR("Cannot refresh: failed to parse JSON");
+        return;
+    }
+
+
+    std::ofstream debugFile("/tmp/debug.json");
+    if (debugFile.is_open()) {
+        debugFile << json_str;
+        debugFile.close();
+    }
+
+    auto &manager = result.value();
+    _taskModel->setTasks(manager.getAllTasks());
+    _tagModel->setTags(manager.getAllTags());
 }
 
 TaskFilterModel *Controller::taskFilterModel() const

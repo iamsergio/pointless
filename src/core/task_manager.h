@@ -16,6 +16,7 @@ namespace PointlessCore {
 
 struct Data
 {
+    int revision;
     std::vector<Task> tasks;
     std::vector<Tag> tags;
 };

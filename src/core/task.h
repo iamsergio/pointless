@@ -77,7 +77,7 @@ struct glz::meta<PointlessCore::Task>
         "tags", [](const T &t) {
             std::vector<std::string> tag_names;
             for (const auto& tag : t.tags) {
-                tag_names.push_back(tag.name());
+                tag_names.push_back(tag.name);
             }
             return tag_names; },
         "creationTimestamp", [](const T &t) { return timestamp_to_millis(t.creationTimestamp); },

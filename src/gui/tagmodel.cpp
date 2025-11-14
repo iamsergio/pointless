@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
+
+#include "logger.h"
 #include "tagmodel.h"
 
 TagModel::TagModel(QObject *parent)
@@ -29,7 +31,7 @@ QVariant TagModel::data(const QModelIndex &index, int role) const
 
     switch (role) {
     case NameRole:
-        return QString::fromStdString(tag.name());
+        return QString::fromStdString(tag.name);
     case IsBuiltinRole:
         return tag.isBuiltin();
     }
@@ -54,6 +56,7 @@ void TagModel::setTags(const std::vector<PointlessCore::Tag> &tags)
 {
     beginResetModel();
     _tags = tags;
+    P_LOG_INFO("size = {}", static_cast<int>(_tags.size()));
     endResetModel();
     emit countChanged();
 }

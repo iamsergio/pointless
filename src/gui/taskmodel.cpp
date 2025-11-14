@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "taskmodel.h"
+#include "logger.h"
 
 #include <QDateTime>
 
@@ -72,6 +73,7 @@ void TaskModel::setTasks(const std::vector<PointlessCore::Task> &tasks)
 {
     beginResetModel();
     _tasks = tasks;
+    P_LOG_INFO("size = {}", static_cast<int>(_tasks.size()));
     endResetModel();
     emit countChanged();
 }

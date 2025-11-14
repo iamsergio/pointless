@@ -21,7 +21,7 @@ Task::Task(const std::string &uuid_, const std::chrono::system_clock::time_point
 bool Task::containsTag(std::string_view tagName) const
 {
     for (const auto &tag : tags) {
-        if (tag.m_name == tagName) {
+        if (tag.name == tagName) {
             return true;
         }
     }
@@ -46,8 +46,8 @@ bool Task::isCurrent() const
 std::string Task::tagName() const
 {
     for (const auto &tag : tags) {
-        if (tag.m_name != "soon" && tag.m_name != "later") {
-            return tag.m_name;
+        if (tag.name != "soon" && tag.name != "later") {
+            return tag.name;
         }
     }
     return {};

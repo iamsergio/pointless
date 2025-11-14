@@ -126,7 +126,7 @@ std::vector<Task> TaskManager::getTasksByParent(const std::string &parentUuid) c
 void TaskManager::addTag(const Tag &tag)
 {
     // Check if tag with same name already exists
-    auto it = findTagByName(tag.name());
+    auto it = findTagByName(tag.name);
     if (it == m_data.tags.end()) {
         m_data.tags.push_back(tag);
     }
@@ -211,7 +211,7 @@ void TaskManager::removeUnusedTags()
 {
     auto unusedTags = getUnusedTags();
     for (const auto &tag : unusedTags) {
-        removeTag(tag.name());
+        removeTag(tag.name);
     }
 }
 
@@ -220,7 +220,7 @@ std::expected<TaskManager, std::string> TaskManager::fromJson(const std::string 
     TaskManager manager;
     auto result = glz::read_json(manager.m_data, json_str);
     if (!result) {
-        // return std::unexpected("Failed to parse JSON: " + std::string(glz::format_error(result.error(), json_str)));
+        return std::unexpected("Failed to parse JSON: " + std::string(glz::format_error(result, json_str)));
     }
 
     return manager;
@@ -242,12 +242,12 @@ std::vector<Task>::const_iterator TaskManager::findTaskByUuid(const std::string 
 std::vector<Tag>::iterator TaskManager::findTagByName(const std::string &tagName)
 {
     return std::find_if(m_data.tags.begin(), m_data.tags.end(),
-                        [&tagName](const Tag &tag) { return tag.name() == tagName; });
+                        [&tagName](const Tag &tag) { return tag.name == tagName; });
 }
 
 std::vector<Tag>::const_iterator TaskManager::findTagByName(const std::string &tagName) const
 {
     return std::find_if(m_data.tags.begin(), m_data.tags.end(),
-                        [&tagName](const Tag &tag) { return tag.name() == tagName; });
+                        [&tagName](const Tag &tag) { return tag.name == tagName; });
 }
 } // namespace PointlessCore
