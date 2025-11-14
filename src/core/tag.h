@@ -9,10 +9,11 @@
 
 namespace PointlessCore {
 
-class Tag {
+class Tag
+{
 public:
-    const std::string& name() const;
-    bool operator==(const Tag& other) const;
+    const std::string &name() const;
+    bool operator==(const Tag &other) const;
     bool isBuiltin() const;
 
     int revision = -1;
@@ -22,8 +23,9 @@ public:
 
 } // namespace PointlessCore
 
-template <>
-struct glz::meta<PointlessCore::Tag> {
+template<>
+struct glz::meta<PointlessCore::Tag>
+{
     using T = PointlessCore::Tag;
     static constexpr auto value = object(
         "revision", &T::revision,

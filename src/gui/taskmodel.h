@@ -10,7 +10,8 @@
 
 #include <vector>
 
-class TaskModel : public QAbstractListModel {
+class TaskModel : public QAbstractListModel
+{
     Q_OBJECT
     QML_ELEMENT
     Q_PROPERTY(int count READ count NOTIFY countChanged)
@@ -25,17 +26,17 @@ public:
         TagNameRole
     };
 
-    explicit TaskModel(QObject* parent = nullptr);
-    explicit TaskModel(const std::vector<PointlessCore::Task>& tasks, QObject* parent = nullptr);
+    explicit TaskModel(QObject *parent = nullptr);
+    explicit TaskModel(const std::vector<PointlessCore::Task> &tasks, QObject *parent = nullptr);
 
-    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
     int count() const;
 
-    void setTasks(const std::vector<PointlessCore::Task>& tasks);
-    const PointlessCore::Task* taskAt(int row) const;
+    void setTasks(const std::vector<PointlessCore::Task> &tasks);
+    const PointlessCore::Task *taskAt(int row) const;
 
 Q_SIGNALS:
     void countChanged();

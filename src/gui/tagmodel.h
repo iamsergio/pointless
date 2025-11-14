@@ -10,7 +10,8 @@
 
 #include <vector>
 
-class TagModel : public QAbstractListModel {
+class TagModel : public QAbstractListModel
+{
     Q_OBJECT
     QML_ELEMENT
     Q_PROPERTY(int count READ count NOTIFY countChanged)
@@ -21,16 +22,16 @@ public:
         IsBuiltinRole
     };
 
-    explicit TagModel(QObject* parent = nullptr);
-    explicit TagModel(const std::vector<PointlessCore::Tag>& tags, QObject* parent = nullptr);
+    explicit TagModel(QObject *parent = nullptr);
+    explicit TagModel(const std::vector<PointlessCore::Tag> &tags, QObject *parent = nullptr);
 
-    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
     int count() const;
 
-    void setTags(const std::vector<PointlessCore::Tag>& tags);
+    void setTags(const std::vector<PointlessCore::Tag> &tags);
 
 Q_SIGNALS:
     void countChanged();

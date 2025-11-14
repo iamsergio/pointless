@@ -8,13 +8,14 @@
 #include <quill/LogMacros.h>
 #include <quill/sinks/ConsoleSink.h>
 
-class Logger {
+class Logger
+{
 public:
     static void initialize();
-    static quill::Logger* getLogger();
+    static quill::Logger *getLogger();
 
 private:
-    static quill::Logger* s_logger;
+    static quill::Logger *s_logger;
     static bool s_initialized;
 };
 

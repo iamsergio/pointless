@@ -9,25 +9,26 @@
 #include <string>
 #include <vector>
 
-class Supabase {
+class Supabase
+{
 public:
-    explicit Supabase(const std::string& base_url, const std::string& anon_key);
+    explicit Supabase(const std::string &base_url, const std::string &anon_key);
 
     static Supabase createDefault();
 
-    bool login(const std::string& email, const std::string& password);
+    bool login(const std::string &email, const std::string &password);
     bool loginWithDefaults();
     bool isAuthenticated() const;
     void logout();
 
-    bool updateData(const std::string& data);
+    bool updateData(const std::string &data);
     std::string retrieveData();
     glz::json_t retrieveDataAsJson();
 
-    Supabase(const Supabase&) = delete;
-    Supabase& operator=(const Supabase&) = delete;
-    Supabase(Supabase&&) = delete;
-    Supabase& operator=(Supabase&&) = delete;
+    Supabase(const Supabase &) = delete;
+    Supabase &operator=(const Supabase &) = delete;
+    Supabase(Supabase &&) = delete;
+    Supabase &operator=(Supabase &&) = delete;
 
 private:
     std::string _baseUrl;
@@ -39,8 +40,8 @@ private:
 
     std::string retrieveRawData();
 
-    static std::vector<uint8_t> compress(const std::string& data);
-    static std::string decompress(const std::vector<uint8_t>& compressed_data);
-    static std::vector<uint8_t> base64Decode(const std::string& input);
-    static std::string base64Encode(const std::vector<uint8_t>& data);
+    static std::vector<uint8_t> compress(const std::string &data);
+    static std::string decompress(const std::vector<uint8_t> &compressed_data);
+    static std::vector<uint8_t> base64Decode(const std::string &input);
+    static std::string base64Encode(const std::vector<uint8_t> &data);
 };

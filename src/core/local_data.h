@@ -8,7 +8,8 @@
 #include <expected>
 #include <string>
 
-class LocalData {
+class LocalData
+{
 public:
     LocalData();
 

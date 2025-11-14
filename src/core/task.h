@@ -15,10 +15,11 @@
 
 namespace PointlessCore {
 
-class Task {
+class Task
+{
 public:
     Task();
-    Task(const std::string& uuid, const std::chrono::system_clock::time_point& creationTimestamp, const std::string& title = "");
+    Task(const std::string &uuid, const std::chrono::system_clock::time_point &creationTimestamp, const std::string &title = "");
 
     bool containsTag(std::string_view tagName) const;
     bool isSoon() const;
@@ -49,19 +50,20 @@ public:
 } // namespace PointlessCore
 
 namespace {
-constexpr auto timestamp_to_millis = [](const std::chrono::system_clock::time_point& tp) -> int64_t {
+constexpr auto timestamp_to_millis = [](const std::chrono::system_clock::time_point &tp) -> int64_t {
     return std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).count();
 };
 
-constexpr auto optional_timestamp_to_millis = [](const std::optional<std::chrono::system_clock::time_point>& opt_tp) -> std::optional<int64_t> {
+constexpr auto optional_timestamp_to_millis = [](const std::optional<std::chrono::system_clock::time_point> &opt_tp) -> std::optional<int64_t> {
     if (opt_tp)
         return timestamp_to_millis(*opt_tp);
     return std::nullopt;
 };
 }
 
-template <>
-struct glz::meta<PointlessCore::Task> {
+template<>
+struct glz::meta<PointlessCore::Task>
+{
     using T = PointlessCore::Task;
     static constexpr auto value = object(
         "revision", &T::revision,
@@ -72,17 +74,17 @@ struct glz::meta<PointlessCore::Task> {
         "isDone", &T::isDone,
         "isImportant", &T::isImportant,
         "hideOnWeekends", &T::hideOnWeekends,
-        "tags", [](const T& t) {
+        "tags", [](const T &t) {
             std::vector<std::string> tag_names;
             for (const auto& tag : t.tags) {
                 tag_names.push_back(tag.name());
             }
             return tag_names; },
-        "creationTimestamp", [](const T& t) { return timestamp_to_millis(t.creationTimestamp); },
-        "modificationTimestamp", [](const T& t) { return optional_timestamp_to_millis(t.modificationTimestamp); },
-        "lastPomodoroDate", [](const T& t) { return optional_timestamp_to_millis(t.lastPomodoroDate); },
-        "dueDate", [](const T& t) { return optional_timestamp_to_millis(t.dueDate); },
-        "completionDate", [](const T& t) { return optional_timestamp_to_millis(t.completionDate); },
+        "creationTimestamp", [](const T &t) { return timestamp_to_millis(t.creationTimestamp); },
+        "modificationTimestamp", [](const T &t) { return optional_timestamp_to_millis(t.modificationTimestamp); },
+        "lastPomodoroDate", [](const T &t) { return optional_timestamp_to_millis(t.lastPomodoroDate); },
+        "dueDate", [](const T &t) { return optional_timestamp_to_millis(t.dueDate); },
+        "completionDate", [](const T &t) { return optional_timestamp_to_millis(t.completionDate); },
         "uuidInDeviceCalendar", &T::uuidInDeviceCalendar,
         "deviceCalendarUuid", &T::deviceCalendarUuid,
         "deviceCalendarName", &T::deviceCalendarName);

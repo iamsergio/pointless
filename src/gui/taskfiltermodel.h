@@ -8,17 +8,18 @@
 
 class Controller;
 
-class TaskFilterModel : public QSortFilterProxyModel {
+class TaskFilterModel : public QSortFilterProxyModel
+{
     Q_OBJECT
     QML_ELEMENT
     QML_UNCREATABLE("TaskFilterModel is created by Controller")
 public:
-    explicit TaskFilterModel(Controller* controller, QObject* parent = nullptr);
+    explicit TaskFilterModel(Controller *controller, QObject *parent = nullptr);
     ~TaskFilterModel() override;
 
-    bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
-    bool lessThan(const QModelIndex& source_left, const QModelIndex& source_right) const override;
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
+    bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;
 
 private:
-    Controller* _controller = nullptr;
+    Controller *_controller = nullptr;
 };
