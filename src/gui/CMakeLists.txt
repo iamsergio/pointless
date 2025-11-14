@@ -22,6 +22,7 @@ set(PLAIN_QML_FILES
     WeekView.qml
     SoonView.qml
     LaterView.qml
+    TaskView.qml
     FontAwesomeButton.qml
     ViewButton.qml)
 
