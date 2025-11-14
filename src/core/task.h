@@ -34,8 +34,12 @@ public:
     std::optional<std::string> parentUuid;
     std::string title;
     bool isDone = false;
+    bool isGoal = false;
     bool isImportant = false;
     bool hideOnWeekends = false;
+    int timesPerWeek = 1;
+    std::vector<int> lastCompletions;
+    std::string sectionName;
     std::vector<Tag> tags;
     std::chrono::system_clock::time_point creationTimestamp;
     std::optional<std::chrono::system_clock::time_point> modificationTimestamp;
@@ -71,8 +75,12 @@ struct glz::meta<PointlessCore::Task>
         "parentUuid", &T::parentUuid,
         "title", &T::title,
         "isDone", &T::isDone,
+        "isGoal", &T::isGoal,
         "isImportant", &T::isImportant,
         "hideOnWeekends", &T::hideOnWeekends,
+        "timesPerWeek", &T::timesPerWeek,
+        "lastCompletions", &T::lastCompletions,
+        "sectionName", &T::sectionName,
         "tags", [](const T &t) {
             std::vector<std::string> tag_names;
             for (const auto& tag : t.tags) {

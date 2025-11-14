@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "task_manager.h"
+#include "logger.h"
 
 #include <algorithm>
 
@@ -220,7 +221,7 @@ std::expected<TaskManager, std::string> TaskManager::fromJson(const std::string 
     TaskManager manager;
     auto result = glz::read<glz::opts {
         .error_on_unknown_keys = true,
-        .error_on_missing_keys = true,
+        // .error_on_missing_keys = true,
         .error_on_const_read = true,
     }>(manager.m_data, json_str);
     if (result != glz::error_code::none) {
