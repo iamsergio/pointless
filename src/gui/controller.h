@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "../core/supabase.h"
 #include "taskfiltermodel.h"
 
 #include <QDate>
@@ -40,6 +41,7 @@ public:
     Q_INVOKABLE void navigatorGotoToday();
     Q_INVOKABLE void navigatorGotoNextWeek();
     Q_INVOKABLE void navigatorGotoPreviousWeek();
+    Q_INVOKABLE void refresh();
 
 Q_SIGNALS:
     void currentViewTypeChanged();
@@ -52,4 +54,5 @@ private:
     TaskModel* _taskModel = nullptr;
     TagModel* _tagModel = nullptr;
     TaskFilterModel* _taskFilterModel = nullptr;
+    Supabase _supabase;
 };

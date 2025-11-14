@@ -16,12 +16,17 @@ QDate firstMondayOfWeek(const QDate &date)
 
 Controller::Controller(QObject *parent)
     : QObject(parent)
+    , _supabase(Supabase::createDefault(true))
 {
     _taskModel = new TaskModel(this);
     _tagModel = new TagModel(this);
     _taskFilterModel = new TaskFilterModel(this, this);
     _taskFilterModel->setSourceModel(_taskModel);
     navigatorGotoToday();
+}
+
+void Controller::refresh()
+{
 }
 
 TaskFilterModel *Controller::taskFilterModel() const

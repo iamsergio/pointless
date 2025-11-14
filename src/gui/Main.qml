@@ -16,6 +16,19 @@ ApplicationWindow {
         anchors.fill: parent
         color: Style.background
 
+        // Overlaid refresh button
+        FontAwesomeButton {
+            fontAwesomeIcon: "\uf021" // FontAwesome refresh icon
+            iconSize: 24
+            iconColor: "white"
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.topMargin: 16
+            anchors.rightMargin: 16
+            z: 100
+            onClicked: Controller.refresh()
+        }
+
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 10
