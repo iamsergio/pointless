@@ -19,7 +19,7 @@ ApplicationWindow {
         LoginScreen {
             id: loginScreen
             anchors.fill: parent
-            visible: true
+            visible: false
             z: 200
         }
 

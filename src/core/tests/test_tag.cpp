@@ -12,7 +12,6 @@ TEST(TagTest, SerializeDeserializeJson)
 {
     Tag original_tag;
     original_tag.revision = 42;
-    original_tag.needsSyncToServer = true;
     original_tag.name = "test_tag";
 
     auto json_result = glz::write_json(original_tag);
@@ -26,7 +25,6 @@ TEST(TagTest, SerializeDeserializeJson)
     EXPECT_FALSE(read_error);
 
     EXPECT_EQ(original_tag.revision, deserialized_tag.revision);
-    EXPECT_EQ(original_tag.needsSyncToServer, deserialized_tag.needsSyncToServer);
     EXPECT_EQ(original_tag.name, deserialized_tag.name);
     EXPECT_EQ(original_tag, deserialized_tag);
 }

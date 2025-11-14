@@ -48,7 +48,6 @@ TEST(TaskTest, SerializeJson)
     EXPECT_TRUE(json_str.find("\"uuid\":\"test-uuid-12345\"") != std::string::npos);
     EXPECT_TRUE(json_str.find("\"title\":\"Test Task Title\"") != std::string::npos);
     EXPECT_TRUE(json_str.find("\"revision\":123") != std::string::npos);
-    EXPECT_TRUE(json_str.find("\"needsSyncToServer\":true") != std::string::npos);
     EXPECT_TRUE(json_str.find("\"creationTimestamp\"") != std::string::npos);
     EXPECT_TRUE(json_str.find("\"modificationTimestamp\"") != std::string::npos);
     EXPECT_TRUE(json_str.find("\"dueDate\"") != std::string::npos);

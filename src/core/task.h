@@ -67,7 +67,6 @@ struct glz::meta<PointlessCore::Task>
     using T = PointlessCore::Task;
     static constexpr auto value = object(
         "revision", &T::revision,
-        "needsSyncToServer", &T::needsSyncToServer,
         "uuid", &T::uuid,
         "parentUuid", &T::parentUuid,
         "title", &T::title,

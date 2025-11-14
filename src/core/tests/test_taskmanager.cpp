@@ -14,23 +14,11 @@ TEST(TaskManagerTest, LoadJsonFile)
 {
     // Try to open test.json from several possible locations
     std::ifstream file;
-    std::string json_path;
+
     std::string cmake_path = std::string(POINTLESS_SOURCE_DIR) + "/src/core/tests/test.json";
-    const char *candidates[] = {
-        "src/core/tests/test.json", // most common when running from build-dev
-        "../src/core/tests/test.json", // if running from build-dev/src/core/tests
-        "test.json", // if running from the test binary's directory
-        cmake_path.c_str(), // using cmake source dir
-        "../../src/core/tests/test.json" // relative from build dir
-    };
-    for (const char *path : candidates) {
-        file.open(path);
-        if (file.is_open()) {
-            json_path = path;
-            break;
-        }
-    }
-    ASSERT_TRUE(file.is_open()) << "Could not open test.json in any known location";
+
+    file.open(cmake_path);
+    ASSERT_TRUE(file.is_open()) << "Could not open test.json at path: " << cmake_path;
 
     // Read the entire file into a string
     std::string json_content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
