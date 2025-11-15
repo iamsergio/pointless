@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickControls2)
 
 qt_policy(SET QTP0001 NEW)
 
@@ -50,7 +50,7 @@ qt_add_qml_module(
   fonts/FontAwesome7Free-Regular-400.otf
   fonts/FontAwesome7-Solid-900.otf)
 
-target_link_libraries(pointless PRIVATE Qt6::Core Qt6::Gui Qt6::Quick pointless_core)
+target_link_libraries(pointless PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Qt6::QuickControls2 pointless_core)
 
 if(IOS)
   set_target_properties(
