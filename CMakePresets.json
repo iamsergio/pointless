@@ -11,11 +11,24 @@
       }
     },
     {
+      "name": "ios-base",
+      "inherits": "base",
+      "generator": "Xcode",
+      "toolchainFile": "$penv{QT_INSTALL}/lib/cmake/Qt6/qt.toolchain.cmake"
+    },
+    {
       "name": "dev",
       "inherits": "base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "POINTLESS_DEVELOPER_MODE": "ON"
+      }
+    },
+    {
+      "name": "ios-dev",
+      "inherits": "ios-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
@@ -58,7 +71,7 @@
       }
     },
     {
-     "name": "clang-tidy",
+      "name": "clang-tidy",
       "inherits": [
         "base"
       ],
@@ -67,7 +80,7 @@
       }
     },
     {
-     "name": "ci-clang-tidy",
+      "name": "ci-clang-tidy",
       "inherits": [
         "clang-tidy"
       ],
