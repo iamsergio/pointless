@@ -13,12 +13,13 @@ on:
 jobs:
   build:
     name: Build (${{ matrix.preset }})
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
         preset: [dev, rel, dev-asan, dev-tsan]
+        os: [ubuntu-latest, macos-latest]
 
     steps:
     - name: Checkout code
@@ -27,6 +28,7 @@ jobs:
         submodules: recursive
 
     - name: Install libc++ and libc++abi (for x64-linux-libcxx triplet)
+      if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
         sudo apt-get install -y libc++-dev libc++abi-dev
