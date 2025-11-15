@@ -16,11 +16,13 @@ ListView {
         height: 30
         color: Style.sectionBackgroundColor
 
+        required property string section
+
         Text {
             anchors.left: parent.left
             anchors.leftMargin: 10
             anchors.verticalCenter: parent.verticalCenter
-            text: "foo"
+            text: parent.section
             font.bold: true
             font.pixelSize: Style.sectionFontSize
             color: Style.sectionTextColor
