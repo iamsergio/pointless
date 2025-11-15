@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 #include "task_manager.h"
-#include "logger.h"
 
 #include <algorithm>
 
