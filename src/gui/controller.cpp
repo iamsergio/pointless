@@ -9,6 +9,8 @@
 #include "../core/task_manager.h"
 #include "../core/logger.h"
 
+#include <QTimer>
+
 namespace {
 QDate firstMondayOfWeek(const QDate &date)
 {
@@ -25,6 +27,9 @@ Controller::Controller(QObject *parent)
     _taskFilterModel = new TaskFilterModel(this, this);
     _taskFilterModel->setSourceModel(_taskModel);
     navigatorGotoToday();
+
+
+    QTimer::singleShot(0, this, &Controller::refresh);
 }
 
 void Controller::refresh()

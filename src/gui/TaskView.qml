@@ -13,8 +13,8 @@ ListView {
     section.criteria: ViewSection.FullString
     section.delegate: Rectangle {
         width: ListView.view.width
-        height: 30
-        color: Style.sectionBackgroundColor
+        height: 40
+        color: "transparent"
 
         required property string section
 
@@ -24,7 +24,7 @@ ListView {
             anchors.verticalCenter: parent.verticalCenter
             text: parent.section
             font.bold: true
-            font.pixelSize: Style.sectionFontSize
+            font.pixelSize: 20
             color: Style.sectionTextColor
         }
     }
@@ -34,11 +34,13 @@ ListView {
         required property string title
         required property bool isDone
         required property bool isImportant
+        required property var dueDate
 
         width: ListView.view.width
         taskUuid: uuid
         taskTitle: title
         taskIsDone: isDone
         taskIsImportant: isImportant
+        taskDueDate: dueDate
     }
 }

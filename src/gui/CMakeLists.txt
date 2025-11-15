@@ -25,7 +25,8 @@ set(PLAIN_QML_FILES
     TaskView.qml
     FontAwesomeButton.qml
     ViewButton.qml
-    LoginScreen.qml)
+    LoginScreen.qml
+    CheckBox.qml)
 
 qt_add_qml_module(
   pointless

@@ -50,7 +50,7 @@ Q_SIGNALS:
     void navigatorEndDateChanged();
 
 private:
-    ViewType _currentViewType = ViewType::Week;
+    ViewType _currentViewType = ViewType::Later;
     QDate _navigatorStartDate;
     TaskModel *_taskModel = nullptr;
     TagModel *_tagModel = nullptr;

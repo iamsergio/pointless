@@ -13,5 +13,8 @@ Item {
     readonly property color buttonActive: "#135bec"
     readonly property color sectionBackgroundColor: "#1a2332"
     readonly property color sectionTextColor: "#ffffff"
+    readonly property color taskTextColor: "#e0e0e0"
+    readonly property color taskSecondaryTextColor: "#808080"
+    readonly property color taskCompletedTextColor: "#606060"
     readonly property int sectionFontSize: 14
 }

@@ -2,6 +2,9 @@
 // SPDX-License-Identifier: MIT
 
 import QtQuick 2.15
+import QtQuick.Layouts 1.15
+
+import pointless 1.0
 
 Rectangle {
     id: root
@@ -10,16 +13,49 @@ Rectangle {
     required property string taskTitle
     required property bool taskIsDone
     required property bool taskIsImportant
+    required property var taskDueDate
 
-    height: 50
-    border.width: 1
-    border.color: "black"
+    height: 70
     color: "transparent"
 
-    Text {
-        anchors.left: parent.left
+    RowLayout {
+        anchors.fill: parent
         anchors.leftMargin: 10
-        anchors.verticalCenter: parent.verticalCenter
-        text: root.taskTitle
+        anchors.rightMargin: 10
+        spacing: 15
+
+        CheckBox {
+            checked: root.taskIsDone
+            backgroundColor: Style.background
+            onClicked: {
+            }
+        }
+
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 5
+
+            Text {
+                text: root.taskTitle
+                font.pixelSize: 18
+                color: root.taskIsDone ? Style.taskCompletedTextColor : "#ffffff"
+                font.strikeout: root.taskIsDone
+                Layout.fillWidth: true
+                elide: Text.ElideRight
+            }
+
+            Text {
+                text: root.taskDueDate ? Qt.formatDate(root.taskDueDate, "MMMM yyyy") : ""
+                font.pixelSize: 13
+                color: Style.taskSecondaryTextColor
+                visible: text !== ""
+            }
+        }
+
+        FontAwesomeButton {
+            fontAwesomeIcon: "ellipsis-vertical"
+            onClicked: {
+            }
+        }
     }
 }

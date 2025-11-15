@@ -7,9 +7,10 @@ import QtQuick.Controls 2.15
 Button {
     id: root
 
-    property string fontAwesomeIcon: "\uf00c" // Default: check mark
+    property string fontAwesomeIcon: "\uf00c"
     property int iconSize: 16
-    property color iconColor: "white"
+    property color iconColor: "white" // the text foreground color
+    property color backgroundColor: root.pressed ? Style.buttonActive : Style.buttonBackground // the background of fontawesome icon
 
     FontLoader {
         id: fontAwesome
@@ -26,7 +27,8 @@ Button {
     }
 
     background: Rectangle {
-        color: root.pressed ? Style.buttonActive : Style.buttonBackground
+        id: backgroundRect
+        color: root.backgroundColor
         radius: 4
     }
 }
