@@ -20,7 +20,7 @@
     "editor.formatOnSave": true,
     "clangd.arguments": [
       "-header-insertion=never",
-      "--clang-tidy=false"
+      "--clang-tidy=true"
     ],
     "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
     "files.insertFinalNewline": true,
