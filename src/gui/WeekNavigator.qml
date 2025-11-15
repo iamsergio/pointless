@@ -29,7 +29,7 @@ Rectangle {
                 const end = Controller.navigatorEndDate.toLocaleDateString(Qt.locale(), "MMM d");
                 return start + " - " + end;
             }
-            font.pixelSize: 18
+            font.pixelSize: Style.fromPixel(18)
             color: "white"
             horizontalAlignment: Text.AlignHCenter
             Layout.preferredWidth: 200

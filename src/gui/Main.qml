@@ -8,8 +8,8 @@ import pointless 1.0
 
 ApplicationWindow {
     visible: true
-    width: 640
-    height: 480
+    width: Style.fromPixel(640)
+    height: Style.fromPixel(480)
     title: "My QML Application"
 
     Rectangle {
@@ -26,7 +26,7 @@ ApplicationWindow {
         // Overlaid refresh button
         FontAwesomeButton {
             fontAwesomeIcon: "\uf021" // FontAwesome refresh icon
-            iconSize: 24
+            iconSize: Style.fromPixel(24)
             iconColor: "white"
             anchors.top: parent.top
             anchors.right: parent.right
@@ -38,12 +38,12 @@ ApplicationWindow {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 10
+            anchors.margins: Style.fromPixel(10)
 
             RowLayout {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignHCenter
-                spacing: 10
+                spacing: Style.fromPixel(10)
 
                 ViewButton {
                     text: "Week"

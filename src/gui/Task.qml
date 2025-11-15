@@ -15,14 +15,14 @@ Rectangle {
     required property bool taskIsImportant
     required property var taskDueDate
 
-    height: 70
+    height: Style.fromPixel(70)
     color: "transparent"
 
     RowLayout {
         anchors.fill: parent
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
-        spacing: 15
+    anchors.leftMargin: Style.fromPixel(10)
+    anchors.rightMargin: Style.fromPixel(10)
+    spacing: Style.fromPixel(15)
 
         CheckBox {
             checked: root.taskIsDone
@@ -33,11 +33,11 @@ Rectangle {
 
         ColumnLayout {
             Layout.fillWidth: true
-            spacing: 5
+            spacing: Style.fromPixel(5)
 
             Text {
                 text: root.taskTitle
-                font.pixelSize: 18
+                font.pixelSize: Style.fromPixel(18)
                 color: root.taskIsDone ? Style.taskCompletedTextColor : "#ffffff"
                 font.strikeout: root.taskIsDone
                 Layout.fillWidth: true
@@ -46,7 +46,7 @@ Rectangle {
 
             Text {
                 text: root.taskDueDate ? Qt.formatDate(root.taskDueDate, "MMMM yyyy") : ""
-                font.pixelSize: 13
+                font.pixelSize: Style.fromPixel(13)
                 color: Style.taskSecondaryTextColor
                 visible: text !== ""
             }

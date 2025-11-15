@@ -1,14 +1,16 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
+
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import pointless 1.0
 
 Button {
     id: root
 
     property string fontAwesomeIcon: "\uf00c"
-    property int iconSize: 16
+    property int iconSize: Style.fromPixel(16)
     property color iconColor: "white" // the text foreground color
     property color backgroundColor: root.pressed ? Style.buttonActive : Style.buttonBackground // the background of fontawesome icon
 

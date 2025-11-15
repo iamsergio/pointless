@@ -10,12 +10,12 @@ Button {
 
     property bool isActive: false
 
-    implicitWidth: 100
-    implicitHeight: 40
+    implicitWidth: Style.fromPixel(100)
+    implicitHeight: Style.fromPixel(40)
 
     contentItem: Text {
         text: root.text
-        font.pixelSize: 15
+    font.pixelSize: Style.fromPixel(15)
         font.bold: root.isActive
         color: "white"
         horizontalAlignment: Text.AlignHCenter

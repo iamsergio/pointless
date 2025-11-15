@@ -4,6 +4,7 @@
 #include "taskfiltermodel.h"
 #include "controller.h"
 #include "taskmodel.h"
+#include "logger.h"
 
 TaskFilterModel::TaskFilterModel(Controller *controller, QObject *parent)
     : QSortFilterProxyModel(parent)
@@ -13,6 +14,10 @@ TaskFilterModel::TaskFilterModel(Controller *controller, QObject *parent)
         beginFilterChange();
         endFilterChange();
     });
+
+    setDynamicSortFilter(true);
+    setSortCaseSensitivity(Qt::CaseInsensitive);
+    sort(0);
 }
 
 TaskFilterModel::~TaskFilterModel() = default;
@@ -22,12 +27,20 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
     Q_UNUSED(source_parent)
 
     auto *taskModel = qobject_cast<TaskModel *>(sourceModel());
-    if (!taskModel)
+    if (!taskModel) {
+        P_LOG_CRITICAL("TaskModel is null");
         return true;
+    }
 
     const PointlessCore::Task *task = taskModel->taskAt(source_row);
-    if (!task)
+    if (!task) {
+        P_LOG_CRITICAL("Task is null at row {}", source_row);
         return true;
+    }
+
+    if (task->isDone || task->isGoal) {
+        return false;
+    }
 
     Controller::ViewType viewType = _controller->currentViewType();
 

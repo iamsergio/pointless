@@ -7,6 +7,13 @@ pragma Singleton
 import QtQuick 2.15
 
 Item {
+
+    readonly property double scaleFactor: 1.5
+
+    function fromPixel(px) {
+        return px * scaleFactor;
+    }
+
     property color background: "#101622"
     readonly property color background2: "#141b28"
     property color buttonBackground: "#242e3c"
@@ -16,5 +23,5 @@ Item {
     readonly property color taskTextColor: "#e0e0e0"
     readonly property color taskSecondaryTextColor: "#808080"
     readonly property color taskCompletedTextColor: "#606060"
-    readonly property int sectionFontSize: 14
+    readonly property int sectionFontSize: fromPixel(14)
 }

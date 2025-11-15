@@ -9,17 +9,17 @@ Rectangle {
     id: root
     color: "#131c27"
     radius: 16
-    border.width: 1
+    border.width: Style.fromPixel(1)
     border.color: "#222b38"
 
     ColumnLayout {
         anchors.centerIn: parent
-        spacing: 32
+        spacing: Style.fromPixel(32)
         width: parent.width * 0.85
 
         Text {
             text: "Pointless"
-            font.pixelSize: 32
+            font.pixelSize: Style.fromPixel(32)
             font.bold: true
             color: "white"
             horizontalAlignment: Text.AlignHCenter
@@ -32,26 +32,26 @@ Rectangle {
 
             Text {
                 text: "Email"
-                font.pixelSize: 16
+                font.pixelSize: Style.fromPixel(16)
                 color: "white"
             }
 
             Rectangle {
                 Layout.fillWidth: true
-                height: 48
+                height: Style.fromPixel(48)
                 color: "#192233"
                 radius: 8
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: 12
-                    anchors.rightMargin: 12
-                    spacing: 8
+                    anchors.leftMargin: Style.fromPixel(12)
+                    anchors.rightMargin:    Style.fromPixel(12)
+                    spacing: Style.fromPixel(8)
 
                     Text {
                         text: "\uf0e0"
                         font.family: "Font Awesome 7 Free"
-                        font.pixelSize: 16
+                        font.pixelSize: Style.fromPixel(16)
                         color: "#8a97a8"
                     }
 
@@ -59,7 +59,7 @@ Rectangle {
                         id: emailInput
                         Layout.fillWidth: true
                         placeholderText: "Enter your email"
-                        font.pixelSize: 16
+                        font.pixelSize: Style.fromPixel(16)
                         color: "white"
                         placeholderTextColor: "#8a97a8"
                         background: null
@@ -72,7 +72,7 @@ Rectangle {
                 spacing: 0
                 Text {
                     text: "Password"
-                    font.pixelSize: 16
+                    font.pixelSize: Style.fromPixel(16)
                     color: "white"
                     Layout.alignment: Qt.AlignLeft
                 }
@@ -80,14 +80,14 @@ Rectangle {
                 Text {
                     text: "Forgot Password?"
                     color: "#1884f7"
-                    font.pixelSize: 14
+                    font.pixelSize: Style.fromPixel(14)
                     Layout.alignment: Qt.AlignRight
                 }
             }
 
             Rectangle {
                 Layout.fillWidth: true
-                height: 48
+                height: Style.fromPixel(48)
                 color: "#192233"
                 radius: 8
 
@@ -100,7 +100,7 @@ Rectangle {
                     Text {
                         text: "\uf023"
                         font.family: "Font Awesome 7 Free"
-                        font.pixelSize: 16
+                        font.pixelSize: Style.fromPixel(16)
                         color: "#8a97a8"
                     }
 
@@ -109,7 +109,7 @@ Rectangle {
                         Layout.fillWidth: true
                         placeholderText: "Enter your password"
                         echoMode: TextInput.Password
-                        font.pixelSize: 16
+                        font.pixelSize: Style.fromPixel(16)
                         color: "white"
                         placeholderTextColor: "#8a97a8"
                         background: null
@@ -118,7 +118,7 @@ Rectangle {
                     Text {
                         text: "\uf070"
                         font.family: "Font Awesome 7 Free"
-                        font.pixelSize: 16
+                        font.pixelSize: Style.fromPixel(16)
                         color: "#8a97a8"
                     }
                 }
@@ -127,7 +127,7 @@ Rectangle {
 
         Button {
             text: "Login"
-            font.pixelSize: 20
+            font.pixelSize: Style.fromPixel(20)
             background: Rectangle {
                 color: "#1884f7"
                 radius: 12
@@ -135,7 +135,7 @@ Rectangle {
             contentItem: Text {
                 text: parent.text
                 color: "white"
-                font.pixelSize: 20
+                font.pixelSize: Style.fromPixel(20)
                 font.bold: true
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
@@ -150,12 +150,12 @@ Rectangle {
             Text {
                 text: "Don't have an account?"
                 color: "#8a97a8"
-                font.pixelSize: 16
+                font.pixelSize: Style.fromPixel(16)
             }
             Text {
                 text: "Sign Up"
                 color: "#1884f7"
-                font.pixelSize: 16
+                font.pixelSize: Style.fromPixel(16)
             }
         }
     }

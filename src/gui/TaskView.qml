@@ -13,18 +13,18 @@ ListView {
     section.criteria: ViewSection.FullString
     section.delegate: Rectangle {
         width: ListView.view.width
-        height: 40
+        height: Style.fromPixel(40)
         color: "transparent"
 
         required property string section
 
         Text {
             anchors.left: parent.left
-            anchors.leftMargin: 10
+            anchors.leftMargin: Style.fromPixel(10)
             anchors.verticalCenter: parent.verticalCenter
             text: parent.section
             font.bold: true
-            font.pixelSize: 20
+            font.pixelSize: Style.fromPixel(20)
             color: Style.sectionTextColor
         }
     }
