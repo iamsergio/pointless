@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 
-
 #include "task.h"
 
 namespace PointlessCore {
@@ -27,7 +26,7 @@ bool Task::containsTag(std::string_view tagName) const
 
 bool Task::isSoon() const
 {
-    return containsTag(BUILTIN_TAG_SOON);
+    return containsTag(BUILTIN_TAG_SOON) || isDueIn(std::chrono::days(15));
 }
 
 bool Task::isLater() const
@@ -48,6 +47,15 @@ std::string Task::tagName() const
         }
     }
     return {};
+}
+
+bool Task::isDueIn(std::chrono::days days) const
+{
+    if (!dueDate)
+        return false;
+    const auto now = std::chrono::system_clock::now();
+    const auto due = *dueDate;
+    return due <= now + days && due >= now;
 }
 
 } // namespace PointlessCore

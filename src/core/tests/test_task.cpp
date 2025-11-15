@@ -1,3 +1,4 @@
+
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
@@ -68,4 +69,42 @@ TEST(TaskTest, DeserializeJsonReadsTags)
     ASSERT_EQ(task.tags.size(), 2);
     EXPECT_EQ(task.tags[0], "work");
     EXPECT_EQ(task.tags[1], "urgent");
+}
+
+TEST(TaskTest, IsDueIn)
+{
+    PointlessCore::Task task;
+    // No due date
+    EXPECT_FALSE(task.isDueIn(std::chrono::days(1)));
+
+    // Due in 2 days
+    task.dueDate = std::chrono::system_clock::now() + std::chrono::hours(48);
+    EXPECT_TRUE(task.isDueIn(std::chrono::days(3)));
+    EXPECT_TRUE(task.isDueIn(std::chrono::days(2)));
+    EXPECT_FALSE(task.isDueIn(std::chrono::days(1)));
+
+    // Due in the past
+    task.dueDate = std::chrono::system_clock::now() - std::chrono::hours(24);
+    EXPECT_FALSE(task.isDueIn(std::chrono::days(1)));
+}
+
+TEST(TaskTest, DueDatePreservedOnSerializeDeserialize)
+{
+    using namespace std::chrono;
+    PointlessCore::Task original;
+    original.dueDate = system_clock::now() + hours(24 * 5);
+    auto json_result = glz::write_json(original);
+    ASSERT_TRUE(json_result.has_value());
+    std::string json_str = json_result.value();
+
+    EXPECT_TRUE(json_str.find("\"dueDate\"") != std::string::npos);
+    // std::cout << json_str << std::endl;
+
+    PointlessCore::Task deserialized;
+    auto result = glz::read_json(deserialized, json_str);
+    ASSERT_TRUE(result == glz::error_code::none);
+    ASSERT_TRUE(deserialized.dueDate.has_value());
+    // Allow a small difference due to possible truncation/rounding
+    auto diff = duration_cast<seconds>(*original.dueDate - *deserialized.dueDate);
+    EXPECT_LT(std::abs(diff.count()), 2); // less than 2 seconds difference
 }

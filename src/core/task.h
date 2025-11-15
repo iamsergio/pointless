@@ -25,6 +25,7 @@ public:
     bool isSoon() const;
     bool isLater() const;
     bool isCurrent() const;
+    bool isDueIn(std::chrono::days days) const;
 
     std::string tagName() const;
 
@@ -53,16 +54,31 @@ public:
 
 } // namespace PointlessCore
 
-namespace {
-constexpr auto timestamp_to_millis = [](const std::chrono::system_clock::time_point &tp) -> int64_t {
-    return std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).count();
+namespace glz {
+
+template<>
+struct from<JSON, std::chrono::system_clock::time_point>
+{
+    template<auto Opts>
+    static void op(std::chrono::system_clock::time_point &value, is_context auto &&ctx, auto &&it, auto &&end)
+    {
+        int64_t millis = 0;
+        parse<JSON>::op<Opts>(millis, ctx, it, end);
+        value = std::chrono::system_clock::time_point(std::chrono::milliseconds(millis));
+    }
 };
 
-constexpr auto optional_timestamp_to_millis = [](const std::optional<std::chrono::system_clock::time_point> &opt_tp) -> std::optional<int64_t> {
-    if (opt_tp)
-        return timestamp_to_millis(*opt_tp);
-    return std::nullopt;
+template<>
+struct to<JSON, std::chrono::system_clock::time_point>
+{
+    template<auto Opts>
+    static void op(const std::chrono::system_clock::time_point &value, is_context auto &&ctx, auto &&b, auto &&ix) noexcept
+    {
+        int64_t millis = std::chrono::duration_cast<std::chrono::milliseconds>(value.time_since_epoch()).count();
+        serialize<JSON>::op<Opts>(millis, ctx, b, ix);
+    }
 };
+
 }
 
 template<>
@@ -82,11 +98,11 @@ struct glz::meta<PointlessCore::Task>
         "lastCompletions", &T::lastCompletions,
         "sectionName", &T::sectionName,
         "tags", &T::tags,
-        "creationTimestamp", [](const T &t) { return timestamp_to_millis(t.creationTimestamp); },
-        "modificationTimestamp", [](const T &t) { return optional_timestamp_to_millis(t.modificationTimestamp); },
-        "lastPomodoroDate", [](const T &t) { return optional_timestamp_to_millis(t.lastPomodoroDate); },
-        "dueDate", [](const T &t) { return optional_timestamp_to_millis(t.dueDate); },
-        "completionDate", [](const T &t) { return optional_timestamp_to_millis(t.completionDate); },
+        "creationTimestamp", &T::creationTimestamp,
+        "modificationTimestamp", &T::modificationTimestamp,
+        "lastPomodoroDate", &T::lastPomodoroDate,
+        "dueDate", &T::dueDate,
+        "completionDate", &T::completionDate,
         "uuidInDeviceCalendar", &T::uuidInDeviceCalendar,
         "deviceCalendarUuid", &T::deviceCalendarUuid,
         "deviceCalendarName", &T::deviceCalendarName);
