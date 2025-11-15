@@ -14,7 +14,9 @@
       "name": "ios-base",
       "inherits": "base",
       "generator": "Xcode",
-      "toolchainFile": "$penv{QT_INSTALL}/lib/cmake/Qt6/qt.toolchain.cmake"
+      "cacheVariables": {
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$penv{QT_INSTALL}/lib/cmake/Qt6/qt.toolchain.cmake"
+      }
     },
     {
       "name": "dev",
