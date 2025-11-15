@@ -67,11 +67,11 @@ size_t TaskManager::taskCount() const
 }
 
 // Task filtering methods
-std::vector<Task> TaskManager::getTasksByTag(const Tag &tag) const
+std::vector<Task> TaskManager::getTasksByTag(const std::string &tagName) const
 {
     std::vector<Task> result;
     for (const auto &task : m_data.tasks) {
-        auto tagIt = std::find(task.tags.begin(), task.tags.end(), tag);
+        auto tagIt = std::find(task.tags.begin(), task.tags.end(), tagName);
         if (tagIt != task.tags.end()) {
             result.push_back(task);
         }
@@ -175,7 +175,7 @@ std::vector<Tag> TaskManager::getUsedTags() const
         // Check if this tag is used by any task
         bool isUsed = false;
         for (const auto &task : m_data.tasks) {
-            auto tagIt = std::find(task.tags.begin(), task.tags.end(), tag);
+            auto tagIt = std::find(task.tags.begin(), task.tags.end(), tag.name);
             if (tagIt != task.tags.end()) {
                 isUsed = true;
                 break;
@@ -195,7 +195,7 @@ std::vector<Tag> TaskManager::getUnusedTags() const
         // Check if this tag is not used by any task
         bool isUsed = false;
         for (const auto &task : m_data.tasks) {
-            auto tagIt = std::find(task.tags.begin(), task.tags.end(), tag);
+            auto tagIt = std::find(task.tags.begin(), task.tags.end(), tag.name);
             if (tagIt != task.tags.end()) {
                 isUsed = true;
                 break;

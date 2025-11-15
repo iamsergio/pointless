@@ -40,7 +40,7 @@ public:
     int timesPerWeek = 1;
     std::vector<int> lastCompletions;
     std::string sectionName;
-    std::vector<Tag> tags;
+    std::vector<std::string> tags;
     std::chrono::system_clock::time_point creationTimestamp;
     std::optional<std::chrono::system_clock::time_point> modificationTimestamp;
     std::optional<std::chrono::system_clock::time_point> lastPomodoroDate;
@@ -81,12 +81,7 @@ struct glz::meta<PointlessCore::Task>
         "timesPerWeek", &T::timesPerWeek,
         "lastCompletions", &T::lastCompletions,
         "sectionName", &T::sectionName,
-        "tags", [](const T &t) {
-            std::vector<std::string> tag_names;
-            for (const auto& tag : t.tags) {
-                tag_names.push_back(tag.name);
-            }
-            return tag_names; },
+        "tags", &T::tags,
         "creationTimestamp", [](const T &t) { return timestamp_to_millis(t.creationTimestamp); },
         "modificationTimestamp", [](const T &t) { return optional_timestamp_to_millis(t.modificationTimestamp); },
         "lastPomodoroDate", [](const T &t) { return optional_timestamp_to_millis(t.lastPomodoroDate); },

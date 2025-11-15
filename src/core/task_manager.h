@@ -36,7 +36,7 @@ public:
     size_t taskCount() const;
 
     // Task filtering methods
-    std::vector<Task> getTasksByTag(const Tag &tag) const;
+    std::vector<Task> getTasksByTag(const std::string &tagName) const;
     std::vector<Task> getCompletedTasks() const;
     std::vector<Task> getPendingTasks() const;
     std::vector<Task> getImportantTasks() const;
