@@ -48,14 +48,15 @@ void Controller::refresh()
     auto result = PointlessCore::TaskManager::fromJson(json_str);
     if (!result) {
         P_LOG_ERROR("Cannot refresh: failed to parse JSON: {}", result.error());
+
+        std::ofstream debugFile("/tmp/debug.json");
+        if (debugFile.is_open()) {
+            debugFile << json_str;
+            debugFile.close();
+        }
+
         return;
     }
-
-    // std::ofstream debugFile("/tmp/debug.json");
-    // if (debugFile.is_open()) {
-    //     debugFile << json_str;
-    //     debugFile.close();
-    // }
 
     auto &manager = result.value();
     _taskModel->setTasks(manager.getAllTasks());

@@ -23,7 +23,6 @@ public:
 
     bool updateData(const std::string &data);
     std::string retrieveData();
-    glz::json_t retrieveDataAsJson();
 
     Supabase(const Supabase &) = delete;
     Supabase &operator=(const Supabase &) = delete;

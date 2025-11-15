@@ -221,6 +221,7 @@ std::expected<TaskManager, std::string> TaskManager::fromJson(const std::string 
     auto result = glz::read<glz::opts {
         .error_on_unknown_keys = true,
         // .error_on_missing_keys = true,
+        .skip_null_members = false,
         .error_on_const_read = true,
     }>(manager.m_data, json_str);
     if (result != glz::error_code::none) {

@@ -32,7 +32,7 @@ public:
     std::optional<std::string> parentUuid;
     std::string title;
     bool isDone = false;
-    bool isGoal = false;
+    std::optional<bool> isGoal;
     bool isImportant = false;
     bool hideOnWeekends = false;
     int timesPerWeek = 1;

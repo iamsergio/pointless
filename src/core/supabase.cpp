@@ -159,21 +159,6 @@ std::string Supabase::retrieveData()
     return decompress(compressed_bytes);
 }
 
-glz::json_t Supabase::retrieveDataAsJson()
-{
-    auto json_str = retrieveData();
-    if (json_str.empty()) {
-        return {};
-    }
-
-    auto result = glz::read_json<glz::json_t>(json_str);
-    if (!result) {
-        throw std::runtime_error("Failed to parse JSON");
-    }
-
-    return result.value();
-}
-
 std::string Supabase::retrieveRawData()
 {
     if (!isAuthenticated()) {
