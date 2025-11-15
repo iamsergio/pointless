@@ -20,33 +20,30 @@ Task::Task(const std::string &uuid_, const std::chrono::system_clock::time_point
 
 bool Task::containsTag(std::string_view tagName) const
 {
-    for (const auto &tag : tags) {
-        if (tag == tagName) {
-            return true;
-        }
-    }
-    return false;
+    return std::any_of(tags.begin(), tags.end(), [tagName](const auto &tag) {
+        return tag == tagName;
+    });
 }
 
 bool Task::isSoon() const
 {
-    return containsTag("soon");
+    return containsTag(BUILTIN_TAG_SOON);
 }
 
 bool Task::isLater() const
 {
-    return containsTag("later");
+    return !isSoon() && !isCurrent();
 }
 
 bool Task::isCurrent() const
 {
-    return !isSoon() && !isLater();
+    return containsTag(BUILTIN_TAG_CURRENT);
 }
 
 std::string Task::tagName() const
 {
     for (const auto &tag : tags) {
-        if (tag != "soon" && tag != "later") {
+        if (!tagIsBuiltin(tag)) {
             return tag;
         }
     }

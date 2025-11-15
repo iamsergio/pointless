@@ -9,6 +9,9 @@
 
 namespace PointlessCore {
 
+constexpr auto BUILTIN_TAG_SOON = "soon";
+constexpr auto BUILTIN_TAG_CURRENT = "current";
+
 class Tag
 {
 public:
@@ -19,6 +22,9 @@ public:
     bool needsSyncToServer = false;
     std::string name;
 };
+
+bool tagIsBuiltin(const Tag &tag);
+bool tagIsBuiltin(const std::string_view name);
 
 } // namespace PointlessCore
 
