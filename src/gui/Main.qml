@@ -10,7 +10,7 @@ ApplicationWindow {
     visible: true
     width: Style.fromPixel(640)
     height: Style.fromPixel(480)
-    title: "My QML Application"
+    title: "Pointless"
 
     Rectangle {
         anchors.fill: parent
