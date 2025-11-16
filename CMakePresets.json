@@ -15,7 +15,8 @@
       "inherits": "base",
       "generator": "Xcode",
       "cacheVariables": {
-        "POINTLESS_IOS_BUILD": "ON"
+        "POINTLESS_IOS_BUILD": "ON",
+        "POINTLESS_ENABLE_TESTS": "OFF"
       }
     },
     {

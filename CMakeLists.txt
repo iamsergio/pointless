@@ -87,7 +87,6 @@ if(POINTLESS_ENABLE_TSAN)
 endif()
 
 if(IOS)
-
   # cmake-lint: disable=W0106
   if(NOT DEFINED ENV{APPLE_TEAM_ID})
     message(FATAL_ERROR "APPLE_TEAM_ID environment variable is not set")
