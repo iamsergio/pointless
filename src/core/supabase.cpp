@@ -30,14 +30,15 @@ Supabase::Supabase(const std::string &base_url, const std::string &anon_key)
 
 Supabase Supabase::createDefault()
 {
-    const char *url = std::getenv("POINTLESS_SUPABASE_URL");
-    const char *anon_key = std::getenv("POINTLESS_SUPABASE_ANON_KEY");
+#ifndef POINTLESS_SUPABASE_URL
+#error "POINTLESS_SUPABASE_URL is not defined"
+#endif
 
-    if (!url || !anon_key) {
-        throw std::runtime_error("Missing POINTLESS_SUPABASE_URL or POINTLESS_SUPABASE_ANON_KEY environment variables");
-    }
+#ifndef POINTLESS_SUPABASE_ANON_KEY
+#error "POINTLESS_SUPABASE_ANON_KEY is not defined"
+#endif
 
-    return Supabase(url, anon_key);
+    return Supabase(POINTLESS_SUPABASE_URL, POINTLESS_SUPABASE_ANON_KEY);
 }
 
 bool Supabase::login(const std::string &email, const std::string &password)
