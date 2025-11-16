@@ -29,10 +29,7 @@
     },
     {
       "name": "ios-dev",
-      "inherits": "ios-base",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      }
+      "inherits": "ios-base"
     },
     {
       "name": "rel",
