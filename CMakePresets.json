@@ -42,13 +42,6 @@
       }
     },
     {
-      "name": "ios-rel",
-      "inherits": "ios-base",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
-      }
-    },
-    {
       "name": "dev-asan",
       "inherits": "dev",
       "description": "dev-asan",
@@ -98,5 +91,19 @@
         "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--warnings-as-errors=*"
       }
     }
+  ],
+  "buildPresets": [
+  	{
+  	  "name": "ios-release",
+  	  "displayName": "Build Release",
+  	  "configurePreset": "ios-dev",
+  	  "configuration": "Release"
+  	},
+  	{
+  	  "name": "ios-debug",
+  	  "displayName": "Build Debug",
+  	  "configurePreset": "ios-dev",
+  	  "configuration": "Debug"
+  	}
   ]
 }
