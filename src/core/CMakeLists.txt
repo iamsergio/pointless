@@ -6,7 +6,7 @@ find_package(glaze CONFIG REQUIRED)
 find_package(cpr CONFIG REQUIRED)
 
 add_library(
-  pointless_core SHARED
+  pointless_core STATIC
   pointless_core.cpp
   task.cpp
   task_manager.cpp
