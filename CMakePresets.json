@@ -35,7 +35,7 @@
         "CMAKE_OSX_ARCHITECTURES": "arm64",
         "CMAKE_OSX_SYSROOT": "iphoneos",
         "CMAKE_XCODE_GENERATE_SCHEME": "ON",
-        "VCPKG_TARGET_TRIPLET": "ios-arm64",
+        "VCPKG_TARGET_TRIPLET": "arm64-ios",
         "VCPKG_OSX_DEPLOYMENT_TARGET": "17.0"
       }
     },
