@@ -32,7 +32,8 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_OSX_ARCHITECTURES": "arm64",
-        "CMAKE_OSX_SYSROOT": "iphoneos"
+        "CMAKE_OSX_SYSROOT": "iphoneos",
+        "CMAKE_XCODE_GENERATE_SCHEME": "ON"
       }
     },
     {
