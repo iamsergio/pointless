@@ -20,6 +20,10 @@ if(POINTLESS_IOS_BUILD)
       "iOS"
       CACHE STRING "System name" FORCE)
 
+  set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE
+      "$ENV{QT_INSTALL}/lib/cmake/Qt6/qt.toolchain.cmake"
+      CACHE FILEPATH "Qt toolchain file")
+
   set(QT_HOST_PATH
       "${QT_HOST_PATH_CANDIDATE}"
       CACHE PATH "Qt host path")
