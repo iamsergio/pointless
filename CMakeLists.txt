@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: MIT
 
 if(POINTLESS_IOS_BUILD)
-
   if(NOT DEFINED ENV{QT_INSTALL})
     message(FATAL_ERROR "QT_INSTALL environment variable is not set")
   endif()
@@ -22,9 +21,6 @@ if(POINTLESS_IOS_BUILD)
   set(CMAKE_OSX_DEPLOYMENT_TARGET
       "17.0"
       CACHE STRING "Minimum iOS deployment target" FORCE)
-  set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE
-      "$ENV{QT_INSTALL}/lib/cmake/Qt6/qt.toolchain.cmake"
-      CACHE FILEPATH "Qt toolchain file")
   set(CMAKE_OSX_ARCHITECTURES
       "arm64"
       CACHE STRING "iOS architecture")
