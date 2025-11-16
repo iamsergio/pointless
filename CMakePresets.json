@@ -15,6 +15,7 @@
       "inherits": "base",
       "generator": "Xcode",
       "cacheVariables": {
+        "QT_HOST_PATH": "$penv{QT_INSTALL}/../macos/",
         "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$penv{QT_INSTALL}/lib/cmake/Qt6/qt.toolchain.cmake"
       }
     },
