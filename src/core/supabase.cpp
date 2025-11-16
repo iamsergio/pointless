@@ -10,6 +10,20 @@
 
 #include <stdexcept>
 
+namespace {
+
+bool shouldVerifySsl()
+{
+#if defined(POINTLESS_DEVELOPER_MODE) && defined(Q_OS_IOS)
+    return false;
+#else
+    return true;
+#endif
+}
+
+}
+
+
 Supabase::Supabase(const std::string &base_url, const std::string &anon_key)
     : _baseUrl(base_url)
     , _anonKey(anon_key)
@@ -52,7 +66,8 @@ bool Supabase::login(const std::string &email, const std::string &password)
         cpr::Header {
             { "apikey", _anonKey },
             { "Content-Type", "application/json" } },
-        cpr::Body { body });
+        cpr::Body { body },
+        cpr::VerifySsl { shouldVerifySsl() });
 
     if (response.status_code != 200) {
         LOG_ERROR(Logger::getLogger(), "Login failed: HTTP={} url={}", response.status_code, auth_url);
@@ -142,7 +157,8 @@ bool Supabase::updateData(const std::string &data)
             { "Authorization", "Bearer " + _accessToken },
             { "Content-Type", "application/json" },
             { "Prefer", "return=minimal,resolution=merge-duplicates" } },
-        cpr::Body { body });
+        cpr::Body { body },
+        cpr::VerifySsl { shouldVerifySsl() });
 
     if (response.status_code != 200 && response.status_code != 201 && response.status_code != 204) {
         LOG_ERROR(Logger::getLogger(), "Failed to update data: HTTP {}", response.status_code);
@@ -178,7 +194,8 @@ std::string Supabase::retrieveRawData()
         cpr::Parameters { { "select", "data" } },
         cpr::Header {
             { "apikey", _anonKey },
-            { "Authorization", "Bearer " + _accessToken } });
+            { "Authorization", "Bearer " + _accessToken } },
+        cpr::VerifySsl { shouldVerifySsl() });
 
     if (response.status_code != 200) {
         LOG_ERROR(Logger::getLogger(), "HTTP request failed with status: {}", response.status_code);
