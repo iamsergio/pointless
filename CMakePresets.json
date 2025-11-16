@@ -42,6 +42,13 @@
       }
     },
     {
+      "name": "ios-rel",
+      "inherits": "ios-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
       "name": "dev-asan",
       "inherits": "dev",
       "description": "dev-asan",
