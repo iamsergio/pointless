@@ -54,8 +54,11 @@ bool Supabase::login(const std::string &email, const std::string &password)
         cpr::Body { body });
 
     if (response.status_code != 200) {
-        LOG_ERROR(Logger::getLogger(), "Login failed: HTTP {}", response.status_code);
-        LOG_DEBUG(Logger::getLogger(), "Response: {}", response.text);
+        LOG_ERROR(Logger::getLogger(), "Login failed: HTTP={} url={}", response.status_code, auth_url);
+        LOG_ERROR(Logger::getLogger(), "Response: {}", response.text);
+#ifdef POINTLESS_DEVELOPER_MODE
+        LOG_ERROR(Logger::getLogger(), "Request body: {}", body);
+#endif
         return false;
     }
 

@@ -59,6 +59,11 @@ set(POINTLESS_APPLE_BUILD_NUMBER "1")
 option(POINTLESS_DEVELOPER_MODE "Build with developer options" OFF)
 option(POINTLESS_ENABLE_TESTS "Build tests" ${POINTLESS_DEVELOPER_MODE})
 
+if(POINTLESS_DEVELOPER_MODE)
+  message(STATUS "Building in developer mode")
+  add_definitions(-DPOINTLESS_DEVELOPER_MODE)
+endif()
+
 if(POINTLESS_ENABLE_TESTS)
   enable_testing()
   message(STATUS "Building with tests")

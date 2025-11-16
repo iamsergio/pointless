@@ -29,7 +29,10 @@
     },
     {
       "name": "ios-dev",
-      "inherits": "ios-base"
+      "inherits": "ios-base",
+      "cacheVariables": {
+        "POINTLESS_DEVELOPER_MODE": "ON"
+      }
     },
     {
       "name": "rel",
