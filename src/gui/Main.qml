@@ -36,6 +36,21 @@ ApplicationWindow {
             onClicked: Controller.refresh()
         }
 
+        FontAwesomeButton {
+            fontAwesomeIcon: "\uf121"
+            iconSize: Style.fromPixel(20)
+            iconColor: "red"
+            backgroundColor: "transparent"
+            anchors {
+                left: parent.left
+                bottom: parent.bottom
+                leftMargin: 16
+                bottomMargin: 16
+            }
+            visible: Controller.isDebug
+            z: 100
+        }
+
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: Style.fromPixel(10)

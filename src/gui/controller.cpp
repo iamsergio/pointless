@@ -32,6 +32,15 @@ Controller::Controller(QObject *parent)
     QTimer::singleShot(0, this, &Controller::refresh);
 }
 
+bool Controller::isDebug() const
+{
+#ifdef QT_DEBUG
+    return true;
+#else
+    return false;
+#endif
+}
+
 void Controller::refresh()
 {
     if (!_supabase.isAuthenticated()) {
