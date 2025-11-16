@@ -15,6 +15,11 @@ if(POINTLESS_IOS_BUILD)
   set(IOS
       TRUE
       CACHE BOOL "Build for iOS")
+
+  set(CMAKE_SYSTEM_NAME
+      "iOS"
+      CACHE STRING "System name" FORCE)
+
   set(QT_HOST_PATH
       "${QT_HOST_PATH_CANDIDATE}"
       CACHE PATH "Qt host path")
