@@ -10,6 +10,8 @@ ApplicationWindow {
     visible: true
     width: Style.fromPixel(640)
     height: Style.fromPixel(480)
+    visibility: Controller.isMobile ? ApplicationWindow.FullScreen : ApplicationWindow.Windowed
+
     title: "Pointless"
 
     Rectangle {

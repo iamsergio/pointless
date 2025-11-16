@@ -126,3 +126,26 @@ void Controller::setCurrentViewType(ViewType viewType)
     _currentViewType = viewType;
     emit currentViewTypeChanged();
 }
+
+bool Controller::isMobile() const
+{
+    return isAndroid() || isIOS();
+}
+
+bool Controller::isAndroid() const
+{
+#ifdef Q_OS_ANDROID
+    return true;
+#else
+    return false;
+#endif
+}
+
+bool Controller::isIOS() const
+{
+#ifdef Q_OS_IOS
+    return true;
+#else
+    return false;
+#endif
+}

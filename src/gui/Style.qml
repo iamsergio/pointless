@@ -11,6 +11,9 @@ Item {
     readonly property double scaleFactor: 1.5
 
     function fromPixel(px) {
+        if (Controller.isMobile)
+            return px;
+
         return px * scaleFactor;
     }
 

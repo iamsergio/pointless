@@ -23,6 +23,9 @@ class Controller : public QObject
     Q_PROPERTY(QDate navigatorEndDate READ navigatorEndDate NOTIFY navigatorEndDateChanged)
     Q_PROPERTY(TaskFilterModel *taskFilterModel READ taskFilterModel CONSTANT)
     Q_PROPERTY(bool isDebug READ isDebug CONSTANT)
+    Q_PROPERTY(bool isMobile READ isMobile CONSTANT)
+    Q_PROPERTY(bool isAndroid READ isAndroid CONSTANT)
+    Q_PROPERTY(bool isIOS READ isIOS CONSTANT)
 public:
     TaskFilterModel *taskFilterModel() const;
     enum class ViewType {
@@ -45,6 +48,9 @@ public:
     Q_INVOKABLE void navigatorGotoPreviousWeek();
     Q_INVOKABLE void refresh();
     bool isDebug() const;
+    bool isMobile() const;
+    bool isAndroid() const;
+    bool isIOS() const;
 
 Q_SIGNALS:
     void currentViewTypeChanged();
