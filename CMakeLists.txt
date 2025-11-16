@@ -2,6 +2,43 @@
 #
 # SPDX-License-Identifier: MIT
 
+if(POINTLESS_IOS_BUILD)
+
+  if(NOT DEFINED ENV{QT_INSTALL})
+    message(FATAL_ERROR "QT_INSTALL environment variable is not set")
+  endif()
+
+  set(QT_HOST_PATH_CANDIDATE "$ENV{QT_INSTALL}/../macos/")
+  if(NOT EXISTS "${QT_HOST_PATH_CANDIDATE}")
+    message(FATAL_ERROR "Qt host path does not exist: ${QT_HOST_PATH_CANDIDATE}")
+  endif()
+
+  set(IOS
+      TRUE
+      CACHE BOOL "Build for iOS")
+  set(QT_HOST_PATH
+      "${QT_HOST_PATH_CANDIDATE}"
+      CACHE PATH "Qt host path")
+  set(CMAKE_OSX_DEPLOYMENT_TARGET
+      "17.0"
+      CACHE STRING "Minimum iOS deployment target" FORCE)
+  set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE
+      "$ENV{QT_INSTALL}/lib/cmake/Qt6/qt.toolchain.cmake"
+      CACHE FILEPATH "Qt toolchain file")
+  set(CMAKE_OSX_ARCHITECTURES
+      "arm64"
+      CACHE STRING "iOS architecture")
+  set(CMAKE_OSX_SYSROOT
+      "iphoneos"
+      CACHE STRING "iOS SDK")
+  set(CMAKE_XCODE_GENERATE_SCHEME
+      "ON"
+      CACHE BOOL "Generate Xcode scheme")
+  set(VCPKG_TARGET_TRIPLET
+      "arm64-ios"
+      CACHE STRING "vcpkg triplet")
+endif()
+
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
   set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/3rdparty/vcpkg/scripts/buildsystems/vcpkg.cmake)
 endif()
@@ -59,9 +96,6 @@ if(IOS)
   set(CMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM
       "$ENV{APPLE_TEAM_ID}"
       CACHE STRING "iOS development team to use for signing")
-  set(CMAKE_OSX_DEPLOYMENT_TARGET
-      "17.0"
-      CACHE STRING "Minimum iOS deployment target" FORCE)
 
   configure_file(${CMAKE_SOURCE_DIR}/src/ios/Info.plist.in ${CMAKE_BINARY_DIR}/Info.plist @ONLY)
 endif()

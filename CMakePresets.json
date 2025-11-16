@@ -15,8 +15,7 @@
       "inherits": "base",
       "generator": "Xcode",
       "cacheVariables": {
-        "QT_HOST_PATH": "$penv{QT_INSTALL}/../macos/",
-        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$penv{QT_INSTALL}/lib/cmake/Qt6/qt.toolchain.cmake"
+        "POINTLESS_IOS_BUILD": "ON"
       }
     },
     {
@@ -31,12 +30,7 @@
       "name": "ios-dev",
       "inherits": "ios-base",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_OSX_ARCHITECTURES": "arm64",
-        "CMAKE_OSX_SYSROOT": "iphoneos",
-        "CMAKE_XCODE_GENERATE_SCHEME": "ON",
-        "VCPKG_TARGET_TRIPLET": "arm64-ios",
-        "VCPKG_OSX_DEPLOYMENT_TARGET": "17.0"
+        "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
