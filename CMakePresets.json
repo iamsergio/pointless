@@ -90,17 +90,17 @@
     }
   ],
   "buildPresets": [
-  	{
-  	  "name": "ios-release",
-  	  "displayName": "Build Release",
-  	  "configurePreset": "ios-dev",
-  	  "configuration": "Release"
-  	},
-  	{
-  	  "name": "ios-debug",
-  	  "displayName": "Build Debug",
-  	  "configurePreset": "ios-dev",
-  	  "configuration": "Debug"
-  	}
+    {
+      "name": "ios-release",
+      "displayName": "Build Release",
+      "configurePreset": "ios-dev",
+      "configuration": "Release"
+    },
+    {
+      "name": "ios-debug",
+      "displayName": "Build Debug",
+      "configurePreset": "ios-dev",
+      "configuration": "Debug"
+    }
   ]
 }
