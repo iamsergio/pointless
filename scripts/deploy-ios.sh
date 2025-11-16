@@ -29,4 +29,5 @@ fi
 
 cd "${SCRIPT_DIR}"/../build-ios-dev/
 
+echo "Installing ./bin/${BIN_DIR}/pointless.app ..."
 xcrun devicectl device install app --device "$IPHONE_DEVICE_ID" ./bin/"${BIN_DIR}"/pointless.app
