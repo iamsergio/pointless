@@ -33,6 +33,11 @@
     "search.exclude": {
       "**/3rdparty/vcpkg": true
     },
+    "qt-qml.qmlls.customExePath": "/pub_data/installed/Qt/6.10.0/gcc_64/bin/qmlls",
+    "qt-qml.qmlls.verboseOutput": true,
+    "qt-qml.qmlls.additionalImportPaths": [
+      "/pub_data/sources/pointless_cpp/build-dev"
+    ]
   },
   "launch": {
     "version": "0.2.0",
