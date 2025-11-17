@@ -38,14 +38,14 @@ Rectangle {
 
             Rectangle {
                 Layout.fillWidth: true
-                height: Style.fromPixel(48)
+                implicitHeight: Style.fromPixel(48)
                 color: "#192233"
                 radius: 8
 
                 RowLayout {
                     anchors.fill: parent
                     anchors.leftMargin: Style.fromPixel(12)
-                    anchors.rightMargin:    Style.fromPixel(12)
+                    anchors.rightMargin: Style.fromPixel(12)
                     spacing: Style.fromPixel(8)
 
                     Text {
@@ -76,7 +76,9 @@ Rectangle {
                     color: "white"
                     Layout.alignment: Qt.AlignLeft
                 }
-                Item { Layout.fillWidth: true }
+                Item {
+                    Layout.fillWidth: true
+                }
                 Text {
                     text: "Forgot Password?"
                     color: "#1884f7"
@@ -87,7 +89,7 @@ Rectangle {
 
             Rectangle {
                 Layout.fillWidth: true
-                height: Style.fromPixel(48)
+                implicitHeight: Style.fromPixel(48)
                 color: "#192233"
                 radius: 8
 
@@ -133,15 +135,15 @@ Rectangle {
                 radius: 12
             }
             contentItem: Text {
-                text: parent.text
                 color: "white"
+                text: "Login"
                 font.pixelSize: Style.fromPixel(20)
                 font.bold: true
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
             Layout.fillWidth: true
-            height: 56
+            implicitHeight: Style.fromPixel(56)
         }
 
         RowLayout {
