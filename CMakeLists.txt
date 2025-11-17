@@ -79,6 +79,8 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 find_package(quill REQUIRED)
 
+set(QT_QML_GENERATE_QMLLS_INI TRUE)
+
 if(POINTLESS_ENABLE_ASAN)
   message(STATUS "Building with Address Sanitizer")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined -fno-omit-frame-pointer")
