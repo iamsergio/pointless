@@ -28,7 +28,6 @@ Controller::Controller(QObject *parent)
     _taskFilterModel->setSourceModel(_taskModel);
     navigatorGotoToday();
 
-
     QTimer::singleShot(0, this, &Controller::refresh);
 }
 
@@ -93,6 +92,15 @@ QDate Controller::navigatorEndDate() const
     return _navigatorStartDate.addDays(6);
 }
 
+QString Controller::navigatorPrettyStartDate() const
+{
+    return _navigatorStartDate.toString("MMM d");
+}
+
+QString Controller::navigatorPrettyEndDate() const
+{
+    return navigatorEndDate().toString("MMM d");
+}
 
 void Controller::setNavigatorStartDate(const QDate &date)
 {
@@ -105,6 +113,9 @@ void Controller::setNavigatorStartDate(const QDate &date)
 
 void Controller::navigatorGotoToday()
 {
+    QDate today = QDate::currentDate();
+    QDate monday = firstMondayOfWeek(today);
+    P_LOG_INFO("Today: {}, First Monday: {}", today.toString(Qt::ISODate).toStdString(), monday.toString(Qt::ISODate).toStdString());
     setNavigatorStartDate(firstMondayOfWeek(QDate::currentDate()));
 }
 

@@ -21,6 +21,8 @@ class Controller : public QObject
     Q_PROPERTY(Controller::ViewType currentViewType READ currentViewType WRITE setCurrentViewType NOTIFY currentViewTypeChanged)
     Q_PROPERTY(QDate navigatorStartDate READ navigatorStartDate NOTIFY navigatorStartDateChanged)
     Q_PROPERTY(QDate navigatorEndDate READ navigatorEndDate NOTIFY navigatorEndDateChanged)
+    Q_PROPERTY(QString navigatorPrettyStartDate READ navigatorPrettyStartDate NOTIFY navigatorStartDateChanged)
+    Q_PROPERTY(QString navigatorPrettyEndDate READ navigatorPrettyEndDate NOTIFY navigatorEndDateChanged)
     Q_PROPERTY(TaskFilterModel *taskFilterModel READ taskFilterModel CONSTANT)
     Q_PROPERTY(bool isDebug READ isDebug CONSTANT)
     Q_PROPERTY(bool isMobile READ isMobile CONSTANT)
@@ -42,6 +44,8 @@ public:
 
     QDate navigatorStartDate() const;
     QDate navigatorEndDate() const;
+    QString navigatorPrettyStartDate() const;
+    QString navigatorPrettyEndDate() const;
     void setNavigatorStartDate(const QDate &date);
     Q_INVOKABLE void navigatorGotoToday();
     Q_INVOKABLE void navigatorGotoNextWeek();
@@ -58,7 +62,7 @@ Q_SIGNALS:
     void navigatorEndDateChanged();
 
 private:
-    ViewType _currentViewType = ViewType::Later;
+    ViewType _currentViewType = ViewType::Week;
     QDate _navigatorStartDate;
     TaskModel *_taskModel = nullptr;
     TagModel *_tagModel = nullptr;

@@ -1,4 +1,3 @@
-
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
@@ -27,4 +26,8 @@ Item {
     readonly property color taskSecondaryTextColor: "#808080"
     readonly property color taskCompletedTextColor: "#606060"
     readonly property int sectionFontSize: fromPixel(14)
+
+    // week-view:
+    readonly property int weekdayFontSize: fromPixel(20)
+    readonly property color weekdayTextColor: "#ffffff"
 }

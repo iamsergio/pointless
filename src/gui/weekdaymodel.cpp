@@ -17,7 +17,9 @@ void WeekdayModel::setMondayDate(const QDate &date)
 {
     if (_mondayDate == date)
         return;
+    beginResetModel();
     _mondayDate = date;
+    endResetModel();
     Q_EMIT mondayDateChanged();
 }
 

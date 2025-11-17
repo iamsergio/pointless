@@ -25,9 +25,7 @@ Rectangle {
 
         Text {
             text: {
-                const start = Controller.navigatorStartDate.toLocaleDateString(Qt.locale(), "MMM d");
-                const end = Controller.navigatorEndDate.toLocaleDateString(Qt.locale(), "MMM d");
-                return start + " - " + end;
+                return Controller.navigatorPrettyStartDate + " - " + Controller.navigatorPrettyEndDate;
             }
             font.pixelSize: Style.fromPixel(18)
             color: "white"
