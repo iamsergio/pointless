@@ -17,6 +17,15 @@ TaskFilterModel::TaskFilterModel(QObject *parent)
     setDynamicSortFilter(true);
     setSortCaseSensitivity(Qt::CaseInsensitive);
     sort(0);
+
+    connect(this, &QSortFilterProxyModel::rowsInserted, this, &TaskFilterModel::countChanged);
+    connect(this, &QSortFilterProxyModel::rowsRemoved, this, &TaskFilterModel::countChanged);
+    connect(this, &QSortFilterProxyModel::modelReset, this, &TaskFilterModel::countChanged);
+    connect(this, &QSortFilterProxyModel::layoutChanged, this, &TaskFilterModel::countChanged);
+}
+int TaskFilterModel::count() const
+{
+    return rowCount();
 }
 TaskFilterModel::ViewType TaskFilterModel::viewType() const
 {

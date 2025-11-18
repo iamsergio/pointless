@@ -20,15 +20,14 @@ Rectangle {
 
     RowLayout {
         anchors.fill: parent
-    anchors.leftMargin: Style.fromPixel(10)
-    anchors.rightMargin: Style.fromPixel(10)
-    spacing: Style.fromPixel(15)
+        anchors.leftMargin: Style.fromPixel(10)
+        anchors.rightMargin: Style.fromPixel(10)
+        spacing: Style.fromPixel(15)
 
         CheckBox {
             checked: root.taskIsDone
             backgroundColor: Style.background
-            onClicked: {
-            }
+            onClicked: {}
         }
 
         ColumnLayout {
@@ -54,8 +53,7 @@ Rectangle {
 
         FontAwesomeButton {
             fontAwesomeIcon: "ellipsis-vertical"
-            onClicked: {
-            }
+            onClicked: {}
         }
     }
 }

@@ -15,6 +15,7 @@ class TaskFilterModel : public QSortFilterProxyModel
     QML_ELEMENT
     Q_PROPERTY(TaskFilterModel::ViewType viewType READ viewType WRITE setViewType NOTIFY viewTypeChanged)
     Q_PROPERTY(QDate dateFilter READ dateFilter WRITE setDateFilter NOTIFY dateFilterChanged)
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
 public:
     enum class ViewType {
         Week,
@@ -33,6 +34,9 @@ public:
     QDate dateFilter() const;
     void setDateFilter(const QDate &date);
     Q_SIGNAL void dateFilterChanged();
+
+    int count() const;
+    Q_SIGNAL void countChanged();
 
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
     bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;

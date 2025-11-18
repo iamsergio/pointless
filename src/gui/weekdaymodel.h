@@ -6,6 +6,10 @@
 #include <QtQml/qqmlregistration.h>
 #include <QDate>
 
+#include <array>
+
+class TaskFilterModel;
+
 class WeekdayModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -16,7 +20,8 @@ public:
     ~WeekdayModel() override;
 
     enum Roles {
-        PrettyDateRole = Qt::UserRole + 1
+        PrettyDateRole = Qt::UserRole + 1,
+        TasksRole
     };
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -31,4 +36,5 @@ Q_SIGNALS:
 
 private:
     QDate _mondayDate;
+    std::array<TaskFilterModel *, 7> _taskModels;
 };

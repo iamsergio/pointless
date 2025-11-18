@@ -22,12 +22,16 @@ Item {
             top: parent.top
             bottom: parent.bottom
         }
+        clip: true
         spacing: Style.fromPixel(10)
         model: weekdayModel
         delegate: ColumnLayout {
             id: column
-            width: parent.width
+            width: parent ? parent.width : 0
+
             required property string prettyDate
+            required property TaskFilterModel tasks
+
             RowLayout {
                 spacing: 0
                 Layout.fillWidth: true
@@ -48,6 +52,25 @@ Item {
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                     backgroundColor: "transparent"
                     onClicked: {}
+                }
+            }
+
+            Repeater {
+                model: column.tasks
+                Task {
+                    required property string uuid
+                    required property string title
+                    required property bool isDone
+                    required property bool isImportant
+                    required property var dueDate
+
+                    Layout.fillWidth: true
+
+                    taskUuid: uuid
+                    taskTitle: title
+                    taskIsDone: isDone
+                    taskIsImportant: isImportant
+                    taskDueDate: dueDate
                 }
             }
         }
