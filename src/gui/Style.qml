@@ -28,6 +28,6 @@ Item {
     readonly property int sectionFontSize: fromPixel(14)
 
     // week-view:
-    readonly property int weekdayFontSize: fromPixel(20)
+    readonly property int weekdayFontSize: fromPixel(16)
     readonly property color weekdayTextColor: "#ffffff"
 }
