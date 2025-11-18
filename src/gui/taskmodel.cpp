@@ -19,12 +19,6 @@ TaskModel::TaskModel(QObject *parent)
 {
 }
 
-TaskModel::TaskModel(const std::vector<PointlessCore::Task> &tasks, QObject *parent)
-    : QAbstractListModel(parent)
-    , _tasks(tasks)
-{
-}
-
 int TaskModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)

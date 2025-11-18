@@ -40,7 +40,6 @@ Q_SIGNALS:
 
 private:
     explicit TaskModel(QObject *parent = nullptr);
-    explicit TaskModel(const std::vector<PointlessCore::Task> &tasks, QObject *parent = nullptr);
     inline static TaskModel *_instance = nullptr;
     std::vector<PointlessCore::Task> _tasks;
 };

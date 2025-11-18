@@ -5,6 +5,9 @@
 #include "controller.h"
 #include "taskmodel.h"
 #include "logger.h"
+#include "date_utils.h"
+
+#include <QDate>
 
 TaskFilterModel::TaskFilterModel(QObject *parent)
     : QSortFilterProxyModel(parent)
@@ -53,6 +56,20 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
         return false;
     }
 
+    if (_dateFilter.isValid()) {
+        if (task->dueDate.has_value()) {
+            const QDate dueQDate = Gui::DateUtils::timepointToQDate(task->dueDate);
+            if (Gui::DateUtils::isMonday(_dateFilter)) {
+                if (dueQDate <= _dateFilter)
+                    return true;
+            } else {
+                if (dueQDate == _dateFilter)
+                    return true;
+            }
+            return false;
+        }
+    }
+
     if (_viewType == ViewType::Week) {
         return task->isCurrent();
     } else if (_viewType == ViewType::Soon) {
@@ -73,4 +90,20 @@ bool TaskFilterModel::lessThan(const QModelIndex &source_left, const QModelIndex
         return leftTagName < rightTagName;
 
     return source_left.row() < source_right.row();
+}
+
+QDate TaskFilterModel::dateFilter() const
+{
+    return _dateFilter;
+}
+
+void TaskFilterModel::setDateFilter(const QDate &date)
+{
+    if (_dateFilter == date)
+        return;
+    beginFilterChange();
+    _dateFilter = date;
+    endFilterChange();
+
+    emit dateFilterChanged();
 }

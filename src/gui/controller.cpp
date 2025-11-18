@@ -6,17 +6,13 @@
 #include "taskfiltermodel.h"
 #include "taskmodel.h"
 #include "tagmodel.h"
+#include "date_utils.h"
 #include "../core/task_manager.h"
 #include "../core/logger.h"
 
 #include <QTimer>
 
-namespace {
-QDate firstMondayOfWeek(const QDate &date)
-{
-    return date.addDays(1 - date.dayOfWeek());
-}
-}
+
 
 Controller::Controller(QObject *parent)
     : QObject(parent)
@@ -113,9 +109,9 @@ void Controller::setNavigatorStartDate(const QDate &date)
 void Controller::navigatorGotoToday()
 {
     QDate today = QDate::currentDate();
-    QDate monday = firstMondayOfWeek(today);
+    QDate monday = Gui::DateUtils::firstMondayOfWeek(today);
     P_LOG_INFO("Today: {}, First Monday: {}", today.toString(Qt::ISODate).toStdString(), monday.toString(Qt::ISODate).toStdString());
-    setNavigatorStartDate(firstMondayOfWeek(QDate::currentDate()));
+    setNavigatorStartDate(Gui::DateUtils::firstMondayOfWeek(QDate::currentDate()));
 }
 
 void Controller::navigatorGotoNextWeek()
