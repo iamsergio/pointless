@@ -7,7 +7,13 @@ import pointless 1.0
 
 ListView {
     id: root
-    model: Controller.taskFilterModel
+
+    TaskFilterModel {
+        id: taskFilterModel
+        viewType: Controller.currentViewType
+    }
+
+    model: taskFilterModel
 
     section.property: "tagName"
     section.criteria: ViewSection.FullString

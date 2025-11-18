@@ -13,9 +13,7 @@
 class TaskModel : public QAbstractListModel
 {
     Q_OBJECT
-    QML_ELEMENT
     Q_PROPERTY(int count READ count NOTIFY countChanged)
-
 public:
     enum Roles {
         UuidRole = Qt::UserRole + 1,
@@ -26,8 +24,7 @@ public:
         TagNameRole
     };
 
-    explicit TaskModel(QObject *parent = nullptr);
-    explicit TaskModel(const std::vector<PointlessCore::Task> &tasks, QObject *parent = nullptr);
+    static TaskModel *instance(QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -42,5 +39,8 @@ Q_SIGNALS:
     void countChanged();
 
 private:
+    explicit TaskModel(QObject *parent = nullptr);
+    explicit TaskModel(const std::vector<PointlessCore::Task> &tasks, QObject *parent = nullptr);
+    inline static TaskModel *_instance = nullptr;
     std::vector<PointlessCore::Task> _tasks;
 };

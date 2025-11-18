@@ -22,10 +22,9 @@ Controller::Controller(QObject *parent)
     : QObject(parent)
     , _supabase(Supabase::createDefault())
 {
-    _taskModel = new TaskModel(this);
+    _taskModel = TaskModel::instance(this);
     _tagModel = new TagModel(this);
-    _taskFilterModel = new TaskFilterModel(this, this);
-    _taskFilterModel->setSourceModel(_taskModel);
+    _taskFilterModel = new TaskFilterModel(this);
     navigatorGotoToday();
 
     QTimer::singleShot(0, this, &Controller::refresh);

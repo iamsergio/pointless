@@ -1,3 +1,11 @@
+#include "taskmodel.h"
+
+TaskModel *TaskModel::instance(QObject *parent)
+{
+    if (!_instance)
+        _instance = new TaskModel(parent);
+    return _instance;
+}
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 

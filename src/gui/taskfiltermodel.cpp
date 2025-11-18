@@ -6,18 +6,29 @@
 #include "taskmodel.h"
 #include "logger.h"
 
-TaskFilterModel::TaskFilterModel(Controller *controller, QObject *parent)
+TaskFilterModel::TaskFilterModel(QObject *parent)
     : QSortFilterProxyModel(parent)
-    , _controller(controller)
 {
-    connect(_controller, &Controller::currentViewTypeChanged, this, [this] {
-        beginFilterChange();
-        endFilterChange();
-    });
+    setSourceModel(TaskModel::instance());
 
     setDynamicSortFilter(true);
     setSortCaseSensitivity(Qt::CaseInsensitive);
     sort(0);
+}
+TaskFilterModel::ViewType TaskFilterModel::viewType() const
+{
+    return _viewType;
+}
+
+void TaskFilterModel::setViewType(ViewType type)
+{
+    if (_viewType == type)
+        return;
+    beginFilterChange();
+    _viewType = type;
+    endFilterChange();
+
+    emit viewTypeChanged();
 }
 
 TaskFilterModel::~TaskFilterModel() = default;
@@ -42,13 +53,11 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
         return false;
     }
 
-    Controller::ViewType viewType = _controller->currentViewType();
-
-    if (viewType == Controller::ViewType::Week) {
+    if (_viewType == ViewType::Week) {
         return task->isCurrent();
-    } else if (viewType == Controller::ViewType::Soon) {
+    } else if (_viewType == ViewType::Soon) {
         return task->isSoon();
-    } else if (viewType == Controller::ViewType::Later) {
+    } else if (_viewType == ViewType::Later) {
         return task->isLater();
     }
 

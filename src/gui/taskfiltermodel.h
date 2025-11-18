@@ -12,14 +12,25 @@ class TaskFilterModel : public QSortFilterProxyModel
 {
     Q_OBJECT
     QML_ELEMENT
-    QML_UNCREATABLE("TaskFilterModel is created by Controller")
+    Q_PROPERTY(TaskFilterModel::ViewType viewType READ viewType WRITE setViewType NOTIFY viewTypeChanged)
 public:
-    explicit TaskFilterModel(Controller *controller, QObject *parent = nullptr);
+    enum class ViewType {
+        Week,
+        Soon,
+        Later
+    };
+    Q_ENUM(ViewType)
+
+    explicit TaskFilterModel(QObject *parent = nullptr);
     ~TaskFilterModel() override;
+
+    ViewType viewType() const;
+    void setViewType(ViewType type);
+    Q_SIGNAL void viewTypeChanged();
 
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
     bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;
 
 private:
-    Controller *_controller = nullptr;
+    ViewType _viewType = ViewType::Week;
 };
