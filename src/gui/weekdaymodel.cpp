@@ -17,7 +17,7 @@ QDate WeekdayModel::mondayDate() const
     return _mondayDate;
 }
 
-void WeekdayModel::setMondayDate(const QDate &date)
+void WeekdayModel::setMondayDate(QDate date)
 {
     if (_mondayDate == date)
         return;
