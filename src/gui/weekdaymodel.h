@@ -29,7 +29,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     QDate mondayDate() const;
-    void setMondayDate(const QDate &date);
+    void setMondayDate(QDate date);
 
 Q_SIGNALS:
     void mondayDateChanged();
