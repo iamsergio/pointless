@@ -48,12 +48,12 @@ Rectangle {
                 text: root.taskDueDate ? Qt.formatDate(root.taskDueDate, "MMMM yyyy") : ""
                 font.pixelSize: Style.fromPixel(13)
                 color: Style.taskSecondaryTextColor
-                visible: text !== ""
+                visible: text !== "" && Controller.currentViewType !== Controller.Week
             }
         }
 
         Rectangle {
-            visible: root.taskTagName !== ""
+            visible: root.taskTagName !== "" && Controller.currentViewType === Controller.Week
             color: "#555555"
             radius: Style.fromPixel(10)
             implicitHeight: Style.fromPixel(24)

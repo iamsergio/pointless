@@ -1,4 +1,2 @@
-- don't show date, if we're in week mode.
 - fix sorting within days
-- dont show tag in soon/later views
 - fix repeated tasks in week view
