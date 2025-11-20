@@ -8,6 +8,8 @@ import pointless 1.0
 ListView {
     id: root
 
+    clip: true
+
     TaskFilterModel {
         id: taskFilterModel
         viewType: Controller.currentViewType
@@ -15,32 +17,13 @@ ListView {
 
     model: taskFilterModel
 
-    section.property: "tagName"
-    section.criteria: ViewSection.FullString
-    section.delegate: Rectangle {
-        width: ListView.view.width
-        height: Style.fromPixel(40)
-        color: "transparent"
-
-        required property string section
-
-        Text {
-            anchors.left: parent.left
-            anchors.leftMargin: Style.fromPixel(10)
-            anchors.verticalCenter: parent.verticalCenter
-            text: parent.section
-            font.bold: true
-            font.pixelSize: Style.fromPixel(20)
-            color: Style.sectionTextColor
-        }
-    }
-
     delegate: Task {
         required property string uuid
         required property string title
         required property bool isDone
         required property bool isImportant
         required property var dueDate
+        required property string tagName
 
         width: ListView.view.width
         taskUuid: uuid
@@ -48,5 +31,6 @@ ListView {
         taskIsDone: isDone
         taskIsImportant: isImportant
         taskDueDate: dueDate
+        taskTagName: tagName
     }
 }

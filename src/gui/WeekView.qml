@@ -63,6 +63,7 @@ Item {
                     required property bool isDone
                     required property bool isImportant
                     required property var dueDate
+                    required property string tagName
 
                     Layout.fillWidth: true
 
@@ -71,6 +72,7 @@ Item {
                     taskIsDone: isDone
                     taskIsImportant: isImportant
                     taskDueDate: dueDate
+                    taskTagName: tagName
                 }
             }
         }

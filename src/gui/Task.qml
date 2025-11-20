@@ -14,6 +14,7 @@ Rectangle {
     required property bool taskIsDone
     required property bool taskIsImportant
     required property var taskDueDate
+    property string taskTagName: ""
 
     height: Style.fromPixel(70)
     color: "transparent"
@@ -48,6 +49,23 @@ Rectangle {
                 font.pixelSize: Style.fromPixel(13)
                 color: Style.taskSecondaryTextColor
                 visible: text !== ""
+            }
+        }
+
+        Rectangle {
+            visible: root.taskTagName !== ""
+            color: "#555555"
+            radius: Style.fromPixel(10)
+            implicitHeight: Style.fromPixel(24)
+            implicitWidth: tagText.implicitWidth + Style.fromPixel(20)
+            Layout.alignment: Qt.AlignVCenter
+
+            Text {
+                id: tagText
+                anchors.centerIn: parent
+                text: root.taskTagName
+                color: "white"
+                font.pixelSize: Style.fromPixel(12)
             }
         }
 
