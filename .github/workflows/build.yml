@@ -31,7 +31,12 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libc++-dev libc++abi-dev linux-libc-dev
+        sudo apt-get install -y clang-20 libc++-dev libc++abi-dev linux-libc-dev
+    - name: Set clang-20 as default clang/clang++
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-20 100
+        sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-20 100
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
