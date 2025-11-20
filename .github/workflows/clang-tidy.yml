@@ -23,7 +23,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y clang-tidy
+        sudo apt-get install -y clang-tidy-20
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
@@ -46,4 +46,4 @@ jobs:
 
     - name: Run clang-tidy
       run: |
-        find src -type f \( -name '*.cpp' -o -name '*.cc' -o -name '*.cxx' \) -print0 | xargs -0 -n1 -P"$(nproc)" clang-tidy -p build-dev
+        find src -type f \( -name '*.cpp' -o -name '*.cc' -o -name '*.cxx' \) -print0 | xargs -0 -n1 -P"$(nproc)" clang-tidy-20 -p build-dev
