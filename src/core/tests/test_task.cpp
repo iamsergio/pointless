@@ -108,3 +108,26 @@ TEST(TaskTest, DueDatePreservedOnSerializeDeserialize)
     auto diff = duration_cast<seconds>(*original.dueDate - *deserialized.dueDate);
     EXPECT_LT(std::abs(diff.count()), 2); // less than 2 seconds difference
 }
+
+TEST(TaskTest, CalendarPropertiesSerializeDeserialize)
+{
+    Task original;
+    original.uuidInDeviceCalendar = "calendar-uuid-abc";
+    original.deviceCalendarUuid = "device-calendar-xyz";
+    original.deviceCalendarName = "Work Calendar";
+
+    auto json_result = glz::write_json(original);
+    ASSERT_TRUE(json_result.has_value());
+    std::string json_str = json_result.value();
+
+    EXPECT_TRUE(json_str.find("\"uuidInDeviceCalendar\":\"calendar-uuid-abc\"") != std::string::npos);
+    EXPECT_TRUE(json_str.find("\"deviceCalendarUuid\":\"device-calendar-xyz\"") != std::string::npos);
+    EXPECT_TRUE(json_str.find("\"deviceCalendarName\":\"Work Calendar\"") != std::string::npos);
+
+    Task deserialized;
+    auto result = glz::read_json(deserialized, json_str);
+    ASSERT_TRUE(result == glz::error_code::none);
+    EXPECT_EQ(deserialized.uuidInDeviceCalendar, "calendar-uuid-abc");
+    EXPECT_EQ(deserialized.deviceCalendarUuid, "device-calendar-xyz");
+    EXPECT_EQ(deserialized.deviceCalendarName, "Work Calendar");
+}
