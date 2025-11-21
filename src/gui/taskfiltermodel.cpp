@@ -16,7 +16,7 @@ TaskFilterModel::TaskFilterModel(QObject *parent)
 
     setDynamicSortFilter(true);
     setSortCaseSensitivity(Qt::CaseInsensitive);
-    sort(0);
+    sort(0, Qt::AscendingOrder);
 
     connect(this, &QSortFilterProxyModel::rowsInserted, this, &TaskFilterModel::countChanged);
     connect(this, &QSortFilterProxyModel::rowsRemoved, this, &TaskFilterModel::countChanged);
