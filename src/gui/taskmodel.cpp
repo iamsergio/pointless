@@ -44,7 +44,7 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
     case DueDateRole:
         if (task.dueDate) {
             auto timeT = std::chrono::system_clock::to_time_t(*task.dueDate);
-            return QDateTime::fromSecsSinceEpoch(timeT);
+            return QDateTime::fromSecsSinceEpoch(timeT).toString(Qt::ISODate);
         }
         return QVariant();
     case TagNameRole:

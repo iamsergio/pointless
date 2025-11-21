@@ -65,29 +65,34 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
         return false;
     }
 
-    if (_dateFilter.isValid()) {
-        if (task->dueDate.has_value()) {
-            const QDate dueQDate = Gui::DateUtils::timepointToQDate(task->dueDate);
-            if (Gui::DateUtils::isMonday(_dateFilter)) {
-                if (dueQDate <= _dateFilter)
-                    return true;
-            } else {
-                if (dueQDate == _dateFilter)
-                    return true;
-            }
-            return false;
-        }
+    if (_viewType == ViewType::Week && !_dateFilter.isValid()) {
+        // Happens during initialization, filter will be invalidated soon
+        // the return here doesn't matter much
+        return true;
     }
 
     if (_viewType == ViewType::Week) {
-        return task->isCurrent();
-    } else if (_viewType == ViewType::Soon) {
-        return task->isSoon();
-    } else if (_viewType == ViewType::Later) {
-        return task->isLater();
+        const QDate taskDueDate = Gui::DateUtils::timepointToQDate(task->dueDate);
+        const bool viewIsToday = Gui::DateUtils::isToday(_dateFilter);
+        const bool hasDueDate = taskDueDate.isValid();
+        if (viewIsToday && task->isCurrent() && !hasDueDate)
+            return true;
+
+        const bool isOverdue = Gui::DateUtils::isOverdue(taskDueDate, QDate::currentDate());
+        if (isOverdue && viewIsToday) {
+            return true;
+        }
+
+        if (taskDueDate == _dateFilter)
+            return true;
+
+    } else if (_viewType == ViewType::Soon && task->isSoon()) {
+        return true;
+    } else if (_viewType == ViewType::Later && task->isLater()) {
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 bool TaskFilterModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const

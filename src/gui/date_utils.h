@@ -8,6 +8,7 @@
 
 #include <chrono>
 #include <optional>
+#include <cassert>
 
 namespace Gui {
 namespace DateUtils {
@@ -30,6 +31,18 @@ inline QDate firstMondayOfWeek(const QDate &date)
     if (isMonday(date))
         return date;
     return date.addDays(1 - date.dayOfWeek());
+}
+
+
+inline bool isOverdue(QDate dueDate, QDate currentDate)
+{
+    assert(currentDate.isValid());
+    return dueDate.isValid() && currentDate.isValid() && dueDate < currentDate;
+}
+
+inline bool isToday(QDate date)
+{
+    return date == QDate::currentDate();
 }
 
 } // namespace DateUtils
