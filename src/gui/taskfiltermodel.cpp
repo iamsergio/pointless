@@ -27,6 +27,7 @@ int TaskFilterModel::count() const
 {
     return rowCount();
 }
+
 TaskFilterModel::ViewType TaskFilterModel::viewType() const
 {
     return _viewType;
@@ -83,8 +84,9 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
             return true;
         }
 
-        if (taskDueDate == _dateFilter)
+        if (taskDueDate == _dateFilter) {
             return true;
+        }
 
     } else if (_viewType == ViewType::Soon && task->isSoon()) {
         return true;

@@ -14,6 +14,7 @@ Rectangle {
     required property bool taskIsDone
     required property bool taskIsImportant
     required property var taskDueDate
+    required property bool hasDueDate
     property string taskTagName: ""
 
     height: Style.fromPixel(70)
@@ -45,10 +46,10 @@ Rectangle {
             }
 
             Text {
-                text: root.taskDueDate ? Qt.formatDate(root.taskDueDate, "MMMM yyyy") : ""
+                text: root.hasDueDate ? root.taskDueDate : ""
                 font.pixelSize: Style.fromPixel(13)
                 color: Style.taskSecondaryTextColor
-                visible: text !== "" && Controller.currentViewType !== Controller.Week
+                visible: Controller.currentViewType !== Controller.Week
             }
         }
 

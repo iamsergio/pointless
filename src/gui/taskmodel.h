@@ -21,6 +21,7 @@ public:
         IsDoneRole,
         IsImportantRole,
         DueDateRole,
+        HasDueDateRole,
         TagNameRole
     };
 
