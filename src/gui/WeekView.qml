@@ -64,6 +64,7 @@ Item {
                     required property bool isDone
                     required property bool isImportant
                     required property var dueDate
+                    required property bool hasDueDate
                     required property string tagName
                     required property bool isFromCalendar
                     required property string calendarName
@@ -75,7 +76,10 @@ Item {
                     taskIsDone: isDone
                     taskIsImportant: isImportant
                     taskDueDate: dueDate
+                    taskHasDueDate: hasDueDate
                     taskTagName: tagName
+                    taskIsFromCalendar: isFromCalendar
+                    taskCalendarName: calendarName
                 }
             }
         }

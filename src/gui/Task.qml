@@ -14,10 +14,10 @@ Rectangle {
     required property bool taskIsDone
     required property bool taskIsImportant
     required property var taskDueDate
-    required property bool hasDueDate
-    property string taskTagName: ""
-    property bool isFromCalendar: false
-    property string calendarName: ""
+    required property bool taskHasDueDate
+    required property string taskTagName
+    required property bool taskIsFromCalendar
+    required property string taskCalendarName
 
     height: Style.fromPixel(55)
     color: "transparent"
@@ -52,19 +52,19 @@ Rectangle {
                 visible: dateText.visible || calendarText.visible
 
                 Text {
-                    id: dateText
-                    text: root.hasDueDate ? root.taskDueDate : ""
-                    font.pixelSize: Style.fromPixel(13)
-                    color: Style.taskSecondaryTextColor
-                    visible: Controller.currentViewType !== Controller.Week
+                    id: calendarText
+                    visible: root.taskIsFromCalendar && root.taskCalendarName !== ""
+                    text: "[" + root.taskCalendarName + "]"
+                    font.pixelSize: Style.fromPixel(11)
+                    color: "#00ff00"
                 }
 
                 Text {
-                    id: calendarText
-                    visible: root.isFromCalendar && root.calendarName !== ""
-                    text: "[" + root.calendarName + "]"
-                    font.pixelSize: Style.fromPixel(13)
-                    color: "#00ff00"
+                    id: dateText
+                    text: root.taskHasDueDate ? root.taskDueDate : ""
+                    font.pixelSize: Style.fromPixel(11)
+                    color: Style.taskSecondaryTextColor
+                    visible: Controller.currentViewType !== Controller.Week
                 }
             }
         }
