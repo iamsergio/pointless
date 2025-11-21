@@ -43,8 +43,13 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         return task.isImportant;
     case DueDateRole:
         if (task.dueDate) {
-            auto timeT = std::chrono::system_clock::to_time_t(*task.dueDate);
-            return QDateTime::fromSecsSinceEpoch(timeT).toString(Qt::ISODate);
+            const auto timeT = std::chrono::system_clock::to_time_t(*task.dueDate);
+            const QDateTime dt = QDateTime::fromSecsSinceEpoch(timeT);
+            QString dateStr = dt.toString("MMM d");
+            if (dt.time() != QTime(0, 0)) {
+                dateStr += ", " + dt.toString("HH:mm");
+            }
+            return dateStr;
         }
         return QVariant();
     case HasDueDateRole:
