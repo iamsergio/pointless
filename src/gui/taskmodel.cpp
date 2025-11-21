@@ -51,6 +51,13 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         return task.dueDate.has_value();
     case TagNameRole:
         return QString::fromStdString(task.tagName());
+    case IsFromCalendarRole:
+        return task.deviceCalendarName.has_value() && !task.deviceCalendarName->empty();
+    case CalendarNameRole:
+        if (task.deviceCalendarName && !task.deviceCalendarName->empty()) {
+            return QString::fromStdString(*task.deviceCalendarName);
+        }
+        return QVariant();
     }
 
     return QVariant();
@@ -66,6 +73,8 @@ QHash<int, QByteArray> TaskModel::roleNames() const
     roles[DueDateRole] = "dueDate";
     roles[HasDueDateRole] = "hasDueDate";
     roles[TagNameRole] = "tagName";
+    roles[IsFromCalendarRole] = "isFromCalendar";
+    roles[CalendarNameRole] = "calendarName";
     return roles;
 }
 

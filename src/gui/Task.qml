@@ -16,8 +16,10 @@ Rectangle {
     required property var taskDueDate
     required property bool hasDueDate
     property string taskTagName: ""
+    property bool isFromCalendar: false
+    property string calendarName: ""
 
-    height: Style.fromPixel(70)
+    height: Style.fromPixel(55)
     color: "transparent"
 
     RowLayout {
@@ -38,18 +40,32 @@ Rectangle {
 
             Text {
                 text: root.taskTitle
-                font.pixelSize: Style.fromPixel(18)
+                font.pixelSize: Style.fromPixel(16)
                 color: root.taskIsDone ? Style.taskCompletedTextColor : "#ffffff"
                 font.strikeout: root.taskIsDone
                 Layout.fillWidth: true
                 elide: Text.ElideRight
             }
 
-            Text {
-                text: root.hasDueDate ? root.taskDueDate : ""
-                font.pixelSize: Style.fromPixel(13)
-                color: Style.taskSecondaryTextColor
-                visible: Controller.currentViewType !== Controller.Week
+            RowLayout {
+                spacing: Style.fromPixel(8)
+                visible: dateText.visible || calendarText.visible
+
+                Text {
+                    id: dateText
+                    text: root.hasDueDate ? root.taskDueDate : ""
+                    font.pixelSize: Style.fromPixel(13)
+                    color: Style.taskSecondaryTextColor
+                    visible: Controller.currentViewType !== Controller.Week
+                }
+
+                Text {
+                    id: calendarText
+                    visible: root.isFromCalendar && root.calendarName !== ""
+                    text: "[" + root.calendarName + "]"
+                    font.pixelSize: Style.fromPixel(13)
+                    color: "#00ff00"
+                }
             }
         }
 
@@ -57,8 +73,8 @@ Rectangle {
             visible: root.taskTagName !== "" && Controller.currentViewType === Controller.Week
             color: "#555555"
             radius: Style.fromPixel(10)
-            implicitHeight: Style.fromPixel(24)
-            implicitWidth: tagText.implicitWidth + Style.fromPixel(20)
+            implicitHeight: Style.fromPixel(18)
+            implicitWidth: tagText.implicitWidth + Style.fromPixel(14)
             Layout.alignment: Qt.AlignVCenter
 
             Text {

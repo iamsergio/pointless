@@ -22,7 +22,9 @@ public:
         IsImportantRole,
         DueDateRole,
         HasDueDateRole,
-        TagNameRole
+        TagNameRole,
+        IsFromCalendarRole,
+        CalendarNameRole
     };
 
     static TaskModel *instance(QObject *parent = nullptr);

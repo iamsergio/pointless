@@ -23,7 +23,7 @@ Item {
             bottom: parent.bottom
         }
         clip: true
-        spacing: Style.fromPixel(10)
+        spacing: Style.fromPixel(5)
         model: weekdayModel
         delegate: ColumnLayout {
             id: column
@@ -34,6 +34,7 @@ Item {
 
             RowLayout {
                 spacing: 0
+                visible: column.tasks.count > 0
                 Layout.fillWidth: true
                 Text {
                     font.pixelSize: Style.weekdayFontSize
@@ -64,6 +65,8 @@ Item {
                     required property bool isImportant
                     required property var dueDate
                     required property string tagName
+                    required property bool isFromCalendar
+                    required property string calendarName
 
                     Layout.fillWidth: true
 

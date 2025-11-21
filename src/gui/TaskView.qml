@@ -24,6 +24,8 @@ ListView {
         required property bool isImportant
         required property var dueDate
         required property string tagName
+        required property bool isFromCalendar
+        required property string calendarName
 
         width: ListView.view.width
         taskUuid: uuid
