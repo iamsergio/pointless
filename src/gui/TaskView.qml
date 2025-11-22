@@ -9,6 +9,7 @@ ListView {
     id: root
 
     clip: true
+    spacing: Style.taskSpacing
 
     TaskFilterModel {
         id: taskFilterModel
