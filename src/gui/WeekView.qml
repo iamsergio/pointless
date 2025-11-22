@@ -31,10 +31,11 @@ Item {
 
             required property string prettyDate
             required property TaskFilterModel tasks
+            required property bool isPast
 
             RowLayout {
                 spacing: 0
-                visible: column.tasks.count > 0
+                visible: column.tasks.count > 0 || !column.isPast
                 Layout.fillWidth: true
                 Text {
                     font.pixelSize: Style.weekdayFontSize

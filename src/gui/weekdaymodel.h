@@ -21,7 +21,8 @@ public:
 
     enum Roles {
         PrettyDateRole = Qt::UserRole + 1,
-        TasksRole
+        TasksRole,
+        IsPastRole
     };
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;

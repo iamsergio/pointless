@@ -23,14 +23,20 @@ Rectangle {
             onClicked: Controller.navigatorGotoPreviousWeek()
         }
 
-        Text {
-            text: {
-                return Controller.navigatorPrettyStartDate + " - " + Controller.navigatorPrettyEndDate;
+        MouseArea {
+            implicitHeight: dateRangeText.implicitHeight
+            implicitWidth: dateRangeText.implicitWidth
+            Layout.alignment: Qt.AlignVCenter
+            onClicked: Controller.navigatorGotoToday()
+            Text {
+                id: dateRangeText
+                text: Controller.navigatorPrettyStartDate + " - " + Controller.navigatorPrettyEndDate
+                font.pixelSize: Style.fromPixel(18)
+                color: "white"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                anchors.centerIn: parent
             }
-            font.pixelSize: Style.fromPixel(18)
-            color: "white"
-            horizontalAlignment: Text.AlignHCenter
-            Layout.preferredWidth: 200
         }
 
         FontAwesomeButton {
