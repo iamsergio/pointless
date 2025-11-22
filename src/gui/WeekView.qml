@@ -57,6 +57,23 @@ Item {
                 }
             }
 
+            Rectangle {
+                visible: column.tasks.count === 0 && !column.isPast
+                Layout.fillWidth: true
+                Layout.preferredHeight: 80
+                color: Style.background2
+                radius: 8
+                border.width: 1
+                border.color: "#2a3441"
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "No tasks for this day."
+                    font.pixelSize: Style.fromPixel(14)
+                    color: Style.taskSecondaryTextColor
+                }
+            }
+
             Repeater {
                 model: column.tasks
                 Task {
