@@ -66,11 +66,8 @@
       "description": "dev-tsan",
       "cacheVariables": {
         "POINTLESS_ENABLE_TSAN": "ON",
-        "VCPKG_TARGET_TRIPLET": "x64-linux-libcxx",
         "VCPKG_TARGET_ARCHITECTURE": "x64",
-        "CMAKE_CXX_COMPILER": "clang++",
-        "CMAKE_CXX_FLAGS": "-stdlib=libc++",
-        "CMAKE_EXE_LINKER_FLAGS": "-stdlib=libc++"
+        "CMAKE_CXX_COMPILER": "clang++"
       }
     },
     {
