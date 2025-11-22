@@ -71,7 +71,7 @@ Rectangle {
 
         Rectangle {
             visible: root.taskTagName !== "" && Controller.currentViewType === Controller.Week
-            color: "#555555"
+            color: Controller.colorFromTag(root.taskTagName)
             radius: Style.fromPixel(10)
             implicitHeight: Style.fromPixel(18)
             implicitWidth: tagText.implicitWidth + Style.fromPixel(14)

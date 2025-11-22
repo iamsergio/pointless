@@ -155,3 +155,19 @@ bool Controller::isIOS() const
     return false;
 #endif
 }
+
+
+QString Controller::colorFromTag(const QString &tagName) const
+{
+    // TODO: Store color per tag in the database
+    static const QStringList colors = {
+        "#2ECC71",
+        "#3498DB",
+        "#9B5934",
+        "#FF8A00"
+    };
+    if (tagName.isEmpty())
+        return "#555555";
+    int index = qAbs(qHash(tagName)) % colors.size();
+    return colors.at(index);
+}

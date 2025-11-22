@@ -51,6 +51,7 @@ public:
     Q_INVOKABLE void navigatorGotoNextWeek();
     Q_INVOKABLE void navigatorGotoPreviousWeek();
     Q_INVOKABLE void refresh();
+    Q_INVOKABLE QString colorFromTag(const QString &tagName) const;
     bool isDebug() const;
     bool isMobile() const;
     bool isAndroid() const;
