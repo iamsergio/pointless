@@ -21,7 +21,7 @@ ApplicationWindow {
         id: editTaskView
         anchors.fill: parent
         visible: Controller.isEditing
-        z: 300
+        z: mainView.z + 1
 
         onBackClicked: {
             Controller.isEditing = false;
@@ -36,6 +36,7 @@ ApplicationWindow {
     }
 
     Rectangle {
+        id: mainView
         anchors.fill: parent
         anchors.topMargin: parent.SafeArea.margins.top
 
