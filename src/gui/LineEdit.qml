@@ -19,14 +19,6 @@ Rectangle {
         anchors.margins: Style.fromPixel(10)
         spacing: Style.fromPixel(10)
 
-        // Blue square icon
-        Rectangle {
-            width: Style.fromPixel(16)
-            height: Style.fromPixel(16)
-            color: Style.calendarHighlight
-            radius: 2
-        }
-
         TextField {
             id: input
             Layout.fillWidth: true
