@@ -11,6 +11,7 @@ ApplicationWindow {
     width: Style.fromPixel(640)
     height: Style.fromPixel(480)
     visibility: Controller.isMobile ? ApplicationWindow.FullScreen : ApplicationWindow.Windowed
+    flags: Qt.Window | Qt.ExpandedClientAreaHint
 
     title: "Pointless"
 
