@@ -28,8 +28,9 @@ ApplicationWindow {
         // Overlaid refresh button
         FontAwesomeButton {
             fontAwesomeIcon: "\uf021" // FontAwesome refresh icon
-            iconSize: Style.fromPixel(24)
-            iconColor: "white"
+            iconSize: Style.fromPixel(16)
+            iconColor: Style.iconColor
+            backgroundColor: "transparent"
             anchors.top: parent.top
             anchors.right: parent.right
             anchors.topMargin: 16
@@ -40,7 +41,7 @@ ApplicationWindow {
 
         FontAwesomeButton {
             fontAwesomeIcon: "\uf121"
-            iconSize: Style.fromPixel(20)
+            iconSize: Style.fromPixel(16)
             iconColor: "red"
             backgroundColor: "transparent"
             anchors {
@@ -55,11 +56,11 @@ ApplicationWindow {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: Style.fromPixel(10)
+            anchors.margins: Style.fromPixel(20)
 
             RowLayout {
                 Layout.fillWidth: true
-                Layout.alignment: Qt.AlignHCenter
+                Layout.alignment: Qt.AlignLeft
                 spacing: Style.fromPixel(10)
 
                 ViewButton {
@@ -84,6 +85,12 @@ ApplicationWindow {
             WeekNavigator {
                 Layout.fillWidth: true
                 visible: Controller.currentViewType === Controller.Week
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                implicitHeight: Style.fromPixel(1)
+                color: Style.taskBackground
             }
 
             WeekView {

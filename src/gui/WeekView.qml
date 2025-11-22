@@ -23,7 +23,7 @@ Item {
             bottom: parent.bottom
         }
         clip: true
-        spacing: Style.fromPixel(5)
+        spacing: Style.fromPixel(15)
         model: weekdayModel
         delegate: ColumnLayout {
             id: column
@@ -32,6 +32,7 @@ Item {
             required property string prettyDate
             required property TaskFilterModel tasks
             required property bool isPast
+            spacing: Style.fromPixel(10)
 
             RowLayout {
                 spacing: 0
@@ -48,7 +49,7 @@ Item {
                 FontAwesomeButton {
                     fontAwesomeIcon: "\uf067" // plus icon
                     iconSize: 18
-                    iconColor: Style.weekdayTextColor
+                    iconColor: Style.iconColor
                     implicitWidth: 32
                     implicitHeight: 32
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter

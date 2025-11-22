@@ -10,6 +10,7 @@ FontAwesomeButton {
     height: Style.fromPixel(24)
     fontAwesomeIcon: root.checked ? "\uf14a" : "\uf0c8"
     iconSize: Style.fromPixel(20)
-    iconColor: root.checked ? "#135bec" : "#135bec"
+    iconColor: Style.buttonActive
+    backgroundColor: "transparent"
     onClicked: root.checked = !root.checked
 }

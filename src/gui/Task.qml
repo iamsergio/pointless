@@ -20,7 +20,8 @@ Rectangle {
     required property string taskCalendarName
 
     height: Style.fromPixel(55)
-    color: "transparent"
+    color: Style.taskBackground
+    radius: 10
 
     RowLayout {
         anchors.fill: parent
@@ -30,7 +31,6 @@ Rectangle {
 
         CheckBox {
             checked: root.taskIsDone
-            backgroundColor: Style.background
             onClicked: {}
         }
 
@@ -88,6 +88,8 @@ Rectangle {
 
         FontAwesomeButton {
             fontAwesomeIcon: "ellipsis-vertical"
+            iconColor: Style.iconColor
+            backgroundColor: "transparent"
             onClicked: {}
         }
     }

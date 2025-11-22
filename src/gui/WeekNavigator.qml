@@ -12,14 +12,16 @@ Rectangle {
 
     RowLayout {
         anchors.centerIn: parent
-        spacing: 20
+        spacing: Style.fromPixel(5)
 
         FontAwesomeButton {
+            id: leftIcon
             fontAwesomeIcon: "\uf053"
-            iconSize: 20
-            iconColor: "white"
-            implicitWidth: 40
-            implicitHeight: 40
+            iconSize: Style.fromPixel(14)
+            iconColor: Style.textColor2
+            backgroundColor: "transparent"
+            implicitWidth: Style.fromPixel(40)
+            implicitHeight: Style.fromPixel(40)
             onClicked: Controller.navigatorGotoPreviousWeek()
         }
 
@@ -31,8 +33,8 @@ Rectangle {
             Text {
                 id: dateRangeText
                 text: Controller.navigatorPrettyStartDate + " - " + Controller.navigatorPrettyEndDate
-                font.pixelSize: Style.fromPixel(18)
-                color: "white"
+                font.pixelSize: Style.fromPixel(14)
+                color: Style.textColor2
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 anchors.centerIn: parent
@@ -41,10 +43,11 @@ Rectangle {
 
         FontAwesomeButton {
             fontAwesomeIcon: "\uf054"
-            iconSize: 20
-            iconColor: "white"
-            implicitWidth: 40
-            implicitHeight: 40
+            iconSize: leftIcon.iconSize
+            iconColor: leftIcon.iconColor
+            backgroundColor: leftIcon.backgroundColor
+            implicitWidth: leftIcon.implicitWidth
+            implicitHeight: leftIcon.implicitHeight
             onClicked: Controller.navigatorGotoNextWeek()
         }
     }
