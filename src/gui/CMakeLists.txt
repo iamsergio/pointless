@@ -6,7 +6,14 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickControls2)
 
 qt_policy(SET QTP0001 NEW)
 
-qt_add_executable(pointless main.cpp controller.cpp taskmodel.cpp tagmodel.cpp weekdaymodel.cpp)
+qt_add_executable(
+  pointless
+  main.cpp
+  controller.cpp
+  taskmodel.cpp
+  tagmodel.cpp
+  weekdaymodel.cpp
+  calendarmodel.cpp)
 
 set_target_properties(pointless PROPERTIES AUTOMOC ON AUTORCC ON)
 
@@ -26,7 +33,8 @@ set(PLAIN_QML_FILES
     FontAwesomeButton.qml
     ViewButton.qml
     LoginScreen.qml
-    CheckBox.qml)
+    CheckBox.qml
+    Calendar.qml)
 
 qt_add_qml_module(
   pointless
@@ -49,6 +57,8 @@ qt_add_qml_module(
   weekdayfiltermodel.h
   weekdaymodel.cpp
   weekdaymodel.h
+  calendarmodel.cpp
+  calendarmodel.h
   RESOURCES
   fonts/FontAwesome7Brands-Regular-400.otf
   fonts/FontAwesome7Free-Regular-400.otf

@@ -36,4 +36,10 @@ Item {
     // week-view:
     readonly property int weekdayFontSize: fromPixel(16)
     readonly property color weekdayTextColor: "#ffffff"
+
+    // calendar:
+    readonly property color calendarBackground: "#222327"
+    readonly property color calendarHighlight: "#0290f6"
+    readonly property color calendarText: "#ffffff"
+    readonly property color calendarSecondaryText: "#98999e"
 }
