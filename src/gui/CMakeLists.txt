@@ -34,7 +34,8 @@ set(PLAIN_QML_FILES
     ViewButton.qml
     LoginScreen.qml
     CheckBox.qml
-    Calendar.qml)
+    Calendar.qml
+    LineEdit.qml)
 
 qt_add_qml_module(
   pointless

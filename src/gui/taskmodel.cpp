@@ -98,6 +98,14 @@ void TaskModel::setTasks(const std::vector<PointlessCore::Task> &tasks)
     emit countChanged();
 }
 
+void TaskModel::addTask(const PointlessCore::Task &task)
+{
+    beginInsertRows(QModelIndex(), _tasks.size(), _tasks.size());
+    _tasks.push_back(task);
+    endInsertRows();
+    emit countChanged();
+}
+
 const PointlessCore::Task *TaskModel::taskAt(int row) const
 {
     if (row < 0 || row >= static_cast<int>(_tasks.size()))

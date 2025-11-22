@@ -13,6 +13,8 @@
 #include <QTimer>
 
 #include <cstdlib>
+#include <QUuid>
+#include <QDateTime>
 
 
 Controller::Controller(QObject *parent)
@@ -157,6 +159,20 @@ bool Controller::isIOS() const
 #endif
 }
 
+
+void Controller::addNewTask(const QString &title)
+{
+    if (title.isEmpty())
+        return;
+
+    PointlessCore::Task task;
+    task.uuid = QUuid::createUuid().toString(QUuid::WithoutBraces).toStdString();
+    task.title = title.toStdString();
+    task.creationTimestamp = std::chrono::system_clock::now();
+    task.modificationTimestamp = task.creationTimestamp;
+
+    _taskModel->addTask(task);
+}
 
 QString Controller::colorFromTag(const QString &tagName) const
 {
