@@ -27,7 +27,7 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Install libc++ and libc++abi (for x64-linux-libcxx triplet)
+    - name: Install clang
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
