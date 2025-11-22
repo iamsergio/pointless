@@ -63,8 +63,8 @@ ApplicationWindow {
                     backgroundColor: "transparent"
                     anchors.top: parent.top
                     anchors.right: parent.right
-                    anchors.topMargin: 16
-                    anchors.rightMargin: 16
+                    anchors.topMargin: Style.fromPixel(16)
+                    anchors.rightMargin: Style.fromPixel(16)
                     z: 100
                     onClicked: Controller.refresh()
                 }
@@ -77,8 +77,8 @@ ApplicationWindow {
                     anchors {
                         left: parent.left
                         bottom: parent.bottom
-                        leftMargin: 16
-                        bottomMargin: 16
+                        leftMargin: Style.fromPixel(16)
+                        bottomMargin: Style.fromPixel(16)
                     }
                     visible: Controller.isDebug
                     z: 100
