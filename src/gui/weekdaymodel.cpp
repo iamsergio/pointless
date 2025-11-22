@@ -11,6 +11,11 @@ WeekdayModel::WeekdayModel(QObject *parent)
         auto *filter = new TaskFilterModel(this);
         _taskModels[i] = filter;
     }
+
+    connect(this, &QAbstractListModel::rowsInserted, this, &WeekdayModel::countChanged);
+    connect(this, &QAbstractListModel::rowsRemoved, this, &WeekdayModel::countChanged);
+    connect(this, &QAbstractListModel::modelReset, this, &WeekdayModel::countChanged);
+    connect(this, &QAbstractListModel::layoutChanged, this, &WeekdayModel::countChanged);
 }
 QDate WeekdayModel::mondayDate() const
 {
@@ -39,6 +44,11 @@ int WeekdayModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid() || !_mondayDate.isValid())
         return 0;
     return static_cast<int>(_taskModels.size());
+}
+
+int WeekdayModel::count() const
+{
+    return rowCount();
 }
 
 QVariant WeekdayModel::data(const QModelIndex &index, int role) const
