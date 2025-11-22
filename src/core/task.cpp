@@ -2,7 +2,11 @@
 // SPDX-License-Identifier: MIT
 
 #include "task.h"
+#include "logger.h"
 #include "tag.h"
+
+#include <iomanip>
+#include <sstream>
 
 namespace PointlessCore {
 
@@ -56,6 +60,34 @@ bool Task::isDueIn(std::chrono::days days) const
     const auto now = std::chrono::system_clock::now();
     const auto due = *dueDate;
     return due <= now + days && due >= now;
+}
+
+void Task::dumpDebug() const
+{
+    std::string json;
+    if (glz::write_json(*this, json)) {
+        P_LOG_ERROR("Failed to serialize task to JSON");
+    } else {
+        auto pretty = glz::prettify_json(json);
+        P_LOG_DEBUG("Task JSON: {}", pretty);
+    }
+
+    auto timeToString = [](const std::chrono::system_clock::time_point &tp) {
+        auto t = std::chrono::system_clock::to_time_t(tp);
+        std::stringstream ss;
+        ss << std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S");
+        return ss.str();
+    };
+
+    P_LOG_DEBUG("Creation: {}", timeToString(creationTimestamp));
+    if (modificationTimestamp)
+        P_LOG_DEBUG("Modification: {}", timeToString(*modificationTimestamp));
+    if (lastPomodoroDate)
+        P_LOG_DEBUG("Last Pomodoro: {}", timeToString(*lastPomodoroDate));
+    if (dueDate)
+        P_LOG_DEBUG("Due: {}", timeToString(*dueDate));
+    if (completionDate)
+        P_LOG_DEBUG("Completion: {}", timeToString(*completionDate));
 }
 
 } // namespace PointlessCore

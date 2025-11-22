@@ -62,6 +62,7 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         if (task.deviceCalendarName && !task.deviceCalendarName->empty()) {
             return QString::fromStdString(*task.deviceCalendarName);
         }
+    default:
         return QVariant();
     }
 
@@ -102,4 +103,15 @@ const PointlessCore::Task *TaskModel::taskAt(int row) const
     if (row < 0 || row >= static_cast<int>(_tasks.size()))
         return nullptr;
     return &_tasks[row];
+}
+
+const PointlessCore::Task *TaskModel::taskForUuid(const QString &taskUuid) const
+{
+    std::string uuidStr = taskUuid.toStdString();
+    for (const auto &task : _tasks) {
+        if (task.uuid == uuidStr) {
+            return &task;
+        }
+    }
+    return nullptr;
 }

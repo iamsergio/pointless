@@ -103,6 +103,10 @@ Item {
                     taskTagName: tagName
                     taskIsFromCalendar: isFromCalendar
                     taskCalendarName: calendarName
+
+                    onClicked: {
+                       Controller.dumpTaskDebug(uuid);
+                    }
                 }
             }
         }

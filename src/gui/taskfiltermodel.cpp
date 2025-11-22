@@ -88,7 +88,7 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
             return true;
         }
 
-        if (taskDueDate == _dateFilter) {
+        if (!isOverdue && taskDueDate == _dateFilter) {
             return true;
         }
 

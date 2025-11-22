@@ -24,6 +24,8 @@ public:
     bool isCurrent() const;
     bool isDueIn(std::chrono::days days) const;
 
+    void dumpDebug() const;
+
     std::string tagName() const;
 
     int revision = -1;

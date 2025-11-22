@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
+#include "../core/logger.h"
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QDirIterator>
@@ -34,6 +36,11 @@ int main(int argc, char *argv[])
 
     if (engine.rootObjects().isEmpty())
         return -1;
+
+    if (qEnvironmentVariableIsSet("VERBOSE")) {
+        P_LOG_INFO("VERBOSE environment variable is set, using debug log level");
+        Logger::getLogger()->set_log_level(quill::LogLevel::Debug);
+    }
 
     // printQrcContents();
 

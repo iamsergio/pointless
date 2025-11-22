@@ -12,6 +12,7 @@
 
 #include <QTimer>
 
+#include <cstdlib>
 
 
 Controller::Controller(QObject *parent)
@@ -170,4 +171,20 @@ QString Controller::colorFromTag(const QString &tagName) const
         return "#555555";
     int index = qAbs(qHash(tagName)) % colors.size();
     return colors.at(index);
+}
+
+bool Controller::isVerbose() const
+{
+    static bool is = std::getenv("POINTLESS_IS_VERBOSE") != nullptr;
+    return is;
+}
+
+void Controller::dumpTaskDebug(const QString &taskUuid) const
+{
+    const auto *task = _taskModel->taskForUuid(taskUuid);
+    if (!task) {
+        P_LOG_ERROR("Invalid task UUID: {}", taskUuid.toStdString());
+        return;
+    }
+    task->dumpDebug();
 }

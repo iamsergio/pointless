@@ -28,6 +28,7 @@ class Controller : public QObject
     Q_PROPERTY(bool isMobile READ isMobile CONSTANT)
     Q_PROPERTY(bool isAndroid READ isAndroid CONSTANT)
     Q_PROPERTY(bool isIOS READ isIOS CONSTANT)
+    Q_PROPERTY(bool isVerbose READ isVerbose CONSTANT)
 public:
     TaskFilterModel *taskFilterModel() const;
     enum class ViewType {
@@ -56,6 +57,9 @@ public:
     bool isMobile() const;
     bool isAndroid() const;
     bool isIOS() const;
+    bool isVerbose() const;
+
+    Q_INVOKABLE void dumpTaskDebug(const QString &taskUuid) const;
 
 Q_SIGNALS:
     void currentViewTypeChanged();

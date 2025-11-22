@@ -37,6 +37,7 @@ public:
 
     void setTasks(const std::vector<PointlessCore::Task> &tasks);
     const PointlessCore::Task *taskAt(int row) const;
+    const PointlessCore::Task *taskForUuid(const QString &taskUuid) const;
 
 Q_SIGNALS:
     void countChanged();

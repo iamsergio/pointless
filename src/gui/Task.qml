@@ -23,74 +23,84 @@ Rectangle {
     color: Style.taskBackground
     radius: 10
 
-    RowLayout {
+    signal clicked;
+
+    MouseArea {
         anchors.fill: parent
-        anchors.leftMargin: Style.fromPixel(10)
-        anchors.rightMargin: Style.fromPixel(10)
-        spacing: Style.fromPixel(15)
-
-        CheckBox {
-            checked: root.taskIsDone
-            onClicked: {}
+        hoverEnabled: true
+        onClicked: {
+            root.clicked();
         }
 
-        ColumnLayout {
-            Layout.fillWidth: true
-            spacing: Style.fromPixel(5)
+        RowLayout {
+            anchors.fill: parent
+            anchors.leftMargin: Style.fromPixel(10)
+            anchors.rightMargin: Style.fromPixel(10)
+            spacing: Style.fromPixel(15)
 
-            Text {
-                text: root.taskTitle
-                font.pixelSize: Style.fromPixel(16)
-                color: root.taskIsDone ? Style.taskCompletedTextColor : "#ffffff"
-                font.strikeout: root.taskIsDone
+            // CheckBox {
+            //     checked: root.taskIsDone
+            //     onClicked: {}
+            // }
+
+            ColumnLayout {
                 Layout.fillWidth: true
-                elide: Text.ElideRight
-            }
-
-            RowLayout {
-                spacing: Style.fromPixel(8)
-                visible: dateText.visible || calendarText.visible
+                spacing: Style.fromPixel(5)
 
                 Text {
-                    id: calendarText
-                    visible: root.taskIsFromCalendar && root.taskCalendarName !== ""
-                    text: "[" + root.taskCalendarName + "]"
-                    font.pixelSize: Style.fromPixel(11)
-                    color: "#00ff00"
+                    text: root.taskTitle
+                    font.pixelSize: Style.fromPixel(16)
+                    color: root.taskIsDone ? Style.taskCompletedTextColor : "#ffffff"
+                    font.strikeout: root.taskIsDone
+                    Layout.fillWidth: true
+                    elide: Text.ElideRight
                 }
+
+                RowLayout {
+                    spacing: Style.fromPixel(8)
+                    visible: dateText.visible || calendarText.visible
+
+                    Text {
+                        id: calendarText
+                        visible: root.taskIsFromCalendar && root.taskCalendarName !== ""
+                        text: "[" + root.taskCalendarName + "]"
+                        font.pixelSize: Style.fromPixel(11)
+                        color: "#00ff00"
+                    }
+
+                    Text {
+                        id: dateText
+                        text: root.taskHasDueDate ? root.taskDueDate : ""
+                        font.pixelSize: Style.fromPixel(11)
+                        color: Style.taskSecondaryTextColor
+                        visible: Controller.currentViewType !== Controller.Week
+                    }
+                }
+            }
+
+            Rectangle {
+                visible: root.taskTagName !== "" && Controller.currentViewType === Controller.Week
+                color: Controller.colorFromTag(root.taskTagName)
+                radius: Style.fromPixel(10)
+                implicitHeight: Style.fromPixel(18)
+                implicitWidth: tagText.implicitWidth + Style.fromPixel(14)
+                Layout.alignment: Qt.AlignVCenter
 
                 Text {
-                    id: dateText
-                    text: root.taskHasDueDate ? root.taskDueDate : ""
-                    font.pixelSize: Style.fromPixel(11)
-                    color: Style.taskSecondaryTextColor
-                    visible: Controller.currentViewType !== Controller.Week
+                    id: tagText
+                    anchors.centerIn: parent
+                    text: root.taskTagName
+                    color: "white"
+                    font.pixelSize: Style.fromPixel(12)
                 }
             }
-        }
 
-        Rectangle {
-            visible: root.taskTagName !== "" && Controller.currentViewType === Controller.Week
-            color: Controller.colorFromTag(root.taskTagName)
-            radius: Style.fromPixel(10)
-            implicitHeight: Style.fromPixel(18)
-            implicitWidth: tagText.implicitWidth + Style.fromPixel(14)
-            Layout.alignment: Qt.AlignVCenter
-
-            Text {
-                id: tagText
-                anchors.centerIn: parent
-                text: root.taskTagName
-                color: "white"
-                font.pixelSize: Style.fromPixel(12)
+            FontAwesomeButton {
+                fontAwesomeIcon: "ellipsis-vertical"
+                iconColor: Style.iconColor
+                backgroundColor: "transparent"
+                onClicked: {}
             }
-        }
-
-        FontAwesomeButton {
-            fontAwesomeIcon: "ellipsis-vertical"
-            iconColor: Style.iconColor
-            backgroundColor: "transparent"
-            onClicked: {}
         }
     }
 }
