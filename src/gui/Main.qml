@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
-import QtQuick 
+import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import pointless
@@ -17,122 +17,130 @@ ApplicationWindow {
     topPadding: 0
     bottomPadding: 0
 
-    EditTask {
-        id: editTaskView
-        anchors.fill: parent
-        visible: Controller.isEditing
-        z: mainView.z + 1
-
-        onBackClicked: {
-            Controller.isEditing = false;
-            Controller.uuidBeingEdited = "";
-        }
-
-        onSaveClicked: {
-            // Implement save logic here
-            Controller.isEditing = false;
-            Controller.uuidBeingEdited = "";
-        }
-    }
-
     Rectangle {
-        id: mainView
         anchors.fill: parent
-        anchors.topMargin: parent.SafeArea.margins.top
-
         color: Style.background
 
-        LoginScreen {
-            id: loginScreen
+        Item {
+            id: withinSafeArea
             anchors.fill: parent
-            visible: false
-            z: 200
-        }
+            anchors.topMargin: parent.SafeArea.margins.top
 
-        // Overlaid refresh button
-        FontAwesomeButton {
-            fontAwesomeIcon: "\uf021" // FontAwesome refresh icon
-            iconSize: Style.fromPixel(16)
-            iconColor: Style.iconColor
-            backgroundColor: "transparent"
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.topMargin: 16
-            anchors.rightMargin: 16
-            z: 100
-            onClicked: Controller.refresh()
-        }
+            EditTask {
+                id: editTaskView
+                anchors.fill: parent
+                visible: Controller.isEditing
+                z: mainView.z + 1
 
-        FontAwesomeButton {
-            fontAwesomeIcon: "\uf121"
-            iconSize: Style.fromPixel(16)
-            iconColor: "red"
-            backgroundColor: "transparent"
-            anchors {
-                left: parent.left
-                bottom: parent.bottom
-                leftMargin: 16
-                bottomMargin: 16
-            }
-            visible: Controller.isDebug
-            z: 100
-        }
-
-        ColumnLayout {
-            anchors.fill: parent
-            anchors.margins: Style.fromPixel(20)
-
-            RowLayout {
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignLeft
-                spacing: Style.fromPixel(10)
-
-                ViewButton {
-                    text: "Week"
-                    isActive: Controller.currentViewType === Controller.Week
-                    onClicked: Controller.currentViewType = Controller.Week
+                onBackClicked: {
+                    Controller.isEditing = false;
+                    Controller.uuidBeingEdited = "";
                 }
 
-                ViewButton {
-                    text: "Soon"
-                    isActive: Controller.currentViewType === Controller.Soon
-                    onClicked: Controller.currentViewType = Controller.Soon
-                }
-
-                ViewButton {
-                    text: "Later"
-                    isActive: Controller.currentViewType === Controller.Later
-                    onClicked: Controller.currentViewType = Controller.Later
+                onSaveClicked: {
+                    // Implement save logic here
+                    Controller.isEditing = false;
+                    Controller.uuidBeingEdited = "";
                 }
             }
 
-            WeekNavigator {
-                Layout.fillWidth: true
-                visible: Controller.currentViewType === Controller.Week
-            }
+            Item {
+                id: mainView
+                anchors.fill: parent
 
-            Rectangle {
-                Layout.fillWidth: true
-                implicitHeight: Style.fromPixel(1)
-                color: Style.taskBackground
-            }
+                LoginScreen {
+                    id: loginScreen
+                    anchors.fill: parent
+                    visible: false
+                    z: 200
+                }
 
-            WeekView {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                visible: Controller.currentViewType === Controller.Week
-            }
+                // Overlaid refresh button
+                FontAwesomeButton {
+                    fontAwesomeIcon: "\uf021" // FontAwesome refresh icon
+                    iconSize: Style.fromPixel(16)
+                    iconColor: Style.iconColor
+                    backgroundColor: "transparent"
+                    anchors.top: parent.top
+                    anchors.right: parent.right
+                    anchors.topMargin: 16
+                    anchors.rightMargin: 16
+                    z: 100
+                    onClicked: Controller.refresh()
+                }
 
-            SoonView {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                visible: Controller.currentViewType === Controller.Soon
-            }
+                FontAwesomeButton {
+                    fontAwesomeIcon: "\uf121"
+                    iconSize: Style.fromPixel(16)
+                    iconColor: "red"
+                    backgroundColor: "transparent"
+                    anchors {
+                        left: parent.left
+                        bottom: parent.bottom
+                        leftMargin: 16
+                        bottomMargin: 16
+                    }
+                    visible: Controller.isDebug
+                    z: 100
+                }
 
-            LaterView {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                visible: Controller.currentViewType === Controller.Later
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: Style.fromPixel(20)
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignLeft
+                        spacing: Style.fromPixel(10)
+
+                        ViewButton {
+                            text: "Week"
+                            isActive: Controller.currentViewType === Controller.Week
+                            onClicked: Controller.currentViewType = Controller.Week
+                        }
+
+                        ViewButton {
+                            text: "Soon"
+                            isActive: Controller.currentViewType === Controller.Soon
+                            onClicked: Controller.currentViewType = Controller.Soon
+                        }
+
+                        ViewButton {
+                            text: "Later"
+                            isActive: Controller.currentViewType === Controller.Later
+                            onClicked: Controller.currentViewType = Controller.Later
+                        }
+                    }
+
+                    WeekNavigator {
+                        Layout.fillWidth: true
+                        visible: Controller.currentViewType === Controller.Week
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        implicitHeight: Style.fromPixel(1)
+                        color: Style.taskBackground
+                    }
+
+                    WeekView {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        visible: Controller.currentViewType === Controller.Week
+                    }
+
+                    SoonView {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        visible: Controller.currentViewType === Controller.Soon
+                    }
+
+                    LaterView {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        visible: Controller.currentViewType === Controller.Later
+                    }
+                }
             }
         }
     }
