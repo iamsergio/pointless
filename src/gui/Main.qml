@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
-import pointless 1.0
+import QtQuick 
+import QtQuick.Controls
+import QtQuick.Layouts
+import pointless
 
 ApplicationWindow {
     visible: true
@@ -14,9 +14,13 @@ ApplicationWindow {
     flags: Qt.Window | Qt.ExpandedClientAreaHint | Qt.NoTitleBarBackgroundHint
 
     title: "Pointless"
+    topPadding: 0
+    bottomPadding: 0
 
     Rectangle {
         anchors.fill: parent
+        anchors.topMargin: parent.SafeArea.margins.top
+
         color: Style.background
 
         LoginScreen {
