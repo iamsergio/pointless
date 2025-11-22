@@ -159,6 +159,33 @@ bool Controller::isIOS() const
 #endif
 }
 
+QString Controller::uuidBeingEdited() const
+{
+    return _uuidBeingEdited;
+}
+
+void Controller::setUuidBeingEdited(const QString &uuid)
+{
+    if (_uuidBeingEdited == uuid)
+        return;
+
+    _uuidBeingEdited = uuid;
+    emit uuidBeingEditedChanged();
+}
+
+bool Controller::isEditing() const
+{
+    return _isEditing;
+}
+
+void Controller::setIsEditing(bool isEditing)
+{
+    if (_isEditing == isEditing)
+        return;
+
+    _isEditing = isEditing;
+    emit isEditingChanged();
+}
 
 void Controller::addNewTask(const QString &title)
 {

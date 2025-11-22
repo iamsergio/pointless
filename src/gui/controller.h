@@ -29,6 +29,8 @@ class Controller : public QObject
     Q_PROPERTY(bool isAndroid READ isAndroid CONSTANT)
     Q_PROPERTY(bool isIOS READ isIOS CONSTANT)
     Q_PROPERTY(bool isVerbose READ isVerbose CONSTANT)
+    Q_PROPERTY(bool isEditing READ isEditing WRITE setIsEditing NOTIFY isEditingChanged)
+    Q_PROPERTY(QString uuidBeingEdited READ uuidBeingEdited WRITE setUuidBeingEdited NOTIFY uuidBeingEditedChanged)
 public:
     TaskFilterModel *taskFilterModel() const;
     enum class ViewType {
@@ -59,6 +61,10 @@ public:
     bool isAndroid() const;
     bool isIOS() const;
     bool isVerbose() const;
+    bool isEditing() const;
+    void setIsEditing(bool isEditing);
+    QString uuidBeingEdited() const;
+    void setUuidBeingEdited(const QString &uuid);
 
     Q_INVOKABLE void dumpTaskDebug(const QString &taskUuid) const;
 
@@ -66,9 +72,13 @@ Q_SIGNALS:
     void currentViewTypeChanged();
     void navigatorStartDateChanged();
     void navigatorEndDateChanged();
+    void isEditingChanged();
+    void uuidBeingEditedChanged();
 
 private:
     ViewType _currentViewType = ViewType::Week;
+    bool _isEditing = false;
+    QString _uuidBeingEdited;
     QDate _navigatorStartDate;
     TaskModel *_taskModel = nullptr;
     TagModel *_tagModel = nullptr;

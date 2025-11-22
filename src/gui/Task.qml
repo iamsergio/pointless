@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import QtQuick 2.15
+import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
 import pointless 1.0
@@ -99,7 +100,23 @@ Rectangle {
                 fontAwesomeIcon: "ellipsis-vertical"
                 iconColor: Style.iconColor
                 backgroundColor: "transparent"
-                onClicked: {}
+                onClicked: optionsMenu.popup()
+            }
+
+            Menu {
+                id: optionsMenu
+                MenuItem {
+                    text: "Edit..."
+                    onTriggered: {
+                        Controller.isEditing = true;
+                        Controller.uuidBeingEdited = root.taskUuid;
+                    }
+                }
+                MenuItem { text: "Move to Soon" }
+                MenuItem { text: "Move to Later" }
+                MenuItem { text: "Move to Tomorrow" }
+                MenuItem { text: "Move to Monday" }
+                MenuItem { text: "Delete" }
             }
         }
     }

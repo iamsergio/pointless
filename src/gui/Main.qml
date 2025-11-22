@@ -17,6 +17,24 @@ ApplicationWindow {
     topPadding: 0
     bottomPadding: 0
 
+    EditTask {
+        id: editTaskView
+        anchors.fill: parent
+        visible: Controller.isEditing
+        z: 300
+
+        onBackClicked: {
+            Controller.isEditing = false;
+            Controller.uuidBeingEdited = "";
+        }
+
+        onSaveClicked: {
+            // Implement save logic here
+            Controller.isEditing = false;
+            Controller.uuidBeingEdited = "";
+        }
+    }
+
     Rectangle {
         anchors.fill: parent
         anchors.topMargin: parent.SafeArea.margins.top
