@@ -3,13 +3,18 @@
 
 #include "weekdaymodel.h"
 #include "taskfiltermodel.h"
+#include "../core/logger.h"
+#include "date_utils.h"
 
 WeekdayModel::WeekdayModel(QObject *parent)
     : QAbstractListModel(parent)
 {
+    _mondayDate = Gui::DateUtils::firstMondayOfWeek(QDate::currentDate());
+
     for (int i = 0; i < _taskModels.size(); ++i) {
         auto *filter = new TaskFilterModel(this);
         _taskModels[i] = filter;
+        _taskModels[i]->setDateFilter(_mondayDate.addDays(i));
     }
 
     connect(this, &QAbstractListModel::rowsInserted, this, &WeekdayModel::countChanged);
@@ -17,6 +22,7 @@ WeekdayModel::WeekdayModel(QObject *parent)
     connect(this, &QAbstractListModel::modelReset, this, &WeekdayModel::countChanged);
     connect(this, &QAbstractListModel::layoutChanged, this, &WeekdayModel::countChanged);
 }
+
 QDate WeekdayModel::mondayDate() const
 {
     return _mondayDate;
@@ -41,8 +47,14 @@ WeekdayModel::~WeekdayModel()
 
 int WeekdayModel::rowCount(const QModelIndex &parent) const
 {
-    if (parent.isValid() || !_mondayDate.isValid())
+    if (parent.isValid())
         return 0;
+
+    if (!_mondayDate.isValid()) {
+        P_LOG_CRITICAL("Monday date is not valid");
+        return 0;
+    }
+
     return static_cast<int>(_taskModels.size());
 }
 

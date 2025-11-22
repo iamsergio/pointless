@@ -43,12 +43,14 @@ void WeekdayFilterModel::setSource(QObject *source)
 
     auto *weekdayModel = qobject_cast<WeekdayModel *>(model);
     if (weekdayModel) {
-        for (int i = 0; i < weekdayModel->rowCount(); ++i) {
+        const int count = weekdayModel->rowCount();
+        for (int i = 0; i < count; ++i) {
             QModelIndex idx = weekdayModel->index(i, 0);
             auto *taskModel = weekdayModel->data(idx, WeekdayModel::TasksRole).value<TaskFilterModel *>();
             if (taskModel) {
-                connect(taskModel, &TaskFilterModel::countChanged, this, [this]() {
-                    invalidateFilter();
+                connect(taskModel, &TaskFilterModel::emptyChanged, this, [this]() {
+                    beginFilterChange();
+                    endFilterChange();
                 });
             } else {
                 P_LOG_CRITICAL("TaskFilterModel is null at row {}", i);
@@ -56,6 +58,8 @@ void WeekdayFilterModel::setSource(QObject *source)
         }
     } else if (model) {
         P_LOG_CRITICAL("WeekdayFilterModel source set to a model that is not WeekdayModel");
+    } else {
+        assert(false); // Not supported
     }
 
     emit sourceChanged();
@@ -66,8 +70,10 @@ bool WeekdayFilterModel::filterAcceptsRow(int source_row, const QModelIndex &sou
     QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
     QVariant data = sourceModel()->data(index, WeekdayModel::TasksRole);
     auto *model = data.value<TaskFilterModel *>();
-    if (!model)
+    if (!model) {
+        P_LOG_CRITICAL("TaskFilterModel is null at row {}", source_row);
         return false;
+    }
 
     return model->count() > 0;
 }

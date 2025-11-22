@@ -22,6 +22,10 @@ TaskFilterModel::TaskFilterModel(QObject *parent)
     connect(this, &QSortFilterProxyModel::rowsRemoved, this, &TaskFilterModel::countChanged);
     connect(this, &QSortFilterProxyModel::modelReset, this, &TaskFilterModel::countChanged);
     connect(this, &QSortFilterProxyModel::layoutChanged, this, &TaskFilterModel::countChanged);
+
+    connect(this, &TaskFilterModel::countChanged, this, &TaskFilterModel::evaluateEmpty);
+
+    _previousRowCount = rowCount();
 }
 int TaskFilterModel::count() const
 {
@@ -121,5 +125,25 @@ void TaskFilterModel::setDateFilter(const QDate &date)
     _dateFilter = date;
     endFilterChange();
 
+    setObjectName(QString("TaskFilterModel_Date_%1").arg(_dateFilter.toString(Qt::ISODate)));
+
     emit dateFilterChanged();
+}
+
+void TaskFilterModel::evaluateEmpty()
+{
+    const int currentCount = rowCount();
+
+    if (currentCount == 0 && _previousRowCount > 0) {
+        Q_EMIT emptyChanged();
+    } else if (currentCount > 0 && _previousRowCount == 0) {
+        Q_EMIT emptyChanged();
+    }
+
+    _previousRowCount = currentCount;
+}
+
+bool TaskFilterModel::isEmpty() const
+{
+    return rowCount() == 0;
 }

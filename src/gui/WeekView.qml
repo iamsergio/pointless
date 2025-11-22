@@ -14,6 +14,11 @@ Item {
         mondayDate: Controller.navigatorStartDate
     }
 
+    WeekdayFilterModel {
+        id: weekdayFilterModel
+        source: weekdayModel
+    }
+
     ListView {
         id: weekdayListView
         anchors {
@@ -24,7 +29,7 @@ Item {
         }
         clip: true
         spacing: Style.fromPixel(15)
-        model: weekdayModel
+        model: weekdayFilterModel
         delegate: ColumnLayout {
             id: column
             width: parent ? parent.width : 0
@@ -36,7 +41,6 @@ Item {
 
             RowLayout {
                 spacing: 0
-                visible: column.tasks.count > 0 || !column.isPast
                 Layout.fillWidth: true
                 Text {
                     font.pixelSize: Style.weekdayFontSize
@@ -59,7 +63,7 @@ Item {
             }
 
             Rectangle {
-                visible: column.tasks.count === 0 && !column.isPast
+                visible: column.tasks.count === 0
                 Layout.fillWidth: true
                 Layout.preferredHeight: 80
                 color: Style.background2
