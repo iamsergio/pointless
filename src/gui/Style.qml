@@ -26,6 +26,7 @@ Item {
     readonly property color taskSecondaryTextColor: "#808080"
     readonly property color taskCompletedTextColor: "#606060"
     readonly property color taskBackground: "#3e3f43"
+    readonly property color taskImportantBackground: "#f07e01"
 
     readonly property int sectionFontSize: fromPixel(14)
 

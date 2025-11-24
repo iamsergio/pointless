@@ -21,7 +21,7 @@ Rectangle {
     required property string taskCalendarName
 
     height: Style.fromPixel(55)
-    color: Style.taskBackground
+    color: taskIsImportant ? Style.taskImportantBackground : Style.taskBackground
     radius: 10
 
     signal clicked;

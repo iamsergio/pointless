@@ -106,6 +106,13 @@ bool TaskFilterModel::lessThan(const QModelIndex &source_left, const QModelIndex
     const QString leftTagName = sourceModel()->data(source_left, TaskModel::TagNameRole).toString();
     const QString rightTagName = sourceModel()->data(source_right, TaskModel::TagNameRole).toString();
 
+    if (_viewType == ViewType::Week) {
+        const bool leftIsImportant = sourceModel()->data(source_left, TaskModel::IsImportantRole).toBool();
+        const bool rightIsImportant = sourceModel()->data(source_right, TaskModel::IsImportantRole).toBool();
+        if (leftIsImportant != rightIsImportant)
+            return leftIsImportant;
+    }
+
     if (leftTagName != rightTagName)
         return leftTagName < rightTagName;
 
