@@ -5,6 +5,7 @@
         "quill",
         "glaze",
         "gtest",
-        "cpr"
+        "cpr",
+        "anyrpc"
     ]
 }
