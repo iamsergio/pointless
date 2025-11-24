@@ -23,6 +23,7 @@ ListView {
         required property string title
         required property bool isDone
         required property bool isImportant
+        required property bool isEvening
         required property var dueDate
         required property string tagName
         required property string hasDueDate
@@ -34,6 +35,7 @@ ListView {
         taskTitle: title
         taskIsDone: isDone
         taskIsImportant: isImportant
+        taskIsEvening: isEvening
         taskDueDate: dueDate
         taskTagName: tagName
         taskIsFromCalendar: isFromCalendar

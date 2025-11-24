@@ -86,6 +86,7 @@ Item {
                     required property string title
                     required property bool isDone
                     required property bool isImportant
+                    required property bool isEvening
                     required property var dueDate
                     required property bool hasDueDate
                     required property string tagName
@@ -98,6 +99,7 @@ Item {
                     taskTitle: title
                     taskIsDone: isDone
                     taskIsImportant: isImportant
+                    taskIsEvening: isEvening
                     taskDueDate: dueDate
                     taskHasDueDate: hasDueDate
                     taskTagName: tagName

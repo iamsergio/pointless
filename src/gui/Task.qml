@@ -14,6 +14,7 @@ Rectangle {
     required property string taskTitle
     required property bool taskIsDone
     required property bool taskIsImportant
+    required property bool taskIsEvening
     required property var taskDueDate
     required property bool taskHasDueDate
     required property string taskTagName
@@ -21,7 +22,7 @@ Rectangle {
     required property string taskCalendarName
 
     height: Style.fromPixel(55)
-    color: taskIsImportant ? Style.taskImportantBackground : Style.taskBackground
+    color: taskIsImportant ? Style.taskImportantBackground : (taskIsEvening ? Style.taskEveningBackground : Style.taskBackground)
     radius: 10
 
     signal clicked;

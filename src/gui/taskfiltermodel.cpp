@@ -111,6 +111,11 @@ bool TaskFilterModel::lessThan(const QModelIndex &source_left, const QModelIndex
         const bool rightIsImportant = sourceModel()->data(source_right, TaskModel::IsImportantRole).toBool();
         if (leftIsImportant != rightIsImportant)
             return leftIsImportant;
+
+        const bool leftIsEvening = sourceModel()->data(source_left, TaskModel::IsEveningRole).toBool();
+        const bool rightIsEvening = sourceModel()->data(source_right, TaskModel::IsEveningRole).toBool();
+        if (leftIsEvening != rightIsEvening)
+            return !leftIsEvening;
     }
 
     if (leftTagName != rightTagName)

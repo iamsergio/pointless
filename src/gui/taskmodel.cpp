@@ -62,6 +62,14 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         if (task.deviceCalendarName && !task.deviceCalendarName->empty()) {
             return QString::fromStdString(*task.deviceCalendarName);
         }
+        return QVariant();
+    case IsEveningRole:
+        if (task.dueDate) {
+            const auto timeT = std::chrono::system_clock::to_time_t(*task.dueDate);
+            const QDateTime dt = QDateTime::fromSecsSinceEpoch(timeT);
+            return dt.time().hour() >= 17;
+        }
+        return false;
     default:
         return QVariant();
     }
@@ -81,6 +89,7 @@ QHash<int, QByteArray> TaskModel::roleNames() const
     roles[TagNameRole] = "tagName";
     roles[IsFromCalendarRole] = "isFromCalendar";
     roles[CalendarNameRole] = "calendarName";
+    roles[IsEveningRole] = "isEvening";
     return roles;
 }
 
