@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 import QtQuick 2.15
-import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import pointless 1.0
 
@@ -78,7 +77,7 @@ Rectangle {
 
             Rectangle {
                 Layout.fillWidth: true
-                height: Style.fromPixel(50)
+                implicitHeight: Style.fromPixel(50)
                 color: Style.taskBackground
                 radius: 4
 

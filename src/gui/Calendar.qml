@@ -3,7 +3,6 @@
 
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
-import QtQuick.Controls 2.15
 import pointless 1.0
 
 Rectangle {
@@ -60,6 +59,7 @@ Rectangle {
             Repeater {
                 model: ["M", "T", "W", "T", "F", "S", "S"]
                 Text {
+                    required property string modelData
                     text: modelData
                     color: Style.calendarSecondaryText
                     font.pixelSize: Style.fromPixel(12)
@@ -79,20 +79,25 @@ Rectangle {
             interactive: false
 
             delegate: Item {
+                id: delegateRoot
                 width: GridView.view.cellWidth
                 height: GridView.view.cellHeight
+
+                required property bool isToday
+                required property string day
+                required property bool isCurrentMonth
 
                 Rectangle {
                     anchors.centerIn: parent
                     width: Math.min(parent.width, parent.height) * 0.8
                     height: width
                     radius: width / 2
-                    color: isToday ? Style.calendarHighlight : "transparent"
+                    color: delegateRoot.isToday ? Style.calendarHighlight : "transparent"
 
                     Text {
                         anchors.centerIn: parent
-                        text: day
-                        color: isToday ? "white" : (isCurrentMonth ? Style.calendarText : "transparent")
+                        text: delegateRoot.day
+                        color: delegateRoot.isToday ? "white" : (delegateRoot.isCurrentMonth ? Style.calendarText : "transparent")
                         font.pixelSize: Style.fromPixel(14)
                     }
                 }
