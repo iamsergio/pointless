@@ -52,6 +52,7 @@ qt_add_qml_module(
   ${PLAIN_QML_FILES}
   ${QML_SINGLETONS}
   SOURCES
+  application.cpp
   controller.cpp
   controller.h
   taskmodel.cpp
