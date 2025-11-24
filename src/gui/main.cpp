@@ -9,6 +9,11 @@
 #include <QDebug>
 #include <QQuickStyle>
 
+#ifdef POINTLESS_DEVELOPER_MODE
+#include <Spix/QtQmlBot.h>
+#include <Spix/AnyRpcServer.h>
+#endif
+
 void printQrcContents(const QString &path = ":/", int depth = 0)
 {
     QDirIterator it(path, QDirIterator::Subdirectories);
@@ -29,6 +34,13 @@ void printQrcContents(const QString &path = ":/", int depth = 0)
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
+
+#ifdef POINTLESS_DEVELOPER_MODE
+    spix::AnyRpcServer server;
+    auto bot = new spix::QtQmlBot();
+    bot->runTestServer(server);
+#endif
+
     QQuickStyle::setStyle("Fusion");
     QQmlApplicationEngine engine;
 

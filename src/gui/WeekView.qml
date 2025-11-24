@@ -51,6 +51,7 @@ Item {
                     Layout.fillWidth: true
                 }
                 FontAwesomeButton {
+                    id: addTaskButton
                     fontAwesomeIcon: "\uf067" // plus icon
                     iconSize: 18
                     iconColor: Style.iconColor

@@ -15,6 +15,10 @@ qt_add_executable(
   weekdaymodel.cpp
   calendarmodel.cpp)
 
+if(POINTLESS_DEVELOPER_MODE)
+  target_link_libraries(pointless PRIVATE Spix::QtQuick)
+endif()
+
 set_target_properties(pointless PROPERTIES AUTOMOC ON AUTORCC ON)
 
 set(QML_SINGLETONS Style.qml)
@@ -75,4 +79,11 @@ if(IOS)
                MACOSX_BUNDLE_IDENTIFIER ${BUNDLE_IDENTIFIER}
                MACOSX_BUNDLE TRUE
                MACOSX_BUNDLE_INFO_PLIST "${CMAKE_BINARY_DIR}/Info.plist")
+endif()
+
+if(POINTLESS_ENABLE_TESTS)
+  add_executable(test_gui tests/test_gui.cpp)
+  target_link_libraries(test_gui PRIVATE pointless_core GTest::gtest_main Spix::QtQuick)
+  target_include_directories(test_gui PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+  add_test(NAME test_gui COMMAND test_gui)
 endif()

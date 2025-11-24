@@ -128,6 +128,7 @@ Rectangle {
         }
 
         Button {
+            id: loginButton
             text: "Login"
             font.pixelSize: Style.fromPixel(20)
             background: Rectangle {

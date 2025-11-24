@@ -41,6 +41,7 @@ Rectangle {
             Item { Layout.fillWidth: true }
 
             FontAwesomeButton {
+                id: nextMonthButton
                 fontAwesomeIcon: "\uf054" // Chevron right
                 iconSize: Style.fromPixel(14)
                 iconColor: Style.calendarSecondaryText
@@ -71,6 +72,7 @@ Rectangle {
 
         // Days Grid
         GridView {
+            id: daysGrid
             Layout.fillWidth: true
             Layout.fillHeight: true
             model: calendarModel

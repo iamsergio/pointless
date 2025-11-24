@@ -23,6 +23,7 @@ Rectangle {
             spacing: Style.fromPixel(10)
 
             FontAwesomeButton {
+                id: backButton
                 fontAwesomeIcon: "\uf060" // Arrow left
                 backgroundColor: "transparent"
                 iconColor: "white"
@@ -39,6 +40,7 @@ Rectangle {
             }
 
             FontAwesomeButton {
+                id: saveButton
                 fontAwesomeIcon: "\uf00c" // Check
                 backgroundColor: "transparent"
                 iconColor: "white"
@@ -59,6 +61,7 @@ Rectangle {
             }
 
             LineEdit {
+                id: titleInput
                 Layout.fillWidth: true
             }
         }
@@ -116,6 +119,7 @@ Rectangle {
             }
 
             Calendar {
+                id: calendar
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }

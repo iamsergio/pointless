@@ -57,6 +57,7 @@ ApplicationWindow {
 
                 // Overlaid refresh button
                 FontAwesomeButton {
+                    id: refreshButton
                     fontAwesomeIcon: "\uf021" // FontAwesome refresh icon
                     iconSize: Style.fromPixel(16)
                     iconColor: Style.iconColor
@@ -70,6 +71,7 @@ ApplicationWindow {
                 }
 
                 FontAwesomeButton {
+                    id: debugButton
                     fontAwesomeIcon: "\uf121"
                     iconSize: Style.fromPixel(16)
                     iconColor: "red"
@@ -94,18 +96,21 @@ ApplicationWindow {
                         spacing: Style.fromPixel(10)
 
                         ViewButton {
+                            id: weekViewButton
                             text: "Week"
                             isActive: Controller.currentViewType === Controller.Week
                             onClicked: Controller.currentViewType = Controller.Week
                         }
 
                         ViewButton {
+                            id: soonViewButton
                             text: "Soon"
                             isActive: Controller.currentViewType === Controller.Soon
                             onClicked: Controller.currentViewType = Controller.Soon
                         }
 
                         ViewButton {
+                            id: laterViewButton
                             text: "Later"
                             isActive: Controller.currentViewType === Controller.Later
                             onClicked: Controller.currentViewType = Controller.Later
@@ -113,6 +118,7 @@ ApplicationWindow {
                     }
 
                     WeekNavigator {
+                        id: weekNavigator
                         Layout.fillWidth: true
                         visible: Controller.currentViewType === Controller.Week
                     }
@@ -124,18 +130,21 @@ ApplicationWindow {
                     }
 
                     WeekView {
+                        id: weekView
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         visible: Controller.currentViewType === Controller.Week
                     }
 
                     SoonView {
+                        id: soonView
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         visible: Controller.currentViewType === Controller.Soon
                     }
 
                     LaterView {
+                        id: laterView
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         visible: Controller.currentViewType === Controller.Later

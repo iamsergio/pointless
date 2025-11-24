@@ -98,6 +98,7 @@ Rectangle {
             }
 
             FontAwesomeButton {
+                id: optionsButton
                 fontAwesomeIcon: "ellipsis-vertical"
                 iconColor: Style.iconColor
                 backgroundColor: "transparent"
@@ -107,17 +108,18 @@ Rectangle {
             Menu {
                 id: optionsMenu
                 MenuItem {
+                    id: editMenuItem
                     text: "Edit..."
                     onTriggered: {
                         Controller.isEditing = true;
                         Controller.uuidBeingEdited = root.taskUuid;
                     }
                 }
-                MenuItem { text: "Move to Soon" }
-                MenuItem { text: "Move to Later" }
-                MenuItem { text: "Move to Tomorrow" }
-                MenuItem { text: "Move to Monday" }
-                MenuItem { text: "Delete" }
+                MenuItem { id: moveToSoonMenuItem; text: "Move to Soon" }
+                MenuItem { id: moveToLaterMenuItem; text: "Move to Later" }
+                MenuItem { id: moveToTomorrowMenuItem; text: "Move to Tomorrow" }
+                MenuItem { id: moveToMondayMenuItem; text: "Move to Monday" }
+                MenuItem { id: deleteMenuItem; text: "Delete" }
             }
         }
     }

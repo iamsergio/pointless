@@ -42,6 +42,7 @@ Rectangle {
         }
 
         FontAwesomeButton {
+            id: rightIcon
             fontAwesomeIcon: "\uf054"
             iconSize: leftIcon.iconSize
             iconColor: leftIcon.iconColor
