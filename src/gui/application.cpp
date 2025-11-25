@@ -7,14 +7,11 @@
 #include <QQuickStyle>
 #include <QDebug>
 
+using namespace pointless;
+
 Application::Application(int &argc, char **argv)
     : QGuiApplication(argc, argv)
 {
-#ifdef POINTLESS_DEVELOPER_MODE
-    _bot = new spix::QtQmlBot();
-    _bot->runTestServer(_server);
-#endif
-
     QQuickStyle::setStyle("Fusion");
 
     _engine.loadFromModule("pointless", "Main");

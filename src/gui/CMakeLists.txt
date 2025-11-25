@@ -6,20 +6,13 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickControls2)
 
 qt_policy(SET QTP0001 NEW)
 
-qt_add_executable(
-  pointless
-  main.cpp
-  controller.cpp
-  taskmodel.cpp
-  tagmodel.cpp
-  weekdaymodel.cpp
-  calendarmodel.cpp)
+qt_add_library(pointless_gui)
 
 if(POINTLESS_DEVELOPER_MODE)
-  target_link_libraries(pointless PRIVATE Spix::QtQuick)
+  target_link_libraries(pointless_gui PRIVATE Spix::QtQuick)
 endif()
 
-set_target_properties(pointless PROPERTIES AUTOMOC ON AUTORCC ON)
+set_target_properties(pointless_gui PROPERTIES AUTOMOC ON AUTORCC ON)
 
 set(QML_SINGLETONS Style.qml)
 
@@ -43,7 +36,7 @@ set(PLAIN_QML_FILES
     EditTask.qml)
 
 qt_add_qml_module(
-  pointless
+  pointless_gui
   URI
   pointless
   VERSION
@@ -71,7 +64,10 @@ qt_add_qml_module(
   fonts/FontAwesome7Free-Regular-400.otf
   fonts/FontAwesome7-Solid-900.otf)
 
-target_link_libraries(pointless PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Qt6::QuickControls2 pointless_core)
+target_link_libraries(pointless_gui PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Qt6::QuickControls2 pointless_core)
+
+qt_add_executable(pointless main.cpp)
+target_link_libraries(pointless PRIVATE pointless_gui Qt6::Core Qt6::Gui Qt6::Quick)
 
 if(IOS)
   set_target_properties(
@@ -84,7 +80,7 @@ endif()
 
 if(POINTLESS_ENABLE_TESTS)
   add_executable(test_gui tests/test_gui.cpp)
-  target_link_libraries(test_gui PRIVATE pointless_core GTest::gtest_main Spix::QtQuick)
+  target_link_libraries(test_gui PRIVATE pointless_core pointless_gui GTest::gtest_main Spix::QtQuick)
   target_include_directories(test_gui PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
   add_test(NAME test_gui COMMAND test_gui)
 endif()
