@@ -25,6 +25,8 @@ protected:
         auto text = getStringProperty("mainWindow/results", "text");
 
         P_LOG_INFO("Finished test!!");
+
+        qApp->quit();
     }
 };
 
