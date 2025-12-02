@@ -13,6 +13,7 @@ path = [
     "code.code-workspace.template",
     "src/core/tests/test.json",
     "src/core/tests/test_null_values.json",
+    "src/gui/tests/test_data.json",
     "vcpkg.json",
     ".clang-format",
     ".clangd",
