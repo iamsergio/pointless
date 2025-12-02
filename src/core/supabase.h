@@ -3,26 +3,29 @@
 
 #pragma once
 
+#include "data_provider.h"
+
 #include <glaze/glaze.hpp>
 
 #include <cstdint>
 #include <string>
 #include <vector>
 
-class Supabase
+class Supabase : public IDataProvider
 {
 public:
     explicit Supabase(const std::string &base_url, const std::string &anon_key);
 
     static Supabase createDefault();
+    static std::unique_ptr<Supabase> createDefaultPtr();
 
     bool login(const std::string &email, const std::string &password);
     bool loginWithDefaults();
-    bool isAuthenticated() const;
+    bool isAuthenticated() const override;
     void logout();
 
-    bool updateData(const std::string &data);
-    std::string retrieveData();
+    bool updateData(const std::string &data) override;
+    std::string retrieveData() override;
 
     Supabase(const Supabase &) = delete;
     Supabase &operator=(const Supabase &) = delete;

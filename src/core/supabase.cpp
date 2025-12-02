@@ -56,6 +56,19 @@ Supabase Supabase::createDefault()
     return Supabase(POINTLESS_SUPABASE_URL, POINTLESS_SUPABASE_ANON_KEY);
 }
 
+std::unique_ptr<Supabase> Supabase::createDefaultPtr()
+{
+#ifndef POINTLESS_SUPABASE_URL
+#error "POINTLESS_SUPABASE_URL is not defined"
+#endif
+
+#ifndef POINTLESS_SUPABASE_ANON_KEY
+#error "POINTLESS_SUPABASE_ANON_KEY is not defined"
+#endif
+
+    return std::make_unique<Supabase>(POINTLESS_SUPABASE_URL, POINTLESS_SUPABASE_ANON_KEY);
+}
+
 bool Supabase::login(const std::string &email, const std::string &password)
 {
     std::string auth_url = "https://" + _baseUrl + "/auth/v1/token?grant_type=password";

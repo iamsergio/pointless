@@ -10,6 +10,7 @@
 #include "Clock.h"
 #include "../core/task_manager.h"
 #include "../core/logger.h"
+#include "../core/data_provider.h"
 
 #include <QTimer>
 
@@ -20,7 +21,7 @@
 
 Controller::Controller(QObject *parent)
     : QObject(parent)
-    , _supabase(Supabase::createDefault())
+    , _dataProvider(IDataProvider::createProvider())
 {
     _taskModel = TaskModel::instance(this);
     _tagModel = new TagModel(this);
@@ -41,12 +42,12 @@ bool Controller::isDebug() const
 
 void Controller::refresh()
 {
-    if (!_supabase.isAuthenticated()) {
+    if (!_dataProvider->isAuthenticated()) {
         P_LOG_ERROR("Cannot refresh: not authenticated");
         return;
     }
 
-    std::string json_str = _supabase.retrieveData();
+    std::string json_str = _dataProvider->retrieveData();
     if (json_str.empty()) {
         P_LOG_ERROR("Cannot refresh: no data retrieved");
         return;

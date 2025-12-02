@@ -3,12 +3,14 @@
 
 #pragma once
 
-#include "../core/supabase.h"
+#include "../core/data_provider.h"
 #include "taskfiltermodel.h"
 
 #include <QDate>
 #include <QObject>
 #include <QtQml/qqmlregistration.h>
+
+#include <memory>
 
 class TaskModel;
 class TagModel;
@@ -83,5 +85,5 @@ private:
     TaskModel *_taskModel = nullptr;
     TagModel *_tagModel = nullptr;
     TaskFilterModel *_taskFilterModel = nullptr;
-    Supabase _supabase;
+    std::unique_ptr<IDataProvider> _dataProvider;
 };

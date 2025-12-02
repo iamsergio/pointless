@@ -13,6 +13,8 @@ add_library(
   tag.cpp
   date_utils.cpp
   supabase.cpp
+  data_provider.cpp
+  file_data_provider.cpp
   local_data.cpp
   logger.cpp)
 

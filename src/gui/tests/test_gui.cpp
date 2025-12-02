@@ -2,7 +2,10 @@
 // SPDX-License-Identifier: MIT
 
 #include "test_server.h"
+#include "../gui/Clock.h"
 #include "../core/logger.h"
+#include "../../core/data_provider.h"
+#include "../../core/file_data_provider.h"
 #include <gtest/gtest.h>
 
 #include <Spix/QtQmlBot.h>
@@ -39,9 +42,18 @@ TEST(DummyTest, BasicAssertions)
     EXPECT_NO_THROW(testServer.exec());
 }
 
+void initLocalTest()
+{
+    std::string testDataPath = std::string(POINTLESS_SOURCE_DIR) + "/src/gui/tests/test_data.json";
+    IDataProvider::setProvider(std::make_unique<FileDataProvider>(testDataPath));
+    Gui::Clock::setTestNow(QDateTime(QDate(2025, 12, 1), QTime(16, 0)));
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
+
+    initLocalTest();
 
     g_argc = argc;
     g_argv = argv;
