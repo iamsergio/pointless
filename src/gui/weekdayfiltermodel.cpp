@@ -9,6 +9,10 @@
 WeekdayFilterModel::WeekdayFilterModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
+    connect(this, &QAbstractListModel::rowsInserted, this, &WeekdayFilterModel::countChanged);
+    connect(this, &QAbstractListModel::rowsRemoved, this, &WeekdayFilterModel::countChanged);
+    connect(this, &QAbstractListModel::modelReset, this, &WeekdayFilterModel::countChanged);
+    connect(this, &QAbstractListModel::layoutChanged, this, &WeekdayFilterModel::countChanged);
 }
 
 WeekdayFilterModel::~WeekdayFilterModel()
@@ -76,4 +80,9 @@ bool WeekdayFilterModel::filterAcceptsRow(int source_row, const QModelIndex &sou
     }
 
     return model->count() > 0;
+}
+
+int WeekdayFilterModel::count() const
+{
+    return rowCount();
 }

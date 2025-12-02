@@ -9,6 +9,10 @@ import pointless 1.0
 Item {
     id: root
 
+    // for Spix
+    readonly property alias weekdayModelCount: weekdayModel.count
+    readonly property alias weekdayFilterModelCount: weekdayFilterModel.count
+
     WeekdayModel {
         id: weekdayModel
         mondayDate: Controller.navigatorStartDate

@@ -7,6 +7,8 @@ import QtQuick.Layouts
 import pointless
 
 ApplicationWindow {
+    id: mainWindow
+    objectName: "mainWindow"
     visible: true
     width: Style.fromPixel(640)
     height: Style.fromPixel(480)

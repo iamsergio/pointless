@@ -4,6 +4,10 @@
 #include "../application.h"
 
 #include <Spix/QtQmlBot.h>
+#include "../../../3rdparty/spix/libs/Scenes/QtQuick/src/Utils/DebugDump.h"
+
+#include <QQuickWindow>
+#include <QDebug>
 
 namespace pointless {
 class TestServer : public spix::TestServer
@@ -19,6 +23,17 @@ public:
     int exec()
     {
         return _app.exec();
+    }
+
+    void dumpAllPaths()
+    {
+        auto windows = QGuiApplication::topLevelWindows();
+        for (auto window : windows) {
+            if (auto quickWindow = qobject_cast<QQuickWindow *>(window)) {
+                qDebug() << "\n=== Dumping window: " << quickWindow->objectName() << " ===";
+                spix::utils::DumpQQuickItemTree(quickWindow->contentItem());
+            }
+        }
     }
 
 private:

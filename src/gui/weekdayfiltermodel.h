@@ -11,16 +11,17 @@ class WeekdayFilterModel : public QSortFilterProxyModel
     Q_OBJECT
     QML_ELEMENT
     Q_PROPERTY(QObject *source READ source WRITE setSource NOTIFY sourceChanged)
-
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
 public:
     explicit WeekdayFilterModel(QObject *parent = nullptr);
     ~WeekdayFilterModel() override;
 
     QObject *source() const;
     void setSource(QObject *source);
-
+    int count() const;
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 
 Q_SIGNALS:
     void sourceChanged();
+    void countChanged();
 };
