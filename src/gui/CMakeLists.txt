@@ -46,7 +46,9 @@ qt_add_qml_module(
   ${QML_SINGLETONS}
   SOURCES
   application.cpp
+  Clock.cpp
   controller.cpp
+  date_utils.cpp
   controller.h
   taskmodel.cpp
   taskmodel.h

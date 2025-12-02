@@ -5,11 +5,12 @@
 #include "taskfiltermodel.h"
 #include "../core/logger.h"
 #include "date_utils.h"
+#include "Clock.h"
 
 WeekdayModel::WeekdayModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    _mondayDate = Gui::DateUtils::firstMondayOfWeek(QDate::currentDate());
+    _mondayDate = Gui::DateUtils::firstMondayOfWeek(Gui::Clock::today());
 
     for (int i = 0; i < _taskModels.size(); ++i) {
         auto *filter = new TaskFilterModel(this);
@@ -74,7 +75,7 @@ QVariant WeekdayModel::data(const QModelIndex &index, int role) const
         return QVariant::fromValue(_taskModels[index.row()]);
     } else if (role == IsPastRole) {
         QDate date = _mondayDate.addDays(index.row());
-        return date < QDate::currentDate();
+        return date < Gui::Clock::today();
     }
     return QVariant();
 }

@@ -6,6 +6,7 @@
 #include "taskmodel.h"
 #include "logger.h"
 #include "date_utils.h"
+#include "Clock.h"
 
 #include <QDate>
 
@@ -83,7 +84,7 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
         if (viewIsToday && task->isCurrent() && !hasDueDate)
             return true;
 
-        const bool isOverdue = Gui::DateUtils::isOverdue(taskDueDate, QDate::currentDate());
+        const bool isOverdue = Gui::DateUtils::isOverdue(taskDueDate, Gui::Clock::today());
         if (isOverdue && viewIsToday) {
             return true;
         }

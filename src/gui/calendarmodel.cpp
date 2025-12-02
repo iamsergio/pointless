@@ -3,10 +3,11 @@
 
 #include "calendarmodel.h"
 #include "date_utils.h"
+#include "Clock.h"
 
 CalendarModel::CalendarModel(QObject *parent)
     : QAbstractListModel(parent)
-    , _month(QDate::currentDate())
+    , _month(Gui::Clock::today())
 {
 }
 
@@ -32,7 +33,7 @@ QVariant CalendarModel::data(const QModelIndex &index, int role) const
     case IsCurrentMonthRole:
         return date.month() == _month.month() && date.year() == _month.year();
     case IsTodayRole:
-        return date == QDate::currentDate();
+        return date == Gui::Clock::today();
     }
 
     return QVariant();

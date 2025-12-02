@@ -3,47 +3,23 @@
 
 #pragma once
 
-#include <QDate>
-#include <QDateTime>
-
 #include <chrono>
 #include <optional>
-#include <cassert>
+
+class QDate;
 
 namespace Gui {
 namespace DateUtils {
 
-inline QDate timepointToQDate(const std::optional<std::chrono::system_clock::time_point> &tp)
-{
-    if (!tp.has_value())
-        return QDate();
-    std::time_t tt = std::chrono::system_clock::to_time_t(tp.value());
-    return QDateTime::fromSecsSinceEpoch(static_cast<qint64>(tt)).date();
-}
+QDate timepointToQDate(const std::optional<std::chrono::system_clock::time_point> &tp);
 
-inline bool isMonday(const QDate &date)
-{
-    return date.dayOfWeek() == 1;
-}
+bool isMonday(QDate date);
 
-inline QDate firstMondayOfWeek(const QDate &date)
-{
-    if (isMonday(date))
-        return date;
-    return date.addDays(1 - date.dayOfWeek());
-}
+QDate firstMondayOfWeek(QDate date);
 
+bool isOverdue(QDate dueDate, QDate currentDate);
 
-inline bool isOverdue(QDate dueDate, QDate currentDate)
-{
-    assert(currentDate.isValid());
-    return dueDate.isValid() && currentDate.isValid() && dueDate < currentDate;
-}
-
-inline bool isToday(QDate date)
-{
-    return date == QDate::currentDate();
-}
+bool isToday(QDate date);
 
 } // namespace DateUtils
 } // namespace Gui
