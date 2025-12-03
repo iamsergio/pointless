@@ -28,7 +28,8 @@
             "isImportant": false,
             "hideOnWeekends": false,
             "tags": [
-                "current"
+                "current",
+                "work"
             ],
             "creationTimestamp": 1764590400000,
             "modificationTimestamp": null,
@@ -48,7 +49,8 @@
             "isImportant": false,
             "hideOnWeekends": false,
             "tags": [
-                "current"
+                "current",
+                "work"
             ],
             "creationTimestamp": 1764590400000,
             "modificationTimestamp": null,
@@ -227,7 +229,9 @@
             "isDone": false,
             "isImportant": false,
             "hideOnWeekends": false,
-            "tags": [],
+            "tags": [
+                "work"
+            ],
             "creationTimestamp": 1764590400000,
             "modificationTimestamp": null,
             "lastPomodoroDate": null,

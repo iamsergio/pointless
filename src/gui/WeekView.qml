@@ -41,6 +41,8 @@ Item {
             required property string prettyDate
             required property TaskFilterModel tasks
             required property bool isPast
+            required property int index
+
             spacing: Style.fromPixel(10)
 
             RowLayout {
@@ -87,6 +89,7 @@ Item {
             Repeater {
                 model: column.tasks
                 Task {
+                    required property int index
                     required property string uuid
                     required property string title
                     required property bool isDone
@@ -97,6 +100,8 @@ Item {
                     required property string tagName
                     required property bool isFromCalendar
                     required property string calendarName
+
+                    objectName: "task_" + column.index + "_" + index
 
                     Layout.fillWidth: true
 
