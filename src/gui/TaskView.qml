@@ -19,6 +19,7 @@ ListView {
     model: taskFilterModel
 
     delegate: Task {
+        required property int index
         required property string uuid
         required property string title
         required property bool isDone
@@ -29,6 +30,8 @@ ListView {
         required property string hasDueDate
         required property bool isFromCalendar
         required property string calendarName
+
+        objectName: "task_" + index
 
         width: ListView.view.width
         taskUuid: uuid

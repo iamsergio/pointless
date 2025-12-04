@@ -114,9 +114,26 @@ protected:
         EXPECT_EQ(getStringProperty("mainWindow/task_0_3/tagText", "text"), "work");
         EXPECT_EQ(getStringProperty("mainWindow/task_0_3/tagText", "visible"), "true");
 
+        mouseClick("mainWindow/soonViewButton");
+        wait(std::chrono::milliseconds(200));
+        EXPECT_EQ(getStringProperty("mainWindow/soonView", "count"), "9");
+
+        mouseClick("mainWindow/laterViewButton");
+        wait(std::chrono::milliseconds(200));
+        EXPECT_EQ(getStringProperty("mainWindow/laterView", "count"), "6");
+
+        laterActive = getStringProperty("mainWindow/laterViewButton", "isActive");
+        EXPECT_EQ(laterActive, "true");
+        weekActive = getStringProperty("mainWindow/weekViewButton", "isActive");
+        EXPECT_EQ(weekActive, "false");
+        soonActive = getStringProperty("mainWindow/soonViewButton", "isActive");
+        EXPECT_EQ(soonActive, "false");
+        EXPECT_EQ(getStringProperty("mainWindow/weekNavigator", "visible"), "false");
+
+
         P_LOG_INFO("Finished test!!");
 
-        // qApp->quit();
+        qApp->quit();
     }
 };
 
