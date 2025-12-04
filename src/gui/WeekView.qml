@@ -6,6 +6,8 @@ import QtQuick.Layouts 1.15
 
 import pointless 1.0
 
+pragma ComponentBehavior: Bound
+
 Item {
     id: root
 
