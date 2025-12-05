@@ -114,6 +114,8 @@ endif()
 
 if(POINTLESS_ENABLE_TESTS)
   add_subdirectory(3rdparty/spix)
+  target_compile_options(SpixCore PRIVATE -Wno-deprecated-declarations)
+  target_compile_options(SpixQtQuick PRIVATE -Wno-deprecated-declarations)
 endif()
 
 add_subdirectory(src)
