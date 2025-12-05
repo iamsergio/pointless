@@ -2,7 +2,10 @@
 // SPDX-License-Identifier: MIT
 
 #include "Clock.h"
+
+#ifdef POINTLESS_DEVELOPER_MODE
 #include "../core/Clock.h"
+#endif
 
 namespace Gui {
 

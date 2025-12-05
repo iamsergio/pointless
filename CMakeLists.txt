@@ -112,7 +112,7 @@ if(IOS)
   configure_file(${CMAKE_SOURCE_DIR}/src/ios/Info.plist.in ${CMAKE_BINARY_DIR}/Info.plist @ONLY)
 endif()
 
-if(POINTLESS_DEVELOPER_MODE)
+if(POINTLESS_ENABLE_TESTS)
   add_subdirectory(3rdparty/spix)
 endif()
 
