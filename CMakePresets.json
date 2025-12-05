@@ -25,6 +25,9 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "POINTLESS_DEVELOPER_MODE": "ON"
+      },
+      "errors": {
+        "dev": true
       }
     },
     {
