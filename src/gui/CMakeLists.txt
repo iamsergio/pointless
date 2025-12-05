@@ -64,7 +64,9 @@ qt_add_qml_module(
   RESOURCES
   fonts/FontAwesome7Brands-Regular-400.otf
   fonts/FontAwesome7Free-Regular-400.otf
-  fonts/FontAwesome7-Solid-900.otf)
+  fonts/FontAwesome7-Solid-900.otf
+  OUTPUT_DIRECTORY
+  ${CMAKE_BINARY_DIR}/pointless)
 
 target_link_libraries(pointless_gui PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Qt6::QuickControls2 pointless_core)
 
