@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "date_utils.h"
+#include "Clock.h"
 
 #include <gtest/gtest.h>
 
@@ -11,7 +12,7 @@
 using namespace PointlessCore::DateUtils;
 TEST(DateUtilsTest, ThisWeeksMonday)
 {
-    auto now = std::chrono::system_clock::now();
+    auto now = PointlessCore::Clock::now();
     auto monday = thisWeeksMonday(now);
     std::tm tm = {};
     std::time_t t = std::chrono::system_clock::to_time_t(monday);
@@ -33,7 +34,7 @@ TEST(DateUtilsTest, ThisWeeksMonday)
 
 TEST(DateUtilsTest, IsThisWeek)
 {
-    auto now = std::chrono::system_clock::now();
+    auto now = PointlessCore::Clock::now();
     auto monday = thisWeeksMonday(now);
     auto next_monday = nextMonday(monday);
     auto this_sunday = monday + std::chrono::hours(24 * 6);
@@ -44,7 +45,7 @@ TEST(DateUtilsTest, IsThisWeek)
 
 TEST(DateUtilsTest, IsNext7Days)
 {
-    auto now = std::chrono::system_clock::now();
+    auto now = PointlessCore::Clock::now();
     auto yesterday = now - std::chrono::hours(24);
     auto tomorrow = now + std::chrono::hours(24);
     EXPECT_TRUE(isNext7Days(now));
@@ -116,7 +117,7 @@ TEST(DateUtilsTest, IsWorkDay)
 
 TEST(DateUtilsTest, TrimTime)
 {
-    auto now = std::chrono::system_clock::now();
+    auto now = PointlessCore::Clock::now();
     auto trimmed = trimTime(now);
     std::tm tm = {};
     std::time_t t = std::chrono::system_clock::to_time_t(trimmed);

@@ -8,6 +8,7 @@
 #include "tagmodel.h"
 #include "date_utils.h"
 #include "Clock.h"
+#include "../core/Clock.h"
 #include "../core/task_manager.h"
 #include "../core/logger.h"
 #include "../core/data_provider.h"
@@ -197,7 +198,7 @@ void Controller::addNewTask(const QString &title)
     PointlessCore::Task task;
     task.uuid = QUuid::createUuid().toString(QUuid::WithoutBraces).toStdString();
     task.title = title.toStdString();
-    task.creationTimestamp = std::chrono::system_clock::now();
+    task.creationTimestamp = PointlessCore::Clock::now();
     task.modificationTimestamp = task.creationTimestamp;
 
     _taskModel->addTask(task);

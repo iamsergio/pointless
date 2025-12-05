@@ -116,11 +116,11 @@ protected:
 
         mouseClick("mainWindow/soonViewButton");
         wait(std::chrono::milliseconds(200));
-        EXPECT_EQ(getStringProperty("mainWindow/soonView", "count"), "9");
+        EXPECT_EQ(getStringProperty("mainWindow/soonView", "count"), "10");
 
         mouseClick("mainWindow/laterViewButton");
         wait(std::chrono::milliseconds(200));
-        EXPECT_EQ(getStringProperty("mainWindow/laterView", "count"), "6");
+        EXPECT_EQ(getStringProperty("mainWindow/laterView", "count"), "5");
 
         laterActive = getStringProperty("mainWindow/laterViewButton", "isActive");
         EXPECT_EQ(laterActive, "true");

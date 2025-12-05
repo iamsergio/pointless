@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "Clock.h"
+#include "../core/Clock.h"
 
 namespace Gui {
 
@@ -28,11 +29,15 @@ QDate Clock::today()
 void Clock::setTestNow(const QDateTime &t)
 {
     s_testTime = t;
+    auto millis = t.toMSecsSinceEpoch();
+    auto tp = std::chrono::system_clock::time_point(std::chrono::milliseconds(millis));
+    PointlessCore::Clock::setTestNow(tp);
 }
 
 void Clock::reset()
 {
     s_testTime = std::nullopt;
+    PointlessCore::Clock::reset();
 }
 #endif
 

@@ -8,6 +8,7 @@ find_package(cpr CONFIG REQUIRED)
 add_library(
   pointless_core STATIC
   pointless_core.cpp
+  Clock.cpp
   task.cpp
   task_manager.cpp
   tag.cpp

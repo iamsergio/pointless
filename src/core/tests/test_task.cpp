@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "task.h"
+#include "Clock.h"
 
 #include <gtest/gtest.h>
 #include <glaze/glaze.hpp>
@@ -21,7 +22,7 @@ TEST(TaskTest, SerializeJson)
     original_task.isDone = false;
     original_task.isImportant = true;
     original_task.hideOnWeekends = false;
-    original_task.creationTimestamp = std::chrono::system_clock::now();
+    original_task.creationTimestamp = PointlessCore::Clock::now();
     original_task.modificationTimestamp = original_task.creationTimestamp + std::chrono::hours(1);
     original_task.dueDate = original_task.creationTimestamp + std::chrono::hours(24 * 7);
     original_task.uuidInDeviceCalendar = "calendar-uuid-abc";
@@ -78,13 +79,13 @@ TEST(TaskTest, IsDueIn)
     EXPECT_FALSE(task.isDueIn(std::chrono::days(1)));
 
     // Due in 2 days
-    task.dueDate = std::chrono::system_clock::now() + std::chrono::hours(48);
+    task.dueDate = PointlessCore::Clock::now() + std::chrono::hours(48);
     EXPECT_TRUE(task.isDueIn(std::chrono::days(3)));
     EXPECT_TRUE(task.isDueIn(std::chrono::days(2)));
     EXPECT_FALSE(task.isDueIn(std::chrono::days(1)));
 
     // Due in the past
-    task.dueDate = std::chrono::system_clock::now() - std::chrono::hours(24);
+    task.dueDate = PointlessCore::Clock::now() - std::chrono::hours(24);
     EXPECT_FALSE(task.isDueIn(std::chrono::days(1)));
 }
 

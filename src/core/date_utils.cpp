@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "date_utils.h"
+#include "Clock.h"
 
 #include <ctime>
 #include <sstream>
@@ -56,7 +57,7 @@ std::chrono::system_clock::time_point trimTime(const std::chrono::system_clock::
 
 std::chrono::system_clock::time_point today()
 {
-    return trimTime(std::chrono::system_clock::now());
+    return trimTime(Clock::now());
 }
 
 bool isToday(const std::chrono::system_clock::time_point &date)
@@ -89,9 +90,15 @@ std::chrono::system_clock::time_point thisWeeksMonday(const std::chrono::system_
     return std::chrono::system_clock::from_time_t(t);
 }
 
+std::chrono::system_clock::time_point thisWeeksMonday()
+{
+    auto monday = thisWeeksMonday(Clock::now());
+    return trimTime(monday);
+}
+
 bool isThisWeek(const std::chrono::system_clock::time_point &date)
 {
-    auto monday = thisWeeksMonday(std::chrono::system_clock::now());
+    auto monday = thisWeeksMonday(Clock::now());
     return date >= monday && date < monday + std::chrono::hours(24 * 7);
 }
 

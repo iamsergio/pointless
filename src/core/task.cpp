@@ -4,6 +4,7 @@
 #include "task.h"
 #include "logger.h"
 #include "tag.h"
+#include "Clock.h"
 
 #include <iomanip>
 #include <sstream>
@@ -57,7 +58,7 @@ bool Task::isDueIn(std::chrono::days days) const
 {
     if (!dueDate)
         return false;
-    const auto now = std::chrono::system_clock::now();
+    const auto now = Clock::now();
     const auto due = *dueDate;
     return due <= now + days && due >= now;
 }
