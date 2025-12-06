@@ -16,5 +16,5 @@ std::unique_ptr<IDataProvider> IDataProvider::createProvider()
     if (g_provider) {
         return std::move(g_provider);
     }
-    return Supabase::createDefaultPtr();
+    return Supabase::createDefault();
 }

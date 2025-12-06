@@ -11,16 +11,16 @@ void supabase_test()
 {
     try {
         auto supabase = Supabase::createDefault();
-        supabase.loginWithDefaults();
+        supabase->loginWithDefaults();
 
-        if (!supabase.isAuthenticated()) {
+        if (!supabase->isAuthenticated()) {
             LOG_ERROR(Logger::getLogger(), "Failed to authenticate with Supabase");
             return;
         }
 
         LOG_INFO(Logger::getLogger(), "Successfully authenticated with Supabase");
 
-        std::string data = supabase.retrieveData();
+        std::string data = supabase->retrieveData();
 
         if (!data.empty()) {
             LOG_INFO(Logger::getLogger(), "Retrieved and decompressed data:\n{}", data);

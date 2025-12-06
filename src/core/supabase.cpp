@@ -39,20 +39,7 @@ Supabase::Supabase(const std::string &base_url, const std::string &anon_key)
     }
 }
 
-Supabase Supabase::createDefault()
-{
-#ifndef POINTLESS_SUPABASE_URL
-#error "POINTLESS_SUPABASE_URL is not defined"
-#endif
-
-#ifndef POINTLESS_SUPABASE_ANON_KEY
-#error "POINTLESS_SUPABASE_ANON_KEY is not defined"
-#endif
-
-    return Supabase(POINTLESS_SUPABASE_URL, POINTLESS_SUPABASE_ANON_KEY);
-}
-
-std::unique_ptr<Supabase> Supabase::createDefaultPtr()
+std::unique_ptr<Supabase> Supabase::createDefault()
 {
 #ifndef POINTLESS_SUPABASE_URL
 #error "POINTLESS_SUPABASE_URL is not defined"

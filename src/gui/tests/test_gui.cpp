@@ -158,7 +158,7 @@ void initDataProvider(IDataProvider::Type providerType)
         std::string testDataPath = std::string(POINTLESS_SOURCE_DIR) + "/src/gui/tests/test_data.json";
         IDataProvider::setProvider(std::make_unique<FileDataProvider>(testDataPath));
     } else if (providerType == IDataProvider::Type::Supabase) {
-        IDataProvider::setProvider(Supabase::createDefaultPtr());
+        IDataProvider::setProvider(Supabase::createDefault());
     }
 }
 

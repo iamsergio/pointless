@@ -16,8 +16,7 @@ class Supabase : public IDataProvider
 public:
     explicit Supabase(const std::string &base_url, const std::string &anon_key);
 
-    static Supabase createDefault();
-    static std::unique_ptr<Supabase> createDefaultPtr();
+    static std::unique_ptr<Supabase> createDefault();
 
     bool login(const std::string &email, const std::string &password) final;
     bool loginWithDefaults() override;
