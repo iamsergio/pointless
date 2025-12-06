@@ -7,7 +7,12 @@
 #include "../core/logger.h"
 #include "../../core/data_provider.h"
 #include "../../core/file_data_provider.h"
+#include "../../core/test_supabase_provider.h"
+#include "../../core/supabase.h"
+
 #include <gtest/gtest.h>
+
+#include <cstring>
 
 #include <Spix/QtQmlBot.h>
 #include <Spix/Data/ItemPath.h>
@@ -146,18 +151,39 @@ TEST(DummyTest, BasicAssertions)
     EXPECT_NO_THROW(testServer.exec());
 }
 
-void initLocalTest()
+void initDataProvider(IDataProvider::Type providerType)
 {
-    std::string testDataPath = std::string(POINTLESS_SOURCE_DIR) + "/src/gui/tests/test_data.json";
-    IDataProvider::setProvider(std::make_unique<FileDataProvider>(testDataPath));
     Gui::Clock::setTestNow(QDateTime(QDate(2025, 12, 1), QTime(16, 0)));
+    if (providerType == IDataProvider::Type::Local) {
+        std::string testDataPath = std::string(POINTLESS_SOURCE_DIR) + "/src/gui/tests/test_data.json";
+        IDataProvider::setProvider(std::make_unique<FileDataProvider>(testDataPath));
+    } else if (providerType == IDataProvider::Type::Supabase) {
+        IDataProvider::setProvider(Supabase::createDefaultPtr());
+    }
 }
 
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
 
-    initLocalTest();
+    IDataProvider::Type providerType = {};
+
+    for (int i = 1; i < argc; ++i) {
+        if (std::strcmp(argv[i], "--local") == 0) {
+            providerType = IDataProvider::Type::Local;
+            break;
+        } else if (std::strcmp(argv[i], "--supabase") == 0) {
+            providerType = IDataProvider::Type::TestSupabase;
+            break;
+        }
+    }
+
+    if (providerType == IDataProvider::Type::None) {
+        P_LOG_ERROR("Usage: {} --local | --supabase", argv[0]);
+        return 1;
+    }
+
+    initDataProvider(providerType);
 
     g_argc = argc;
     g_argv = argv;

@@ -10,6 +10,13 @@
 class IDataProvider
 {
 public:
+    enum class Type {
+        None = 0,
+        Local,
+        Supabase,
+        TestSupabase
+    };
+
     virtual ~IDataProvider() = default;
 
     virtual bool isAuthenticated() const = 0;
