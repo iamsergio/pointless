@@ -16,6 +16,10 @@
     ]
   },
   "settings": {
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "C_Cpp.autocomplete": "disabled",
+    "C_Cpp.errorSquiggles": "disabled",
+    "C_Cpp.formatting": "disabled",
     "files.trimTrailingWhitespace": true,
     "editor.formatOnSave": true,
     "clangd.arguments": [
@@ -55,6 +59,25 @@
         "sourceMap": {
           "/home/qt/work/qt": "/pub_data/installed/Qt/6.10.0/Src"
         }
+      },
+      {
+        "name": "Current Target (GDB Linux)",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${command:cmake.launchTargetPath}",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${command:cmake.buildDirectory}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ]
       }
     ]
   },
