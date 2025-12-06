@@ -92,3 +92,54 @@ void Task::dumpDebug() const
 }
 
 } // namespace PointlessCore
+
+namespace PointlessCore {
+
+void Task::mergeConflict(const Task &other)
+{
+    // Completion: Undone > Done
+    if (!isDone || !other.isDone) {
+        isDone = false;
+    } else {
+        isDone = true;
+    }
+
+    // Importance: Important > Not Important
+    if (isImportant || other.isImportant) {
+        isImportant = true;
+    }
+
+    auto myTime = modificationTimestamp.value_or(std::chrono::system_clock::time_point::min());
+    auto otherTime = other.modificationTimestamp.value_or(std::chrono::system_clock::time_point::min());
+
+    // Due Date
+    if (dueDate.has_value() && other.dueDate.has_value()) {
+        if (otherTime > myTime) {
+            dueDate = other.dueDate;
+        }
+    } else if (other.dueDate.has_value()) {
+        dueDate = other.dueDate;
+    }
+
+    // Title
+    if (otherTime > myTime) {
+        title = other.title;
+    }
+
+    // Tags: Union
+    for (const auto &tag : other.tags) {
+        if (!containsTag(tag)) {
+            tags.push_back(tag);
+        }
+    }
+
+    // Special Rule: Current wins over Soon
+    bool hasCurrent = containsTag(BUILTIN_TAG_CURRENT);
+    bool hasSoon = containsTag(BUILTIN_TAG_SOON);
+
+    if (hasCurrent && hasSoon) {
+        // Remove Soon
+        std::erase(tags, std::string(BUILTIN_TAG_SOON));
+    }
+}
+} // namespace PointlessCore

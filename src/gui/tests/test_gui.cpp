@@ -194,15 +194,18 @@ int main(int argc, char **argv)
 
     IDataProvider::Type providerType = {};
 
+    int newArgc = 1;
     for (int i = 1; i < argc; ++i) {
         if (std::strcmp(argv[i], "--local") == 0) {
             providerType = IDataProvider::Type::Local;
-            break;
         } else if (std::strcmp(argv[i], "--supabase") == 0) {
             providerType = IDataProvider::Type::TestSupabase;
-            break;
+        } else {
+            argv[newArgc++] = argv[i];
         }
     }
+    argv[newArgc] = nullptr;
+    argc = newArgc;
 
     if (providerType == IDataProvider::Type::None) {
         P_LOG_ERROR("Usage: {} --local | --supabase", argv[0]);

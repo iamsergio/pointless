@@ -17,6 +17,7 @@ add_library(
   data_provider.cpp
   file_data_provider.cpp
   local_data.cpp
+  merger.cpp
   test_supabase_provider.cpp
   logger.cpp)
 

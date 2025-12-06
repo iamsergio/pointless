@@ -19,6 +19,8 @@ struct Data
     int revision = 0;
     std::vector<Task> tasks;
     std::vector<Tag> tags;
+    std::vector<std::string> deletedTaskUuids;
+    std::vector<std::string> deletedTagNames;
 };
 
 class TaskManager
@@ -77,5 +79,7 @@ struct glz::meta<PointlessCore::Data>
     static constexpr auto value = object(
         "tasks", &T::tasks,
         "tags", &T::tags,
-        "revision", &T::revision);
+        "revision", &T::revision,
+        "deletedTaskUuids", &T::deletedTaskUuids,
+        "deletedTagNames", &T::deletedTagNames);
 };
