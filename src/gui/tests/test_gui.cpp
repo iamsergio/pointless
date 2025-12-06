@@ -13,6 +13,8 @@
 #include <gtest/gtest.h>
 
 #include <cstring>
+#include <fstream>
+#include <sstream>
 
 #include <Spix/QtQmlBot.h>
 #include <Spix/Data/ItemPath.h>
@@ -20,6 +22,8 @@
 
 static int g_argc;
 static char **g_argv;
+
+const std::string testDataPath = std::string(POINTLESS_SOURCE_DIR) + "/src/gui/tests/test_data.json";
 
 class MyTest : public pointless::TestServer
 {
@@ -155,10 +159,30 @@ void initDataProvider(IDataProvider::Type providerType)
 {
     Gui::Clock::setTestNow(QDateTime(QDate(2025, 12, 1), QTime(16, 0)));
     if (providerType == IDataProvider::Type::Local) {
-        std::string testDataPath = std::string(POINTLESS_SOURCE_DIR) + "/src/gui/tests/test_data.json";
         IDataProvider::setProvider(std::make_unique<FileDataProvider>(testDataPath));
     } else if (providerType == IDataProvider::Type::TestSupabase) {
-        IDataProvider::setProvider(std::make_unique<TestSupabaseProvider>());
+        auto provider = std::make_unique<TestSupabaseProvider>();
+        if (!provider->loginWithDefaults()) {
+            P_LOG_CRITICAL("Failed to login to Supabase for test initialization");
+            std::abort();
+        }
+
+        std::ifstream t(testDataPath);
+        if (!t.is_open()) {
+            P_LOG_CRITICAL("Failed to open test data file: {}", testDataPath);
+            std::abort();
+        }
+        std::stringstream buffer;
+        buffer << t.rdbuf();
+        std::string jsonContent = buffer.str();
+
+        if (!provider->updateData(jsonContent)) {
+            P_LOG_CRITICAL("Failed to update Supabase with test data");
+            std::abort();
+        }
+
+        provider->logout();
+        IDataProvider::setProvider(std::move(provider));
     } else {
         std::abort();
     }
