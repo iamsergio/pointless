@@ -31,114 +31,114 @@ protected:
     {
         P_LOG_INFO("Starting test!!");
 
-        // auto weekActive = getStringProperty("mainWindow/weekViewButton", "isActive");
-        // EXPECT_EQ(weekActive, "true");
+        auto weekActive = getStringProperty("mainWindow/weekViewButton", "isActive");
+        EXPECT_EQ(weekActive, "true");
 
-        // auto soonActive = getStringProperty("mainWindow/soonViewButton", "isActive");
-        // EXPECT_EQ(soonActive, "false");
+        auto soonActive = getStringProperty("mainWindow/soonViewButton", "isActive");
+        EXPECT_EQ(soonActive, "false");
 
-        // auto laterActive = getStringProperty("mainWindow/laterViewButton", "isActive");
-        // EXPECT_EQ(laterActive, "false");
+        auto laterActive = getStringProperty("mainWindow/laterViewButton", "isActive");
+        EXPECT_EQ(laterActive, "false");
 
-        // EXPECT_EQ(getStringProperty("mainWindow/weekViewButton", "enabled"), "true");
-        // EXPECT_EQ(getStringProperty("mainWindow/soonViewButton", "enabled"), "true");
-        // EXPECT_EQ(getStringProperty("mainWindow/laterViewButton", "enabled"), "true");
+        EXPECT_EQ(getStringProperty("mainWindow/weekViewButton", "enabled"), "true");
+        EXPECT_EQ(getStringProperty("mainWindow/soonViewButton", "enabled"), "true");
+        EXPECT_EQ(getStringProperty("mainWindow/laterViewButton", "enabled"), "true");
 
-        // // Test that the navigator (dateRangeText) says "Dec 1 - Dec 7"
-        // EXPECT_EQ(getStringProperty("mainWindow/weekNavigator/dateRangeText", "text"), "Dec 1 - Dec 7");
+        // Test that the navigator (dateRangeText) says "Dec 1 - Dec 7"
+        EXPECT_EQ(getStringProperty("mainWindow/weekNavigator/dateRangeText", "text"), "Dec 1 - Dec 7");
 
-        // // Test that pressing left/right changes the dateRangeText accordingly
-        // mouseClick("mainWindow/weekNavigator/leftIcon");
-        // wait(std::chrono::milliseconds(200));
-        // EXPECT_EQ(getStringProperty("mainWindow/weekNavigator/dateRangeText", "text"), "Nov 24 - Nov 30");
+        // Test that pressing left/right changes the dateRangeText accordingly
+        mouseClick("mainWindow/weekNavigator/leftIcon");
+        wait(std::chrono::milliseconds(200));
+        EXPECT_EQ(getStringProperty("mainWindow/weekNavigator/dateRangeText", "text"), "Nov 24 - Nov 30");
 
-        // mouseClick("mainWindow/weekNavigator/rightIcon");
-        // wait(std::chrono::milliseconds(200));
-        // EXPECT_EQ(getStringProperty("mainWindow/weekNavigator/dateRangeText", "text"), "Dec 1 - Dec 7");
+        mouseClick("mainWindow/weekNavigator/rightIcon");
+        wait(std::chrono::milliseconds(200));
+        EXPECT_EQ(getStringProperty("mainWindow/weekNavigator/dateRangeText", "text"), "Dec 1 - Dec 7");
 
-        // mouseClick("mainWindow/weekNavigator/rightIcon");
-        // wait(std::chrono::milliseconds(200));
-        // EXPECT_EQ(getStringProperty("mainWindow/weekNavigator/dateRangeText", "text"), "Dec 8 - Dec 14");
+        mouseClick("mainWindow/weekNavigator/rightIcon");
+        wait(std::chrono::milliseconds(200));
+        EXPECT_EQ(getStringProperty("mainWindow/weekNavigator/dateRangeText", "text"), "Dec 8 - Dec 14");
 
-        // mouseClick("mainWindow/weekNavigator/leftIcon");
-        // wait(std::chrono::milliseconds(200));
-        // EXPECT_EQ(getStringProperty("mainWindow/weekNavigator/dateRangeText", "text"), "Dec 1 - Dec 7");
+        mouseClick("mainWindow/weekNavigator/leftIcon");
+        wait(std::chrono::milliseconds(200));
+        EXPECT_EQ(getStringProperty("mainWindow/weekNavigator/dateRangeText", "text"), "Dec 1 - Dec 7");
 
-        // spix::ItemPath path("mainWindow/weekView");
+        spix::ItemPath path("mainWindow/weekView");
 
-        // auto window = spix::qt::GetQQuickWindowAtPath(path);
-        // ASSERT_NE(window, nullptr);
+        auto window = spix::qt::GetQQuickWindowAtPath(path);
+        ASSERT_NE(window, nullptr);
 
-        // auto item = spix::qt::GetQQuickItemAtPath(path);
-        // ASSERT_NE(item, nullptr);
+        auto item = spix::qt::GetQQuickItemAtPath(path);
+        ASSERT_NE(item, nullptr);
 
-        // EXPECT_EQ(getStringProperty("mainWindow/weekView", "weekdayModelCount"), "7");
-        // EXPECT_EQ(getStringProperty("mainWindow/weekView", "weekdayFilterModelCount"), "4");
-
-
-        // // Test header text
-        // const auto expectedWeekDaysText = { "MONDAY, 1",
-        //                                     "WEDNESDAY, 3",
-        //                                     "FRIDAY, 5",
-        //                                     "SUNDAY, 7" };
-
-        // int index = 0;
-        // for (const auto &expectedText : expectedWeekDaysText) {
-        //     auto listViewItem = SpixUtils::getListViewItemAtIndex(spix::ItemPath("mainWindow/weekdayListView"), index);
-        //     ASSERT_NE(listViewItem, nullptr);
-
-        //     auto prettyDate = listViewItem->property("prettyDate").toString();
-        //     EXPECT_EQ(prettyDate, expectedText);
-
-        //     ++index;
-        // }
-
-        // // Test task counts within each day
-        // const auto expectedTaskCounts = { 5, 1, 1, 1 };
-        // index = 0;
-        // for (const auto &expectedCount : expectedTaskCounts) {
-        //     auto listViewItem = SpixUtils::getListViewItemAtIndex(spix::ItemPath("mainWindow/weekdayListView"), index);
-        //     ASSERT_NE(listViewItem, nullptr);
-
-        //     auto model = listViewItem->property("tasks").value<QObject *>();
-        //     ASSERT_NE(model, nullptr);
-        //     auto taskCount = model->property("count").toInt();
-        //     EXPECT_EQ(taskCount, expectedCount);
-
-        //     ++index;
-        // }
+        EXPECT_EQ(getStringProperty("mainWindow/weekView", "weekdayModelCount"), "7");
+        EXPECT_EQ(getStringProperty("mainWindow/weekView", "weekdayFilterModelCount"), "4");
 
 
-        // // 1st task doesn't have a tag
-        // EXPECT_EQ(getStringProperty("mainWindow/task_0_0", "title"), "Current Task 3");
-        // EXPECT_EQ(getStringProperty("mainWindow/task_0_0", "taskTagName"), "");
-        // EXPECT_EQ(getStringProperty("mainWindow/task_0_0/tagText", "text"), "");
+        // Test header text
+        const auto expectedWeekDaysText = { "MONDAY, 1",
+                                            "WEDNESDAY, 3",
+                                            "FRIDAY, 5",
+                                            "SUNDAY, 7" };
 
-        // // task with "work" tag is sorted a bit below
-        // EXPECT_EQ(getStringProperty("mainWindow/task_0_3", "taskTagName"), "work");
-        // EXPECT_EQ(getStringProperty("mainWindow/task_0_3/tagText", "text"), "work");
-        // EXPECT_EQ(getStringProperty("mainWindow/task_0_3/tagText", "visible"), "true");
+        int index = 0;
+        for (const auto &expectedText : expectedWeekDaysText) {
+            auto listViewItem = SpixUtils::getListViewItemAtIndex(spix::ItemPath("mainWindow/weekdayListView"), index);
+            ASSERT_NE(listViewItem, nullptr);
 
-        // mouseClick("mainWindow/soonViewButton");
-        // wait(std::chrono::milliseconds(200));
-        // EXPECT_EQ(getStringProperty("mainWindow/soonView", "count"), "10");
+            auto prettyDate = listViewItem->property("prettyDate").toString();
+            EXPECT_EQ(prettyDate, expectedText);
 
-        // mouseClick("mainWindow/laterViewButton");
-        // wait(std::chrono::milliseconds(200));
-        // EXPECT_EQ(getStringProperty("mainWindow/laterView", "count"), "5");
+            ++index;
+        }
 
-        // laterActive = getStringProperty("mainWindow/laterViewButton", "isActive");
-        // EXPECT_EQ(laterActive, "true");
-        // weekActive = getStringProperty("mainWindow/weekViewButton", "isActive");
-        // EXPECT_EQ(weekActive, "false");
-        // soonActive = getStringProperty("mainWindow/soonViewButton", "isActive");
-        // EXPECT_EQ(soonActive, "false");
-        // EXPECT_EQ(getStringProperty("mainWindow/weekNavigator", "visible"), "false");
+        // Test task counts within each day
+        const auto expectedTaskCounts = { 5, 1, 1, 1 };
+        index = 0;
+        for (const auto &expectedCount : expectedTaskCounts) {
+            auto listViewItem = SpixUtils::getListViewItemAtIndex(spix::ItemPath("mainWindow/weekdayListView"), index);
+            ASSERT_NE(listViewItem, nullptr);
+
+            auto model = listViewItem->property("tasks").value<QObject *>();
+            ASSERT_NE(model, nullptr);
+            auto taskCount = model->property("count").toInt();
+            EXPECT_EQ(taskCount, expectedCount);
+
+            ++index;
+        }
 
 
-        // P_LOG_INFO("Finished test!!");
+        // 1st task doesn't have a tag
+        EXPECT_EQ(getStringProperty("mainWindow/task_0_0", "title"), "Current Task 3");
+        EXPECT_EQ(getStringProperty("mainWindow/task_0_0", "taskTagName"), "");
+        EXPECT_EQ(getStringProperty("mainWindow/task_0_0/tagText", "text"), "");
 
-        // qApp->quit();
+        // task with "work" tag is sorted a bit below
+        EXPECT_EQ(getStringProperty("mainWindow/task_0_3", "taskTagName"), "work");
+        EXPECT_EQ(getStringProperty("mainWindow/task_0_3/tagText", "text"), "work");
+        EXPECT_EQ(getStringProperty("mainWindow/task_0_3/tagText", "visible"), "true");
+
+        mouseClick("mainWindow/soonViewButton");
+        wait(std::chrono::milliseconds(200));
+        EXPECT_EQ(getStringProperty("mainWindow/soonView", "count"), "10");
+
+        mouseClick("mainWindow/laterViewButton");
+        wait(std::chrono::milliseconds(200));
+        EXPECT_EQ(getStringProperty("mainWindow/laterView", "count"), "5");
+
+        laterActive = getStringProperty("mainWindow/laterViewButton", "isActive");
+        EXPECT_EQ(laterActive, "true");
+        weekActive = getStringProperty("mainWindow/weekViewButton", "isActive");
+        EXPECT_EQ(weekActive, "false");
+        soonActive = getStringProperty("mainWindow/soonViewButton", "isActive");
+        EXPECT_EQ(soonActive, "false");
+        EXPECT_EQ(getStringProperty("mainWindow/weekNavigator", "visible"), "false");
+
+
+        P_LOG_INFO("Finished test!!");
+
+        qApp->quit();
     }
 };
 
