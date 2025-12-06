@@ -3,15 +3,35 @@
 
 #include "application.h"
 #include "../core/logger.h"
+#include "../core/test_supabase_provider.h"
 
-#include <QQuickStyle>
+#include <QCommandLineOption>
+#include <QCommandLineParser>
 #include <QDebug>
+#include <QQuickStyle>
 
 using namespace pointless;
 
 Application::Application(int &argc, char **argv)
     : QGuiApplication(argc, argv)
 {
+    QCoreApplication::setApplicationName("pointless");
+    QCoreApplication::setApplicationVersion("0.1");
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Pointless");
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    QCommandLineOption testSupabaseOption("test-supabase", "Use supabase test user");
+    parser.addOption(testSupabaseOption);
+
+    parser.process(*this);
+
+    if (parser.isSet(testSupabaseOption)) {
+        IDataProvider::setProvider(std::make_unique<TestSupabaseProvider>());
+    }
+
     QQuickStyle::setStyle("Fusion");
 
     _engine.loadFromModule("pointless", "Main");

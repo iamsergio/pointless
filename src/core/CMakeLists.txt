@@ -17,6 +17,7 @@ add_library(
   data_provider.cpp
   file_data_provider.cpp
   local_data.cpp
+  test_supabase_provider.cpp
   logger.cpp)
 
 if(NOT DEFINED ENV{POINTLESS_SUPABASE_ANON_KEY})
@@ -36,8 +37,6 @@ target_link_libraries(
 target_include_directories(pointless_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(POINTLESS_ENABLE_TESTS)
-  target_sources(pointless_core PRIVATE test_supabase_provider.cpp)
-
   add_executable(test_date_utils tests/test_date_utils.cpp)
   target_link_libraries(test_date_utils PRIVATE pointless_core GTest::gtest_main)
   target_include_directories(test_date_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
