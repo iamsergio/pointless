@@ -24,6 +24,9 @@ Controller::Controller(QObject *parent)
     : QObject(parent)
     , _dataProvider(IDataProvider::createProvider())
 {
+    // TODO: A better place to put it ?
+    _dataProvider->loginWithDefaults();
+
     _taskModel = TaskModel::instance(this);
     _tagModel = new TagModel(this);
     _taskFilterModel = new TaskFilterModel(this);

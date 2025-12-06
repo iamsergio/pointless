@@ -12,6 +12,7 @@ void supabase_test()
 {
     try {
         auto supabase = Supabase::createDefault();
+        supabase.loginWithDefaults();
 
         if (!supabase.isAuthenticated()) {
             LOG_ERROR(Logger::getLogger(), "Failed to authenticate with Supabase");

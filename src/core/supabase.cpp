@@ -37,10 +37,6 @@ Supabase::Supabase(const std::string &base_url, const std::string &anon_key)
     if (env_password) {
         _defaultPassword = env_password;
     }
-
-    if (!_defaultUser.empty() && !_defaultPassword.empty()) {
-        login(_defaultUser, _defaultPassword);
-    }
 }
 
 Supabase Supabase::createDefault()
