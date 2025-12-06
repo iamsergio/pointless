@@ -1,3 +1,6 @@
 - Style task menu
 - fix calendar
   - Add tests
+- Merge Data of different revisions
+- Add login wall
+- Make login async
