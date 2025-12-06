@@ -19,10 +19,11 @@ public:
     static Supabase createDefault();
     static std::unique_ptr<Supabase> createDefaultPtr();
 
-    bool login(const std::string &email, const std::string &password);
-    bool loginWithDefaults();
+    bool login(const std::string &email, const std::string &password) override;
+    bool loginWithDefaults() override;
+    std::pair<std::string, std::string> defaultLoginPassword() const override;
     bool isAuthenticated() const override;
-    void logout();
+    void logout() override;
 
     bool updateData(const std::string &data) override;
     std::string retrieveData() override;

@@ -144,6 +144,11 @@ bool Supabase::loginWithDefaults()
     return login(_defaultUser, _defaultPassword);
 }
 
+std::pair<std::string, std::string> Supabase::defaultLoginPassword() const
+{
+    return { _defaultUser, _defaultPassword };
+}
+
 void Supabase::logout()
 {
     _accessToken.clear();

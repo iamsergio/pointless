@@ -12,6 +12,25 @@ FileDataProvider::FileDataProvider(const std::string &filePath)
 {
 }
 
+bool FileDataProvider::login(const std::string &email, const std::string &password)
+{
+    return true;
+}
+
+bool FileDataProvider::loginWithDefaults()
+{
+    return true;
+}
+
+std::pair<std::string, std::string> FileDataProvider::defaultLoginPassword() const
+{
+    return {};
+}
+
+void FileDataProvider::logout()
+{
+}
+
 bool FileDataProvider::isAuthenticated() const
 {
     return true;

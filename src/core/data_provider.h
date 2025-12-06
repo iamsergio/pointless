@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 
 class IDataProvider
 {
@@ -12,6 +13,10 @@ public:
     virtual ~IDataProvider() = default;
 
     virtual bool isAuthenticated() const = 0;
+    virtual bool login(const std::string &email, const std::string &password) = 0;
+    virtual bool loginWithDefaults() = 0;
+    virtual std::pair<std::string, std::string> defaultLoginPassword() const = 0;
+    virtual void logout() = 0;
     virtual std::string retrieveData() = 0;
     virtual bool updateData(const std::string &data) = 0;
 
