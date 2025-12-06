@@ -28,15 +28,6 @@ Supabase::Supabase(const std::string &base_url, const std::string &anon_key)
     : _baseUrl(base_url)
     , _anonKey(anon_key)
 {
-    const char *env_username = std::getenv("POINTLESS_USERNAME");
-    const char *env_password = std::getenv("POINTLESS_PASSWORD");
-    if (env_username) {
-        _defaultUser = env_username;
-    }
-
-    if (env_password) {
-        _defaultPassword = env_password;
-    }
 }
 
 std::unique_ptr<Supabase> Supabase::createDefault()
@@ -108,6 +99,7 @@ bool Supabase::login(const std::string &email, const std::string &password)
     _userId = id_it->second.get_string();
 
 
+    P_LOG_DEBUG("Logged in with user={}", _userId);
 
     return true;
 }
@@ -119,17 +111,27 @@ bool Supabase::isAuthenticated() const
 
 bool Supabase::loginWithDefaults()
 {
-    if (_defaultUser.empty() || _defaultPassword.empty()) {
+    auto [username, password] = defaultLoginPassword();
+
+    if (username.empty() || password.empty()) {
         LOG_WARNING(Logger::getLogger(), "No default credentials available");
         return false;
     }
 
-    return login(_defaultUser, _defaultPassword);
+    return login(username, password);
 }
 
 std::pair<std::string, std::string> Supabase::defaultLoginPassword() const
 {
-    return { _defaultUser, _defaultPassword };
+    static const std::string username = std::getenv("POINTLESS_USERNAME") ? std::getenv("POINTLESS_USERNAME") : "";
+    static const std::string password = std::getenv("POINTLESS_PASSWORD") ? std::getenv("POINTLESS_PASSWORD") : "";
+
+    if (username.empty() || password.empty()) {
+        P_LOG_CRITICAL("Environment variables POINTLESS_USERNAME and POINTLESS_PASSWORD must be set for this test.");
+        std::abort();
+    }
+
+    return { username, password };
 }
 
 void Supabase::logout()

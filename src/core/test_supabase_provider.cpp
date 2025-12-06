@@ -6,6 +6,11 @@
 
 #include <cstdlib>
 
+TestSupabaseProvider::TestSupabaseProvider()
+    : Supabase(POINTLESS_SUPABASE_URL, POINTLESS_SUPABASE_ANON_KEY)
+{
+}
+
 std::pair<std::string, std::string> TestSupabaseProvider::defaultLoginPassword() const
 {
     static const std::string username = std::getenv("POINTLESS_DEBUG_USERNAME") ? std::getenv("POINTLESS_DEBUG_USERNAME") : "";

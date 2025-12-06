@@ -24,8 +24,17 @@ Controller::Controller(QObject *parent)
     : QObject(parent)
     , _dataProvider(IDataProvider::createProvider())
 {
+
+#ifdef POINTLESS_DEVELOPER_MODE
+    // TODO: A better place to put it ?
+    if (!_dataProvider->loginWithDefaults()) {
+        P_LOG_CRITICAL("Failed to login with default credentials in developer mode");
+        std::abort();
+    }
+#else
     // TODO: A better place to put it ?
     _dataProvider->loginWithDefaults();
+#endif
 
     _taskModel = TaskModel::instance(this);
     _tagModel = new TagModel(this);

@@ -8,7 +8,7 @@
 class TestSupabaseProvider : public Supabase
 {
 public:
-    using Supabase::Supabase;
+    TestSupabaseProvider();
 
     std::pair<std::string, std::string> defaultLoginPassword() const override;
 };
