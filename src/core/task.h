@@ -18,17 +18,17 @@ public:
     Task();
     Task(const std::string &uuid, const std::chrono::system_clock::time_point &creationTimestamp, const std::string &title = "");
 
-    bool containsTag(std::string_view tagName) const;
-    bool isSoon() const;
-    bool isLater() const;
-    bool isCurrent() const;
-    bool isDueIn(std::chrono::days days) const;
+    [[nodiscard]] bool containsTag(std::string_view tagName) const;
+    [[nodiscard]] bool isSoon() const;
+    [[nodiscard]] bool isLater() const;
+    [[nodiscard]] bool isCurrent() const;
+    [[nodiscard]] bool isDueIn(std::chrono::days days) const;
 
     void mergeConflict(const Task &other);
 
     void dumpDebug() const;
 
-    std::string tagName() const;
+    [[nodiscard]] std::string tagName() const;
 
     int revision = -1;
     bool needsSyncToServer = false;

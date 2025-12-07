@@ -13,9 +13,9 @@ class LocalData
 public:
     LocalData();
 
-    std::expected<PointlessCore::TaskManager, std::string> loadTaskManager() const;
+    [[nodiscard]] std::expected<PointlessCore::TaskManager, std::string> loadTaskManager() const;
 
 private:
-    std::string getDataFilePath() const;
+    [[nodiscard]] std::string getDataFilePath() const;
     std::string m_dataDir;
 };

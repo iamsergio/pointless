@@ -20,8 +20,8 @@ public:
 
     bool login(const std::string &email, const std::string &password) final;
     bool loginWithDefaults() override;
-    std::pair<std::string, std::string> defaultLoginPassword() const override;
-    bool isAuthenticated() const override;
+    [[nodiscard]] std::pair<std::string, std::string> defaultLoginPassword() const override;
+    [[nodiscard]] bool isAuthenticated() const override;
     void logout() override;
 
     bool updateData(const std::string &data) override;

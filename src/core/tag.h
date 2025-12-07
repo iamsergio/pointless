@@ -16,7 +16,7 @@ class Tag
 {
 public:
     bool operator==(const Tag &other) const;
-    bool isBuiltin() const;
+    [[nodiscard]] bool isBuiltin() const;
 
     int revision = -1;
     bool needsSyncToServer = false;
