@@ -44,8 +44,8 @@ std::unique_ptr<Supabase> Supabase::createDefault()
 
 bool Supabase::login(const std::string &email, const std::string &password)
 {
-    std::string auth_url = "https://" + _baseUrl + "/auth/v1/token?grant_type=password";
-    std::string body = R"({"email":")" + email + R"(","password":")" + password + R"("})";
+    const std::string auth_url = "https://" + _baseUrl + "/auth/v1/token?grant_type=password";
+    const std::string body = R"({"email":")" + email + R"(","password":")" + password + R"("})";
 
     auto response = cpr::Post(
         cpr::Url { auth_url },
@@ -149,8 +149,8 @@ bool Supabase::updateData(const std::string &data)
     auto compressed_bytes = compress(data);
     auto base64ed = base64Encode(compressed_bytes);
 
-    std::string full_url = "https://" + _baseUrl + "/rest/v1/Documents";
-    std::string body = R"({"data":")" + base64ed + R"(","id":0})";
+    const std::string full_url = "https://" + _baseUrl + "/rest/v1/Documents";
+    const std::string body = R"({"data":")" + base64ed + R"(","id":0})";
 
     auto response = cpr::Post(
         cpr::Url { full_url },
@@ -189,7 +189,7 @@ std::string Supabase::retrieveRawData()
         return {};
     }
 
-    std::string full_url = "https://" + _baseUrl + "/rest/v1/Documents";
+    const std::string full_url = "https://" + _baseUrl + "/rest/v1/Documents";
 
     auto response = cpr::Get(
         cpr::Url { full_url },
