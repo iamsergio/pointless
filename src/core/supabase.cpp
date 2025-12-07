@@ -8,6 +8,10 @@
 #include <cpr/error.h>
 #include <zlib.h>
 
+#include <cstdlib>
+#include <memory>
+#include <string>
+#include <vector>
 #include <stdexcept>
 
 namespace {
