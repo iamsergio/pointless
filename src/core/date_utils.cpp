@@ -136,13 +136,17 @@ std::string prettyDate(const std::chrono::system_clock::time_point &date, bool i
 {
     if (isToday(date)) {
         return includeTime ? std::format("today {}", weekdayName(date)) : "today";
-    } else if (isTomorrow(date)) {
+    }
+    if (isTomorrow(date)) {
         return "tomorrow";
-    } else if (isYesterday(date)) {
+    }
+    if (isYesterday(date)) {
         return "yesterday";
-    } else if (isThisWeek(date)) {
+    }
+    if (isThisWeek(date)) {
         return std::format("this {}", weekdayName(date));
-    } else if (isNext7Days(date)) {
+    }
+    if (isNext7Days(date)) {
         return std::format("next {}", weekdayName(date));
     } else {
         std::string result = dateStr(date);
