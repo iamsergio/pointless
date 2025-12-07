@@ -21,6 +21,10 @@ bool shouldVerifySsl()
 #endif
 }
 
+constexpr int kBufferSize = 32768;
+constexpr int kHttpOk = 200;
+constexpr int kHttpCreated = 201;
+constexpr int kHttpNoContent = 204;
 }
 
 
@@ -55,7 +59,7 @@ bool Supabase::login(const std::string &email, const std::string &password)
         cpr::Body { body },
         cpr::VerifySsl { shouldVerifySsl() });
 
-    if (response.status_code != 200) {
+    if (response.status_code != kHttpOk) {
         LOG_ERROR(Logger::getLogger(), "Login failed: HTTP={} url={}", response.status_code, auth_url);
         LOG_ERROR(Logger::getLogger(), "Response: text={} cpr::ErrorCode={} error.msg={}", response.text, static_cast<int>(response.error.code), response.error.message);
 #ifdef POINTLESS_DEVELOPER_MODE
@@ -162,7 +166,7 @@ bool Supabase::updateData(const std::string &data)
         cpr::Body { body },
         cpr::VerifySsl { shouldVerifySsl() });
 
-    if (response.status_code != 200 && response.status_code != 201 && response.status_code != 204) {
+    if (response.status_code != kHttpOk && response.status_code != kHttpCreated && response.status_code != kHttpNoContent) {
         LOG_ERROR(Logger::getLogger(), "Failed to update data: HTTP {}", response.status_code);
         LOG_DEBUG(Logger::getLogger(), "Response: {}", response.text);
         return false;
@@ -199,7 +203,7 @@ std::string Supabase::retrieveRawData()
             { "Authorization", "Bearer " + _accessToken } },
         cpr::VerifySsl { shouldVerifySsl() });
 
-    if (response.status_code != 200) {
+    if (response.status_code != kHttpOk) {
         LOG_ERROR(Logger::getLogger(), "HTTP request failed with status: {}", response.status_code);
         LOG_DEBUG(Logger::getLogger(), "Response: {}", response.text);
         return {};
@@ -246,7 +250,7 @@ std::vector<uint8_t> Supabase::compress(const std::string &data)
     zs.avail_in = static_cast<uInt>(data.length());
 
     int ret;
-    char outbuffer[32768];
+    char outbuffer[kBufferSize];
     std::vector<uint8_t> result;
 
     do {
@@ -282,7 +286,7 @@ std::string Supabase::decompress(const std::vector<uint8_t> &compressed_data)
     zs.avail_in = static_cast<uInt>(compressed_data.size());
 
     int ret;
-    char outbuffer[32768];
+    char outbuffer[kBufferSize];
     std::string result;
 
     do {
