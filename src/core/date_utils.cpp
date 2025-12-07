@@ -160,5 +160,4 @@ std::string prettyDate(const std::chrono::system_clock::time_point &date, bool i
     }
 }
 
-} // namespace DateUtils
-} // namespace PointlessCore
+} // namespace PointlessCore::DateUtils

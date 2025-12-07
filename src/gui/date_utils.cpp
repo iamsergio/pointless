@@ -44,5 +44,4 @@ bool isToday(QDate date)
     return date == Gui::Clock::today();
 }
 
-} // namespace DateUtils
-} // namespace Gui
+} // namespace Gui::DateUtils
