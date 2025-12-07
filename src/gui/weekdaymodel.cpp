@@ -66,14 +66,17 @@ int WeekdayModel::count() const
 
 QVariant WeekdayModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.row() < 0 || index.row() >= static_cast<int>(_taskModels.size()))
-        return QVariant();
+    if (!index.isValid() || index.row() < 0 || index.row() >= static_cast<int>(_taskModels.size())) {
+        return {};
+    }
 
     if (role == PrettyDateRole) {
         return _mondayDate.addDays(index.row()).toString("dddd, d").toUpper();
-    } else if (role == TasksRole) {
+    }
+    if (role == TasksRole) {
         return QVariant::fromValue(_taskModels[index.row()]);
-    } else if (role == IsPastRole) {
+    }
+    if (role == IsPastRole) {
         QDate date = _mondayDate.addDays(index.row());
         return date < Gui::Clock::today();
     }

@@ -9,13 +9,13 @@
 
 #include <cassert>
 
-namespace Gui {
-namespace DateUtils {
+namespace Gui::DateUtils {
 
 QDate timepointToQDate(const std::optional<std::chrono::system_clock::time_point> &tp)
 {
-    if (!tp.has_value())
-        return QDate();
+    if (!tp.has_value()) {
+        return {};
+    }
     std::time_t tt = std::chrono::system_clock::to_time_t(tp.value());
     return QDateTime::fromSecsSinceEpoch(static_cast<qint64>(tt)).date();
 }

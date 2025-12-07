@@ -27,8 +27,9 @@ int TaskModel::rowCount(const QModelIndex &parent) const
 
 QVariant TaskModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.row() >= static_cast<int>(_tasks.size()))
-        return QVariant();
+    if (!index.isValid() || index.row() >= static_cast<int>(_tasks.size())) {
+        return {};
+    }
 
     const auto &task = _tasks[index.row()];
 
@@ -51,7 +52,7 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
             }
             return dateStr;
         }
-        return QVariant();
+        return {};
     case HasDueDateRole:
         return task.dueDate.has_value();
     case TagNameRole:
@@ -62,7 +63,7 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         if (task.deviceCalendarName && !task.deviceCalendarName->empty()) {
             return QString::fromStdString(*task.deviceCalendarName);
         }
-        return QVariant();
+        return {};
     case IsEveningRole:
         if (task.dueDate) {
             const auto timeT = std::chrono::system_clock::to_time_t(*task.dueDate);
@@ -71,7 +72,7 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         }
         return false;
     default:
-        return QVariant();
+        return {};
     }
 
     return QVariant();

@@ -13,15 +13,17 @@ CalendarModel::CalendarModel(QObject *parent)
 
 int CalendarModel::rowCount(const QModelIndex &parent) const
 {
-    if (parent.isValid())
+    if (parent.isValid()) {
         return 0;
+    }
     return 42;
 }
 
 QVariant CalendarModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.row() < 0 || index.row() >= 42)
-        return QVariant();
+    if (!index.isValid() || index.row() < 0 || index.row() >= 42) {
+        return {};
+    }
 
     const QDate date = startDate().addDays(index.row());
 
