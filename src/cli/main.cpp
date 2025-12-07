@@ -7,6 +7,7 @@
 #include <string>
 
 
+namespace {
 void supabase_test()
 {
     try {
@@ -30,6 +31,7 @@ void supabase_test()
     } catch (const std::exception &e) {
         LOG_ERROR(Logger::getLogger(), "Error: {}", e.what());
     }
+}
 }
 
 int main(int argc, char *argv[])

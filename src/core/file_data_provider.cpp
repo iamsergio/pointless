@@ -12,7 +12,7 @@ FileDataProvider::FileDataProvider(const std::string &filePath)
 {
 }
 
-bool FileDataProvider::login(const std::string &email, const std::string &password)
+bool FileDataProvider::login(const std::string & /*email*/, const std::string & /*password*/)
 {
     return true;
 }
