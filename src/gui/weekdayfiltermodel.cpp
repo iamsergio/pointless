@@ -15,9 +15,7 @@ WeekdayFilterModel::WeekdayFilterModel(QObject *parent)
     connect(this, &QAbstractListModel::layoutChanged, this, &WeekdayFilterModel::countChanged);
 }
 
-WeekdayFilterModel::~WeekdayFilterModel()
-{
-}
+WeekdayFilterModel::~WeekdayFilterModel() = default;
 
 QObject *WeekdayFilterModel::source() const
 {

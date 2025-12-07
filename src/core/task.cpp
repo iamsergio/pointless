@@ -11,9 +11,7 @@
 
 namespace PointlessCore {
 
-Task::Task()
-{
-}
+Task::Task() = default;
 
 Task::Task(const std::string &uuid_, const std::chrono::system_clock::time_point &creationTimestamp_, const std::string &title_)
     : uuid(uuid_)
