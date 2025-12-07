@@ -40,8 +40,9 @@ TaskFilterModel::ViewType TaskFilterModel::viewType() const
 
 void TaskFilterModel::setViewType(ViewType type)
 {
-    if (_viewType == type)
+    if (_viewType == type) {
         return;
+    }
     beginFilterChange();
     _viewType = type;
     endFilterChange();
@@ -81,8 +82,9 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
         const QDate taskDueDate = Gui::DateUtils::timepointToQDate(task->dueDate);
         const bool viewIsToday = Gui::DateUtils::isToday(_dateFilter);
         const bool hasDueDate = taskDueDate.isValid();
-        if (viewIsToday && task->isCurrent() && !hasDueDate)
+        if (viewIsToday && task->isCurrent() && !hasDueDate) {
             return true;
+        }
 
         const bool isOverdue = Gui::DateUtils::isOverdue(taskDueDate, Gui::Clock::today());
         if (isOverdue && viewIsToday) {
@@ -110,17 +112,20 @@ bool TaskFilterModel::lessThan(const QModelIndex &source_left, const QModelIndex
     if (_viewType == ViewType::Week) {
         const bool leftIsImportant = sourceModel()->data(source_left, TaskModel::IsImportantRole).toBool();
         const bool rightIsImportant = sourceModel()->data(source_right, TaskModel::IsImportantRole).toBool();
-        if (leftIsImportant != rightIsImportant)
+        if (leftIsImportant != rightIsImportant) {
             return leftIsImportant;
+        }
 
         const bool leftIsEvening = sourceModel()->data(source_left, TaskModel::IsEveningRole).toBool();
         const bool rightIsEvening = sourceModel()->data(source_right, TaskModel::IsEveningRole).toBool();
-        if (leftIsEvening != rightIsEvening)
+        if (leftIsEvening != rightIsEvening) {
             return !leftIsEvening;
+        }
     }
 
-    if (leftTagName != rightTagName)
+    if (leftTagName != rightTagName) {
         return leftTagName < rightTagName;
+    }
 
     return source_left.row() < source_right.row();
 }

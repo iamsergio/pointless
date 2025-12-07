@@ -117,8 +117,9 @@ QString Controller::navigatorPrettyEndDate() const
 
 void Controller::setNavigatorStartDate(const QDate &date)
 {
-    if (_navigatorStartDate == date)
+    if (_navigatorStartDate == date) {
         return;
+    }
     _navigatorStartDate = date;
     emit navigatorStartDateChanged();
     emit navigatorEndDateChanged();
@@ -144,8 +145,9 @@ void Controller::navigatorGotoPreviousWeek()
 
 void Controller::setCurrentViewType(ViewType viewType)
 {
-    if (_currentViewType == viewType)
+    if (_currentViewType == viewType) {
         return;
+    }
 
     _currentViewType = viewType;
     emit currentViewTypeChanged();
@@ -181,8 +183,9 @@ QString Controller::uuidBeingEdited() const
 
 void Controller::setUuidBeingEdited(const QString &uuid)
 {
-    if (_uuidBeingEdited == uuid)
+    if (_uuidBeingEdited == uuid) {
         return;
+    }
 
     _uuidBeingEdited = uuid;
     emit uuidBeingEditedChanged();
@@ -195,8 +198,9 @@ bool Controller::isEditing() const
 
 void Controller::setIsEditing(bool isEditing)
 {
-    if (_isEditing == isEditing)
+    if (_isEditing == isEditing) {
         return;
+    }
 
     _isEditing = isEditing;
     emit isEditingChanged();
@@ -204,8 +208,9 @@ void Controller::setIsEditing(bool isEditing)
 
 void Controller::addNewTask(const QString &title)
 {
-    if (title.isEmpty())
+    if (title.isEmpty()) {
         return;
+    }
 
     PointlessCore::Task task;
     task.uuid = QUuid::createUuid().toString(QUuid::WithoutBraces).toStdString();

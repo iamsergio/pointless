@@ -2,8 +2,9 @@
 
 TaskModel *TaskModel::instance(QObject *parent)
 {
-    if (!_instance)
+    if (!_instance) {
         _instance = new TaskModel(parent);
+    }
     return _instance;
 }
 // SPDX-FileCopyrightText: 2025 Sergio Martins

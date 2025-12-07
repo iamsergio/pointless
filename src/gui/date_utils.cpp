@@ -27,8 +27,9 @@ bool isMonday(QDate date)
 
 QDate firstMondayOfWeek(QDate date)
 {
-    if (isMonday(date))
+    if (isMonday(date)) {
         return date;
+    }
     return date.addDays(1 - date.dayOfWeek());
 }
 

@@ -31,8 +31,9 @@ QDate WeekdayModel::mondayDate() const
 
 void WeekdayModel::setMondayDate(QDate date)
 {
-    if (_mondayDate == date)
+    if (_mondayDate == date) {
         return;
+    }
     beginResetModel();
     _mondayDate = date;
     for (int i = 0; i < _taskModels.size(); ++i) {
@@ -42,14 +43,13 @@ void WeekdayModel::setMondayDate(QDate date)
     Q_EMIT mondayDateChanged();
 }
 
-WeekdayModel::~WeekdayModel()
-{
-}
+WeekdayModel::~WeekdayModel() = default;
 
 int WeekdayModel::rowCount(const QModelIndex &parent) const
 {
-    if (parent.isValid())
+    if (parent.isValid()) {
         return 0;
+    }
 
     if (!_mondayDate.isValid()) {
         P_LOG_CRITICAL("Monday date is not valid");

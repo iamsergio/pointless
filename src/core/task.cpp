@@ -56,8 +56,9 @@ std::string Task::tagName() const
 
 bool Task::isDueIn(std::chrono::days days) const
 {
-    if (!dueDate)
+    if (!dueDate) {
         return false;
+    }
     const auto now = Clock::now();
     const auto due = *dueDate;
     return due <= now + days && due >= now;

@@ -8,8 +8,7 @@
 #include <sstream>
 #include <format>
 
-namespace PointlessCore {
-namespace DateUtils {
+namespace PointlessCore::DateUtils {
 
 namespace {
 // Helper to convert time_point to std::tm
