@@ -28,18 +28,18 @@ public:
         IsEveningRole
     };
 
-    static TaskModel *instance(QObject *parent = nullptr);
+    [[nodiscard]] static TaskModel *instance(QObject *parent = nullptr);
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    QHash<int, QByteArray> roleNames() const override;
+    [[nodiscard]] int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    [[nodiscard]] QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    [[nodiscard]] QHash<int, QByteArray> roleNames() const override;
 
-    int count() const;
+    [[nodiscard]] int count() const;
 
     void setTasks(const std::vector<PointlessCore::Task> &tasks);
     void addTask(const PointlessCore::Task &task);
-    const PointlessCore::Task *taskAt(int row) const;
-    const PointlessCore::Task *taskForUuid(const QString &taskUuid) const;
+    [[nodiscard]] const PointlessCore::Task *taskAt(int row) const;
+    [[nodiscard]] const PointlessCore::Task *taskForUuid(const QString &taskUuid) const;
 
 Q_SIGNALS:
     void countChanged();

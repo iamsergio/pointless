@@ -28,23 +28,23 @@ public:
     explicit TaskFilterModel(QObject *parent = nullptr);
     ~TaskFilterModel() override = default;
 
-    ViewType viewType() const;
+    [[nodiscard]] ViewType viewType() const;
     void setViewType(ViewType type);
     Q_SIGNAL void viewTypeChanged();
 
-    QDate dateFilter() const;
+    [[nodiscard]] QDate dateFilter() const;
     void setDateFilter(const QDate &date);
     Q_SIGNAL void dateFilterChanged();
 
-    int count() const;
+    [[nodiscard]] int count() const;
     Q_SIGNAL void countChanged();
 
 
-    bool isEmpty() const;
+    [[nodiscard]] bool isEmpty() const;
     Q_SIGNAL void emptyChanged();
 
-    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
-    bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;
+    [[nodiscard]] bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
+    [[nodiscard]] bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;
 
 private:
     void evaluateEmpty();

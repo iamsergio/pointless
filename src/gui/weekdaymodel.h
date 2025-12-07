@@ -26,12 +26,12 @@ public:
         IsPastRole
     };
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    int count() const;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    QHash<int, QByteArray> roleNames() const override;
+    [[nodiscard]] int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    [[nodiscard]] int count() const;
+    [[nodiscard]] QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    [[nodiscard]] QHash<int, QByteArray> roleNames() const override;
 
-    QDate mondayDate() const;
+    [[nodiscard]] QDate mondayDate() const;
     void setMondayDate(QDate date);
 
 Q_SIGNALS:

@@ -24,16 +24,16 @@ public:
 
     explicit CalendarModel(QObject *parent = nullptr);
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    QHash<int, QByteArray> roleNames() const override;
+    [[nodiscard]] int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    [[nodiscard]] QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    [[nodiscard]] QHash<int, QByteArray> roleNames() const override;
 
-    QDate month() const;
+    [[nodiscard]] QDate month() const;
     void setMonth(const QDate &month);
 
-    QDate startDate() const;
+    [[nodiscard]] QDate startDate() const;
 
-    int count() const;
+    [[nodiscard]] int count() const;
 
 Q_SIGNALS:
     void monthChanged();

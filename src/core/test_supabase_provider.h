@@ -10,5 +10,5 @@ class TestSupabaseProvider : public Supabase
 public:
     TestSupabaseProvider();
 
-    std::pair<std::string, std::string> defaultLoginPassword() const override;
+    [[nodiscard]] std::pair<std::string, std::string> defaultLoginPassword() const override;
 };

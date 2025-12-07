@@ -34,7 +34,7 @@ class Controller : public QObject
     Q_PROPERTY(bool isEditing READ isEditing WRITE setIsEditing NOTIFY isEditingChanged)
     Q_PROPERTY(QString uuidBeingEdited READ uuidBeingEdited WRITE setUuidBeingEdited NOTIFY uuidBeingEditedChanged)
 public:
-    TaskFilterModel *taskFilterModel() const;
+    [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     enum class ViewType {
         Week,
         Soon,
@@ -44,28 +44,28 @@ public:
 
     explicit Controller(QObject *parent = nullptr);
 
-    ViewType currentViewType() const;
+    [[nodiscard]] ViewType currentViewType() const;
     void setCurrentViewType(ViewType viewType);
 
-    QDate navigatorStartDate() const;
-    QDate navigatorEndDate() const;
-    QString navigatorPrettyStartDate() const;
-    QString navigatorPrettyEndDate() const;
+    [[nodiscard]] QDate navigatorStartDate() const;
+    [[nodiscard]] QDate navigatorEndDate() const;
+    [[nodiscard]] QString navigatorPrettyStartDate() const;
+    [[nodiscard]] QString navigatorPrettyEndDate() const;
     void setNavigatorStartDate(const QDate &date);
     Q_INVOKABLE void navigatorGotoToday();
     Q_INVOKABLE void navigatorGotoNextWeek();
     Q_INVOKABLE void navigatorGotoPreviousWeek();
     Q_INVOKABLE void refresh();
     Q_INVOKABLE void addNewTask(const QString &title);
-    Q_INVOKABLE QString colorFromTag(const QString &tagName) const;
-    bool isDebug() const;
-    bool isMobile() const;
-    bool isAndroid() const;
-    bool isIOS() const;
-    bool isVerbose() const;
-    bool isEditing() const;
+    [[nodiscard]] Q_INVOKABLE QString colorFromTag(const QString &tagName) const;
+    [[nodiscard]] bool isDebug() const;
+    [[nodiscard]] bool isMobile() const;
+    [[nodiscard]] bool isAndroid() const;
+    [[nodiscard]] bool isIOS() const;
+    [[nodiscard]] bool isVerbose() const;
+    [[nodiscard]] bool isEditing() const;
     void setIsEditing(bool isEditing);
-    QString uuidBeingEdited() const;
+    [[nodiscard]] QString uuidBeingEdited() const;
     void setUuidBeingEdited(const QString &uuid);
 
     Q_INVOKABLE void dumpTaskDebug(const QString &taskUuid) const;

@@ -16,10 +16,10 @@ public:
     explicit WeekdayFilterModel(QObject *parent = nullptr);
     ~WeekdayFilterModel() override = default;
 
-    QObject *source() const;
+    [[nodiscard]] QObject *source() const;
     void setSource(QObject *source);
-    int count() const;
-    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
+    [[nodiscard]] int count() const;
+    [[nodiscard]] bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 
 Q_SIGNALS:
     void sourceChanged();
