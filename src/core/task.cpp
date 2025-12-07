@@ -91,9 +91,6 @@ void Task::dumpDebug() const
         P_LOG_DEBUG("Completion: {}", timeToString(*completionDate));
 }
 
-} // namespace PointlessCore
-
-namespace PointlessCore {
 
 void Task::mergeConflict(const Task &other)
 {

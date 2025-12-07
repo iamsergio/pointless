@@ -7,9 +7,7 @@
 
 namespace PointlessCore {
 
-TaskManager::TaskManager()
-{
-}
+TaskManager::TaskManager() = default;
 
 // Task management methods
 void TaskManager::addTask(const Task &task)
@@ -234,25 +232,25 @@ std::expected<TaskManager, std::string> TaskManager::fromJson(const std::string 
 // Helper methods
 std::vector<Task>::iterator TaskManager::findTaskByUuid(const std::string &uuid)
 {
-    return std::find_if(m_data.tasks.begin(), m_data.tasks.end(),
-                        [&uuid](const Task &task) { return task.uuid == uuid; });
+    return std::ranges::find_if(m_data.tasks,
+                                [&uuid](const Task &task) { return task.uuid == uuid; });
 }
 
 std::vector<Task>::const_iterator TaskManager::findTaskByUuid(const std::string &uuid) const
 {
-    return std::find_if(m_data.tasks.begin(), m_data.tasks.end(),
-                        [&uuid](const Task &task) { return task.uuid == uuid; });
+    return std::ranges::find_if(m_data.tasks,
+                                [&uuid](const Task &task) { return task.uuid == uuid; });
 }
 
 std::vector<Tag>::iterator TaskManager::findTagByName(const std::string &tagName)
 {
-    return std::find_if(m_data.tags.begin(), m_data.tags.end(),
-                        [&tagName](const Tag &tag) { return tag.name == tagName; });
+    return std::ranges::find_if(m_data.tags,
+                                [&tagName](const Tag &tag) { return tag.name == tagName; });
 }
 
 std::vector<Tag>::const_iterator TaskManager::findTagByName(const std::string &tagName) const
 {
-    return std::find_if(m_data.tags.begin(), m_data.tags.end(),
-                        [&tagName](const Tag &tag) { return tag.name == tagName; });
+    return std::ranges::find_if(m_data.tags,
+                                [&tagName](const Tag &tag) { return tag.name == tagName; });
 }
 } // namespace PointlessCore
