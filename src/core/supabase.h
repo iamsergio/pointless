@@ -14,7 +14,7 @@
 class Supabase : public IDataProvider
 {
 public:
-    explicit Supabase(const std::string &base_url, const std::string &anon_key);
+    explicit Supabase(std::string base_url, std::string anon_key);
 
     static std::unique_ptr<Supabase> createDefault();
 

@@ -32,9 +32,9 @@ constexpr int kHttpNoContent = 204;
 }
 
 
-Supabase::Supabase(const std::string &base_url, const std::string &anon_key)
-    : _baseUrl(base_url)
-    , _anonKey(anon_key)
+Supabase::Supabase(std::string base_url, std::string anon_key)
+    : _baseUrl(std::move(base_url))
+    , _anonKey(std::move(anon_key))
 {
 }
 std::unique_ptr<Supabase> Supabase::createDefault()
@@ -130,8 +130,8 @@ bool Supabase::loginWithDefaults()
 
 std::pair<std::string, std::string> Supabase::defaultLoginPassword() const
 {
-    static const std::string username = std::getenv("POINTLESS_USERNAME") ? std::getenv("POINTLESS_USERNAME") : "";
-    static const std::string password = std::getenv("POINTLESS_PASSWORD") ? std::getenv("POINTLESS_PASSWORD") : "";
+    static const std::string username = std::getenv("POINTLESS_USERNAME") != nullptr ? std::getenv("POINTLESS_USERNAME") : "";
+    static const std::string password = std::getenv("POINTLESS_PASSWORD") != nullptr ? std::getenv("POINTLESS_PASSWORD") : "";
 
     if (username.empty() || password.empty()) {
         P_LOG_CRITICAL("Environment variables POINTLESS_USERNAME and POINTLESS_PASSWORD must be set for this test.");
@@ -318,11 +318,12 @@ std::vector<uint8_t> Supabase::base64Decode(const std::string &input)
     const std::string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     std::vector<uint8_t> result;
 
-    int val = 0, valb = -8;
+    uint32_t val = 0;
+    int valb = -8;
     for (unsigned char c : input) {
         if (chars.find(c) == std::string::npos)
             break;
-        val = (val << 6) + static_cast<int>(chars.find(c));
+        val = (val << 6) + static_cast<uint32_t>(chars.find(c));
         valb += 6;
         if (valb >= 0) {
             result.push_back(static_cast<uint8_t>((val >> valb) & 0xFF));
@@ -336,7 +337,8 @@ std::string Supabase::base64Encode(const std::vector<uint8_t> &data)
 {
     const std::string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     std::string result;
-    int val = 0, valb = -6;
+    uint32_t val = 0;
+    int valb = -6;
 
     for (uint8_t c : data) {
         val = (val << 8) + c;
