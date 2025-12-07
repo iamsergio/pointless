@@ -39,7 +39,7 @@ Data merge(const Data &localData, const Data &serverData)
 
     // Add new tags
     for (const auto &tag : localData.tags) {
-        bool exists = std::any_of(current.tags.begin(), current.tags.end(), [&](const Tag &t) {
+        bool exists = std::ranges::any_of(current.tags, [&](const Tag &t) {
             return t.name == tag.name;
         });
 
@@ -58,7 +58,7 @@ Data merge(const Data &localData, const Data &serverData)
             continue;
         }
 
-        auto it = std::find_if(current.tasks.begin(), current.tasks.end(), [&](const Task &t) {
+        auto it = std::ranges::find_if(current.tasks, [&](const Task &t) {
             return t.uuid == incomingTask.uuid;
         });
 
@@ -97,7 +97,7 @@ Data merge(const Data &localData, const Data &serverData)
 
     // Deleted tasks
     for (const auto &uuid : localData.deletedTaskUuids) {
-        auto it = std::find_if(current.tasks.begin(), current.tasks.end(), [&](const Task &t) {
+        auto it = std::ranges::find_if(current.tasks, [&](const Task &t) {
             return t.uuid == uuid;
         });
         if (it != current.tasks.end()) {
@@ -108,7 +108,7 @@ Data merge(const Data &localData, const Data &serverData)
 
     // Deleted tags
     for (const auto &tagName : localData.deletedTagNames) {
-        auto it = std::find_if(current.tags.begin(), current.tags.end(), [&](const Tag &t) {
+        auto it = std::ranges::find_if(current.tags, [&](const Tag &t) {
             return t.name == tagName;
         });
         if (it != current.tags.end()) {

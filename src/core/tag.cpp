@@ -19,7 +19,7 @@ bool tagIsBuiltin(const std::string_view name)
         "current"
     };
 
-    return std::find(builtinTags.begin(), builtinTags.end(), name) != builtinTags.end();
+    return std::ranges::find(builtinTags, name) != builtinTags.end();
 }
 
 bool Tag::operator==(const Tag &other) const
