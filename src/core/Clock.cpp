@@ -3,6 +3,8 @@
 
 #include "Clock.h"
 
+#include <chrono>
+
 namespace PointlessCore {
 
 #ifdef POINTLESS_DEVELOPER_MODE

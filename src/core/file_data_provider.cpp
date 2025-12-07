@@ -6,6 +6,8 @@
 
 #include <fstream>
 #include <sstream>
+#include <string>
+#include <memory>
 
 FileDataProvider::FileDataProvider(const std::string &filePath)
     : _filePath(filePath)
