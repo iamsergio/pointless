@@ -26,7 +26,7 @@ public:
     Q_ENUM(ViewType)
 
     explicit TaskFilterModel(QObject *parent = nullptr);
-    ~TaskFilterModel() override;
+    ~TaskFilterModel() override = default;
 
     ViewType viewType() const;
     void setViewType(ViewType type);

@@ -29,7 +29,6 @@ Supabase::Supabase(const std::string &base_url, const std::string &anon_key)
     , _anonKey(anon_key)
 {
 }
-
 std::unique_ptr<Supabase> Supabase::createDefault()
 {
 #ifndef POINTLESS_SUPABASE_URL

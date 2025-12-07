@@ -50,7 +50,7 @@ void TaskFilterModel::setViewType(ViewType type)
     emit viewTypeChanged();
 }
 
-TaskFilterModel::~TaskFilterModel() = default;
+
 
 bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
