@@ -8,8 +8,7 @@
 
 class QDate;
 
-namespace Gui {
-namespace DateUtils {
+namespace Gui::DateUtils {
 
 QDate timepointToQDate(const std::optional<std::chrono::system_clock::time_point> &tp);
 
@@ -21,5 +20,4 @@ bool isOverdue(QDate dueDate, QDate currentDate);
 
 bool isToday(QDate date);
 
-} // namespace DateUtils
-} // namespace Gui
+} // namespace Gui::DateUtils

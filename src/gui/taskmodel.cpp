@@ -1,12 +1,3 @@
-#include "taskmodel.h"
-
-TaskModel *TaskModel::instance(QObject *parent)
-{
-    if (!_instance) {
-        _instance = new TaskModel(parent);
-    }
-    return _instance;
-}
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
@@ -18,6 +9,14 @@ TaskModel *TaskModel::instance(QObject *parent)
 TaskModel::TaskModel(QObject *parent)
     : QAbstractListModel(parent)
 {
+}
+
+TaskModel *TaskModel::instance(QObject *parent)
+{
+    if (_instance == nullptr) {
+        _instance = new TaskModel(parent);
+    }
+    return _instance;
 }
 
 int TaskModel::rowCount(const QModelIndex &parent) const
@@ -76,7 +75,7 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         return {};
     }
 
-    return QVariant();
+    return {};
 }
 
 QHash<int, QByteArray> TaskModel::roleNames() const

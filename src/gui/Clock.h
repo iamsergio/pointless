@@ -4,7 +4,10 @@
 #pragma once
 
 #include <QDateTime>
+
+#ifdef POINTLESS_DEVELOPER_MODE
 #include <optional>
+#endif
 
 namespace Gui {
 

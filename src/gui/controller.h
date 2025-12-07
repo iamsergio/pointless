@@ -35,7 +35,7 @@ class Controller : public QObject
     Q_PROPERTY(QString uuidBeingEdited READ uuidBeingEdited WRITE setUuidBeingEdited NOTIFY uuidBeingEditedChanged)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
-    enum class ViewType {
+    enum class ViewType : uint8_t {
         Week,
         Soon,
         Later
@@ -58,11 +58,11 @@ public:
     Q_INVOKABLE void refresh();
     Q_INVOKABLE void addNewTask(const QString &title);
     [[nodiscard]] Q_INVOKABLE QString colorFromTag(const QString &tagName) const;
-    [[nodiscard]] bool isDebug() const;
-    [[nodiscard]] bool isMobile() const;
-    [[nodiscard]] bool isAndroid() const;
-    [[nodiscard]] bool isIOS() const;
-    [[nodiscard]] bool isVerbose() const;
+    [[nodiscard]] static bool isDebug();
+    [[nodiscard]] static bool isMobile();
+    [[nodiscard]] static bool isAndroid();
+    [[nodiscard]] static bool isIOS();
+    [[nodiscard]] static bool isVerbose();
     [[nodiscard]] bool isEditing() const;
     void setIsEditing(bool isEditing);
     [[nodiscard]] QString uuidBeingEdited() const;

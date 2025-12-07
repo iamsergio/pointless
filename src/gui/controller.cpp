@@ -12,13 +12,20 @@
 #include "../core/task_manager.h"
 #include "../core/logger.h"
 #include "../core/data_provider.h"
+#include "../core/task.h"
 
 #include <QTimer>
-
-#include <cstdlib>
+#include <QHash>
+#include <QObject>
+#include <QString>
+#include <QStringList>
+#include <QtGlobal>
 #include <QUuid>
 #include <QDateTime>
 
+#include <cstdlib>
+#include <fstream>
+#include <string>
 
 Controller::Controller(QObject *parent)
     : QObject(parent)
@@ -44,7 +51,7 @@ Controller::Controller(QObject *parent)
     QTimer::singleShot(0, this, &Controller::refresh);
 }
 
-bool Controller::isDebug() const
+bool Controller::isDebug()
 {
 #ifdef QT_DEBUG
     return true;
@@ -153,12 +160,12 @@ void Controller::setCurrentViewType(ViewType viewType)
     emit currentViewTypeChanged();
 }
 
-bool Controller::isMobile() const
+bool Controller::isMobile()
 {
     return isAndroid() || isIOS();
 }
 
-bool Controller::isAndroid() const
+bool Controller::isAndroid()
 {
 #ifdef Q_OS_ANDROID
     return true;
@@ -167,7 +174,7 @@ bool Controller::isAndroid() const
 #endif
 }
 
-bool Controller::isIOS() const
+bool Controller::isIOS()
 {
 #ifdef Q_OS_IOS
     return true;
@@ -236,7 +243,7 @@ QString Controller::colorFromTag(const QString &tagName) const
     return colors.at(index);
 }
 
-bool Controller::isVerbose() const
+bool Controller::isVerbose()
 {
     static bool is = std::getenv("POINTLESS_IS_VERBOSE") != nullptr;
     return is;
@@ -245,7 +252,7 @@ bool Controller::isVerbose() const
 void Controller::dumpTaskDebug(const QString &taskUuid) const
 {
     const auto *task = _taskModel->taskForUuid(taskUuid);
-    if (!task) {
+    if (task == nullptr) {
         P_LOG_ERROR("Invalid task UUID: {}", taskUuid.toStdString());
         return;
     }

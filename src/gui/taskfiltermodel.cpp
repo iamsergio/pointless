@@ -1,12 +1,18 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
+#include <QModelIndex>
+#include <QObject>
+#include <QSortFilterProxyModel>
+#include <QtGlobal> // Q_UNUSED, Q_EMIT
+
 #include "taskfiltermodel.h"
 #include "controller.h"
 #include "taskmodel.h"
 #include "logger.h"
 #include "date_utils.h"
 #include "Clock.h"
+#include "../core/task.h"
 
 #include <QDate>
 
@@ -49,8 +55,6 @@ void TaskFilterModel::setViewType(ViewType type)
 
     emit viewTypeChanged();
 }
-
-
 
 bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
@@ -152,9 +156,7 @@ void TaskFilterModel::evaluateEmpty()
 {
     const int currentCount = rowCount();
 
-    if (currentCount == 0 && _previousRowCount > 0) {
-        Q_EMIT emptyChanged();
-    } else if (currentCount > 0 && _previousRowCount == 0) {
+    if (currentCount == 0 && _previousRowCount > 0 || (currentCount > 0 && _previousRowCount == 0)) {
         Q_EMIT emptyChanged();
     }
 

@@ -5,6 +5,13 @@
 #include "date_utils.h"
 #include "Clock.h"
 
+#include <QByteArray>
+#include <QDate>
+#include <QHash>
+#include <QModelIndex>
+#include <QObject>
+#include <QVariant>
+
 CalendarModel::CalendarModel(QObject *parent)
     : QAbstractListModel(parent)
     , _month(Gui::Clock::today())
@@ -27,7 +34,7 @@ QVariant CalendarModel::data(const QModelIndex &index, int role) const
 
     const QDate date = startDate().addDays(index.row());
 
-    switch (role) {
+    switch (static_cast<Roles>(role)) {
     case DateRole:
         return date;
     case DayRole:
@@ -38,7 +45,7 @@ QVariant CalendarModel::data(const QModelIndex &index, int role) const
         return date == Gui::Clock::today();
     }
 
-    return QVariant();
+    return {};
 }
 
 QHash<int, QByteArray> CalendarModel::roleNames() const

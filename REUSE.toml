@@ -17,6 +17,8 @@ path = [
     "vcpkg.json",
     ".clang-format",
     ".clangd",
+    ".clang-tidy",
+    ".clang-tidy_",
     ".cmake-format.yaml",
     "TODO",
     ".github/dependabot.yml",

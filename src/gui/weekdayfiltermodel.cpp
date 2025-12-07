@@ -6,6 +6,15 @@
 #include "taskfiltermodel.h"
 #include "../core/logger.h"
 
+#include <QAbstractItemModel>
+#include <QAbstractListModel>
+#include <QModelIndex>
+#include <QObject>
+#include <QSortFilterProxyModel>
+#include <QtGlobal>
+
+#include <cassert>
+
 WeekdayFilterModel::WeekdayFilterModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {

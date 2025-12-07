@@ -2,6 +2,17 @@
 // SPDX-License-Identifier: MIT
 
 
+#include <vector>
+
+#include <QByteArray>
+#include <QHash>
+#include <QModelIndex>
+#include <QObject>
+#include <QString>
+#include <QVariant>
+#include <QtGlobal> // Q_UNUSED
+
+#include "../core/tag.h"
 #include "logger.h"
 #include "tagmodel.h"
 

@@ -15,7 +15,7 @@ class CalendarModel : public QAbstractListModel
     Q_PROPERTY(int count READ count CONSTANT)
 
 public:
-    enum Roles {
+    enum Roles : uint16_t {
         DateRole = Qt::UserRole + 1,
         DayRole,
         IsCurrentMonthRole,

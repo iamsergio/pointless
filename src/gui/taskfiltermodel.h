@@ -18,7 +18,7 @@ class TaskFilterModel : public QSortFilterProxyModel
     Q_PROPERTY(int count READ count NOTIFY countChanged)
     Q_PROPERTY(bool isEmpty READ isEmpty NOTIFY emptyChanged)
 public:
-    enum class ViewType {
+    enum class ViewType : uint8_t {
         Week,
         Soon,
         Later
@@ -27,6 +27,11 @@ public:
 
     explicit TaskFilterModel(QObject *parent = nullptr);
     ~TaskFilterModel() override = default;
+
+    TaskFilterModel(const TaskFilterModel &) = delete;
+    TaskFilterModel &operator=(const TaskFilterModel &) = delete;
+    TaskFilterModel(TaskFilterModel &&) = delete;
+    TaskFilterModel &operator=(TaskFilterModel &&) = delete;
 
     [[nodiscard]] ViewType viewType() const;
     void setViewType(ViewType type);

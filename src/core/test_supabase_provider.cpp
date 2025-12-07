@@ -6,6 +6,8 @@
 #include "logger.h"
 
 #include <cstdlib>
+#include <string>
+#include <utility>
 
 TestSupabaseProvider::TestSupabaseProvider()
     : Supabase(POINTLESS_SUPABASE_URL, POINTLESS_SUPABASE_ANON_KEY)

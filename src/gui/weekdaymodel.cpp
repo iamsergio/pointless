@@ -1,6 +1,14 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
+#include <QAbstractListModel>
+#include <QByteArray>
+#include <QHash>
+#include <QModelIndex>
+#include <QObject>
+#include <QVariant>
+#include <QtGlobal> // Q_EMIT
+
 #include "weekdaymodel.h"
 #include "taskfiltermodel.h"
 #include "../core/logger.h"

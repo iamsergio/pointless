@@ -20,7 +20,12 @@ public:
     explicit WeekdayModel(QObject *parent = nullptr);
     ~WeekdayModel() override;
 
-    enum Roles {
+    WeekdayModel(const WeekdayModel &) = delete;
+    WeekdayModel &operator=(const WeekdayModel &) = delete;
+    WeekdayModel(WeekdayModel &&) = delete;
+    WeekdayModel &operator=(WeekdayModel &&) = delete;
+
+    enum Roles : uint16_t {
         PrettyDateRole = Qt::UserRole + 1,
         TasksRole,
         IsPastRole

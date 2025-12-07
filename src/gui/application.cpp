@@ -4,11 +4,16 @@
 #include "application.h"
 #include "../core/logger.h"
 #include "../core/test_supabase_provider.h"
+#include "../core/data_provider.h"
 
 #include <QCommandLineOption>
 #include <QCommandLineParser>
 #include <QDebug>
+#include <QGuiApplication>
 #include <QQuickStyle>
+
+#include <cstdlib>
+#include <memory>
 
 using namespace pointless;
 
