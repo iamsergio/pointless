@@ -66,7 +66,7 @@ bool Supabase::login(const std::string &email, const std::string &password)
     }
 
     auto json_result = glz::read_json<glz::json_t>(response.text);
-    if (!json_result) {
+    if (json_result.has_error()) {
         LOG_ERROR(Logger::getLogger(), "Failed to parse login response JSON");
         return false;
     }
@@ -207,7 +207,7 @@ std::string Supabase::retrieveRawData()
     }
 
     auto json_result = glz::read_json<glz::json_t>(response.text);
-    if (!json_result) {
+    if (json_result.has_error()) {
         LOG_ERROR(Logger::getLogger(), "Failed to parse JSON response");
         return {};
     }

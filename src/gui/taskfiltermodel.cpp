@@ -57,13 +57,13 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
     Q_UNUSED(source_parent)
 
     auto *taskModel = qobject_cast<TaskModel *>(sourceModel());
-    if (!taskModel) {
+    if (taskModel == nullptr) {
         P_LOG_CRITICAL("TaskModel is null");
         return true;
     }
 
     const PointlessCore::Task *task = taskModel->taskAt(source_row);
-    if (!task) {
+    if (task == nullptr) {
         P_LOG_CRITICAL("Task is null at row {}", source_row);
         return true;
     }
