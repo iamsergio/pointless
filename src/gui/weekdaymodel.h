@@ -45,5 +45,5 @@ Q_SIGNALS:
 
 private:
     QDate _mondayDate;
-    std::array<TaskFilterModel *, 7> _taskModels;
+    std::array<TaskFilterModel *, 7> _taskModels = {};
 };

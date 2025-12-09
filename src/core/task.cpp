@@ -6,6 +6,7 @@
 #include "tag.h"
 #include "Clock.h"
 
+#include <algorithm>
 #include <iomanip>
 #include <sstream>
 
@@ -13,16 +14,16 @@ namespace PointlessCore {
 
 Task::Task() = default;
 
-Task::Task(const std::string &uuid_, const std::chrono::system_clock::time_point &creationTimestamp_, const std::string &title_)
-    : uuid(uuid_)
-    , title(title_)
+Task::Task(std::string uuid_, const std::chrono::system_clock::time_point &creationTimestamp_, std::string title_)
+    : uuid(std::move(uuid_))
+    , title(std::move(title_))
     , creationTimestamp(creationTimestamp_)
 {
 }
 
 bool Task::containsTag(std::string_view tagName) const
 {
-    return std::any_of(tags.begin(), tags.end(), [tagName](const auto &tag) {
+    return std::ranges::any_of(tags, [tagName](const auto &tag) {
         return tag == tagName;
     });
 }

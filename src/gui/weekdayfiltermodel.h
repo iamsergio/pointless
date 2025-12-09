@@ -9,6 +9,7 @@
 class WeekdayFilterModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+    Q_DISABLE_COPY_MOVE(WeekdayFilterModel)
     QML_ELEMENT
     Q_PROPERTY(QObject *source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(int count READ count NOTIFY countChanged)

@@ -4,6 +4,7 @@
 #include "test_supabase_provider.h"
 #include "supabase.h"
 #include "logger.h"
+#include "utils.h"
 
 #include <cstdlib>
 #include <string>
@@ -14,10 +15,14 @@ TestSupabaseProvider::TestSupabaseProvider()
 {
 }
 
+namespace {
+
+}
+
 std::pair<std::string, std::string> TestSupabaseProvider::defaultLoginPassword() const
 {
-    static const std::string username = std::getenv("POINTLESS_DEBUG_USERNAME") != nullptr ? std::getenv("POINTLESS_DEBUG_USERNAME") : "";
-    static const std::string password = std::getenv("POINTLESS_DEBUG_PASSWORD") != nullptr ? std::getenv("POINTLESS_DEBUG_PASSWORD") : "";
+    static const std::string username = pointless::getenv_or_empty("POINTLESS_DEBUG_USERNAME");
+    static const std::string password = pointless::getenv_or_empty("POINTLESS_DEBUG_PASSWORD");
 
     if (username.empty() || password.empty()) {
         P_LOG_CRITICAL("Environment variables POINTLESS_DEBUG_USERNAME and POINTLESS_DEBUG_PASSWORD must be set for this test.");

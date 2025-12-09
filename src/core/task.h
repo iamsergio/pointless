@@ -16,7 +16,7 @@ class Task
 {
 public:
     Task();
-    Task(const std::string &uuid, const std::chrono::system_clock::time_point &creationTimestamp, const std::string &title = "");
+    Task(std::string uuid, const std::chrono::system_clock::time_point &creationTimestamp, std::string title = {});
 
     [[nodiscard]] bool containsTag(std::string_view tagName) const;
     [[nodiscard]] bool isSoon() const;

@@ -8,8 +8,8 @@
 #include <sstream>
 #include <string>
 
-FileDataProvider::FileDataProvider(const std::string &filePath)
-    : _filePath(filePath)
+FileDataProvider::FileDataProvider(std::string filePath)
+    : _filePath(std::move(filePath))
 {
 }
 

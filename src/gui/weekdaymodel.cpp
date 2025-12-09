@@ -22,8 +22,8 @@ WeekdayModel::WeekdayModel(QObject *parent)
 
     for (int i = 0; i < _taskModels.size(); ++i) {
         auto *filter = new TaskFilterModel(this);
-        _taskModels[i] = filter;
-        _taskModels[i]->setDateFilter(_mondayDate.addDays(i));
+        _taskModels.at(i) = filter;
+        _taskModels.at(i)->setDateFilter(_mondayDate.addDays(i));
     }
 
     connect(this, &QAbstractListModel::rowsInserted, this, &WeekdayModel::countChanged);
@@ -45,7 +45,7 @@ void WeekdayModel::setMondayDate(QDate date)
     beginResetModel();
     _mondayDate = date;
     for (int i = 0; i < _taskModels.size(); ++i) {
-        _taskModels[i]->setDateFilter(_mondayDate.addDays(i));
+        _taskModels.at(i)->setDateFilter(_mondayDate.addDays(i));
     }
     endResetModel();
     Q_EMIT mondayDateChanged();
@@ -82,13 +82,13 @@ QVariant WeekdayModel::data(const QModelIndex &index, int role) const
         return _mondayDate.addDays(index.row()).toString("dddd, d").toUpper();
     }
     if (role == TasksRole) {
-        return QVariant::fromValue(_taskModels[index.row()]);
+        return QVariant::fromValue(_taskModels.at(index.row()));
     }
     if (role == IsPastRole) {
         QDate date = _mondayDate.addDays(index.row());
         return date < Gui::Clock::today();
     }
-    return QVariant();
+    return {};
 }
 
 QHash<int, QByteArray> WeekdayModel::roleNames() const

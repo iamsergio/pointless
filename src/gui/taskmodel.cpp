@@ -120,7 +120,7 @@ void TaskModel::addTask(const PointlessCore::Task &task)
 
 const PointlessCore::Task *TaskModel::taskAt(int row) const
 {
-    if (row < 0 || row >= static_cast<int>(_tasks.size()))
+    if (row < 0 || row >= static_cast<int>(_tasks.size())) // NOLINT
         return nullptr;
     return &_tasks[row];
 }

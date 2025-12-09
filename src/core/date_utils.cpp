@@ -19,7 +19,7 @@ std::tm to_tm(const std::chrono::system_clock::time_point &tp)
 {
     std::time_t t = std::chrono::system_clock::to_time_t(tp);
     std::tm tm {};
-    auto *_ = localtime_r(&t, &tm);
+    ( void )localtime_r(&t, &tm);
     return tm;
 }
 }

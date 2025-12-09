@@ -10,7 +10,7 @@
 class FileDataProvider : public IDataProvider
 {
 public:
-    explicit FileDataProvider(const std::string &filePath);
+    explicit FileDataProvider(std::string filePath);
 
     bool login(const std::string &email, const std::string &password) override;
     bool loginWithDefaults() override;

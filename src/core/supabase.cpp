@@ -3,6 +3,7 @@
 
 #include "supabase.h"
 #include "logger.h"
+#include "utils.h"
 
 #include <cpr/cpr.h>
 #include <cpr/error.h>
@@ -130,8 +131,8 @@ bool Supabase::loginWithDefaults()
 
 std::pair<std::string, std::string> Supabase::defaultLoginPassword() const
 {
-    static const std::string username = std::getenv("POINTLESS_USERNAME") != nullptr ? std::getenv("POINTLESS_USERNAME") : "";
-    static const std::string password = std::getenv("POINTLESS_PASSWORD") != nullptr ? std::getenv("POINTLESS_PASSWORD") : "";
+    static const std::string username = pointless::getenv_or_empty("POINTLESS_USERNAME");
+    static const std::string password = pointless::getenv_or_empty("POINTLESS_PASSWORD");
 
     if (username.empty() || password.empty()) {
         P_LOG_CRITICAL("Environment variables POINTLESS_USERNAME and POINTLESS_PASSWORD must be set for this test.");
@@ -253,7 +254,7 @@ std::vector<uint8_t> Supabase::compress(const std::string &data)
     zs.next_in = reinterpret_cast<Bytef *>(const_cast<char *>(data.c_str()));
     zs.avail_in = static_cast<uInt>(data.length());
 
-    int ret;
+    int ret = 0;
     char outbuffer[kBufferSize];
     std::vector<uint8_t> result;
 
@@ -289,7 +290,7 @@ std::string Supabase::decompress(const std::vector<uint8_t> &compressed_data)
     zs.next_in = const_cast<Bytef *>(compressed_data.data());
     zs.avail_in = static_cast<uInt>(compressed_data.size());
 
-    int ret;
+    int ret = 0;
     char outbuffer[kBufferSize];
     std::string result;
 
@@ -353,7 +354,7 @@ std::string Supabase::base64Encode(const std::vector<uint8_t> &data)
         result.push_back(chars[((val << 8) >> (valb + 8)) & 0x3F]);
     }
 
-    while (result.size() % 4) {
+    while ((result.size() % 4) != 0) {
         result.push_back('=');
     }
 
