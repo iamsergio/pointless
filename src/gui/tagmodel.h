@@ -8,6 +8,7 @@
 #include <QAbstractListModel>
 #include <QtQml/qqmlregistration.h>
 
+#include <cstdint>
 #include <vector>
 
 class TagModel : public QAbstractListModel
@@ -17,7 +18,7 @@ class TagModel : public QAbstractListModel
     Q_PROPERTY(int count READ count NOTIFY countChanged)
 
 public:
-    enum Roles {
+    enum Roles : std::uint16_t {
         NameRole = Qt::UserRole + 1,
         IsBuiltinRole
     };

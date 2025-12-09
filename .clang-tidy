@@ -15,8 +15,12 @@ Checks: >
   -cppcoreguidelines-owning-memory,
   -readability-function-cognitive-complexity,
   -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-macro-usage,
   -readability-magic-numbers,
   -readability-convert-member-functions-to-static,
+  -misc-const-correctness,
+  -misc-non-private-member-variables-in-classes,
+  -misc-include-cleaner,
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*'
 FormatStyle: file

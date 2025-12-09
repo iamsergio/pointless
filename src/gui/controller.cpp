@@ -30,6 +30,9 @@
 Controller::Controller(QObject *parent)
     : QObject(parent)
     , _dataProvider(IDataProvider::createProvider())
+    , _taskModel(TaskModel::instance(this))
+    , _tagModel(new TagModel(this))
+    , _taskFilterModel(new TaskFilterModel(this))
 {
 
 #ifdef POINTLESS_DEVELOPER_MODE
@@ -43,9 +46,6 @@ Controller::Controller(QObject *parent)
     _dataProvider->loginWithDefaults();
 #endif
 
-    _taskModel = TaskModel::instance(this);
-    _tagModel = new TagModel(this);
-    _taskFilterModel = new TaskFilterModel(this);
     navigatorGotoToday();
 
     QTimer::singleShot(0, this, &Controller::refresh);
@@ -239,8 +239,8 @@ QString Controller::colorFromTag(const QString &tagName) const
     };
     if (tagName.isEmpty())
         return "#555555";
-    int index = qAbs(qHash(tagName)) % colors.size();
-    return colors.at(index);
+    const auto index = qHash(tagName) % colors.size();
+    return colors.at(static_cast<int>(index));
 }
 
 bool Controller::isVerbose()

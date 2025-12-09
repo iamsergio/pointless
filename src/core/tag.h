@@ -24,7 +24,7 @@ public:
 };
 
 bool tagIsBuiltin(const Tag &tag);
-bool tagIsBuiltin(const std::string_view name);
+bool tagIsBuiltin(std::string_view name);
 
 } // namespace PointlessCore
 

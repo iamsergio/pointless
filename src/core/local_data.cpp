@@ -11,7 +11,7 @@
 LocalData::LocalData()
 {
     const char *envVar = std::getenv("POINTLESS_CLIENT_DATA_DIR");
-    if (!envVar) {
+    if (envVar == nullptr) {
         throw std::runtime_error("POINTLESS_CLIENT_DATA_DIR environment variable is not set");
     }
 

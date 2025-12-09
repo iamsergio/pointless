@@ -4,3 +4,5 @@
 - Merge Data of different revisions
 - Add login wall
 - Make login async
+- Make clang-tidy clean
+- Add clazy

@@ -7,7 +7,7 @@ quill::Logger *Logger::s_logger = nullptr;
 
 void Logger::initialize()
 {
-    if (s_logger) {
+    if (s_logger != nullptr) {
         return;
     }
 
@@ -19,7 +19,7 @@ void Logger::initialize()
 
 quill::Logger *Logger::getLogger()
 {
-    if (!s_logger) {
+    if (s_logger == nullptr) {
         initialize();
     }
     return s_logger;

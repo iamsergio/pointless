@@ -15,6 +15,7 @@ class Supabase : public IDataProvider
 {
 public:
     explicit Supabase(std::string base_url, std::string anon_key);
+    ~Supabase() override = default;
 
     static std::unique_ptr<Supabase> createDefault();
 

@@ -8,6 +8,7 @@
 #include <QAbstractListModel>
 #include <QtQml/qqmlregistration.h>
 
+#include <cstdint>
 #include <vector>
 
 class TaskModel : public QAbstractListModel
@@ -15,7 +16,7 @@ class TaskModel : public QAbstractListModel
     Q_OBJECT
     Q_PROPERTY(int count READ count NOTIFY countChanged)
 public:
-    enum Roles {
+    enum Roles : std::uint16_t {
         UuidRole = Qt::UserRole + 1,
         TitleRole,
         IsDoneRole,

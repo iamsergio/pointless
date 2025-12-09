@@ -10,7 +10,7 @@
 class IDataProvider
 {
 public:
-    enum class Type {
+    enum class Type : uint8_t {
         None = 0,
         Local,
         Supabase,
@@ -18,6 +18,12 @@ public:
     };
 
     virtual ~IDataProvider() = default;
+
+    IDataProvider() = default;
+    IDataProvider(const IDataProvider &) = delete;
+    IDataProvider(IDataProvider &&) = delete;
+    IDataProvider &operator=(const IDataProvider &) = delete;
+    IDataProvider &operator=(IDataProvider &&) = delete;
 
     [[nodiscard]] virtual bool isAuthenticated() const = 0;
     virtual bool login(const std::string &email, const std::string &password) = 0;
@@ -29,4 +35,7 @@ public:
 
     static void setProvider(std::unique_ptr<IDataProvider> provider);
     static std::unique_ptr<IDataProvider> createProvider();
+
+private:
+    static std::unique_ptr<IDataProvider> s_provider;
 };

@@ -5,6 +5,7 @@
 #include "logger.h"
 
 #include <QDateTime>
+#include <QString>
 
 TaskModel::TaskModel(QObject *parent)
     : QAbstractListModel(parent)
@@ -110,7 +111,8 @@ void TaskModel::setTasks(const std::vector<PointlessCore::Task> &tasks)
 
 void TaskModel::addTask(const PointlessCore::Task &task)
 {
-    beginInsertRows(QModelIndex(), _tasks.size(), _tasks.size());
+    const int numTasks = static_cast<int>(_tasks.size());
+    beginInsertRows(QModelIndex(), numTasks, numTasks);
     _tasks.push_back(task);
     endInsertRows();
     emit countChanged();

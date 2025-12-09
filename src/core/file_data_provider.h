@@ -4,6 +4,7 @@
 #pragma once
 
 #include "data_provider.h"
+
 #include <string>
 
 class FileDataProvider : public IDataProvider

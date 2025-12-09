@@ -6,5 +6,5 @@
 int main(int argc, char *argv[])
 {
     pointless::Application app(argc, argv);
-    return app.exec();
+    return pointless::Application::exec();
 }

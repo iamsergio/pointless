@@ -7,8 +7,7 @@
 #include <string>
 #include <string_view>
 
-namespace PointlessCore {
-namespace DateUtils {
+namespace PointlessCore::DateUtils {
 
 std::string dateStr(const std::chrono::system_clock::time_point &date);
 std::string prettyDate(const std::chrono::system_clock::time_point &date, bool includeTime = false);
@@ -26,5 +25,4 @@ bool iMidnight(const std::chrono::system_clock::time_point &date);
 std::chrono::system_clock::time_point nextMonday(const std::chrono::system_clock::time_point &date);
 std::string_view weekdayName(const std::chrono::system_clock::time_point &date);
 
-} // namespace DateUtils
-} // namespace PointlessCore
+} // namespace PointlessCore::DateUtils

@@ -36,18 +36,18 @@ int TagModel::rowCount(const QModelIndex &parent) const
 QVariant TagModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid() || index.row() >= static_cast<int>(_tags.size()))
-        return QVariant();
+        return {};
 
     const auto &tag = _tags[index.row()];
 
-    switch (role) {
+    switch (static_cast<Roles>(role)) {
     case NameRole:
         return QString::fromStdString(tag.name);
     case IsBuiltinRole:
         return tag.isBuiltin();
     }
 
-    return QVariant();
+    return {};
 }
 
 QHash<int, QByteArray> TagModel::roleNames() const

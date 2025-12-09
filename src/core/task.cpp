@@ -94,11 +94,7 @@ void Task::dumpDebug() const
 void Task::mergeConflict(const Task &other)
 {
     // Completion: Undone > Done
-    if (!isDone || !other.isDone) {
-        isDone = false;
-    } else {
-        isDone = true;
-    }
+    isDone = isDone && other.isDone;
 
     // Importance: Important > Not Important
     if (isImportant || other.isImportant) {

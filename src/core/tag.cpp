@@ -4,7 +4,6 @@
 #include "tag.h"
 
 #include <array>
-#include <string>
 #include <string_view>
 #include <algorithm>
 
@@ -15,7 +14,7 @@ bool tagIsBuiltin(const Tag &tag)
     return tagIsBuiltin(tag.name);
 }
 
-bool tagIsBuiltin(const std::string_view name)
+bool tagIsBuiltin(std::string_view name)
 {
     static const std::array<std::string_view, 2> builtinTags = {
         "soon",

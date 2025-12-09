@@ -4,6 +4,7 @@
 #include "date_utils.h"
 #include "Clock.h"
 
+#include <array>
 #include <chrono>
 #include <cstdio>
 #include <ctime>
@@ -18,7 +19,7 @@ std::tm to_tm(const std::chrono::system_clock::time_point &tp)
 {
     std::time_t t = std::chrono::system_clock::to_time_t(tp);
     std::tm tm {};
-    localtime_r(&t, &tm);
+    auto *_ = localtime_r(&t, &tm);
     return tm;
 }
 }
@@ -30,13 +31,13 @@ std::string dateStr(const std::chrono::system_clock::time_point &date)
     oss << tm.tm_mday << "-" << (tm.tm_mon + 1) << "-" << (tm.tm_year + 1900);
     return oss.str();
 }
-
 std::string_view weekdayName(const std::chrono::system_clock::time_point &date)
 {
-    static const char *names[] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+    static const std::array<const char *, 7> names = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
     std::tm tm = to_tm(date);
-    int wday = tm.tm_wday == 0 ? 6 : tm.tm_wday - 1; // tm_wday: 0=Sunday
-    return names[wday];
+
+    const int wday = tm.tm_wday == 0 ? 6 : tm.tm_wday - 1; // tm_wday: 0=Sunday
+    return names.at(wday);
 }
 
 bool isWorkDay(const std::chrono::system_clock::time_point &date)
@@ -91,10 +92,12 @@ std::chrono::system_clock::time_point thisWeeksMonday(const std::chrono::system_
     return std::chrono::system_clock::from_time_t(t);
 }
 
+namespace {
 std::chrono::system_clock::time_point thisWeeksMonday()
 {
-    auto monday = thisWeeksMonday(Clock::now());
+    auto monday = PointlessCore::DateUtils::thisWeeksMonday(Clock::now());
     return trimTime(monday);
+}
 }
 
 bool isThisWeek(const std::chrono::system_clock::time_point &date)
@@ -149,17 +152,15 @@ std::string prettyDate(const std::chrono::system_clock::time_point &date, bool i
     }
     if (isNext7Days(date)) {
         return std::format("next {}", weekdayName(date));
-    } else {
-        std::string result = dateStr(date);
-        if (includeTime) {
-            std::tm tm = to_tm(date);
-            char buf[6];
-            snprintf(buf, sizeof(buf), "%02d:%02d", tm.tm_hour, tm.tm_min);
-            result += " ";
-            result += buf;
-        }
-        return result;
     }
+
+    std::string result = dateStr(date);
+    if (includeTime) {
+        std::tm tm = to_tm(date);
+        result += " ";
+        result += std::format("{:02d}:{:02d}", tm.tm_hour, tm.tm_min);
+    }
+    return result;
 }
 
 } // namespace PointlessCore::DateUtils
