@@ -9,6 +9,7 @@
 #include <cpr/error.h>
 #include <zlib.h>
 
+#include <array>
 #include <cstdlib>
 #include <memory>
 #include <string>
@@ -251,25 +252,33 @@ std::vector<uint8_t> Supabase::compress(const std::string &data)
         throw std::runtime_error("Failed to initialize zlib deflation");
     }
 
-    zs.next_in = reinterpret_cast<Bytef *>(const_cast<char *>(data.c_str()));
+    std::vector<Bytef> inputBuffer(data.begin(), data.end());
+    zs.next_in = inputBuffer.data();
     zs.avail_in = static_cast<uInt>(data.length());
 
     int ret = 0;
-    char outbuffer[kBufferSize];
+    std::array<Bytef, kBufferSize> outbuffer {};
     std::vector<uint8_t> result;
 
-    do {
-        zs.next_out = reinterpret_cast<Bytef *>(outbuffer);
-        zs.avail_out = sizeof(outbuffer);
-
-        ret = deflate(&zs, Z_FINISH);
-
+    zs.next_out = outbuffer.data();
+    zs.avail_out = static_cast<uInt>(outbuffer.size());
+    ret = deflate(&zs, Z_FINISH);
+    while (ret == Z_OK) {
         if (result.size() < zs.total_out) {
             result.insert(result.end(),
-                          outbuffer,
-                          outbuffer + zs.total_out - result.size());
+                          outbuffer.begin(),
+                          outbuffer.begin() + static_cast<ptrdiff_t>(zs.total_out - result.size()));
         }
-    } while (ret == Z_OK);
+        zs.next_out = outbuffer.data();
+        zs.avail_out = static_cast<uInt>(outbuffer.size());
+        ret = deflate(&zs, Z_FINISH);
+    }
+
+    if (result.size() < zs.total_out) {
+        result.insert(result.end(),
+                      outbuffer.begin(),
+                      outbuffer.begin() + static_cast<ptrdiff_t>(zs.total_out - result.size()));
+    }
 
     deflateEnd(&zs);
 
@@ -287,23 +296,29 @@ std::string Supabase::decompress(const std::vector<uint8_t> &compressed_data)
         throw std::runtime_error("Failed to initialize zlib inflation");
     }
 
-    zs.next_in = const_cast<Bytef *>(compressed_data.data());
+    std::vector<Bytef> inputBuffer(compressed_data.begin(), compressed_data.end());
+    zs.next_in = inputBuffer.data();
     zs.avail_in = static_cast<uInt>(compressed_data.size());
 
     int ret = 0;
-    char outbuffer[kBufferSize];
+    std::array<char, kBufferSize> outbuffer {};
     std::string result;
 
-    do {
-        zs.next_out = reinterpret_cast<Bytef *>(outbuffer);
-        zs.avail_out = sizeof(outbuffer);
-
-        ret = inflate(&zs, 0);
-
+    zs.next_out = reinterpret_cast<Bytef *>(outbuffer.data()); // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
+    zs.avail_out = static_cast<uInt>(outbuffer.size());
+    ret = inflate(&zs, 0);
+    while (ret == Z_OK) {
         if (result.size() < zs.total_out) {
-            result.append(outbuffer, zs.total_out - result.size());
+            result.append(outbuffer.data(), zs.total_out - result.size());
         }
-    } while (ret == Z_OK);
+        zs.next_out = reinterpret_cast<Bytef *>(outbuffer.data()); // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
+        zs.avail_out = static_cast<uInt>(outbuffer.size());
+        ret = inflate(&zs, 0);
+    }
+
+    if (result.size() < zs.total_out) {
+        result.append(outbuffer.data(), zs.total_out - result.size());
+    }
 
     inflateEnd(&zs);
 
@@ -320,14 +335,15 @@ std::vector<uint8_t> Supabase::base64Decode(const std::string &input)
     std::vector<uint8_t> result;
 
     uint32_t val = 0;
-    int valb = -8;
+    int32_t valb = -8;
     for (unsigned char c : input) {
-        if (chars.find(c) == std::string::npos)
+        auto pos = chars.find(static_cast<char>(c));
+        if (pos == std::string::npos)
             break;
-        val = (val << 6) + static_cast<uint32_t>(chars.find(c));
+        val = (val << 6U) + static_cast<uint32_t>(pos);
         valb += 6;
         if (valb >= 0) {
-            result.push_back(static_cast<uint8_t>((val >> valb) & 0xFF));
+            result.push_back(static_cast<uint8_t>((val >> static_cast<uint32_t>(valb)) & 0xFFU));
             valb -= 8;
         }
     }
@@ -339,19 +355,19 @@ std::string Supabase::base64Encode(const std::vector<uint8_t> &data)
     const std::string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     std::string result;
     uint32_t val = 0;
-    int valb = -6;
+    int32_t valb = -6;
 
     for (uint8_t c : data) {
-        val = (val << 8) + c;
+        val = (val << 8U) + c;
         valb += 8;
         while (valb >= 0) {
-            result.push_back(chars[(val >> valb) & 0x3F]);
+            result.push_back(chars[(val >> static_cast<uint32_t>(valb)) & 0x3FU]);
             valb -= 6;
         }
     }
 
     if (valb > -6) {
-        result.push_back(chars[((val << 8) >> (valb + 8)) & 0x3F]);
+        result.push_back(chars[((val << 8U) >> static_cast<uint32_t>(valb + 8)) & 0x3FU]);
     }
 
     while ((result.size() % 4) != 0) {
