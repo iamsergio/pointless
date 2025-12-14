@@ -9,6 +9,7 @@ add_library(
   pointless_core STATIC
   pointless_core.cpp
   Clock.cpp
+  context.cpp
   task.cpp
   task_manager.cpp
   tag.cpp

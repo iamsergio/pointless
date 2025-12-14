@@ -33,7 +33,6 @@ public:
     virtual std::string retrieveData() = 0;
     virtual bool updateData(const std::string &data) = 0;
 
-    static void setProvider(std::unique_ptr<IDataProvider> provider);
     static std::unique_ptr<IDataProvider> createProvider();
 
 private:

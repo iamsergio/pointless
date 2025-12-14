@@ -2,19 +2,27 @@
 // SPDX-License-Identifier: MIT
 
 #include "data_provider.h"
+#include "file_data_provider.h"
 #include "supabase.h"
-
-std::unique_ptr<IDataProvider> IDataProvider::s_provider;
-
-void IDataProvider::setProvider(std::unique_ptr<IDataProvider> provider)
-{
-    s_provider = std::move(provider);
-}
+#include "context.h"
+#include "test_supabase_provider.h"
 
 std::unique_ptr<IDataProvider> IDataProvider::createProvider()
 {
-    if (s_provider) {
-        return std::move(s_provider);
+
+    const auto &context = pointless::core::Context::self();
+
+    switch (context.dataProviderType) {
+    case Type::None:
+        std::abort();
+    case Type::Local:
+        return std::make_unique<FileDataProvider>(context.localFilePath);
+    case Type::TestSupabase:
+        return std::make_unique<TestSupabaseProvider>();
+    case Type::Supabase:
+        return Supabase::createDefault();
+        break;
     }
-    return Supabase::createDefault();
+
+    std::abort();
 }

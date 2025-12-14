@@ -9,6 +9,7 @@
 #include "../../core/file_data_provider.h"
 #include "../../core/test_supabase_provider.h"
 #include "../../core/supabase.h"
+#include "../../core/context.h"
 
 #include <gtest/gtest.h>
 
@@ -158,10 +159,18 @@ TEST(DummyTest, BasicAssertions)
 void initDataProvider(IDataProvider::Type providerType)
 {
     Gui::Clock::setTestNow(QDateTime(QDate(2025, 12, 1), QTime(16, 0)));
+
+    pointless::core::Context context;
+
     if (providerType == IDataProvider::Type::Local) {
-        IDataProvider::setProvider(std::make_unique<FileDataProvider>(testDataPath));
+        context.dataProviderType = IDataProvider::Type::Local;
+        context.localFilePath = testDataPath;
+        pointless::core::Context::setContext(context);
     } else if (providerType == IDataProvider::Type::TestSupabase) {
-        auto provider = std::make_unique<TestSupabaseProvider>();
+        context.dataProviderType = IDataProvider::Type::TestSupabase;
+        pointless::core::Context::setContext(context);
+
+        auto provider = IDataProvider::createProvider();
         if (!provider->loginWithDefaults()) {
             P_LOG_CRITICAL("Failed to login to Supabase for test initialization");
             std::abort();
@@ -182,7 +191,6 @@ void initDataProvider(IDataProvider::Type providerType)
         }
 
         provider->logout();
-        IDataProvider::setProvider(std::move(provider));
     } else {
         std::abort();
     }

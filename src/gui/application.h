@@ -12,7 +12,7 @@ class Application : public QGuiApplication
 {
     Q_OBJECT
 public:
-    Application(int &argc, char **argv);
+    explicit Application(int &argc, char **argv);
 
 private:
     QQmlApplicationEngine _engine;

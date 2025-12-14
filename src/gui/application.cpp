@@ -5,6 +5,7 @@
 #include "../core/logger.h"
 #include "../core/test_supabase_provider.h"
 #include "../core/data_provider.h"
+#include "context.h"
 
 #include <QCommandLineOption>
 #include <QCommandLineParser>
@@ -34,7 +35,9 @@ Application::Application(int &argc, char **argv)
     parser.process(*this);
 
     if (parser.isSet(testSupabaseOption)) {
-        IDataProvider::setProvider(std::make_unique<TestSupabaseProvider>());
+        pointless::core::Context context;
+        context.dataProviderType = IDataProvider::Type::TestSupabase;
+        pointless::core::Context::setContext(context);
     }
 
     QQuickStyle::setStyle("Fusion");
