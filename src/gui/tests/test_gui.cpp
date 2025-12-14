@@ -6,9 +6,6 @@
 #include "../gui/spix_utils.h"
 #include "../core/logger.h"
 #include "../../core/data_provider.h"
-#include "../../core/file_data_provider.h"
-#include "../../core/test_supabase_provider.h"
-#include "../../core/supabase.h"
 #include "../../core/context.h"
 
 #include <gtest/gtest.h>
