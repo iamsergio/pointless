@@ -91,6 +91,19 @@
       "cacheVariables": {
         "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--warnings-as-errors=*"
       }
+    },
+    {
+      "name": "clazy",
+      "inherits": "dev",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "POINTLESS_ENABLE_TESTS": "OFF"
+      },
+      "environment": {
+        "CXX": "clazy",
+        "CCACHE_DISABLE": "ON"
+      }
     }
   ],
   "buildPresets": [
@@ -105,6 +118,14 @@
       "displayName": "Build Debug",
       "configurePreset": "ios-dev",
       "configuration": "Debug"
+    },
+    {
+      "name": "clazy",
+      "configurePreset": "clazy",
+      "environment": {
+        "CLAZY_CHECKS": "level2,detaching-member,heap-allocated-small-trivial-type,isempty-vs-count,qstring-varargs,qvariant-template-instantiation,raw-environment-function,reserve-candidates,signal-with-return-value,thread-with-slots,no-ctor-missing-parent-argument,no-missing-typeinfo,no-skipped-base-method",
+        "CCACHE_DISABLE": "ON"
+      }
     }
   ]
 }
