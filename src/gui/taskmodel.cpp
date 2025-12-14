@@ -47,9 +47,9 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         if (task.dueDate) {
             const auto timeT = std::chrono::system_clock::to_time_t(*task.dueDate);
             const QDateTime dt = QDateTime::fromSecsSinceEpoch(timeT);
-            QString dateStr = dt.toString("MMM d");
+            QString dateStr = dt.toString(QStringLiteral("MMM d"));
             if (dt.time() != QTime(0, 0)) {
-                dateStr += ", " + dt.toString("HH:mm");
+                dateStr += QStringLiteral(", ") + dt.toString(QStringLiteral("HH:mm"));
             }
             return dateStr;
         }

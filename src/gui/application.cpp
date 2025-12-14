@@ -21,15 +21,15 @@ using namespace pointless;
 Application::Application(int &argc, char **argv)
     : QGuiApplication(argc, argv)
 {
-    QCoreApplication::setApplicationName("pointless");
-    QCoreApplication::setApplicationVersion("0.1");
+    QCoreApplication::setApplicationName(QStringLiteral("pointless"));
+    QCoreApplication::setApplicationVersion(QStringLiteral("0.1"));
 
     QCommandLineParser parser;
-    parser.setApplicationDescription("Pointless");
+    parser.setApplicationDescription(QStringLiteral("Pointless"));
     parser.addHelpOption();
     parser.addVersionOption();
 
-    QCommandLineOption testSupabaseOption("test-supabase", "Use supabase test user");
+    QCommandLineOption testSupabaseOption(QStringLiteral("test-supabase"), QStringLiteral("Use supabase test user"));
     parser.addOption(testSupabaseOption);
 
     parser.process(*this);
@@ -40,7 +40,7 @@ Application::Application(int &argc, char **argv)
         pointless::core::Context::setContext(context);
     }
 
-    QQuickStyle::setStyle("Fusion");
+    QQuickStyle::setStyle(QStringLiteral("Fusion"));
 
     _engine.loadFromModule("pointless", "Main");
 

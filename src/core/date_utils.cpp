@@ -15,7 +15,7 @@ namespace PointlessCore::DateUtils {
 
 namespace {
 // Helper to convert time_point to std::tm
-std::tm to_tm(const std::chrono::system_clock::time_point &tp)
+std::tm to_tm(std::chrono::system_clock::time_point tp)
 {
     std::time_t t = std::chrono::system_clock::to_time_t(tp);
     std::tm tm {};
@@ -24,14 +24,14 @@ std::tm to_tm(const std::chrono::system_clock::time_point &tp)
 }
 }
 
-std::string dateStr(const std::chrono::system_clock::time_point &date)
+std::string dateStr(std::chrono::system_clock::time_point date)
 {
     std::tm tm = to_tm(date);
     std::ostringstream oss;
     oss << tm.tm_mday << "-" << (tm.tm_mon + 1) << "-" << (tm.tm_year + 1900);
     return oss.str();
 }
-std::string_view weekdayName(const std::chrono::system_clock::time_point &date)
+std::string_view weekdayName(std::chrono::system_clock::time_point date)
 {
     static const std::array<const char *, 7> names = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
     std::tm tm = to_tm(date);
@@ -40,13 +40,13 @@ std::string_view weekdayName(const std::chrono::system_clock::time_point &date)
     return names.at(wday);
 }
 
-bool isWorkDay(const std::chrono::system_clock::time_point &date)
+bool isWorkDay(std::chrono::system_clock::time_point date)
 {
     std::tm tm = to_tm(date);
     return tm.tm_wday >= 1 && tm.tm_wday <= 5;
 }
 
-std::chrono::system_clock::time_point trimTime(const std::chrono::system_clock::time_point &date)
+std::chrono::system_clock::time_point trimTime(std::chrono::system_clock::time_point date)
 {
     std::tm tm = to_tm(date);
     tm.tm_hour = 0;
@@ -62,24 +62,24 @@ std::chrono::system_clock::time_point today()
     return trimTime(Clock::now());
 }
 
-bool isToday(const std::chrono::system_clock::time_point &date)
+bool isToday(std::chrono::system_clock::time_point date)
 {
     return trimTime(date) == today();
 }
 
-bool isTomorrow(const std::chrono::system_clock::time_point &date)
+bool isTomorrow(std::chrono::system_clock::time_point date)
 {
     auto yest = date - std::chrono::hours(24);
     return isToday(yest);
 }
 
-bool isYesterday(const std::chrono::system_clock::time_point &date)
+bool isYesterday(std::chrono::system_clock::time_point date)
 {
     auto tom = date + std::chrono::hours(24);
     return isToday(tom);
 }
 
-std::chrono::system_clock::time_point thisWeeksMonday(const std::chrono::system_clock::time_point &date)
+std::chrono::system_clock::time_point thisWeeksMonday(std::chrono::system_clock::time_point date)
 {
     std::tm tm = to_tm(date);
     int daysBack = (tm.tm_wday == 0 ? 6 : tm.tm_wday - 1);
@@ -100,30 +100,30 @@ std::chrono::system_clock::time_point thisWeeksMonday()
 }
 }
 
-bool isThisWeek(const std::chrono::system_clock::time_point &date)
+bool isThisWeek(std::chrono::system_clock::time_point date)
 {
     auto monday = thisWeeksMonday(Clock::now());
     return date >= monday && date < monday + std::chrono::hours(24 * 7);
 }
 
-bool isNext7Days(const std::chrono::system_clock::time_point &date)
+bool isNext7Days(std::chrono::system_clock::time_point date)
 {
     auto t = today();
     return (isToday(date) || isAfterToday(date)) && date < t + std::chrono::hours(24 * 7);
 }
 
-bool isAfterToday(const std::chrono::system_clock::time_point &date)
+bool isAfterToday(std::chrono::system_clock::time_point date)
 {
     return trimTime(date) > today();
 }
 
-bool iMidnight(const std::chrono::system_clock::time_point &date)
+bool iMidnight(std::chrono::system_clock::time_point date)
 {
     std::tm tm = to_tm(date);
     return tm.tm_hour == 0 && tm.tm_min == 0 && tm.tm_sec == 0;
 }
 
-std::chrono::system_clock::time_point nextMonday(const std::chrono::system_clock::time_point &date)
+std::chrono::system_clock::time_point nextMonday(std::chrono::system_clock::time_point date)
 {
     std::tm tm = to_tm(date);
     int daysBack = (tm.tm_wday == 0 ? 6 : tm.tm_wday - 1);
@@ -136,7 +136,7 @@ std::chrono::system_clock::time_point nextMonday(const std::chrono::system_clock
     return std::chrono::system_clock::from_time_t(t);
 }
 
-std::string prettyDate(const std::chrono::system_clock::time_point &date, bool includeTime)
+std::string prettyDate(std::chrono::system_clock::time_point date, bool includeTime)
 {
     if (isToday(date)) {
         return includeTime ? std::format("today {}", weekdayName(date)) : "today";

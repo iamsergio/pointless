@@ -137,7 +137,7 @@ QDate TaskFilterModel::dateFilter() const
     return _dateFilter;
 }
 
-void TaskFilterModel::setDateFilter(const QDate &date)
+void TaskFilterModel::setDateFilter(QDate date)
 {
     if (_dateFilter == date)
         return;
@@ -145,7 +145,7 @@ void TaskFilterModel::setDateFilter(const QDate &date)
     _dateFilter = date;
     endFilterChange();
 
-    setObjectName(QString("TaskFilterModel_Date_%1").arg(_dateFilter.toString(Qt::ISODate)));
+    setObjectName(QStringLiteral("TaskFilterModel_Date_%1").arg(_dateFilter.toString(Qt::ISODate)));
 
     emit dateFilterChanged();
 }

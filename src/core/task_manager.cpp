@@ -67,6 +67,7 @@ size_t TaskManager::taskCount() const
 std::vector<Task> TaskManager::getTasksByTag(const std::string &tagName) const
 {
     std::vector<Task> result;
+    result.reserve(m_data.tasks.size());
     for (const auto &task : m_data.tasks) {
         auto tagIt = std::ranges::find(task.tags, tagName);
         if (tagIt != task.tags.end()) {

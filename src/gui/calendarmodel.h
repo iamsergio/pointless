@@ -29,7 +29,7 @@ public:
     [[nodiscard]] QHash<int, QByteArray> roleNames() const override;
 
     [[nodiscard]] QDate month() const;
-    void setMonth(const QDate &month);
+    void setMonth(QDate month);
 
     [[nodiscard]] QDate startDate() const;
 

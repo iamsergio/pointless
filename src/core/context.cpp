@@ -6,7 +6,7 @@
 using namespace pointless::core;
 
 namespace {
-Context s_currentContext; // NOLINT
+Context s_currentContext; // NOLINT // clazy:exclude=non-pod-global-static
 }
 
 void Context::setContext(const Context &context)

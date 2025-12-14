@@ -8,7 +8,7 @@ qt_policy(SET QTP0001 NEW)
 
 qt_add_library(pointless_gui)
 
-if(POINTLESS_DEVELOPER_MODE)
+if(POINTLESS_ENABLE_TESTS)
   target_link_libraries(pointless_gui PRIVATE Spix::QtQuick)
 endif()
 

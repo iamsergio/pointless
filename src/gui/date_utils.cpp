@@ -11,7 +11,7 @@
 
 namespace Gui::DateUtils {
 
-QDate timepointToQDate(const std::optional<std::chrono::system_clock::time_point> &tp)
+QDate timepointToQDate(std::optional<std::chrono::system_clock::time_point> tp)
 {
     if (!tp.has_value()) {
         return {};

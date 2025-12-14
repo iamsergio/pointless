@@ -63,7 +63,7 @@ QDate CalendarModel::month() const
     return _month;
 }
 
-void CalendarModel::setMonth(const QDate &month)
+void CalendarModel::setMonth(QDate month)
 {
     if (_month == month)
         return;

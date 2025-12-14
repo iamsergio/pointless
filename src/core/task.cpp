@@ -14,7 +14,7 @@ namespace PointlessCore {
 
 Task::Task() = default;
 
-Task::Task(std::string uuid_, const std::chrono::system_clock::time_point &creationTimestamp_, std::string title_)
+Task::Task(std::string uuid_, std::chrono::system_clock::time_point creationTimestamp_, std::string title_)
     : uuid(std::move(uuid_))
     , title(std::move(title_))
     , creationTimestamp(creationTimestamp_)
@@ -73,7 +73,7 @@ void Task::dumpDebug() const
         P_LOG_DEBUG("Task JSON: {}", pretty);
     }
 
-    auto timeToString = [](const std::chrono::system_clock::time_point &tp) {
+    auto timeToString = [](std::chrono::system_clock::time_point tp) {
         auto t = std::chrono::system_clock::to_time_t(tp);
         std::stringstream ss;
         ss << std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S");

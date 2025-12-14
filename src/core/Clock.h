@@ -13,7 +13,7 @@ public:
     static std::chrono::system_clock::time_point now();
 
 #ifdef POINTLESS_DEVELOPER_MODE
-    static void setTestNow(const std::chrono::system_clock::time_point &t);
+    static void setTestNow(std::chrono::system_clock::time_point t);
     static void reset();
 
 private:

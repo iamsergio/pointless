@@ -22,7 +22,7 @@ std::chrono::system_clock::time_point Clock::now()
 }
 
 #ifdef POINTLESS_DEVELOPER_MODE
-void Clock::setTestNow(const std::chrono::system_clock::time_point &t)
+void Clock::setTestNow(std::chrono::system_clock::time_point t)
 {
     s_testTime = t;
 }

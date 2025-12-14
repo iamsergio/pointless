@@ -114,15 +114,15 @@ QDate Controller::navigatorEndDate() const
 
 QString Controller::navigatorPrettyStartDate() const
 {
-    return _navigatorStartDate.toString("MMM d");
+    return _navigatorStartDate.toString(QStringLiteral("MMM d"));
 }
 
 QString Controller::navigatorPrettyEndDate() const
 {
-    return navigatorEndDate().toString("MMM d");
+    return navigatorEndDate().toString(QStringLiteral("MMM d"));
 }
 
-void Controller::setNavigatorStartDate(const QDate &date)
+void Controller::setNavigatorStartDate(QDate date)
 {
     if (_navigatorStartDate == date) {
         return;
@@ -238,7 +238,7 @@ QString Controller::colorFromTag(const QString &tagName) const
         "#FF8A00"
     };
     if (tagName.isEmpty())
-        return "#555555";
+        return QStringLiteral("#555555");
     const auto index = qHash(tagName) % colors.size();
     return colors.at(static_cast<int>(index));
 }

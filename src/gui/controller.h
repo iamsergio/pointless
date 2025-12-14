@@ -51,7 +51,7 @@ public:
     [[nodiscard]] QDate navigatorEndDate() const;
     [[nodiscard]] QString navigatorPrettyStartDate() const;
     [[nodiscard]] QString navigatorPrettyEndDate() const;
-    void setNavigatorStartDate(const QDate &date);
+    void setNavigatorStartDate(QDate date);
     Q_INVOKABLE void navigatorGotoToday();
     Q_INVOKABLE void navigatorGotoNextWeek();
     Q_INVOKABLE void navigatorGotoPreviousWeek();

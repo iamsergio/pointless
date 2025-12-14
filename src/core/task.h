@@ -16,7 +16,7 @@ class Task
 {
 public:
     Task();
-    Task(std::string uuid, const std::chrono::system_clock::time_point &creationTimestamp, std::string title = {});
+    Task(std::string uuid, std::chrono::system_clock::time_point creationTimestamp, std::string title = {});
 
     [[nodiscard]] bool containsTag(std::string_view tagName) const;
     [[nodiscard]] bool isSoon() const;
@@ -73,7 +73,7 @@ template<>
 struct to<JSON, std::chrono::system_clock::time_point>
 {
     template<auto Opts>
-    static void op(const std::chrono::system_clock::time_point &value, is_context auto &&ctx, auto &&b, auto &&ix) noexcept
+    static void op(std::chrono::system_clock::time_point value, is_context auto &&ctx, auto &&b, auto &&ix) noexcept
     {
         int64_t millis = std::chrono::duration_cast<std::chrono::milliseconds>(value.time_since_epoch()).count();
         serialize<JSON>::op<Opts>(millis, ctx, b, ix);

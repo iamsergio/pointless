@@ -18,3 +18,5 @@ ctest -j2 --output-on-failure --verbose
 cd ..
 cmake --preset=ci-clang-tidy
 cmake --build build-ci-clang-tidy
+cmake --preset=clazy
+cmake --build build-clazy

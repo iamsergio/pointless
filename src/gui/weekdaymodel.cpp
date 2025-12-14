@@ -79,7 +79,7 @@ QVariant WeekdayModel::data(const QModelIndex &index, int role) const
     }
 
     if (role == PrettyDateRole) {
-        return _mondayDate.addDays(index.row()).toString("dddd, d").toUpper();
+        return _mondayDate.addDays(index.row()).toString(QStringLiteral("dddd, d")).toUpper();
     }
     if (role == TasksRole) {
         return QVariant::fromValue(_taskModels.at(index.row()));

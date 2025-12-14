@@ -38,7 +38,7 @@ public:
     Q_SIGNAL void viewTypeChanged();
 
     [[nodiscard]] QDate dateFilter() const;
-    void setDateFilter(const QDate &date);
+    void setDateFilter(QDate date);
     Q_SIGNAL void dateFilterChanged();
 
     [[nodiscard]] int count() const;
