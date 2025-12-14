@@ -98,16 +98,16 @@ void Task::mergeConflict(const Task &other)
     isDone = isDone && other.isDone;
 
     // Importance: Important > Not Important
-    if (isImportant || other.isImportant) {
-        isImportant = true;
-    }
+    isImportant = isImportant || other.isImportant;
 
     auto myTime = modificationTimestamp.value_or(std::chrono::system_clock::time_point::min());
     auto otherTime = other.modificationTimestamp.value_or(std::chrono::system_clock::time_point::min());
 
+    const bool otherIsMoreRecent = otherTime > myTime;
+
     // Due Date
     if (dueDate.has_value() && other.dueDate.has_value()) {
-        if (otherTime > myTime) {
+        if (otherIsMoreRecent) {
             dueDate = other.dueDate;
         }
     } else if (other.dueDate.has_value()) {
@@ -115,7 +115,7 @@ void Task::mergeConflict(const Task &other)
     }
 
     // Title
-    if (otherTime > myTime) {
+    if (otherIsMoreRecent && other.title != title) {
         title = other.title;
     }
 

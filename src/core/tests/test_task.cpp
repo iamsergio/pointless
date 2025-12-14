@@ -132,3 +132,231 @@ TEST(TaskTest, CalendarPropertiesSerializeDeserialize)
     EXPECT_EQ(deserialized.deviceCalendarUuid, "device-calendar-xyz");
     EXPECT_EQ(deserialized.deviceCalendarName, "Work Calendar");
 }
+
+TEST(TaskTest, MergeConflict_IsDone_UndoneWins)
+{
+    Task task1;
+    task1.isDone = true;
+    Task task2;
+    task2.isDone = false;
+
+    task1.mergeConflict(task2);
+    EXPECT_FALSE(task1.isDone);
+
+    Task task3;
+    task3.isDone = false;
+    Task task4;
+    task4.isDone = true;
+
+    task3.mergeConflict(task4);
+    EXPECT_FALSE(task3.isDone);
+
+    Task task5;
+    task5.isDone = true;
+    Task task6;
+    task6.isDone = true;
+
+    task5.mergeConflict(task6);
+    EXPECT_TRUE(task5.isDone);
+
+    Task task7;
+    task7.isDone = false;
+    Task task8;
+    task8.isDone = false;
+
+    task7.mergeConflict(task8);
+    EXPECT_FALSE(task7.isDone);
+}
+
+TEST(TaskTest, MergeConflict_IsImportant_ImportantWins)
+{
+    Task task1;
+    task1.isImportant = false;
+    Task task2;
+    task2.isImportant = true;
+
+    task1.mergeConflict(task2);
+    EXPECT_TRUE(task1.isImportant);
+
+    Task task3;
+    task3.isImportant = true;
+    Task task4;
+    task4.isImportant = false;
+
+    task3.mergeConflict(task4);
+    EXPECT_TRUE(task3.isImportant);
+
+    Task task5;
+    task5.isImportant = true;
+    Task task6;
+    task6.isImportant = true;
+
+    task5.mergeConflict(task6);
+    EXPECT_TRUE(task5.isImportant);
+
+    Task task7;
+    task7.isImportant = false;
+    Task task8;
+    task8.isImportant = false;
+
+    task7.mergeConflict(task8);
+    EXPECT_FALSE(task7.isImportant);
+}
+
+TEST(TaskTest, MergeConflict_DueDate_BothHaveDueDate_MoreRecentWins)
+{
+    auto now = PointlessCore::Clock::now();
+    auto oneHourAgo = now - std::chrono::hours(1);
+    auto twoHoursAgo = now - std::chrono::hours(2);
+
+    Task task1;
+    task1.dueDate = now + std::chrono::days(5);
+    task1.modificationTimestamp = twoHoursAgo;
+    Task task2;
+    task2.dueDate = now + std::chrono::days(10);
+    task2.modificationTimestamp = oneHourAgo;
+
+    task1.mergeConflict(task2);
+    EXPECT_EQ(*task1.dueDate, now + std::chrono::days(10));
+
+    Task task3;
+    task3.dueDate = now + std::chrono::days(5);
+    task3.modificationTimestamp = oneHourAgo;
+    Task task4;
+    task4.dueDate = now + std::chrono::days(10);
+    task4.modificationTimestamp = twoHoursAgo;
+
+    task3.mergeConflict(task4);
+    EXPECT_EQ(*task3.dueDate, now + std::chrono::days(5));
+}
+
+TEST(TaskTest, MergeConflict_DueDate_OnlyOtherHasDueDate)
+{
+    auto now = PointlessCore::Clock::now();
+
+    Task task1;
+    task1.dueDate = std::nullopt;
+    Task task2;
+    task2.dueDate = now + std::chrono::days(7);
+
+    task1.mergeConflict(task2);
+    ASSERT_TRUE(task1.dueDate.has_value());
+    EXPECT_EQ(*task1.dueDate, now + std::chrono::days(7));
+}
+
+TEST(TaskTest, MergeConflict_DueDate_OnlyThisHasDueDate)
+{
+    auto now = PointlessCore::Clock::now();
+
+    Task task1;
+    task1.dueDate = now + std::chrono::days(7);
+    Task task2;
+    task2.dueDate = std::nullopt;
+
+    task1.mergeConflict(task2);
+    ASSERT_TRUE(task1.dueDate.has_value());
+    EXPECT_EQ(*task1.dueDate, now + std::chrono::days(7));
+}
+
+TEST(TaskTest, MergeConflict_Title_MoreRecentWins)
+{
+    auto now = PointlessCore::Clock::now();
+    auto oneHourAgo = now - std::chrono::hours(1);
+    auto twoHoursAgo = now - std::chrono::hours(2);
+
+    Task task1;
+    task1.title = "Old Title";
+    task1.modificationTimestamp = twoHoursAgo;
+    Task task2;
+    task2.title = "New Title";
+    task2.modificationTimestamp = oneHourAgo;
+
+    task1.mergeConflict(task2);
+    EXPECT_EQ(task1.title, "New Title");
+
+    Task task3;
+    task3.title = "Newer Title";
+    task3.modificationTimestamp = oneHourAgo;
+    Task task4;
+    task4.title = "Older Title";
+    task4.modificationTimestamp = twoHoursAgo;
+
+    task3.mergeConflict(task4);
+    EXPECT_EQ(task3.title, "Newer Title");
+}
+
+TEST(TaskTest, MergeConflict_Title_SameTitle_NoChange)
+{
+    auto now = PointlessCore::Clock::now();
+
+    Task task1;
+    task1.title = "Same Title";
+    task1.modificationTimestamp = now - std::chrono::hours(2);
+    Task task2;
+    task2.title = "Same Title";
+    task2.modificationTimestamp = now - std::chrono::hours(1);
+
+    task1.mergeConflict(task2);
+    EXPECT_EQ(task1.title, "Same Title");
+}
+
+TEST(TaskTest, MergeConflict_Tags_Union)
+{
+    Task task1;
+    task1.tags = { "tag1", "tag2" };
+    Task task2;
+    task2.tags = { "tag2", "tag3" };
+
+    task1.mergeConflict(task2);
+    ASSERT_EQ(task1.tags.size(), 3);
+    EXPECT_TRUE(task1.containsTag("tag1"));
+    EXPECT_TRUE(task1.containsTag("tag2"));
+    EXPECT_TRUE(task1.containsTag("tag3"));
+}
+
+TEST(TaskTest, MergeConflict_Tags_NoDuplicates)
+{
+    Task task1;
+    task1.tags = { "tag1", "tag2" };
+    Task task2;
+    task2.tags = { "tag1", "tag2" };
+
+    task1.mergeConflict(task2);
+    EXPECT_EQ(task1.tags.size(), 2);
+}
+
+TEST(TaskTest, MergeConflict_CurrentWinsOverSoon)
+{
+    Task task1;
+    task1.tags = { "current" };
+    Task task2;
+    task2.tags = { "soon" };
+
+    task1.mergeConflict(task2);
+    EXPECT_TRUE(task1.containsTag("current"));
+    EXPECT_FALSE(task1.containsTag("soon"));
+}
+
+TEST(TaskTest, MergeConflict_CurrentWinsOverSoon_BothOnThis)
+{
+    Task task1;
+    task1.tags = { "current", "soon" };
+    Task task2;
+    task2.tags = {};
+
+    task1.mergeConflict(task2);
+    EXPECT_TRUE(task1.containsTag("current"));
+    EXPECT_FALSE(task1.containsTag("soon"));
+}
+
+TEST(TaskTest, MergeConflict_CurrentWinsOverSoon_BothOnOther)
+{
+    Task task1;
+    task1.tags = {};
+    Task task2;
+    task2.tags = { "current", "soon" };
+
+    task1.mergeConflict(task2);
+    EXPECT_TRUE(task1.containsTag("current"));
+    EXPECT_FALSE(task1.containsTag("soon"));
+}
