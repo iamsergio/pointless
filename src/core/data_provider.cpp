@@ -9,7 +9,6 @@
 
 std::unique_ptr<IDataProvider> IDataProvider::createProvider()
 {
-
     const auto &context = pointless::core::Context::self();
 
     switch (context.dataProviderType) {

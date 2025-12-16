@@ -18,7 +18,7 @@ public:
     void logout() override;
 
     [[nodiscard]] bool isAuthenticated() const override;
-    std::string retrieveData() override;
+    std::string pullData() override;
     bool pushData(const std::string &data) override;
 
 private:

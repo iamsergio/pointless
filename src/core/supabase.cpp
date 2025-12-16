@@ -181,7 +181,7 @@ bool SupabaseProvider::pushData(const std::string &data)
     return true;
 }
 
-std::string SupabaseProvider::retrieveData()
+std::string SupabaseProvider::pullData()
 {
     auto raw_data = retrieveRawData();
     if (raw_data.empty()) {

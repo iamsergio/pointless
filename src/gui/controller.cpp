@@ -67,7 +67,7 @@ void Controller::refresh()
         return;
     }
 
-    std::string json_str = _dataProvider->retrieveData();
+    std::string json_str = _dataProvider->pullData();
     if (json_str.empty()) {
         P_LOG_ERROR("Cannot refresh: no data retrieved");
         return;

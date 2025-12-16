@@ -26,7 +26,7 @@ public:
     void logout() override;
 
     bool pushData(const std::string &data) override;
-    std::string retrieveData() override;
+    std::string pullData() override;
 
     SupabaseProvider(const SupabaseProvider &) = delete;
     SupabaseProvider &operator=(const SupabaseProvider &) = delete;

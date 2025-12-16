@@ -37,7 +37,7 @@ bool FileDataProvider::isAuthenticated() const
     return true;
 }
 
-std::string FileDataProvider::retrieveData()
+std::string FileDataProvider::pullData()
 {
     std::ifstream file(_filePath);
     if (!file.is_open()) {
