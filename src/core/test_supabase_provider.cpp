@@ -11,7 +11,7 @@
 #include <utility>
 
 TestSupabaseProvider::TestSupabaseProvider()
-    : Supabase(POINTLESS_SUPABASE_URL, POINTLESS_SUPABASE_ANON_KEY)
+    : SupabaseProvider(POINTLESS_SUPABASE_URL, POINTLESS_SUPABASE_ANON_KEY)
 {
 }
 

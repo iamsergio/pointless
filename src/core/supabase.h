@@ -11,13 +11,13 @@
 #include <string>
 #include <vector>
 
-class Supabase : public IDataProvider
+class SupabaseProvider : public IDataProvider
 {
 public:
-    explicit Supabase(std::string base_url, std::string anon_key);
-    ~Supabase() override = default;
+    explicit SupabaseProvider(std::string base_url, std::string anon_key);
+    ~SupabaseProvider() override = default;
 
-    static std::unique_ptr<Supabase> createDefault();
+    static std::unique_ptr<SupabaseProvider> createDefault();
 
     bool login(const std::string &email, const std::string &password) final;
     bool loginWithDefaults() override;
@@ -25,13 +25,13 @@ public:
     [[nodiscard]] bool isAuthenticated() const override;
     void logout() override;
 
-    bool updateData(const std::string &data) override;
+    bool pushData(const std::string &data) override;
     std::string retrieveData() override;
 
-    Supabase(const Supabase &) = delete;
-    Supabase &operator=(const Supabase &) = delete;
-    Supabase(Supabase &&) = delete;
-    Supabase &operator=(Supabase &&) = delete;
+    SupabaseProvider(const SupabaseProvider &) = delete;
+    SupabaseProvider &operator=(const SupabaseProvider &) = delete;
+    SupabaseProvider(SupabaseProvider &&) = delete;
+    SupabaseProvider &operator=(SupabaseProvider &&) = delete;
 
 private:
     std::string _baseUrl;

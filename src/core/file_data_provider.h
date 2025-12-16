@@ -19,7 +19,7 @@ public:
 
     [[nodiscard]] bool isAuthenticated() const override;
     std::string retrieveData() override;
-    bool updateData(const std::string &data) override;
+    bool pushData(const std::string &data) override;
 
 private:
     std::string _filePath;

@@ -12,7 +12,7 @@ TEST(SupabaseTest, LoginLogout)
     ASSERT_NE(username, nullptr) << "POINTLESS_DEBUG_USERNAME env var not set";
     ASSERT_NE(password, nullptr) << "POINTLESS_DEBUG_PASSWORD env var not set";
 
-    auto supabase = Supabase::createDefault();
+    auto supabase = SupabaseProvider::createDefault();
     ASSERT_TRUE(supabase->login(username, password));
     supabase->logout();
 }

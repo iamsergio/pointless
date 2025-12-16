@@ -34,12 +34,12 @@ constexpr int kHttpNoContent = 204;
 }
 
 
-Supabase::Supabase(std::string base_url, std::string anon_key)
+SupabaseProvider::SupabaseProvider(std::string base_url, std::string anon_key)
     : _baseUrl(std::move(base_url))
     , _anonKey(std::move(anon_key))
 {
 }
-std::unique_ptr<Supabase> Supabase::createDefault()
+std::unique_ptr<SupabaseProvider> SupabaseProvider::createDefault()
 {
 #ifndef POINTLESS_SUPABASE_URL
 #error "POINTLESS_SUPABASE_URL is not defined"
@@ -49,10 +49,10 @@ std::unique_ptr<Supabase> Supabase::createDefault()
 #error "POINTLESS_SUPABASE_ANON_KEY is not defined"
 #endif
 
-    return std::make_unique<Supabase>(POINTLESS_SUPABASE_URL, POINTLESS_SUPABASE_ANON_KEY);
+    return std::make_unique<SupabaseProvider>(POINTLESS_SUPABASE_URL, POINTLESS_SUPABASE_ANON_KEY);
 }
 
-bool Supabase::login(const std::string &email, const std::string &password)
+bool SupabaseProvider::login(const std::string &email, const std::string &password)
 {
     const std::string auth_url = "https://" + _baseUrl + "/auth/v1/token?grant_type=password";
     const std::string body = R"({"email":")" + email + R"(","password":")" + password + R"("})";
@@ -113,12 +113,12 @@ bool Supabase::login(const std::string &email, const std::string &password)
     return true;
 }
 
-bool Supabase::isAuthenticated() const
+bool SupabaseProvider::isAuthenticated() const
 {
     return !_accessToken.empty() && !_userId.empty();
 }
 
-bool Supabase::loginWithDefaults()
+bool SupabaseProvider::loginWithDefaults()
 {
     auto [username, password] = defaultLoginPassword();
 
@@ -130,7 +130,7 @@ bool Supabase::loginWithDefaults()
     return login(username, password);
 }
 
-std::pair<std::string, std::string> Supabase::defaultLoginPassword() const
+std::pair<std::string, std::string> SupabaseProvider::defaultLoginPassword() const
 {
     static const std::string username = pointless::getenv_or_empty("POINTLESS_USERNAME");
     static const std::string password = pointless::getenv_or_empty("POINTLESS_PASSWORD");
@@ -143,13 +143,13 @@ std::pair<std::string, std::string> Supabase::defaultLoginPassword() const
     return { username, password };
 }
 
-void Supabase::logout()
+void SupabaseProvider::logout()
 {
     _accessToken.clear();
     _userId.clear();
 }
 
-bool Supabase::updateData(const std::string &data)
+bool SupabaseProvider::pushData(const std::string &data)
 {
     if (!isAuthenticated()) {
         LOG_ERROR(Logger::getLogger(), "Cannot update data: not authenticated");
@@ -181,7 +181,7 @@ bool Supabase::updateData(const std::string &data)
     return true;
 }
 
-std::string Supabase::retrieveData()
+std::string SupabaseProvider::retrieveData()
 {
     auto raw_data = retrieveRawData();
     if (raw_data.empty()) {
@@ -192,7 +192,7 @@ std::string Supabase::retrieveData()
     return decompress(compressed_bytes);
 }
 
-std::string Supabase::retrieveRawData()
+std::string SupabaseProvider::retrieveRawData()
 {
     if (!isAuthenticated()) {
         LOG_ERROR(Logger::getLogger(), "Cannot retrieve data: not authenticated");
@@ -245,7 +245,7 @@ std::string Supabase::retrieveRawData()
     return data;
 }
 
-std::vector<uint8_t> Supabase::compress(const std::string &data)
+std::vector<uint8_t> SupabaseProvider::compress(const std::string &data)
 {
     z_stream zs {};
     if (deflateInit2(&zs, Z_DEFAULT_COMPRESSION, Z_DEFLATED, MAX_WBITS + 16, 8, Z_DEFAULT_STRATEGY) != Z_OK) {
@@ -289,7 +289,7 @@ std::vector<uint8_t> Supabase::compress(const std::string &data)
     return result;
 }
 
-std::string Supabase::decompress(const std::vector<uint8_t> &compressed_data)
+std::string SupabaseProvider::decompress(const std::vector<uint8_t> &compressed_data)
 {
     z_stream zs {};
     if (inflateInit2(&zs, MAX_WBITS + 16) != Z_OK) {
@@ -329,7 +329,7 @@ std::string Supabase::decompress(const std::vector<uint8_t> &compressed_data)
     return result;
 }
 
-std::vector<uint8_t> Supabase::base64Decode(const std::string &input)
+std::vector<uint8_t> SupabaseProvider::base64Decode(const std::string &input)
 {
     const std::string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     std::vector<uint8_t> result;
@@ -350,7 +350,7 @@ std::vector<uint8_t> Supabase::base64Decode(const std::string &input)
     return result;
 }
 
-std::string Supabase::base64Encode(const std::vector<uint8_t> &data)
+std::string SupabaseProvider::base64Encode(const std::vector<uint8_t> &data)
 {
     const std::string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     std::string result;

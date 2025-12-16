@@ -5,7 +5,7 @@
 
 #include "supabase.h"
 
-class TestSupabaseProvider : public Supabase
+class TestSupabaseProvider : public SupabaseProvider
 {
 public:
     TestSupabaseProvider();

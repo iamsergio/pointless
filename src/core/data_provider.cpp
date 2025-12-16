@@ -20,7 +20,7 @@ std::unique_ptr<IDataProvider> IDataProvider::createProvider()
     case Type::TestSupabase:
         return std::make_unique<TestSupabaseProvider>();
     case Type::Supabase:
-        return Supabase::createDefault();
+        return SupabaseProvider::createDefault();
         break;
     }
 

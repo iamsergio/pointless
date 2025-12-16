@@ -49,7 +49,7 @@ std::string FileDataProvider::retrieveData()
     return buffer.str();
 }
 
-bool FileDataProvider::updateData(const std::string &data)
+bool FileDataProvider::pushData(const std::string &data)
 {
     std::ofstream file(_filePath);
     if (!file.is_open()) {

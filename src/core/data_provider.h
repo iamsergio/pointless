@@ -31,7 +31,7 @@ public:
     [[nodiscard]] virtual std::pair<std::string, std::string> defaultLoginPassword() const = 0;
     virtual void logout() = 0;
     virtual std::string retrieveData() = 0;
-    virtual bool updateData(const std::string &data) = 0;
+    virtual bool pushData(const std::string &data) = 0;
 
     static std::unique_ptr<IDataProvider> createProvider();
 
