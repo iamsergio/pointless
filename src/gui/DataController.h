@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../core/local_data.h"
+#include "core/local_data.h"
 
 #include <QObject>
 

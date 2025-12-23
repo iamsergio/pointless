@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "../core/data_provider.h"
+#include "core/data_provider.h"
 #include "taskfiltermodel.h"
 
 #include <QDate>

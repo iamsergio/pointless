@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "task.h"
+#include "core/task.h"
 
 #include <QAbstractListModel>
 #include <QtQml/qqmlregistration.h>

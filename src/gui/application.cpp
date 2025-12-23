@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: MIT
 
 #include "application.h"
-#include "../core/logger.h"
-#include "../core/test_supabase_provider.h"
-#include "../core/data_provider.h"
-#include "context.h"
+#include "core/logger.h"
+#include "core/test_supabase_provider.h"
+#include "core/data_provider.h"
+#include "core/context.h"
 
 #include <QCommandLineOption>
 #include <QCommandLineParser>

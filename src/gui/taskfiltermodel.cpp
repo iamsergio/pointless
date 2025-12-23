@@ -9,10 +9,11 @@
 #include "taskfiltermodel.h"
 #include "gui_controller.h"
 #include "taskmodel.h"
-#include "logger.h"
 #include "date_utils.h"
 #include "Clock.h"
-#include "../core/task.h"
+
+#include "core/task.h"
+#include "core/logger.h"
 
 #include <QDate>
 

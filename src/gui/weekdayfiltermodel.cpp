@@ -4,7 +4,7 @@
 #include "weekdayfiltermodel.h"
 #include "weekdaymodel.h"
 #include "taskfiltermodel.h"
-#include "../core/logger.h"
+#include "core/logger.h"
 
 #include <QAbstractItemModel>
 #include <QAbstractListModel>

@@ -8,11 +8,11 @@
 #include "tagmodel.h"
 #include "date_utils.h"
 #include "Clock.h"
-#include "../core/Clock.h"
-#include "../core/task_manager.h"
-#include "../core/logger.h"
-#include "../core/data_provider.h"
-#include "../core/task.h"
+#include "core/Clock.h"
+#include "core/task_manager.h"
+#include "core/logger.h"
+#include "core/data_provider.h"
+#include "core/task.h"
 
 #include <QTimer>
 #include <QHash>

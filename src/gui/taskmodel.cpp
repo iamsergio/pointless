@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "taskmodel.h"
-#include "logger.h"
+#include "core/logger.h"
 
 #include <QDateTime>
 #include <QString>

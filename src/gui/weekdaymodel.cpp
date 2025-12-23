@@ -11,7 +11,7 @@
 
 #include "weekdaymodel.h"
 #include "taskfiltermodel.h"
-#include "../core/logger.h"
+#include "core/logger.h"
 #include "date_utils.h"
 #include "Clock.h"
 

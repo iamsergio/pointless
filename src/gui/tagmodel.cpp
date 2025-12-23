@@ -10,10 +10,9 @@
 #include <QObject>
 #include <QString>
 #include <QVariant>
-#include <QtGlobal> // Q_UNUSED
 
-#include "../core/tag.h"
-#include "logger.h"
+#include "core/tag.h"
+#include "core/logger.h"
 #include "tagmodel.h"
 
 TagModel::TagModel(QObject *parent)

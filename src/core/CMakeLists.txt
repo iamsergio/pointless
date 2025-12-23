@@ -36,7 +36,10 @@ target_link_libraries(
   pointless_core
   PUBLIC glaze::glaze
   PRIVATE quill::quill cpr::cpr)
-target_include_directories(pointless_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(
+  pointless_core
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../)
 
 if(POINTLESS_ENABLE_TESTS)
   add_executable(test_date_utils tests/test_date_utils.cpp)

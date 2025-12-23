@@ -4,7 +4,7 @@
 #include "test_server.h"
 #include "../gui/Clock.h"
 #include "../gui/spix_utils.h"
-#include "../core/logger.h"
+#include "core/logger.h"
 #include "../../core/data_provider.h"
 #include "../../core/context.h"
 
