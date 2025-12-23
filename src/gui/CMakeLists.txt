@@ -47,9 +47,9 @@ qt_add_qml_module(
   SOURCES
   application.cpp
   Clock.cpp
-  controller.cpp
+  gui_controller.cpp
   date_utils.cpp
-  controller.h
+  gui_controller.h
   taskmodel.cpp
   taskmodel.h
   tagmodel.cpp

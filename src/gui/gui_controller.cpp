@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 
-#include "controller.h"
+#include "gui_controller.h"
 #include "taskfiltermodel.h"
 #include "taskmodel.h"
 #include "tagmodel.h"
@@ -27,7 +27,7 @@
 #include <fstream>
 #include <string>
 
-Controller::Controller(QObject *parent)
+GuiController::GuiController(QObject *parent)
     : QObject(parent)
     , _dataProvider(IDataProvider::createProvider())
     , _taskModel(TaskModel::instance(this))
@@ -48,10 +48,10 @@ Controller::Controller(QObject *parent)
 
     navigatorGotoToday();
 
-    QTimer::singleShot(0, this, &Controller::refresh);
+    QTimer::singleShot(0, this, &GuiController::refresh);
 }
 
-bool Controller::isDebug()
+bool GuiController::isDebug()
 {
 #ifdef QT_DEBUG
     return true;
@@ -60,7 +60,7 @@ bool Controller::isDebug()
 #endif
 }
 
-void Controller::refresh()
+void GuiController::refresh()
 {
     if (!_dataProvider->isAuthenticated()) {
         P_LOG_ERROR("Cannot refresh: not authenticated");
@@ -91,38 +91,38 @@ void Controller::refresh()
     _tagModel->setTags(manager.getAllTags());
 }
 
-TaskFilterModel *Controller::taskFilterModel() const
+TaskFilterModel *GuiController::taskFilterModel() const
 {
     return _taskFilterModel;
 }
 
 
-Controller::ViewType Controller::currentViewType() const
+GuiController::ViewType GuiController::currentViewType() const
 {
     return _currentViewType;
 }
 
-QDate Controller::navigatorStartDate() const
+QDate GuiController::navigatorStartDate() const
 {
     return _navigatorStartDate;
 }
 
-QDate Controller::navigatorEndDate() const
+QDate GuiController::navigatorEndDate() const
 {
     return _navigatorStartDate.addDays(6);
 }
 
-QString Controller::navigatorPrettyStartDate() const
+QString GuiController::navigatorPrettyStartDate() const
 {
     return _navigatorStartDate.toString(QStringLiteral("MMM d"));
 }
 
-QString Controller::navigatorPrettyEndDate() const
+QString GuiController::navigatorPrettyEndDate() const
 {
     return navigatorEndDate().toString(QStringLiteral("MMM d"));
 }
 
-void Controller::setNavigatorStartDate(QDate date)
+void GuiController::setNavigatorStartDate(QDate date)
 {
     if (_navigatorStartDate == date) {
         return;
@@ -132,7 +132,7 @@ void Controller::setNavigatorStartDate(QDate date)
     emit navigatorEndDateChanged();
 }
 
-void Controller::navigatorGotoToday()
+void GuiController::navigatorGotoToday()
 {
     QDate today = Gui::Clock::today();
     QDate monday = Gui::DateUtils::firstMondayOfWeek(today);
@@ -140,17 +140,17 @@ void Controller::navigatorGotoToday()
     setNavigatorStartDate(Gui::DateUtils::firstMondayOfWeek(Gui::Clock::today()));
 }
 
-void Controller::navigatorGotoNextWeek()
+void GuiController::navigatorGotoNextWeek()
 {
     setNavigatorStartDate(_navigatorStartDate.addDays(7));
 }
 
-void Controller::navigatorGotoPreviousWeek()
+void GuiController::navigatorGotoPreviousWeek()
 {
     setNavigatorStartDate(_navigatorStartDate.addDays(-7));
 }
 
-void Controller::setCurrentViewType(ViewType viewType)
+void GuiController::setCurrentViewType(ViewType viewType)
 {
     if (_currentViewType == viewType) {
         return;
@@ -160,12 +160,12 @@ void Controller::setCurrentViewType(ViewType viewType)
     emit currentViewTypeChanged();
 }
 
-bool Controller::isMobile()
+bool GuiController::isMobile()
 {
     return isAndroid() || isIOS();
 }
 
-bool Controller::isAndroid()
+bool GuiController::isAndroid()
 {
 #ifdef Q_OS_ANDROID
     return true;
@@ -174,7 +174,7 @@ bool Controller::isAndroid()
 #endif
 }
 
-bool Controller::isIOS()
+bool GuiController::isIOS()
 {
 #ifdef Q_OS_IOS
     return true;
@@ -183,12 +183,12 @@ bool Controller::isIOS()
 #endif
 }
 
-QString Controller::uuidBeingEdited() const
+QString GuiController::uuidBeingEdited() const
 {
     return _uuidBeingEdited;
 }
 
-void Controller::setUuidBeingEdited(const QString &uuid)
+void GuiController::setUuidBeingEdited(const QString &uuid)
 {
     if (_uuidBeingEdited == uuid) {
         return;
@@ -198,12 +198,12 @@ void Controller::setUuidBeingEdited(const QString &uuid)
     emit uuidBeingEditedChanged();
 }
 
-bool Controller::isEditing() const
+bool GuiController::isEditing() const
 {
     return _isEditing;
 }
 
-void Controller::setIsEditing(bool isEditing)
+void GuiController::setIsEditing(bool isEditing)
 {
     if (_isEditing == isEditing) {
         return;
@@ -213,7 +213,7 @@ void Controller::setIsEditing(bool isEditing)
     emit isEditingChanged();
 }
 
-void Controller::addNewTask(const QString &title)
+void GuiController::addNewTask(const QString &title)
 {
     if (title.isEmpty()) {
         return;
@@ -228,7 +228,7 @@ void Controller::addNewTask(const QString &title)
     _taskModel->addTask(task);
 }
 
-QString Controller::colorFromTag(const QString &tagName) const
+QString GuiController::colorFromTag(const QString &tagName) const
 {
     // TODO: Store color per tag in the database
     static const QStringList colors = {
@@ -243,13 +243,13 @@ QString Controller::colorFromTag(const QString &tagName) const
     return colors.at(static_cast<int>(index));
 }
 
-bool Controller::isVerbose()
+bool GuiController::isVerbose()
 {
     static bool is = std::getenv("POINTLESS_IS_VERBOSE") != nullptr;
     return is;
 }
 
-void Controller::dumpTaskDebug(const QString &taskUuid) const
+void GuiController::dumpTaskDebug(const QString &taskUuid) const
 {
     const auto *task = _taskModel->taskForUuid(taskUuid);
     if (task == nullptr) {

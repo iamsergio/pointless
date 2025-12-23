@@ -15,12 +15,12 @@
 class TaskModel;
 class TagModel;
 
-class Controller : public QObject
+class GuiController : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
-    Q_PROPERTY(Controller::ViewType currentViewType READ currentViewType WRITE setCurrentViewType NOTIFY currentViewTypeChanged)
+    Q_PROPERTY(GuiController::ViewType currentViewType READ currentViewType WRITE setCurrentViewType NOTIFY currentViewTypeChanged)
     Q_PROPERTY(QDate navigatorStartDate READ navigatorStartDate NOTIFY navigatorStartDateChanged)
     Q_PROPERTY(QDate navigatorEndDate READ navigatorEndDate NOTIFY navigatorEndDateChanged)
     Q_PROPERTY(QString navigatorPrettyStartDate READ navigatorPrettyStartDate NOTIFY navigatorStartDateChanged)
@@ -42,7 +42,7 @@ public:
     };
     Q_ENUM(ViewType)
 
-    explicit Controller(QObject *parent = nullptr);
+    explicit GuiController(QObject *parent = nullptr);
 
     [[nodiscard]] ViewType currentViewType() const;
     void setCurrentViewType(ViewType viewType);

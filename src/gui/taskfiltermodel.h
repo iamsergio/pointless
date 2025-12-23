@@ -7,7 +7,7 @@
 #include <QtQml/qqmlregistration.h>
 #include <QDate>
 
-class Controller;
+class GuiController;
 
 class TaskFilterModel : public QSortFilterProxyModel
 {

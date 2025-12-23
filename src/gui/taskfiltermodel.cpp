@@ -7,7 +7,7 @@
 #include <QtGlobal> // Q_UNUSED, Q_EMIT
 
 #include "taskfiltermodel.h"
-#include "controller.h"
+#include "gui_controller.h"
 #include "taskmodel.h"
 #include "logger.h"
 #include "date_utils.h"
