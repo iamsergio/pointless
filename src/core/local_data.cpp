@@ -8,6 +8,8 @@
 #include <stdexcept>
 #include <cstdlib>
 
+using namespace pointless::core;
+
 LocalData::LocalData()
 {
     const char *envVar = std::getenv("POINTLESS_CLIENT_DATA_DIR");

@@ -8,6 +8,8 @@
 #include <expected>
 #include <string>
 
+namespace pointless::core {
+
 class LocalData
 {
 public:
@@ -19,3 +21,5 @@ private:
     [[nodiscard]] std::string getDataFilePath() const;
     std::string _dataDir;
 };
+
+}
