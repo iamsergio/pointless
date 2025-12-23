@@ -159,8 +159,8 @@ void initDataProvider(IDataProvider::Type providerType)
 
     pointless::core::Context context;
 
-    if (providerType == IDataProvider::Type::Local) {
-        context.dataProviderType = IDataProvider::Type::Local;
+    if (providerType == IDataProvider::Type::TestsLocal) {
+        context.dataProviderType = IDataProvider::Type::TestsLocal;
         context.localFilePath = testDataPath;
         pointless::core::Context::setContext(context);
     } else if (providerType == IDataProvider::Type::TestSupabase) {
@@ -202,7 +202,7 @@ int main(int argc, char **argv)
     int newArgc = 1;
     for (int i = 1; i < argc; ++i) {
         if (std::strcmp(argv[i], "--local") == 0) {
-            providerType = IDataProvider::Type::Local;
+            providerType = IDataProvider::Type::TestsLocal;
         } else if (std::strcmp(argv[i], "--supabase") == 0) {
             providerType = IDataProvider::Type::TestSupabase;
         } else {

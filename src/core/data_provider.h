@@ -12,9 +12,9 @@ class IDataProvider
 public:
     enum class Type : uint8_t {
         None = 0,
-        Local,
-        Supabase,
-        TestSupabase
+        TestsLocal, // tests can read from local file to make some tests faster
+        Supabase, // Supabase production
+        TestSupabase // Supabase with test user/password
     };
 
     virtual ~IDataProvider() = default;

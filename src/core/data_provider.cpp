@@ -14,7 +14,7 @@ std::unique_ptr<IDataProvider> IDataProvider::createProvider()
     switch (context.dataProviderType) {
     case Type::None:
         std::abort();
-    case Type::Local:
+    case Type::TestsLocal:
         return std::make_unique<FileDataProvider>(context.localFilePath);
     case Type::TestSupabase:
         return std::make_unique<TestSupabaseProvider>();
