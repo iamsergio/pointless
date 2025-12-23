@@ -17,5 +17,5 @@ public:
 
 private:
     [[nodiscard]] std::string getDataFilePath() const;
-    std::string m_dataDir;
+    std::string _dataDir;
 };

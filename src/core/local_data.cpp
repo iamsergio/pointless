@@ -15,7 +15,7 @@ LocalData::LocalData()
         throw std::runtime_error("POINTLESS_CLIENT_DATA_DIR environment variable is not set");
     }
 
-    m_dataDir = envVar;
+    _dataDir = envVar;
 }
 
 std::expected<PointlessCore::TaskManager, std::string> LocalData::loadTaskManager() const
@@ -26,5 +26,5 @@ std::expected<PointlessCore::TaskManager, std::string> LocalData::loadTaskManage
 
 std::string LocalData::getDataFilePath() const
 {
-    return std::filesystem::path(m_dataDir) / "pointless.json";
+    return std::filesystem::path(_dataDir) / "pointless.json";
 }
