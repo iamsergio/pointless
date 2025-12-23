@@ -12,7 +12,6 @@
 #include "../core/task_manager.h"
 #include "../core/logger.h"
 #include "../core/data_provider.h"
-#include "../core/cached_data_provider.h"
 #include "../core/task.h"
 
 #include <QTimer>
@@ -30,7 +29,7 @@
 
 Controller::Controller(QObject *parent)
     : QObject(parent)
-    , _dataProvider(std::make_unique<CachedDataProvider>())
+    , _dataProvider(IDataProvider::createProvider())
     , _taskModel(TaskModel::instance(this))
     , _tagModel(new TagModel(this))
     , _taskFilterModel(new TaskFilterModel(this))
