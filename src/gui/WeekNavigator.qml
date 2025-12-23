@@ -22,17 +22,17 @@ Rectangle {
             backgroundColor: "transparent"
             implicitWidth: Style.fromPixel(40)
             implicitHeight: Style.fromPixel(40)
-            onClicked: Controller.navigatorGotoPreviousWeek()
+            onClicked: GuiController.navigatorGotoPreviousWeek()
         }
 
         MouseArea {
             implicitHeight: dateRangeText.implicitHeight
             implicitWidth: dateRangeText.implicitWidth
             Layout.alignment: Qt.AlignVCenter
-            onClicked: Controller.navigatorGotoToday()
+            onClicked: GuiController.navigatorGotoToday()
             Text {
                 id: dateRangeText
-                text: Controller.navigatorPrettyStartDate + " - " + Controller.navigatorPrettyEndDate
+                text: GuiController.navigatorPrettyStartDate + " - " + GuiController.navigatorPrettyEndDate
                 font.pixelSize: Style.fromPixel(14)
                 color: Style.textColor2
                 horizontalAlignment: Text.AlignHCenter
@@ -49,7 +49,7 @@ Rectangle {
             backgroundColor: leftIcon.backgroundColor
             implicitWidth: leftIcon.implicitWidth
             implicitHeight: leftIcon.implicitHeight
-            onClicked: Controller.navigatorGotoNextWeek()
+            onClicked: GuiController.navigatorGotoNextWeek()
         }
     }
 }

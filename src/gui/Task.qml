@@ -25,7 +25,7 @@ Rectangle {
     color: taskIsImportant ? Style.taskImportantBackground : (taskIsEvening ? Style.taskEveningBackground : Style.taskBackground)
     radius: 10
 
-    signal clicked;
+    signal clicked
 
     MouseArea {
         anchors.fill: parent
@@ -75,14 +75,14 @@ Rectangle {
                         text: root.taskHasDueDate ? root.taskDueDate : ""
                         font.pixelSize: Style.fromPixel(11)
                         color: Style.taskSecondaryTextColor
-                        visible: Controller.currentViewType !== Controller.Week
+                        visible: GuiController.currentViewType !== GuiController.Week
                     }
                 }
             }
 
             Rectangle {
-                visible: root.taskTagName !== "" && Controller.currentViewType === Controller.Week
-                color: Controller.colorFromTag(root.taskTagName)
+                visible: root.taskTagName !== "" && GuiController.currentViewType === GuiController.Week
+                color: GuiController.colorFromTag(root.taskTagName)
                 radius: Style.fromPixel(10)
                 implicitHeight: Style.fromPixel(18)
                 implicitWidth: tagText.implicitWidth + Style.fromPixel(14)
@@ -111,15 +111,30 @@ Rectangle {
                     id: editMenuItem
                     text: "Edit..."
                     onTriggered: {
-                        Controller.isEditing = true;
-                        Controller.uuidBeingEdited = root.taskUuid;
+                        GuiController.isEditing = true;
+                        GuiController.uuidBeingEdited = root.taskUuid;
                     }
                 }
-                MenuItem { id: moveToSoonMenuItem; text: "Move to Soon" }
-                MenuItem { id: moveToLaterMenuItem; text: "Move to Later" }
-                MenuItem { id: moveToTomorrowMenuItem; text: "Move to Tomorrow" }
-                MenuItem { id: moveToMondayMenuItem; text: "Move to Monday" }
-                MenuItem { id: deleteMenuItem; text: "Delete" }
+                MenuItem {
+                    id: moveToSoonMenuItem
+                    text: "Move to Soon"
+                }
+                MenuItem {
+                    id: moveToLaterMenuItem
+                    text: "Move to Later"
+                }
+                MenuItem {
+                    id: moveToTomorrowMenuItem
+                    text: "Move to Tomorrow"
+                }
+                MenuItem {
+                    id: moveToMondayMenuItem
+                    text: "Move to Monday"
+                }
+                MenuItem {
+                    id: deleteMenuItem
+                    text: "Delete"
+                }
             }
         }
     }

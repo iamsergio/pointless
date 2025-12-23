@@ -13,7 +13,7 @@ ListView {
 
     TaskFilterModel {
         id: taskFilterModel
-        viewType: Controller.currentViewType
+        viewType: GuiController.currentViewType
     }
 
     model: taskFilterModel

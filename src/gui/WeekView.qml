@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
+pragma ComponentBehavior: Bound
+
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
 
 import pointless 1.0
-
-pragma ComponentBehavior: Bound
 
 Item {
     id: root
@@ -17,7 +17,7 @@ Item {
 
     WeekdayModel {
         id: weekdayModel
-        mondayDate: Controller.navigatorStartDate
+        mondayDate: GuiController.navigatorStartDate
     }
 
     WeekdayFilterModel {
@@ -119,7 +119,7 @@ Item {
                     taskCalendarName: calendarName
 
                     onClicked: {
-                       Controller.dumpTaskDebug(uuid);
+                        GuiController.dumpTaskDebug(uuid);
                     }
                 }
             }

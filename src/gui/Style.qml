@@ -10,7 +10,7 @@ Item {
     readonly property double scaleFactor: 1.5
 
     function fromPixel(px) {
-        if (Controller.isMobile)
+        if (GuiController.isMobile)
             return px;
 
         return px * scaleFactor;

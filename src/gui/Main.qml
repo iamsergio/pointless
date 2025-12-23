@@ -11,7 +11,7 @@ ApplicationWindow {
     visible: true
     width: Style.fromPixel(640)
     height: Style.fromPixel(480)
-    visibility: Controller.isMobile ? ApplicationWindow.FullScreen : ApplicationWindow.Windowed
+    visibility: GuiController.isMobile ? ApplicationWindow.FullScreen : ApplicationWindow.Windowed
     flags: Qt.Window | Qt.ExpandedClientAreaHint | Qt.NoTitleBarBackgroundHint
 
     title: "Pointless"
@@ -30,18 +30,18 @@ ApplicationWindow {
             EditTask {
                 id: editTaskView
                 anchors.fill: parent
-                visible: Controller.isEditing
+                visible: GuiController.isEditing
                 z: mainView.z + 1
 
                 onBackClicked: {
-                    Controller.isEditing = false;
-                    Controller.uuidBeingEdited = "";
+                    GuiController.isEditing = false;
+                    GuiController.uuidBeingEdited = "";
                 }
 
                 onSaveClicked: {
                     // Implement save logic here
-                    Controller.isEditing = false;
-                    Controller.uuidBeingEdited = "";
+                    GuiController.isEditing = false;
+                    GuiController.uuidBeingEdited = "";
                 }
             }
 
@@ -68,7 +68,7 @@ ApplicationWindow {
                     anchors.topMargin: Style.fromPixel(16)
                     anchors.rightMargin: Style.fromPixel(16)
                     z: 100
-                    onClicked: Controller.refresh()
+                    onClicked: GuiController.refresh()
                 }
 
                 FontAwesomeButton {
@@ -83,7 +83,7 @@ ApplicationWindow {
                         leftMargin: Style.fromPixel(16)
                         bottomMargin: Style.fromPixel(16)
                     }
-                    visible: Controller.isDebug
+                    visible: GuiController.isDebug
                     z: 100
                 }
 
@@ -99,29 +99,29 @@ ApplicationWindow {
                         ViewButton {
                             id: weekViewButton
                             text: "Week"
-                            isActive: Controller.currentViewType === Controller.Week
-                            onClicked: Controller.currentViewType = Controller.Week
+                            isActive: GuiController.currentViewType === GuiController.Week
+                            onClicked: GuiController.currentViewType = GuiController.Week
                         }
 
                         ViewButton {
                             id: soonViewButton
                             text: "Soon"
-                            isActive: Controller.currentViewType === Controller.Soon
-                            onClicked: Controller.currentViewType = Controller.Soon
+                            isActive: GuiController.currentViewType === GuiController.Soon
+                            onClicked: GuiController.currentViewType = GuiController.Soon
                         }
 
                         ViewButton {
                             id: laterViewButton
                             text: "Later"
-                            isActive: Controller.currentViewType === Controller.Later
-                            onClicked: Controller.currentViewType = Controller.Later
+                            isActive: GuiController.currentViewType === GuiController.Later
+                            onClicked: GuiController.currentViewType = GuiController.Later
                         }
                     }
 
                     WeekNavigator {
                         id: weekNavigator
                         Layout.fillWidth: true
-                        visible: Controller.currentViewType === Controller.Week
+                        visible: GuiController.currentViewType === GuiController.Week
                     }
 
                     Rectangle {
@@ -134,21 +134,21 @@ ApplicationWindow {
                         id: weekView
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        visible: Controller.currentViewType === Controller.Week
+                        visible: GuiController.currentViewType === GuiController.Week
                     }
 
                     SoonView {
                         id: soonView
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        visible: Controller.currentViewType === Controller.Soon
+                        visible: GuiController.currentViewType === GuiController.Soon
                     }
 
                     LaterView {
                         id: laterView
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        visible: Controller.currentViewType === Controller.Later
+                        visible: GuiController.currentViewType === GuiController.Later
                     }
                 }
             }
