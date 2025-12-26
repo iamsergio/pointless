@@ -25,8 +25,9 @@
 #include <QDateTime>
 
 #include <cstdlib>
-#include <fstream>
 #include <string>
+
+using namespace pointless;
 
 GuiController::GuiController(QObject *parent)
     : QObject(parent)
@@ -69,31 +70,15 @@ void GuiController::refresh()
         return;
     }
 
-    const std::string json_str = refreshResult.value();
-
-    auto result = pointless::core::Data::fromJson(json_str);
-    if (!result) {
-        P_LOG_ERROR("Cannot refresh: failed to parse JSON: {}", result.error());
-
-        std::ofstream debugFile("/tmp/debug.json");
-        if (debugFile.is_open()) {
-            debugFile << json_str;
-            debugFile.close();
-        }
-
-        return;
-    }
-
-    auto &manager = result.value();
-    _taskModel->setTasks(manager.getAllTasks());
-    _tagModel->setTags(manager.getAllTags());
+    core::Data &data = refreshResult.value();
+    _taskModel->setTasks(data.getAllTasks());
+    _tagModel->setTags(data.getAllTags());
 }
 
 TaskFilterModel *GuiController::taskFilterModel() const
 {
     return _taskFilterModel;
 }
-
 
 GuiController::ViewType GuiController::currentViewType() const
 {

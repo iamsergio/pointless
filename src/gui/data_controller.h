@@ -8,6 +8,7 @@
 
 #include "core/local_data.h"
 #include "core/data_provider.h"
+#include "core/data.h"
 
 #include <QObject>
 
@@ -20,7 +21,7 @@ public:
     explicit DataController(QObject *parent = nullptr);
 
     bool loginWithDefaults();
-    std::expected<std::string, std::string> refresh();
+    std::expected<pointless::core::Data, std::string> refresh();
 
 private:
     pointless::core::LocalData _localData;
