@@ -5,6 +5,10 @@
 find_package(glaze CONFIG REQUIRED)
 find_package(cpr CONFIG REQUIRED)
 
+if(POINTLESS_ENABLE_TESTS)
+  set(POINTLESS_TESTS_SRCS test_local_provider.cpp test_supabase_provider.cpp)
+endif()
+
 add_library(
   pointless_core STATIC
   pointless_core.cpp
@@ -18,8 +22,7 @@ add_library(
   data_provider.cpp
   local_data.cpp
   merger.cpp
-  test_local_data_provider.cpp
-  test_supabase_provider.cpp
+  ${POINTLESS_TESTS_SRCS}
   logger.cpp)
 
 if(NOT DEFINED ENV{POINTLESS_SUPABASE_ANON_KEY})

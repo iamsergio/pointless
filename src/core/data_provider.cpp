@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "data_provider.h"
-#include "test_local_data_provider.h"
+#include "test_local_provider.h"
 #include "supabase.h"
 #include "context.h"
 #include "test_supabase_provider.h"
@@ -15,7 +15,7 @@ std::unique_ptr<IDataProvider> IDataProvider::createProvider()
     case Type::None:
         std::abort();
     case Type::TestsLocal:
-        return std::make_unique<FileDataProvider>(context.localFilePath);
+        return std::make_unique<TestLocalDataProvider>(context.localFilePath);
     case Type::TestSupabase:
         return std::make_unique<TestSupabaseProvider>();
     case Type::Supabase:
