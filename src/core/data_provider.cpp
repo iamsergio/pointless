@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "data_provider.h"
-#include "file_data_provider.h"
+#include "test_local_data_provider.h"
 #include "supabase.h"
 #include "context.h"
 #include "test_supabase_provider.h"
