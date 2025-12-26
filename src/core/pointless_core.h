@@ -4,13 +4,5 @@
 
 #pragma once
 
-#include "data.h"
-
-#include <expected>
-#include <string>
-
 namespace pointless::core {
-
-std::expected<Data, std::string> loadTaskManagerFromJsonFile(const std::string &filename);
-
-} // namespace pointless::core
+}
