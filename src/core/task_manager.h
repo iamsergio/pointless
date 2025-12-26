@@ -60,7 +60,7 @@ public:
     // Serialization methods
     static std::expected<TaskManager, std::string> fromJson(const std::string &json_str);
 
-    Data m_data;
+    Data _data;
 
 private:
     // Helper methods

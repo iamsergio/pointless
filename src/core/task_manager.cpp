@@ -14,16 +14,16 @@ void TaskManager::addTask(const Task &task)
 {
     // Check if task with same UUID already exists
     auto it = findTaskByUuid(task.uuid);
-    if (it == m_data.tasks.end()) {
-        m_data.tasks.push_back(task);
+    if (it == _data.tasks.end()) {
+        _data.tasks.push_back(task);
     }
 }
 
 bool TaskManager::removeTask(const std::string &uuid)
 {
     auto it = findTaskByUuid(uuid);
-    if (it != m_data.tasks.end()) {
-        m_data.tasks.erase(it);
+    if (it != _data.tasks.end()) {
+        _data.tasks.erase(it);
         return true;
     }
     return false;
@@ -32,7 +32,7 @@ bool TaskManager::removeTask(const std::string &uuid)
 std::optional<Task> TaskManager::getTask(const std::string &uuid) const
 {
     auto it = findTaskByUuid(uuid);
-    if (it != m_data.tasks.end()) {
+    if (it != _data.tasks.end()) {
         return *it;
     }
     return std::nullopt;
@@ -40,13 +40,13 @@ std::optional<Task> TaskManager::getTask(const std::string &uuid) const
 
 std::vector<Task> TaskManager::getAllTasks() const
 {
-    return m_data.tasks;
+    return _data.tasks;
 }
 
 bool TaskManager::updateTask(const Task &task)
 {
     auto it = findTaskByUuid(task.uuid);
-    if (it != m_data.tasks.end()) {
+    if (it != _data.tasks.end()) {
         *it = task;
         return true;
     }
@@ -55,20 +55,20 @@ bool TaskManager::updateTask(const Task &task)
 
 void TaskManager::clearTasks()
 {
-    m_data.tasks.clear();
+    _data.tasks.clear();
 }
 
 size_t TaskManager::taskCount() const
 {
-    return m_data.tasks.size();
+    return _data.tasks.size();
 }
 
 // Task filtering methods
 std::vector<Task> TaskManager::getTasksByTag(const std::string &tagName) const
 {
     std::vector<Task> result;
-    result.reserve(m_data.tasks.size());
-    for (const auto &task : m_data.tasks) {
+    result.reserve(_data.tasks.size());
+    for (const auto &task : _data.tasks) {
         auto tagIt = std::ranges::find(task.tags, tagName);
         if (tagIt != task.tags.end()) {
             result.push_back(task);
@@ -80,7 +80,7 @@ std::vector<Task> TaskManager::getTasksByTag(const std::string &tagName) const
 std::vector<Task> TaskManager::getCompletedTasks() const
 {
     std::vector<Task> result;
-    for (const auto &task : m_data.tasks) {
+    for (const auto &task : _data.tasks) {
         if (task.isDone) {
             result.push_back(task);
         }
@@ -91,7 +91,7 @@ std::vector<Task> TaskManager::getCompletedTasks() const
 std::vector<Task> TaskManager::getPendingTasks() const
 {
     std::vector<Task> result;
-    for (const auto &task : m_data.tasks) {
+    for (const auto &task : _data.tasks) {
         if (!task.isDone) {
             result.push_back(task);
         }
@@ -102,7 +102,7 @@ std::vector<Task> TaskManager::getPendingTasks() const
 std::vector<Task> TaskManager::getImportantTasks() const
 {
     std::vector<Task> result;
-    for (const auto &task : m_data.tasks) {
+    for (const auto &task : _data.tasks) {
         if (task.isImportant) {
             result.push_back(task);
         }
@@ -113,7 +113,7 @@ std::vector<Task> TaskManager::getImportantTasks() const
 std::vector<Task> TaskManager::getTasksByParent(const std::string &parentUuid) const
 {
     std::vector<Task> result;
-    for (const auto &task : m_data.tasks) {
+    for (const auto &task : _data.tasks) {
         if (task.parentUuid && *task.parentUuid == parentUuid) {
             result.push_back(task);
         }
@@ -126,16 +126,16 @@ void TaskManager::addTag(const Tag &tag)
 {
     // Check if tag with same name already exists
     auto it = findTagByName(tag.name);
-    if (it == m_data.tags.end()) {
-        m_data.tags.push_back(tag);
+    if (it == _data.tags.end()) {
+        _data.tags.push_back(tag);
     }
 }
 
 bool TaskManager::removeTag(const std::string &tagName)
 {
     auto it = findTagByName(tagName);
-    if (it != m_data.tags.end()) {
-        m_data.tags.erase(it);
+    if (it != _data.tags.end()) {
+        _data.tags.erase(it);
         return true;
     }
     return false;
@@ -144,7 +144,7 @@ bool TaskManager::removeTag(const std::string &tagName)
 std::optional<Tag> TaskManager::getTag(const std::string &tagName) const
 {
     auto it = findTagByName(tagName);
-    if (it != m_data.tags.end()) {
+    if (it != _data.tags.end()) {
         return *it;
     }
     return std::nullopt;
@@ -152,27 +152,27 @@ std::optional<Tag> TaskManager::getTag(const std::string &tagName) const
 
 std::vector<Tag> TaskManager::getAllTags() const
 {
-    return m_data.tags;
+    return _data.tags;
 }
 
 void TaskManager::clearTags()
 {
-    m_data.tags.clear();
+    _data.tags.clear();
 }
 
 size_t TaskManager::tagCount() const
 {
-    return m_data.tags.size();
+    return _data.tags.size();
 }
 
 // Utility methods
 std::vector<Tag> TaskManager::getUsedTags() const
 {
     std::vector<Tag> result;
-    for (const auto &tag : m_data.tags) {
+    for (const auto &tag : _data.tags) {
         // Check if this tag is used by any task
         bool isUsed = false;
-        for (const auto &task : m_data.tasks) {
+        for (const auto &task : _data.tasks) {
             auto tagIt = std::ranges::find(task.tags, tag.name);
             if (tagIt != task.tags.end()) {
                 isUsed = true;
@@ -189,10 +189,10 @@ std::vector<Tag> TaskManager::getUsedTags() const
 std::vector<Tag> TaskManager::getUnusedTags() const
 {
     std::vector<Tag> result;
-    for (const auto &tag : m_data.tags) {
+    for (const auto &tag : _data.tags) {
         // Check if this tag is not used by any task
         bool isUsed = false;
-        for (const auto &task : m_data.tasks) {
+        for (const auto &task : _data.tasks) {
             auto tagIt = std::ranges::find(task.tags, tag.name);
             if (tagIt != task.tags.end()) {
                 isUsed = true;
@@ -222,7 +222,7 @@ std::expected<TaskManager, std::string> TaskManager::fromJson(const std::string 
         // .error_on_missing_keys = true,
         .skip_null_members = false,
         .error_on_const_read = true,
-    }>(manager.m_data, json_str);
+    }>(manager._data, json_str);
     if (result != glz::error_code::none) {
         return std::unexpected("Failed to parse JSON: " + std::string(glz::format_error(result, json_str)));
     }
@@ -233,25 +233,25 @@ std::expected<TaskManager, std::string> TaskManager::fromJson(const std::string 
 // Helper methods
 std::vector<Task>::iterator TaskManager::findTaskByUuid(const std::string &uuid)
 {
-    return std::ranges::find_if(m_data.tasks,
+    return std::ranges::find_if(_data.tasks,
                                 [&uuid](const Task &task) { return task.uuid == uuid; });
 }
 
 std::vector<Task>::const_iterator TaskManager::findTaskByUuid(const std::string &uuid) const
 {
-    return std::ranges::find_if(m_data.tasks,
+    return std::ranges::find_if(_data.tasks,
                                 [&uuid](const Task &task) { return task.uuid == uuid; });
 }
 
 std::vector<Tag>::iterator TaskManager::findTagByName(const std::string &tagName)
 {
-    return std::ranges::find_if(m_data.tags,
+    return std::ranges::find_if(_data.tags,
                                 [&tagName](const Tag &tag) { return tag.name == tagName; });
 }
 
 std::vector<Tag>::const_iterator TaskManager::findTagByName(const std::string &tagName) const
 {
-    return std::ranges::find_if(m_data.tags,
+    return std::ranges::find_if(_data.tags,
                                 [&tagName](const Tag &tag) { return tag.name == tagName; });
 }
 } // namespace PointlessCore
