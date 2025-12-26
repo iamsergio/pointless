@@ -9,10 +9,8 @@ namespace pointless::core {
 
 Data::Data() = default;
 
-// Task management methods
 void Data::addTask(const Task &task)
 {
-    // Check if task with same UUID already exists
     auto it = findTaskByUuid(task.uuid);
     if (it == _data.tasks.end()) {
         _data.tasks.push_back(task);
@@ -63,7 +61,6 @@ size_t Data::taskCount() const
     return _data.tasks.size();
 }
 
-// Task filtering methods
 std::vector<Task> Data::getTasksByTag(const std::string &tagName) const
 {
     std::vector<Task> result;
@@ -121,10 +118,8 @@ std::vector<Task> Data::getTasksByParent(const std::string &parentUuid) const
     return result;
 }
 
-// Tag management methods
 void Data::addTag(const Tag &tag)
 {
-    // Check if tag with same name already exists
     auto it = findTagByName(tag.name);
     if (it == _data.tags.end()) {
         _data.tags.push_back(tag);
@@ -165,12 +160,10 @@ size_t Data::tagCount() const
     return _data.tags.size();
 }
 
-// Utility methods
 std::vector<Tag> Data::getUsedTags() const
 {
     std::vector<Tag> result;
     for (const auto &tag : _data.tags) {
-        // Check if this tag is used by any task
         bool isUsed = false;
         for (const auto &task : _data.tasks) {
             auto tagIt = std::ranges::find(task.tags, tag.name);
@@ -190,7 +183,6 @@ std::vector<Tag> Data::getUnusedTags() const
 {
     std::vector<Tag> result;
     for (const auto &tag : _data.tags) {
-        // Check if this tag is not used by any task
         bool isUsed = false;
         for (const auto &task : _data.tasks) {
             auto tagIt = std::ranges::find(task.tags, tag.name);
@@ -230,7 +222,6 @@ std::expected<Data, std::string> Data::fromJson(const std::string &json_str)
     return manager;
 }
 
-// Helper methods
 std::vector<Task>::iterator Data::findTaskByUuid(const std::string &uuid)
 {
     return std::ranges::find_if(_data.tasks,
