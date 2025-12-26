@@ -15,7 +15,7 @@ add_library(
   Clock.cpp
   context.cpp
   task.cpp
-  task_manager.cpp
+  data.cpp
   tag.cpp
   date_utils.cpp
   supabase.cpp
