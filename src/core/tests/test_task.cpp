@@ -9,7 +9,7 @@
 #include <glaze/glaze.hpp>
 #include <chrono>
 
-using namespace PointlessCore;
+using namespace pointless::core;
 
 TEST(TaskTest, SerializeJson)
 {
@@ -22,7 +22,7 @@ TEST(TaskTest, SerializeJson)
     original_task.isDone = false;
     original_task.isImportant = true;
     original_task.hideOnWeekends = false;
-    original_task.creationTimestamp = PointlessCore::Clock::now();
+    original_task.creationTimestamp = pointless::core::Clock::now();
     original_task.modificationTimestamp = original_task.creationTimestamp + std::chrono::hours(1);
     original_task.dueDate = original_task.creationTimestamp + std::chrono::hours(24 * 7);
     original_task.uuidInDeviceCalendar = "calendar-uuid-abc";
@@ -74,25 +74,25 @@ TEST(TaskTest, DeserializeJsonReadsTags)
 
 TEST(TaskTest, IsDueIn)
 {
-    PointlessCore::Task task;
+    pointless::core::Task task;
     // No due date
     EXPECT_FALSE(task.isDueIn(std::chrono::days(1)));
 
     // Due in 2 days
-    task.dueDate = PointlessCore::Clock::now() + std::chrono::hours(48);
+    task.dueDate = pointless::core::Clock::now() + std::chrono::hours(48);
     EXPECT_TRUE(task.isDueIn(std::chrono::days(3)));
     EXPECT_TRUE(task.isDueIn(std::chrono::days(2)));
     EXPECT_FALSE(task.isDueIn(std::chrono::days(1)));
 
     // Due in the past
-    task.dueDate = PointlessCore::Clock::now() - std::chrono::hours(24);
+    task.dueDate = pointless::core::Clock::now() - std::chrono::hours(24);
     EXPECT_FALSE(task.isDueIn(std::chrono::days(1)));
 }
 
 TEST(TaskTest, DueDatePreservedOnSerializeDeserialize)
 {
     using namespace std::chrono;
-    PointlessCore::Task original;
+    pointless::core::Task original;
     original.dueDate = system_clock::now() + hours(24 * 5);
     auto json_result = glz::write_json(original);
     ASSERT_TRUE(json_result.has_value());
@@ -101,7 +101,7 @@ TEST(TaskTest, DueDatePreservedOnSerializeDeserialize)
     EXPECT_TRUE(json_str.find("\"dueDate\"") != std::string::npos);
     // std::cout << json_str << std::endl;
 
-    PointlessCore::Task deserialized;
+    pointless::core::Task deserialized;
     auto result = glz::read_json(deserialized, json_str);
     ASSERT_TRUE(result == glz::error_code::none);
     ASSERT_TRUE(deserialized.dueDate.has_value());
@@ -205,7 +205,7 @@ TEST(TaskTest, MergeConflict_IsImportant_ImportantWins)
 
 TEST(TaskTest, MergeConflict_DueDate_BothHaveDueDate_MoreRecentWins)
 {
-    auto now = PointlessCore::Clock::now();
+    auto now = pointless::core::Clock::now();
     auto oneHourAgo = now - std::chrono::hours(1);
     auto twoHoursAgo = now - std::chrono::hours(2);
 
@@ -232,7 +232,7 @@ TEST(TaskTest, MergeConflict_DueDate_BothHaveDueDate_MoreRecentWins)
 
 TEST(TaskTest, MergeConflict_DueDate_OnlyOtherHasDueDate)
 {
-    auto now = PointlessCore::Clock::now();
+    auto now = pointless::core::Clock::now();
 
     Task task1;
     task1.dueDate = std::nullopt;
@@ -246,7 +246,7 @@ TEST(TaskTest, MergeConflict_DueDate_OnlyOtherHasDueDate)
 
 TEST(TaskTest, MergeConflict_DueDate_OnlyThisHasDueDate)
 {
-    auto now = PointlessCore::Clock::now();
+    auto now = pointless::core::Clock::now();
 
     Task task1;
     task1.dueDate = now + std::chrono::days(7);
@@ -260,7 +260,7 @@ TEST(TaskTest, MergeConflict_DueDate_OnlyThisHasDueDate)
 
 TEST(TaskTest, MergeConflict_Title_MoreRecentWins)
 {
-    auto now = PointlessCore::Clock::now();
+    auto now = pointless::core::Clock::now();
     auto oneHourAgo = now - std::chrono::hours(1);
     auto twoHoursAgo = now - std::chrono::hours(2);
 
@@ -287,7 +287,7 @@ TEST(TaskTest, MergeConflict_Title_MoreRecentWins)
 
 TEST(TaskTest, MergeConflict_Title_SameTitle_NoChange)
 {
-    auto now = PointlessCore::Clock::now();
+    auto now = pointless::core::Clock::now();
 
     Task task1;
     task1.title = "Same Title";

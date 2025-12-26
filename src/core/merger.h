@@ -5,8 +5,8 @@
 
 #include "task_manager.h"
 
-namespace PointlessCore {
+namespace pointless::core {
 
-Data merge(const Data &localData, const Data &serverData);
+DataPayload merge(const DataPayload &localData, const DataPayload &serverData);
 
 }

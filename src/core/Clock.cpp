@@ -5,7 +5,7 @@
 
 #include <chrono>
 
-namespace PointlessCore {
+namespace pointless::core {
 
 #ifdef POINTLESS_DEVELOPER_MODE
 std::optional<std::chrono::system_clock::time_point> Clock::s_testTime = std::nullopt;
@@ -33,4 +33,4 @@ void Clock::reset()
 }
 #endif
 
-} // namespace PointlessCore
+} // namespace pointless::core

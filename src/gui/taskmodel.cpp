@@ -100,7 +100,7 @@ int TaskModel::count() const
     return rowCount();
 }
 
-void TaskModel::setTasks(const std::vector<PointlessCore::Task> &tasks)
+void TaskModel::setTasks(const std::vector<pointless::core::Task> &tasks)
 {
     beginResetModel();
     _tasks = tasks;
@@ -109,7 +109,7 @@ void TaskModel::setTasks(const std::vector<PointlessCore::Task> &tasks)
     emit countChanged();
 }
 
-void TaskModel::addTask(const PointlessCore::Task &task)
+void TaskModel::addTask(const pointless::core::Task &task)
 {
     const int numTasks = static_cast<int>(_tasks.size());
     beginInsertRows(QModelIndex(), numTasks, numTasks);
@@ -118,14 +118,14 @@ void TaskModel::addTask(const PointlessCore::Task &task)
     emit countChanged();
 }
 
-const PointlessCore::Task *TaskModel::taskAt(int row) const
+const pointless::core::Task *TaskModel::taskAt(int row) const
 {
     if (row < 0 || row >= static_cast<int>(_tasks.size())) // NOLINT
         return nullptr;
     return &_tasks[row];
 }
 
-const PointlessCore::Task *TaskModel::taskForUuid(const QString &taskUuid) const
+const pointless::core::Task *TaskModel::taskForUuid(const QString &taskUuid) const
 {
     std::string uuidStr = taskUuid.toStdString();
     for (const auto &task : _tasks) {

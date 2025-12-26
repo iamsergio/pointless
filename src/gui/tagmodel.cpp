@@ -20,7 +20,7 @@ TagModel::TagModel(QObject *parent)
 {
 }
 
-TagModel::TagModel(const std::vector<PointlessCore::Tag> &tags, QObject *parent)
+TagModel::TagModel(const std::vector<pointless::core::Tag> &tags, QObject *parent)
     : QAbstractListModel(parent)
     , _tags(tags)
 {
@@ -62,7 +62,7 @@ int TagModel::count() const
     return rowCount();
 }
 
-void TagModel::setTags(const std::vector<PointlessCore::Tag> &tags)
+void TagModel::setTags(const std::vector<pointless::core::Tag> &tags)
 {
     beginResetModel();
     _tags = tags;

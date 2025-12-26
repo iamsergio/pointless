@@ -11,7 +11,7 @@
 #include <sstream>
 #include <format>
 
-namespace PointlessCore::DateUtils {
+namespace pointless::core::DateUtils {
 
 namespace {
 // Helper to convert time_point to std::tm
@@ -95,7 +95,7 @@ std::chrono::system_clock::time_point thisWeeksMonday(std::chrono::system_clock:
 namespace {
 std::chrono::system_clock::time_point thisWeeksMonday()
 {
-    auto monday = PointlessCore::DateUtils::thisWeeksMonday(Clock::now());
+    auto monday = pointless::core::DateUtils::thisWeeksMonday(Clock::now());
     return trimTime(monday);
 }
 }
@@ -163,4 +163,4 @@ std::string prettyDate(std::chrono::system_clock::time_point date, bool includeT
     return result;
 }
 
-} // namespace PointlessCore::DateUtils
+} // namespace pointless::core::DateUtils

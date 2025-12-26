@@ -71,7 +71,7 @@ void GuiController::refresh()
 
     const std::string json_str = refreshResult.value();
 
-    auto result = PointlessCore::TaskManager::fromJson(json_str);
+    auto result = pointless::core::Data::fromJson(json_str);
     if (!result) {
         P_LOG_ERROR("Cannot refresh: failed to parse JSON: {}", result.error());
 
@@ -217,10 +217,10 @@ void GuiController::addNewTask(const QString &title)
         return;
     }
 
-    PointlessCore::Task task;
+    pointless::core::Task task;
     task.uuid = QUuid::createUuid().toString(QUuid::WithoutBraces).toStdString();
     task.title = title.toStdString();
-    task.creationTimestamp = PointlessCore::Clock::now();
+    task.creationTimestamp = pointless::core::Clock::now();
     task.modificationTimestamp = task.creationTimestamp;
 
     _taskModel->addTask(task);

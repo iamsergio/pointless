@@ -6,13 +6,13 @@
 
 #include <algorithm>
 
-namespace PointlessCore {
+namespace pointless::core {
 
-Data merge(const Data &localData, const Data &serverData)
+DataPayload merge(const DataPayload &localData, const DataPayload &serverData)
 {
     // If server is empty, client initializes it.
     if (serverData.tasks.empty() && serverData.tags.empty() && serverData.revision == 0) {
-        Data result = localData;
+        DataPayload result = localData;
         result.revision = 0;
         for (auto &task : result.tasks) {
             task.needsSyncToServer = false;
@@ -34,7 +34,7 @@ Data merge(const Data &localData, const Data &serverData)
         return serverData;
     }
 
-    Data current = serverData;
+    DataPayload current = serverData;
     bool changed = false;
 
     // Add new tags
@@ -130,4 +130,4 @@ Data merge(const Data &localData, const Data &serverData)
     return current;
 }
 
-} // namespace PointlessCore
+} // namespace pointless::core

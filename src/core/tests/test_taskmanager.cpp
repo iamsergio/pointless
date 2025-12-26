@@ -8,7 +8,7 @@
 
 #include <fstream>
 
-using namespace PointlessCore;
+using namespace pointless::core;
 
 TEST(TaskManagerTest, LoadJsonFile)
 {
@@ -27,9 +27,9 @@ TEST(TaskManagerTest, LoadJsonFile)
     ASSERT_FALSE(json_content.empty()) << "JSON file is empty";
 
     // Try to load into TaskManager
-    auto managerResult = TaskManager::fromJson(json_content);
+    auto managerResult = Data::fromJson(json_content);
     ASSERT_TRUE(managerResult.has_value()) << managerResult.error();
-    const TaskManager &manager = managerResult.value();
+    const Data &manager = managerResult.value();
 
     // Basic validation - we should have some tasks and tags
     EXPECT_GT(manager.taskCount(), 0) << "Should have at least one task in test data";
@@ -46,9 +46,9 @@ TEST(TaskManagerTest, TestNullValues)
     std::string json_content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
     ASSERT_FALSE(json_content.empty()) << "JSON file is empty";
-    auto managerResult = TaskManager::fromJson(json_content);
+    auto managerResult = Data::fromJson(json_content);
     ASSERT_TRUE(managerResult.has_value()) << managerResult.error();
-    const TaskManager &manager = managerResult.value();
+    const Data &manager = managerResult.value();
     ASSERT_EQ(manager.taskCount(), 1);
     auto tasks = manager.getAllTasks();
     ASSERT_EQ(tasks.size(), 1);

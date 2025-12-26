@@ -5,12 +5,12 @@
 
 #include <algorithm>
 
-namespace PointlessCore {
+namespace pointless::core {
 
-TaskManager::TaskManager() = default;
+Data::Data() = default;
 
 // Task management methods
-void TaskManager::addTask(const Task &task)
+void Data::addTask(const Task &task)
 {
     // Check if task with same UUID already exists
     auto it = findTaskByUuid(task.uuid);
@@ -19,7 +19,7 @@ void TaskManager::addTask(const Task &task)
     }
 }
 
-bool TaskManager::removeTask(const std::string &uuid)
+bool Data::removeTask(const std::string &uuid)
 {
     auto it = findTaskByUuid(uuid);
     if (it != _data.tasks.end()) {
@@ -29,7 +29,7 @@ bool TaskManager::removeTask(const std::string &uuid)
     return false;
 }
 
-std::optional<Task> TaskManager::getTask(const std::string &uuid) const
+std::optional<Task> Data::getTask(const std::string &uuid) const
 {
     auto it = findTaskByUuid(uuid);
     if (it != _data.tasks.end()) {
@@ -38,12 +38,12 @@ std::optional<Task> TaskManager::getTask(const std::string &uuid) const
     return std::nullopt;
 }
 
-std::vector<Task> TaskManager::getAllTasks() const
+std::vector<Task> Data::getAllTasks() const
 {
     return _data.tasks;
 }
 
-bool TaskManager::updateTask(const Task &task)
+bool Data::updateTask(const Task &task)
 {
     auto it = findTaskByUuid(task.uuid);
     if (it != _data.tasks.end()) {
@@ -53,18 +53,18 @@ bool TaskManager::updateTask(const Task &task)
     return false;
 }
 
-void TaskManager::clearTasks()
+void Data::clearTasks()
 {
     _data.tasks.clear();
 }
 
-size_t TaskManager::taskCount() const
+size_t Data::taskCount() const
 {
     return _data.tasks.size();
 }
 
 // Task filtering methods
-std::vector<Task> TaskManager::getTasksByTag(const std::string &tagName) const
+std::vector<Task> Data::getTasksByTag(const std::string &tagName) const
 {
     std::vector<Task> result;
     result.reserve(_data.tasks.size());
@@ -77,7 +77,7 @@ std::vector<Task> TaskManager::getTasksByTag(const std::string &tagName) const
     return result;
 }
 
-std::vector<Task> TaskManager::getCompletedTasks() const
+std::vector<Task> Data::getCompletedTasks() const
 {
     std::vector<Task> result;
     for (const auto &task : _data.tasks) {
@@ -88,7 +88,7 @@ std::vector<Task> TaskManager::getCompletedTasks() const
     return result;
 }
 
-std::vector<Task> TaskManager::getPendingTasks() const
+std::vector<Task> Data::getPendingTasks() const
 {
     std::vector<Task> result;
     for (const auto &task : _data.tasks) {
@@ -99,7 +99,7 @@ std::vector<Task> TaskManager::getPendingTasks() const
     return result;
 }
 
-std::vector<Task> TaskManager::getImportantTasks() const
+std::vector<Task> Data::getImportantTasks() const
 {
     std::vector<Task> result;
     for (const auto &task : _data.tasks) {
@@ -110,7 +110,7 @@ std::vector<Task> TaskManager::getImportantTasks() const
     return result;
 }
 
-std::vector<Task> TaskManager::getTasksByParent(const std::string &parentUuid) const
+std::vector<Task> Data::getTasksByParent(const std::string &parentUuid) const
 {
     std::vector<Task> result;
     for (const auto &task : _data.tasks) {
@@ -122,7 +122,7 @@ std::vector<Task> TaskManager::getTasksByParent(const std::string &parentUuid) c
 }
 
 // Tag management methods
-void TaskManager::addTag(const Tag &tag)
+void Data::addTag(const Tag &tag)
 {
     // Check if tag with same name already exists
     auto it = findTagByName(tag.name);
@@ -131,7 +131,7 @@ void TaskManager::addTag(const Tag &tag)
     }
 }
 
-bool TaskManager::removeTag(const std::string &tagName)
+bool Data::removeTag(const std::string &tagName)
 {
     auto it = findTagByName(tagName);
     if (it != _data.tags.end()) {
@@ -141,7 +141,7 @@ bool TaskManager::removeTag(const std::string &tagName)
     return false;
 }
 
-std::optional<Tag> TaskManager::getTag(const std::string &tagName) const
+std::optional<Tag> Data::getTag(const std::string &tagName) const
 {
     auto it = findTagByName(tagName);
     if (it != _data.tags.end()) {
@@ -150,23 +150,23 @@ std::optional<Tag> TaskManager::getTag(const std::string &tagName) const
     return std::nullopt;
 }
 
-std::vector<Tag> TaskManager::getAllTags() const
+std::vector<Tag> Data::getAllTags() const
 {
     return _data.tags;
 }
 
-void TaskManager::clearTags()
+void Data::clearTags()
 {
     _data.tags.clear();
 }
 
-size_t TaskManager::tagCount() const
+size_t Data::tagCount() const
 {
     return _data.tags.size();
 }
 
 // Utility methods
-std::vector<Tag> TaskManager::getUsedTags() const
+std::vector<Tag> Data::getUsedTags() const
 {
     std::vector<Tag> result;
     for (const auto &tag : _data.tags) {
@@ -186,7 +186,7 @@ std::vector<Tag> TaskManager::getUsedTags() const
     return result;
 }
 
-std::vector<Tag> TaskManager::getUnusedTags() const
+std::vector<Tag> Data::getUnusedTags() const
 {
     std::vector<Tag> result;
     for (const auto &tag : _data.tags) {
@@ -206,7 +206,7 @@ std::vector<Tag> TaskManager::getUnusedTags() const
     return result;
 }
 
-void TaskManager::removeUnusedTags()
+void Data::removeUnusedTags()
 {
     auto unusedTags = getUnusedTags();
     for (const auto &tag : unusedTags) {
@@ -214,9 +214,9 @@ void TaskManager::removeUnusedTags()
     }
 }
 
-std::expected<TaskManager, std::string> TaskManager::fromJson(const std::string &json_str)
+std::expected<Data, std::string> Data::fromJson(const std::string &json_str)
 {
-    TaskManager manager;
+    Data manager;
     auto result = glz::read<glz::opts {
         .error_on_unknown_keys = true,
         // .error_on_missing_keys = true,
@@ -231,27 +231,27 @@ std::expected<TaskManager, std::string> TaskManager::fromJson(const std::string 
 }
 
 // Helper methods
-std::vector<Task>::iterator TaskManager::findTaskByUuid(const std::string &uuid)
+std::vector<Task>::iterator Data::findTaskByUuid(const std::string &uuid)
 {
     return std::ranges::find_if(_data.tasks,
                                 [&uuid](const Task &task) { return task.uuid == uuid; });
 }
 
-std::vector<Task>::const_iterator TaskManager::findTaskByUuid(const std::string &uuid) const
+std::vector<Task>::const_iterator Data::findTaskByUuid(const std::string &uuid) const
 {
     return std::ranges::find_if(_data.tasks,
                                 [&uuid](const Task &task) { return task.uuid == uuid; });
 }
 
-std::vector<Tag>::iterator TaskManager::findTagByName(const std::string &tagName)
+std::vector<Tag>::iterator Data::findTagByName(const std::string &tagName)
 {
     return std::ranges::find_if(_data.tags,
                                 [&tagName](const Tag &tag) { return tag.name == tagName; });
 }
 
-std::vector<Tag>::const_iterator TaskManager::findTagByName(const std::string &tagName) const
+std::vector<Tag>::const_iterator Data::findTagByName(const std::string &tagName) const
 {
     return std::ranges::find_if(_data.tags,
                                 [&tagName](const Tag &tag) { return tag.name == tagName; });
 }
-} // namespace PointlessCore
+} // namespace pointless::core

@@ -37,10 +37,10 @@ public:
 
     [[nodiscard]] int count() const;
 
-    void setTasks(const std::vector<PointlessCore::Task> &tasks);
-    void addTask(const PointlessCore::Task &task);
-    [[nodiscard]] const PointlessCore::Task *taskAt(int row) const;
-    [[nodiscard]] const PointlessCore::Task *taskForUuid(const QString &taskUuid) const;
+    void setTasks(const std::vector<pointless::core::Task> &tasks);
+    void addTask(const pointless::core::Task &task);
+    [[nodiscard]] const pointless::core::Task *taskAt(int row) const;
+    [[nodiscard]] const pointless::core::Task *taskForUuid(const QString &taskUuid) const;
 
 Q_SIGNALS:
     void countChanged();
@@ -48,5 +48,5 @@ Q_SIGNALS:
 private:
     explicit TaskModel(QObject *parent = nullptr);
     inline static TaskModel *_instance = nullptr;
-    std::vector<PointlessCore::Task> _tasks;
+    std::vector<pointless::core::Task> _tasks;
 };

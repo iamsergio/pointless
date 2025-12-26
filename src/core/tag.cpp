@@ -7,7 +7,7 @@
 #include <string_view>
 #include <algorithm>
 
-namespace PointlessCore {
+namespace pointless::core {
 
 bool tagIsBuiltin(const Tag &tag)
 {
@@ -34,4 +34,4 @@ bool Tag::isBuiltin() const
     return tagIsBuiltin(name);
 }
 
-} // namespace PointlessCore
+} // namespace pointless::core

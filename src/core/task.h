@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace PointlessCore {
+namespace pointless::core {
 
 class Task
 {
@@ -53,7 +53,7 @@ public:
     std::optional<std::string> deviceCalendarName;
 };
 
-} // namespace PointlessCore
+} // namespace pointless::core
 
 namespace glz {
 
@@ -83,9 +83,9 @@ struct to<JSON, std::chrono::system_clock::time_point>
 }
 
 template<>
-struct glz::meta<PointlessCore::Task>
+struct glz::meta<pointless::core::Task>
 {
-    using T = PointlessCore::Task;
+    using T = pointless::core::Task;
     static constexpr auto value = object(
         "revision", &T::revision,
         "uuid", &T::uuid,

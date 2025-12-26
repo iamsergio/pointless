@@ -34,13 +34,13 @@ void Clock::setTestNow(const QDateTime &t)
     s_testTime = t;
     auto millis = t.toMSecsSinceEpoch();
     auto tp = std::chrono::system_clock::time_point(std::chrono::milliseconds(millis));
-    PointlessCore::Clock::setTestNow(tp);
+    pointless::core::Clock::setTestNow(tp);
 }
 
 void Clock::reset()
 {
     s_testTime = std::nullopt;
-    PointlessCore::Clock::reset();
+    pointless::core::Clock::reset();
 }
 #endif
 

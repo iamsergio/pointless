@@ -20,10 +20,10 @@ LocalData::LocalData()
     _dataDir = envVar;
 }
 
-std::expected<PointlessCore::TaskManager, std::string> LocalData::loadTaskManager() const
+std::expected<pointless::core::Data, std::string> LocalData::loadTaskManager() const
 {
     const std::string filePath = getDataFilePath();
-    return PointlessCore::loadTaskManagerFromJsonFile(filePath);
+    return pointless::core::loadTaskManagerFromJsonFile(filePath);
 }
 
 std::string LocalData::getDataFilePath() const

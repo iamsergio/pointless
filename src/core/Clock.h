@@ -5,7 +5,7 @@
 
 #include <chrono>
 
-namespace PointlessCore {
+namespace pointless::core {
 
 class Clock
 {
@@ -21,4 +21,4 @@ private:
 #endif
 };
 
-} // namespace PointlessCore
+} // namespace pointless::core

@@ -9,8 +9,8 @@
 #include <expected>
 #include <string>
 
-namespace PointlessCore {
+namespace pointless::core {
 
-std::expected<TaskManager, std::string> loadTaskManagerFromJsonFile(const std::string &filename);
+std::expected<Data, std::string> loadTaskManagerFromJsonFile(const std::string &filename);
 
-} // namespace PointlessCore
+} // namespace pointless::core

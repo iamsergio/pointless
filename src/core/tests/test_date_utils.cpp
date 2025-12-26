@@ -9,10 +9,10 @@
 #include <chrono>
 #include <ctime>
 
-using namespace PointlessCore::DateUtils;
+using namespace pointless::core::DateUtils;
 TEST(DateUtilsTest, ThisWeeksMonday)
 {
-    auto now = PointlessCore::Clock::now();
+    auto now = pointless::core::Clock::now();
     auto monday = thisWeeksMonday(now);
     std::tm tm = {};
     std::time_t t = std::chrono::system_clock::to_time_t(monday);
@@ -34,7 +34,7 @@ TEST(DateUtilsTest, ThisWeeksMonday)
 
 TEST(DateUtilsTest, IsThisWeek)
 {
-    auto now = PointlessCore::Clock::now();
+    auto now = pointless::core::Clock::now();
     auto monday = thisWeeksMonday(now);
     auto next_monday = nextMonday(monday);
     auto this_sunday = monday + std::chrono::hours(24 * 6);
@@ -45,7 +45,7 @@ TEST(DateUtilsTest, IsThisWeek)
 
 TEST(DateUtilsTest, IsNext7Days)
 {
-    auto now = PointlessCore::Clock::now();
+    auto now = pointless::core::Clock::now();
     auto yesterday = now - std::chrono::hours(24);
     auto tomorrow = now + std::chrono::hours(24);
     EXPECT_TRUE(isNext7Days(now));
@@ -117,7 +117,7 @@ TEST(DateUtilsTest, IsWorkDay)
 
 TEST(DateUtilsTest, TrimTime)
 {
-    auto now = PointlessCore::Clock::now();
+    auto now = pointless::core::Clock::now();
     auto trimmed = trimTime(now);
     std::tm tm = {};
     std::time_t t = std::chrono::system_clock::to_time_t(trimmed);

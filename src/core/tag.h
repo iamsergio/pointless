@@ -7,7 +7,7 @@
 
 #include <string>
 
-namespace PointlessCore {
+namespace pointless::core {
 
 constexpr auto BUILTIN_TAG_SOON = "soon";
 constexpr auto BUILTIN_TAG_CURRENT = "current";
@@ -26,12 +26,12 @@ public:
 bool tagIsBuiltin(const Tag &tag);
 bool tagIsBuiltin(std::string_view name);
 
-} // namespace PointlessCore
+} // namespace pointless::core
 
 template<>
-struct glz::meta<PointlessCore::Tag>
+struct glz::meta<pointless::core::Tag>
 {
-    using T = PointlessCore::Tag;
+    using T = pointless::core::Tag;
     static constexpr auto value = object(
         "revision", &T::revision,
         "name", &T::name);

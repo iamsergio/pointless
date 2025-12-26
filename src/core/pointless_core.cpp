@@ -9,10 +9,10 @@
 #include <string>
 #include <iterator>
 
-namespace PointlessCore {
+namespace pointless::core {
 
 
-std::expected<TaskManager, std::string> loadTaskManagerFromJsonFile(const std::string &filename)
+std::expected<Data, std::string> loadTaskManagerFromJsonFile(const std::string &filename)
 {
     std::ifstream file(filename);
     if (!file) {
@@ -26,7 +26,7 @@ std::expected<TaskManager, std::string> loadTaskManagerFromJsonFile(const std::s
         return std::unexpected("Failed to read JSON from file: " + filename);
     }
 
-    return TaskManager::fromJson(json_content);
+    return Data::fromJson(json_content);
 }
 
-} // namespace PointlessCore
+} // namespace pointless::core

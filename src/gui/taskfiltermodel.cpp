@@ -67,7 +67,7 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
         return true;
     }
 
-    const PointlessCore::Task *task = taskModel->taskAt(source_row);
+    const pointless::core::Task *task = taskModel->taskAt(source_row);
     if (task == nullptr) {
         P_LOG_CRITICAL("Task is null at row {}", source_row);
         return true;

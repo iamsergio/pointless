@@ -12,9 +12,9 @@
 #include <string>
 #include <vector>
 
-namespace PointlessCore {
+namespace pointless::core {
 
-struct Data
+struct DataPayload
 {
     int revision = 0;
     std::vector<Task> tasks;
@@ -23,10 +23,10 @@ struct Data
     std::vector<std::string> deletedTagNames;
 };
 
-class TaskManager
+class Data
 {
 public:
-    TaskManager();
+    Data();
 
     // Task management methods
     void addTask(const Task &task);
@@ -58,9 +58,9 @@ public:
     void removeUnusedTags();
 
     // Serialization methods
-    static std::expected<TaskManager, std::string> fromJson(const std::string &json_str);
+    static std::expected<Data, std::string> fromJson(const std::string &json_str);
 
-    Data _data;
+    DataPayload _data;
 
 private:
     // Helper methods
@@ -70,12 +70,12 @@ private:
     [[nodiscard]] std::vector<Tag>::const_iterator findTagByName(const std::string &tagName) const;
 };
 
-} // namespace PointlessCore
+} // namespace pointless::core
 
 template<>
-struct glz::meta<PointlessCore::Data>
+struct glz::meta<pointless::core::DataPayload>
 {
-    using T = PointlessCore::Data;
+    using T = pointless::core::DataPayload;
     static constexpr auto value = object(
         "tasks", &T::tasks,
         "tags", &T::tags,

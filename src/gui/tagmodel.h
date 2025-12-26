@@ -24,7 +24,7 @@ public:
     };
 
     explicit TagModel(QObject *parent = nullptr);
-    explicit TagModel(const std::vector<PointlessCore::Tag> &tags, QObject *parent = nullptr);
+    explicit TagModel(const std::vector<pointless::core::Tag> &tags, QObject *parent = nullptr);
 
     [[nodiscard]] int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     [[nodiscard]] QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -32,11 +32,11 @@ public:
 
     [[nodiscard]] int count() const;
 
-    void setTags(const std::vector<PointlessCore::Tag> &tags);
+    void setTags(const std::vector<pointless::core::Tag> &tags);
 
 Q_SIGNALS:
     void countChanged();
 
 private:
-    std::vector<PointlessCore::Tag> _tags;
+    std::vector<pointless::core::Tag> _tags;
 };

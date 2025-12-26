@@ -10,7 +10,7 @@
 #include <iomanip>
 #include <sstream>
 
-namespace PointlessCore {
+namespace pointless::core {
 
 Task::Task() = default;
 
@@ -135,4 +135,4 @@ void Task::mergeConflict(const Task &other)
         std::erase(tags, std::string(BUILTIN_TAG_SOON));
     }
 }
-} // namespace PointlessCore
+} // namespace pointless::core

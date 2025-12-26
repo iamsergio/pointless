@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 #include <glaze/glaze.hpp>
 
-using namespace PointlessCore;
+using namespace pointless::core;
 
 TEST(TagTest, SerializeDeserializeJson)
 {
