@@ -48,6 +48,7 @@ qt_add_qml_module(
   application.cpp
   Clock.cpp
   gui_controller.cpp
+  data_controller.cpp
   date_utils.cpp
   gui_controller.h
   taskmodel.cpp

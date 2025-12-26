@@ -7,11 +7,12 @@
 #include "taskmodel.h"
 #include "tagmodel.h"
 #include "date_utils.h"
+#include "data_controller.h"
 #include "Clock.h"
+
 #include "core/Clock.h"
 #include "core/task_manager.h"
 #include "core/logger.h"
-#include "core/data_provider.h"
 #include "core/task.h"
 
 #include <QTimer>
@@ -29,7 +30,7 @@
 
 GuiController::GuiController(QObject *parent)
     : QObject(parent)
-    , _dataProvider(IDataProvider::createProvider())
+    , _dataController(new DataController(this))
     , _taskModel(TaskModel::instance(this))
     , _tagModel(new TagModel(this))
     , _taskFilterModel(new TaskFilterModel(this))
@@ -37,13 +38,13 @@ GuiController::GuiController(QObject *parent)
 
 #ifdef POINTLESS_DEVELOPER_MODE
     // TODO: A better place to put it ?
-    if (!_dataProvider->loginWithDefaults()) {
+    if (!_dataController->loginWithDefaults()) {
         P_LOG_CRITICAL("Failed to login with default credentials in developer mode");
         std::abort();
     }
 #else
     // TODO: A better place to put it ?
-    _dataProvider->loginWithDefaults();
+    _dataController->loginWithDefaults();
 #endif
 
     navigatorGotoToday();
@@ -62,16 +63,13 @@ bool GuiController::isDebug()
 
 void GuiController::refresh()
 {
-    if (!_dataProvider->isAuthenticated()) {
-        P_LOG_ERROR("Cannot refresh: not authenticated");
+    auto refreshResult = _dataController->refresh();
+    if (!refreshResult) {
+        P_LOG_ERROR("GuiController::refresh: {}", refreshResult.error());
         return;
     }
 
-    std::string json_str = _dataProvider->pullData();
-    if (json_str.empty()) {
-        P_LOG_ERROR("Cannot refresh: no data retrieved");
-        return;
-    }
+    const std::string json_str = refreshResult.value();
 
     auto result = PointlessCore::TaskManager::fromJson(json_str);
     if (!result) {

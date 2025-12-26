@@ -3,17 +3,15 @@
 
 #pragma once
 
-#include "core/data_provider.h"
 #include "taskfiltermodel.h"
 
 #include <QDate>
 #include <QObject>
 #include <QtQml/qqmlregistration.h>
 
-#include <memory>
-
 class TaskModel;
 class TagModel;
+class DataController;
 
 class GuiController : public QObject
 {
@@ -85,5 +83,5 @@ private:
     TaskModel *_taskModel = nullptr;
     TagModel *_tagModel = nullptr;
     TaskFilterModel *_taskFilterModel = nullptr;
-    std::unique_ptr<IDataProvider> _dataProvider;
+    DataController *const _dataController;
 };

@@ -7,8 +7,11 @@
 #pragma once
 
 #include "core/local_data.h"
+#include "core/data_provider.h"
 
 #include <QObject>
+
+#include <expected>
 
 class DataController : public QObject
 {
@@ -16,6 +19,10 @@ class DataController : public QObject
 public:
     explicit DataController(QObject *parent = nullptr);
 
+    bool loginWithDefaults();
+    std::expected<std::string, std::string> refresh();
+
 private:
     pointless::core::LocalData _localData;
+    std::unique_ptr<IDataProvider> _dataProvider;
 };
