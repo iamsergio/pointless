@@ -19,9 +19,16 @@ LocalData::LocalData()
     _dataDir = envVar;
 }
 
-std::expected<pointless::core::Data, std::string> LocalData::loadDataFromFile() const
+std::expected<std::monostate, std::string> LocalData::loadDataFromFile()
 {
-    return loadDataFromFile(getDataFilePath());
+    auto result = loadDataFromFile(getDataFilePath());
+    if (result) {
+        _data = result.value();
+        return std::monostate {};
+    }
+
+    _data = {};
+    return std::unexpected(result.error());
 }
 
 std::expected<pointless::core::Data, std::string> LocalData::loadDataFromFile(const std::string &filename) const

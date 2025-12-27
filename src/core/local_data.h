@@ -7,6 +7,7 @@
 
 #include <expected>
 #include <string>
+#include <variant>
 
 namespace pointless::core {
 
@@ -15,12 +16,13 @@ class LocalData
 public:
     LocalData();
 
-    [[nodiscard]] std::expected<pointless::core::Data, std::string> loadDataFromFile() const;
-    [[nodiscard]] std::expected<pointless::core::Data, std::string> loadDataFromFile(const std::string &filename) const;
+    [[nodiscard]] std::expected<std::monostate, std::string> loadDataFromFile();
+    [[nodiscard]] std::expected<Data, std::string> loadDataFromFile(const std::string &filename) const;
 
 private:
     [[nodiscard]] std::string getDataFilePath() const;
     std::string _dataDir;
+    Data _data;
 };
 
 }

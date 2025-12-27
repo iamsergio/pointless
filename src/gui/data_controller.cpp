@@ -20,6 +20,11 @@ bool DataController::loginWithDefaults()
 
 std::expected<pointless::core::Data, std::string> DataController::refresh()
 {
+    auto localDataResult = _localData.loadDataFromFile();
+    if (!localDataResult) {
+        return std::unexpected("DataController::refresh: Failed to load local data: " + localDataResult.error());
+    }
+
     if (!_dataProvider->isAuthenticated()) {
         return std::unexpected("DataController::refresh: Not authenticated");
     }
