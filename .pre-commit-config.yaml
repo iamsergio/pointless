@@ -33,7 +33,7 @@ repos:
     rev: v0.6.13
     hooks:
       - id: cmake-lint
-        args: ["--line-width=1000"] # we don't care about line-width
+        args: ["--line-width=1000", "--filter=-C0111"]
         additional_dependencies: ['pyyaml']
       - id: cmake-format
         additional_dependencies: ['pyyaml']
