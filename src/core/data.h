@@ -16,7 +16,7 @@ namespace pointless::core {
 
 struct DataPayload
 {
-    int revision = 0;
+    int revision = -1;
     std::vector<Task> tasks;
     std::vector<Tag> tags;
     std::vector<std::string> deletedTaskUuids;
