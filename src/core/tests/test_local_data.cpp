@@ -103,3 +103,56 @@ TEST(LocalDataTest, ClearServerSyncBits)
     EXPECT_TRUE(localData.deletedTags().empty());
     EXPECT_TRUE(localData.deletedTasks().empty());
 }
+
+TEST(LocalDataTest, SaveData)
+{
+    // Setup temporary directory
+    std::filesystem::path tempDir = std::filesystem::temp_directory_path() / "pointless_test_save";
+    std::filesystem::create_directories(tempDir);
+
+    // Set environment variable
+    setenv("POINTLESS_CLIENT_DATA_DIR", tempDir.c_str(), 1);
+
+    LocalData localData;
+    Data data;
+
+    // Add a task
+    Task task;
+    task.uuid = "task_save_1";
+    task.title = "Save Task";
+    data.addTask(task);
+
+    // Add a tag
+    Tag tag;
+    tag.name = "tag_save_1";
+    data.addTag(tag);
+
+    localData.setData(data);
+
+    // Save
+    auto result = localData.save();
+    ASSERT_TRUE(result.has_value());
+
+    // Verify file exists
+    std::filesystem::path expectedFile = tempDir / "pointless.json";
+    ASSERT_TRUE(std::filesystem::exists(expectedFile));
+
+    // Load back to verify content
+    LocalData localDataLoaded;
+    auto loadResult = localDataLoaded.loadDataFromFile();
+    ASSERT_TRUE(loadResult.has_value());
+
+    const Data &loadedData = localDataLoaded.data();
+    EXPECT_EQ(loadedData.taskCount(), 1);
+    EXPECT_EQ(loadedData.tagCount(), 1);
+
+    auto loadedTask = loadedData.getTask("task_save_1");
+    ASSERT_TRUE(loadedTask.has_value());
+    EXPECT_EQ(loadedTask->title, "Save Task");
+
+    auto loadedTag = loadedData.getTag("tag_save_1");
+    ASSERT_TRUE(loadedTag.has_value());
+
+    // Cleanup
+    std::filesystem::remove_all(tempDir);
+}

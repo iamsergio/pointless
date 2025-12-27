@@ -222,6 +222,20 @@ std::expected<Data, std::string> Data::fromJson(const std::string &json_str)
     return manager;
 }
 
+std::expected<std::string, std::string> Data::toJson() const
+{
+    std::string buffer;
+    auto result = glz::write<glz::opts {
+        .skip_null_members = false,
+    }>(_data, buffer);
+
+    if (result) {
+        return std::unexpected("Failed to serialize to JSON");
+    }
+
+    return buffer;
+}
+
 std::vector<Task>::iterator Data::findTaskByUuid(const std::string &uuid)
 {
     return std::ranges::find_if(_data.tasks,

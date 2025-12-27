@@ -62,6 +62,7 @@ public:
     [[nodiscard]] int revision() const;
 
     static std::expected<Data, std::string> fromJson(const std::string &json_str);
+    [[nodiscard]] std::expected<std::string, std::string> toJson() const;
 
     DataPayload _data;
 

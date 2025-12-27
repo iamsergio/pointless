@@ -19,6 +19,7 @@ public:
 
     [[nodiscard]] std::expected<std::monostate, std::string> loadDataFromFile();
     [[nodiscard]] std::expected<Data, std::string> loadDataFromFile(const std::string &filename) const;
+    [[nodiscard]] std::expected<std::monostate, std::string> save() const;
 
     [[nodiscard]] Data &data()
     {

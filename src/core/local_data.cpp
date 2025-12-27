@@ -4,6 +4,7 @@
 #include "local_data.h"
 
 #include <filesystem>
+#include <fstream>
 #include <stdexcept>
 #include <cstdlib>
 
@@ -50,6 +51,27 @@ std::expected<pointless::core::Data, std::string> LocalData::loadDataFromFile(co
     }
 
     return Data::fromJson(json_content);
+}
+
+std::expected<std::monostate, std::string> LocalData::save() const
+{
+    const auto filename = getDataFilePath();
+    std::ofstream file(filename);
+    if (!file) {
+        return std::unexpected("Failed to open file for writing: " + filename);
+    }
+
+    const auto jsonResult = _data.toJson();
+    if (!jsonResult) {
+        return std::unexpected(jsonResult.error());
+    }
+
+    file << jsonResult.value();
+    if (!file) {
+        return std::unexpected("Failed to write to file: " + filename);
+    }
+
+    return std::monostate {};
 }
 
 std::string LocalData::getDataFilePath() const
