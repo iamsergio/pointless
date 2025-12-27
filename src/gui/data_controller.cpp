@@ -85,6 +85,12 @@ std::expected<core::Data, std::string> DataController::sync(const std::optional<
         return remoteData;
     }
 
+    if (localData.revision() > remoteData.revision()) {
+        // 3. Doesn't happen, local data never increments revision
+        P_LOG_ERROR("sync(): Incoming has higher revision! incoming.rev={} ; remoteData.rev={}", localData.revision(), remoteData.revision());
+        return remoteData;
+    }
+
     P_LOG_DEBUG("Merging local and remote data");
     return remoteData;
 }

@@ -67,6 +67,12 @@ std::expected<std::monostate, std::string> LocalData::save() const
     return std::monostate {};
 }
 
+std::expected<std::monostate, std::string> LocalData::setDataAndSave(const Data &data)
+{
+    _data = data;
+    return save();
+}
+
 std::string LocalData::getDataFilePath() const
 {
     return core::Context::self().localFilePath();

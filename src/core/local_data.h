@@ -31,6 +31,8 @@ public:
         _data = data;
     }
 
+    [[nodiscard]] std::expected<std::monostate, std::string> setDataAndSave(const Data &data);
+
     void addDeletedTag(const std::string &tag)
     {
         _data.addDeletedTagName(tag);
