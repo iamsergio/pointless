@@ -14,6 +14,8 @@ endif()
 
 set_target_properties(pointless_gui PROPERTIES AUTOMOC ON AUTORCC ON)
 
+target_include_directories(pointless_gui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../)
+
 set(QML_SINGLETONS Style.qml)
 
 set_source_files_properties(${QML_SINGLETONS} PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
@@ -90,4 +92,9 @@ if(POINTLESS_ENABLE_TESTS)
   target_compile_definitions(test_gui PRIVATE POINTLESS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
   add_test(NAME test_gui COMMAND test_gui --local)
   # add_test(NAME test_gui_supabase COMMAND test_gui --supabase)
+
+  add_executable(test_data_controller tests/test_data_controller.cpp)
+  target_link_libraries(test_data_controller PRIVATE pointless_core pointless_gui GTest::gtest_main Qt6::Core)
+  target_include_directories(test_data_controller PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+  add_test(NAME test_data_controller COMMAND test_data_controller)
 endif()
