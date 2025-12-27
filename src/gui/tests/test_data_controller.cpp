@@ -7,6 +7,12 @@
 
 #include <gtest/gtest.h>
 
+void initData()
+{
+    pointless::core::Context::setContext({ IDataProvider::Type::TestSupabase, "/tmp/nonexistent_file.json" });
+    DataController controller;
+}
+
 TEST(DataControllerTest, ConstructDestroy)
 {
     pointless::core::Context::setContext({ IDataProvider::Type::TestSupabase, "/tmp/nonexistent_file.json" });

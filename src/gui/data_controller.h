@@ -25,6 +25,7 @@ public:
     std::expected<pointless::core::Data, std::string> refresh();
 
 private:
+    std::expected<std::monostate, std::string> pushRemoteData(const pointless::core::Data &data);
     std::expected<pointless::core::Data, std::string> pullRemoteData();
     std::expected<pointless::core::Data, std::string> sync(const std::optional<pointless::core::Data> &remoteData);
     pointless::core::LocalData _localData;

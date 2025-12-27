@@ -47,6 +47,24 @@ std::expected<pointless::core::Data, std::string> DataController::pullRemoteData
     return result;
 }
 
+std::expected<std::monostate, std::string> DataController::pushRemoteData(const pointless::core::Data &data)
+{
+    if (!_dataProvider->isAuthenticated()) {
+        return std::unexpected("DataController::refresh: Not authenticated");
+    }
+
+    auto jsonStrResult = data.toJson();
+    if (!jsonStrResult) {
+        return std::unexpected("DataController::pushRemoteData: Failed to serialize data to JSON: " + jsonStrResult.error());
+    }
+
+    if (!_dataProvider->pushData(jsonStrResult.value())) {
+        return std::unexpected("DataController::pushRemoteData: Failed to push data to remote");
+    }
+
+    return std::monostate {};
+}
+
 std::expected<pointless::core::Data, std::string> DataController::refresh()
 {
     P_LOG_DEBUG("Starting refresh");
