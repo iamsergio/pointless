@@ -57,7 +57,8 @@ public:
     [[nodiscard]] std::vector<Tag> getUnusedTags() const; // Tags that are not used by any task
     void removeUnusedTags();
 
-    // Serialization methods
+    void clearServerSyncBits();
+
     static std::expected<Data, std::string> fromJson(const std::string &json_str);
 
     DataPayload _data;

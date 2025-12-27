@@ -31,6 +31,15 @@ public:
 protected:
     void executeTest() override
     {
+        struct AppQuitter
+        {
+            ~AppQuitter()
+            {
+                qApp->quit();
+            }
+        } appQuitter;
+
+
         P_LOG_INFO("Starting test!!");
 
         auto weekActive = getStringProperty("mainWindow/weekViewButton", "isActive");
@@ -139,8 +148,6 @@ protected:
 
 
         P_LOG_INFO("Finished test!!");
-
-        qApp->quit();
     }
 };
 

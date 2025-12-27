@@ -24,6 +24,7 @@ public:
     std::expected<pointless::core::Data, std::string> refresh();
 
 private:
+    std::expected<pointless::core::Data, std::string> sync(const pointless::core::Data &remoteData);
     pointless::core::LocalData _localData;
     std::unique_ptr<IDataProvider> _dataProvider;
 };

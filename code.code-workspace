@@ -51,7 +51,9 @@
         "type": "lldb",
         "request": "launch",
         "program": "${command:cmake.launchTargetPath}",
-        "args": [],
+        "args": [
+          "--supabase"
+        ],
         "cwd": "${command:cmake.buildDirectory}",
         "initCommands": [
           "command script import /pub_data/installed/Qt/Tools/QtCreator/share/qtcreator/debugger/lldbbridge.py"

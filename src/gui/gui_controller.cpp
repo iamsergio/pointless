@@ -31,10 +31,10 @@ using namespace pointless;
 
 GuiController::GuiController(QObject *parent)
     : QObject(parent)
-    , _dataController(new DataController(this))
     , _taskModel(TaskModel::instance(this))
     , _tagModel(new TagModel(this))
     , _taskFilterModel(new TaskFilterModel(this))
+    , _dataController(new DataController(this))
 {
 
 #ifdef POINTLESS_DEVELOPER_MODE

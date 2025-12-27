@@ -62,3 +62,44 @@ TEST(LocalDataTest, LoadFromEnvVar)
     // Cleanup
     std::filesystem::remove_all(tempDir);
 }
+
+TEST(LocalDataTest, ClearServerSyncBits)
+{
+    setenv("POINTLESS_CLIENT_DATA_DIR", "/tmp", 1);
+    LocalData localData;
+    Data data;
+
+    // Add a task with sync bits set
+    Task task;
+    task.uuid = "task1";
+    task.revision = -1;
+    task.needsSyncToServer = true;
+    data.addTask(task);
+
+    // Add a tag with sync bits set
+    Tag tag;
+    tag.name = "tag1";
+    tag.revision = -1;
+    tag.needsSyncToServer = true;
+    data.addTag(tag);
+
+    localData.setData(data);
+    localData.addDeletedTag("deletedTag1");
+    localData.addDeletedTask("deletedTask1");
+
+    localData.clearServerSyncBits();
+
+    const Data &clearedData = localData.getData();
+    auto tasks = clearedData.getAllTasks();
+    ASSERT_EQ(tasks.size(), 1);
+    EXPECT_EQ(tasks[0].revision, 0);
+    EXPECT_FALSE(tasks[0].needsSyncToServer);
+
+    auto tags = clearedData.getAllTags();
+    ASSERT_EQ(tags.size(), 1);
+    EXPECT_EQ(tags[0].revision, 0);
+    EXPECT_FALSE(tags[0].needsSyncToServer);
+
+    EXPECT_TRUE(localData.deletedTags().empty());
+    EXPECT_TRUE(localData.deletedTasks().empty());
+}

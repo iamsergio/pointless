@@ -245,4 +245,19 @@ std::vector<Tag>::const_iterator Data::findTagByName(const std::string &tagName)
     return std::ranges::find_if(_data.tags,
                                 [&tagName](const Tag &tag) { return tag.name == tagName; });
 }
+
+void Data::clearServerSyncBits()
+{
+    for (auto &task : _data.tasks) {
+        if (task.revision == -1)
+            task.revision = 0;
+        task.needsSyncToServer = false;
+    }
+    for (auto &tag : _data.tags) {
+        if (tag.revision == -1)
+            tag.revision = 0;
+        tag.needsSyncToServer = false;
+    }
+}
+
 } // namespace pointless::core
