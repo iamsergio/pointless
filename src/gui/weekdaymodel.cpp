@@ -20,7 +20,7 @@ WeekdayModel::WeekdayModel(QObject *parent)
 {
     _mondayDate = Gui::DateUtils::firstMondayOfWeek(Gui::Clock::today());
 
-    for (int i = 0; i < _taskModels.size(); ++i) {
+    for (size_t i = 0; i < _taskModels.size(); ++i) {
         auto *filter = new TaskFilterModel(this);
         _taskModels.at(i) = filter;
         _taskModels.at(i)->setDateFilter(_mondayDate.addDays(i));
@@ -44,7 +44,7 @@ void WeekdayModel::setMondayDate(QDate date)
     }
     beginResetModel();
     _mondayDate = date;
-    for (int i = 0; i < _taskModels.size(); ++i) {
+    for (size_t i = 0; i < _taskModels.size(); ++i) {
         _taskModels.at(i)->setDateFilter(_mondayDate.addDays(i));
     }
     endResetModel();

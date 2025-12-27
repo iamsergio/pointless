@@ -155,7 +155,7 @@ void TaskFilterModel::evaluateEmpty()
 {
     const int currentCount = rowCount();
 
-    if (currentCount == 0 && _previousRowCount > 0 || (currentCount > 0 && _previousRowCount == 0)) {
+    if ((currentCount == 0 && _previousRowCount > 0) || ((currentCount > 0 && _previousRowCount == 0))) {
         Q_EMIT emptyChanged();
     }
 

@@ -92,14 +92,6 @@ std::chrono::system_clock::time_point thisWeeksMonday(std::chrono::system_clock:
     return std::chrono::system_clock::from_time_t(t);
 }
 
-namespace {
-std::chrono::system_clock::time_point thisWeeksMonday()
-{
-    auto monday = pointless::core::DateUtils::thisWeeksMonday(Clock::now());
-    return trimTime(monday);
-}
-}
-
 bool isThisWeek(std::chrono::system_clock::time_point date)
 {
     auto monday = thisWeeksMonday(Clock::now());

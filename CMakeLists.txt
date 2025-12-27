@@ -53,6 +53,8 @@ project(pointless_cpp LANGUAGES CXX)
 
 enable_language(CXX)
 
+include(cmake/CompilerFlags.cmake)
+
 set(POINTLESS_VERSION "1.0.0")
 set(POINTLESS_APPLE_BUILD_NUMBER "1")
 
@@ -119,3 +121,7 @@ if(POINTLESS_ENABLE_TESTS)
 endif()
 
 add_subdirectory(src)
+
+pointless_cpp_set_compiler_flags(pointless_core ${POINTLESS_DEVELOPER_MODE})
+pointless_cpp_set_compiler_flags(pointless_gui ${POINTLESS_DEVELOPER_MODE})
+pointless_cpp_set_compiler_flags(pointless ${POINTLESS_DEVELOPER_MODE})
