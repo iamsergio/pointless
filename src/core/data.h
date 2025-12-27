@@ -58,6 +58,8 @@ public:
     void removeUnusedTags();
 
     void clearServerSyncBits();
+    void setRevision(int revision);
+    [[nodiscard]] int revision() const;
 
     static std::expected<Data, std::string> fromJson(const std::string &json_str);
 

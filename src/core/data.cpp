@@ -260,4 +260,14 @@ void Data::clearServerSyncBits()
     }
 }
 
+void Data::setRevision(int revision)
+{
+    _data.revision = revision;
+}
+
+int Data::revision() const
+{
+    return _data.revision;
+}
+
 } // namespace pointless::core

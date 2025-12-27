@@ -70,6 +70,7 @@ if(POINTLESS_ENABLE_TESTS)
   enable_testing()
   message(STATUS "Building with tests")
   find_package(GTest CONFIG REQUIRED)
+  add_definitions(-DPOINTLESS_ENABLE_TESTS)
 endif()
 
 set(CMAKE_CXX_STANDARD 23)

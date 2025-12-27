@@ -20,13 +20,8 @@ bool DataController::loginWithDefaults()
     return _dataProvider && _dataProvider->loginWithDefaults();
 }
 
-std::expected<pointless::core::Data, std::string> DataController::refresh()
+std::expected<pointless::core::Data, std::string> DataController::pullRemoteData()
 {
-    auto localDataResult = _localData.loadDataFromFile();
-    if (!localDataResult) {
-        return std::unexpected("DataController::refresh: Failed to load local data: " + localDataResult.error());
-    }
-
     if (!_dataProvider->isAuthenticated()) {
         return std::unexpected("DataController::refresh: Not authenticated");
     }
@@ -49,12 +44,31 @@ std::expected<pointless::core::Data, std::string> DataController::refresh()
         return std::unexpected("Cannot refresh: failed to parse JSON: " + result.error());
     }
 
-    auto remoteData = result.value();
-
-    return sync(remoteData);
+    return result;
 }
 
-std::expected<core::Data, std::string> DataController::sync(const core::Data &remoteData)
+std::expected<pointless::core::Data, std::string> DataController::refresh()
 {
+    auto localDataResult = _localData.loadDataFromFile();
+    if (!localDataResult) {
+        return std::unexpected("DataController::refresh: Failed to load local data: " + localDataResult.error());
+    }
+
+    auto remoteDataResult = pullRemoteData();
+    return sync(remoteDataResult ? std::make_optional(*remoteDataResult) : std::nullopt);
+}
+
+std::expected<core::Data, std::string> DataController::sync(const std::optional<core::Data> &remoteDataOpt)
+{
+    core::Data &localData = _localData.data();
+    if (!remoteDataOpt.has_value()) {
+        // #1. There's no remote data. Reset revision and use local data.
+        localData.setRevision(0);
+        localData.clearServerSyncBits();
+        return localData;
+    }
+
+    const core::Data &remoteData = *remoteDataOpt;
+
     return remoteData;
 }

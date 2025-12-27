@@ -15,9 +15,17 @@ std::unique_ptr<IDataProvider> IDataProvider::createProvider()
     case Type::None:
         std::abort();
     case Type::TestsLocal:
+#ifdef POINTLESS_ENABLE_TESTS
         return std::make_unique<TestLocalDataProvider>(context.localFilePath);
+#else
+        std::abort();
+#endif
     case Type::TestSupabase:
+#ifdef POINTLESS_ENABLE_TESTS
         return std::make_unique<TestSupabaseProvider>();
+#else
+        std::abort();
+#endif
     case Type::Supabase:
         return SupabaseProvider::createDefault();
     }

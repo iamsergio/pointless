@@ -55,7 +55,7 @@ TEST(LocalDataTest, LoadFromEnvVar)
     auto result = localData.loadDataFromFile();
     ASSERT_TRUE(result.has_value());
 
-    const Data &data = localData.getData();
+    const Data &data = localData.data();
     EXPECT_EQ(data.tagCount(), 3);
     EXPECT_GT(data.taskCount(), 0);
 
@@ -89,7 +89,7 @@ TEST(LocalDataTest, ClearServerSyncBits)
 
     localData.clearServerSyncBits();
 
-    const Data &clearedData = localData.getData();
+    const Data &clearedData = localData.data();
     auto tasks = clearedData.getAllTasks();
     ASSERT_EQ(tasks.size(), 1);
     EXPECT_EQ(tasks[0].revision, 0);
