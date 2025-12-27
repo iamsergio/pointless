@@ -77,9 +77,10 @@ std::expected<core::Data, std::string> DataController::sync(const std::optional<
     if (localData.revision() == -1 && localData.isEmpty()) {
         // 2. Local data is empty, use remote data.
         _localData = core::LocalData();
-        _localData.setData(remoteData);
-        if (!_localData.save()) {
-            return std::unexpected("DataController::sync: Failed to save local data");
+
+        auto saveResult = _localData.setDataAndSave(remoteData);
+        if (!saveResult) {
+            return std::unexpected("DataController::sync: Failed to save local data: " + saveResult.error());
         }
         P_LOG_DEBUG("Local data was empty, replaced with remote data");
         return remoteData;
@@ -87,7 +88,7 @@ std::expected<core::Data, std::string> DataController::sync(const std::optional<
 
     if (localData.revision() > remoteData.revision()) {
         // 3. Doesn't happen, local data never increments revision
-        P_LOG_ERROR("sync(): Incoming has higher revision! incoming.rev={} ; remoteData.rev={}", localData.revision(), remoteData.revision());
+        P_LOG_WARNING("sync(): Incoming has higher revision! incoming.rev={} ; remoteData.rev={}", localData.revision(), remoteData.revision());
         return remoteData;
     }
 
