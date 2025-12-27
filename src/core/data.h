@@ -51,6 +51,8 @@ public:
     [[nodiscard]] std::vector<Tag> allTags() const;
     void clearTags();
     [[nodiscard]] size_t tagCount() const;
+    [[nodiscard]] std::vector<Tag> newTags() const;
+    [[nodiscard]] bool containsTag(const std::string &tagName) const;
 
     [[nodiscard]] std::vector<Tag> getUsedTags() const;
     [[nodiscard]] std::vector<Tag> getUnusedTags() const;

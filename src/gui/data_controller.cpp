@@ -73,7 +73,7 @@ std::expected<core::Data, std::string> DataController::sync(const std::optional<
         return localData;
     }
 
-    const core::Data &remoteData = *remoteDataOpt;
+    core::Data remoteData = *remoteDataOpt;
     if (localData.revision() == -1 && localData.isEmpty()) {
         // 2. Local data is empty, use remote data.
         _localData = core::LocalData();
@@ -90,6 +90,28 @@ std::expected<core::Data, std::string> DataController::sync(const std::optional<
         // 3. Doesn't happen, local data never increments revision
         P_LOG_WARNING("sync(): Incoming has higher revision! incoming.rev={} ; remoteData.rev={}", localData.revision(), remoteData.revision());
         return remoteData;
+    }
+
+    // 4. Add new tags
+    bool needsSave = false;
+    auto newTags = localData.newTags();
+    for (const auto &newLocalTag : newTags) {
+        const auto tagName = newLocalTag.name;
+        if (!remoteData.containsTag(tagName)) {
+            core::Tag newTag;
+            newTag.name = tagName;
+            newTag.revision = 0;
+            remoteData.addTag(newTag);
+            needsSave = true;
+            P_LOG_DEBUG("Added new tag '{}' to remote data", tagName);
+        }
+    }
+
+    if (needsSave) {
+        auto saveResult = _localData.setDataAndSave(remoteData);
+        if (!saveResult) {
+            return std::unexpected("DataController::sync: Failed to save local data: " + saveResult.error());
+        }
     }
 
     P_LOG_DEBUG("Merging local and remote data");

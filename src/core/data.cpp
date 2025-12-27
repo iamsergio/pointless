@@ -150,6 +150,23 @@ std::vector<Tag> Data::allTags() const
     return _data.tags;
 }
 
+bool Data::containsTag(const std::string &tagName) const
+{
+    return findTagByName(tagName) != _data.tags.end();
+}
+
+std::vector<Tag> Data::newTags() const
+{
+    std::vector<Tag> result;
+    result.reserve(_data.tags.size());
+
+    std::ranges::copy_if(_data.tags, std::back_inserter(result), [](const Tag &tag) {
+        return tag.revision == -1;
+    });
+
+    return result;
+}
+
 void Data::clearTags()
 {
     _data.tags.clear();
