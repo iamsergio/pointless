@@ -19,6 +19,11 @@ public:
     [[nodiscard]] std::expected<std::monostate, std::string> loadDataFromFile();
     [[nodiscard]] std::expected<Data, std::string> loadDataFromFile(const std::string &filename) const;
 
+    [[nodiscard]] const Data &getData() const
+    {
+        return _data;
+    }
+
 private:
     [[nodiscard]] std::string getDataFilePath() const;
     std::string _dataDir;
