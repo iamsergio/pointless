@@ -48,14 +48,20 @@ public:
     void addTag(const Tag &tag);
     bool removeTag(const std::string &tagName);
     [[nodiscard]] std::optional<Tag> getTag(const std::string &tagName) const;
-    [[nodiscard]] std::vector<Tag> getAllTags() const;
+    [[nodiscard]] std::vector<Tag> allTags() const;
     void clearTags();
     [[nodiscard]] size_t tagCount() const;
 
-    // Utility methods
-    [[nodiscard]] std::vector<Tag> getUsedTags() const; // Tags that are used by at least one task
-    [[nodiscard]] std::vector<Tag> getUnusedTags() const; // Tags that are not used by any task
+    [[nodiscard]] std::vector<Tag> getUsedTags() const;
+    [[nodiscard]] std::vector<Tag> getUnusedTags() const;
     void removeUnusedTags();
+
+    // Deleted items management
+    void addDeletedTaskUuid(const std::string &uuid);
+    [[nodiscard]] const std::vector<std::string> &deletedTaskUuids() const;
+
+    void addDeletedTagName(const std::string &tagName);
+    [[nodiscard]] const std::vector<std::string> &deletedTagNames() const;
 
     void clearServerSyncBits();
     void setRevision(int revision);

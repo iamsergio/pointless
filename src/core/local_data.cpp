@@ -82,6 +82,4 @@ std::string LocalData::getDataFilePath() const
 void LocalData::clearServerSyncBits()
 {
     _data.clearServerSyncBits();
-    _deletedTags.clear();
-    _deletedTasks.clear();
 }

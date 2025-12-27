@@ -145,7 +145,7 @@ std::optional<Tag> Data::getTag(const std::string &tagName) const
     return std::nullopt;
 }
 
-std::vector<Tag> Data::getAllTags() const
+std::vector<Tag> Data::allTags() const
 {
     return _data.tags;
 }
@@ -205,6 +205,27 @@ void Data::removeUnusedTags()
         removeTag(tag.name);
     }
 }
+
+void Data::addDeletedTaskUuid(const std::string &uuid)
+{
+    _data.deletedTaskUuids.push_back(uuid);
+}
+
+const std::vector<std::string> &Data::deletedTaskUuids() const
+{
+    return _data.deletedTaskUuids;
+}
+
+void Data::addDeletedTagName(const std::string &tagName)
+{
+    _data.deletedTagNames.push_back(tagName);
+}
+
+const std::vector<std::string> &Data::deletedTagNames() const
+{
+    return _data.deletedTagNames;
+}
+
 
 std::expected<Data, std::string> Data::fromJson(const std::string &json_str)
 {
@@ -272,6 +293,9 @@ void Data::clearServerSyncBits()
             tag.revision = 0;
         tag.needsSyncToServer = false;
     }
+
+    _data.deletedTagNames.clear();
+    _data.deletedTaskUuids.clear();
 }
 
 void Data::setRevision(int revision)

@@ -95,7 +95,7 @@ TEST(LocalDataTest, ClearServerSyncBits)
     EXPECT_EQ(tasks[0].revision, 0);
     EXPECT_FALSE(tasks[0].needsSyncToServer);
 
-    auto tags = clearedData.getAllTags();
+    auto tags = clearedData.allTags();
     ASSERT_EQ(tags.size(), 1);
     EXPECT_EQ(tags[0].revision, 0);
     EXPECT_FALSE(tags[0].needsSyncToServer);

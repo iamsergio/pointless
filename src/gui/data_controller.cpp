@@ -65,6 +65,9 @@ std::expected<core::Data, std::string> DataController::sync(const std::optional<
         // #1. There's no remote data. Reset revision and use local data.
         localData.setRevision(0);
         localData.clearServerSyncBits();
+        if (!_localData.save()) {
+            return std::unexpected("DataController::sync: Failed to save local data");
+        }
         return localData;
     }
 

@@ -72,7 +72,7 @@ void GuiController::refresh()
 
     core::Data &data = refreshResult.value();
     _taskModel->setTasks(data.getAllTasks());
-    _tagModel->setTags(data.getAllTags());
+    _tagModel->setTags(data.allTags());
 }
 
 TaskFilterModel *GuiController::taskFilterModel() const

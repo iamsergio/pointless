@@ -33,22 +33,22 @@ public:
 
     void addDeletedTag(const std::string &tag)
     {
-        _deletedTags.push_back(tag);
+        _data.addDeletedTagName(tag);
     }
 
     void addDeletedTask(const std::string &uuid)
     {
-        _deletedTasks.push_back(uuid);
+        _data.addDeletedTaskUuid(uuid);
     }
 
     [[nodiscard]] const std::vector<std::string> &deletedTags() const
     {
-        return _deletedTags;
+        return _data.deletedTagNames();
     }
 
     [[nodiscard]] const std::vector<std::string> &deletedTasks() const
     {
-        return _deletedTasks;
+        return _data.deletedTaskUuids();
     }
 
     void clearServerSyncBits();
@@ -57,8 +57,6 @@ private:
     [[nodiscard]] std::string getDataFilePath() const;
     std::string _dataDir;
     Data _data;
-    std::vector<std::string> _deletedTags;
-    std::vector<std::string> _deletedTasks;
 };
 
 }
