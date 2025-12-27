@@ -32,10 +32,10 @@
       "*.code-workspace.template": "json"
     },
     "files.exclude": {
-      "**/3rdparty/vcpkg": true
+      "**/3rdparty": true
     },
     "search.exclude": {
-      "**/3rdparty/vcpkg": true
+      "**/3rdparty": true
     },
     "qt-qml.qmlls.customExePath": "/pub_data/installed/Qt/6.10.0/gcc_64/bin/qmlls",
     "qt-qml.qmlls.verboseOutput": true,
