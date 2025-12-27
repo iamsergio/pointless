@@ -40,6 +40,7 @@ TEST(DataControllerTest, Sync)
     pointless::core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
     DataController controller;
 
+    //-----------------------------------------------------------------------
     // #2: local data doesn't exist, remote data exists -> use remote data
     core::Data remoteData;
     core::Tag tag1;
@@ -56,6 +57,15 @@ TEST(DataControllerTest, Sync)
     ASSERT_EQ(controller._localData.data().allTags().size(), 1);
     EXPECT_EQ(controller._localData.data().allTags().at(0).name, "tag1");
     EXPECT_EQ(controller._localData.data().allTags().at(0).revision, 1);
+    ASSERT_EQ(controller._localData.data().taskCount(), 0);
 
+    //-----------------------------------------------------------------------
+    // #1: remote data doesn't exist, local data exists -> use local data, reset revision
+    controller._localData.data().setRevision(42);
+    ASSERT_TRUE(controller.sync({}).has_value());
+    EXPECT_EQ(controller._localData.data().revision(), 0);
+    ASSERT_EQ(controller._localData.data().allTags().size(), 1);
+    EXPECT_EQ(controller._localData.data().allTags().at(0).name, "tag1");
+    EXPECT_EQ(controller._localData.data().allTags().at(0).revision, 1);
     ASSERT_EQ(controller._localData.data().taskCount(), 0);
 }
