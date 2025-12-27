@@ -68,10 +68,21 @@ std::expected<core::Data, std::string> DataController::sync(const std::optional<
         if (!_localData.save()) {
             return std::unexpected("DataController::sync: Failed to save local data");
         }
+        P_LOG_DEBUG("No remote data, using local data");
         return localData;
     }
 
     const core::Data &remoteData = *remoteDataOpt;
+    if (localData.revision() == -1 && localData.isEmpty()) {
+        // 2. Local data is empty, use remote data.
+        _localData = core::LocalData();
+        _localData.setData(remoteData);
+        if (!_localData.save()) {
+            return std::unexpected("DataController::sync: Failed to save local data");
+        }
+        P_LOG_DEBUG("Local data was empty, replaced with remote data");
+        return remoteData;
+    }
 
     return remoteData;
 }

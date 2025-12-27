@@ -308,4 +308,9 @@ int Data::revision() const
     return _data.revision;
 }
 
-} // namespace pointless::core
+bool Data::isEmpty() const
+{
+    return _data.tasks.empty();
+}
+
+}
