@@ -26,6 +26,10 @@ std::expected<pointless::core::Data, std::string> LocalData::loadDataFromFile() 
 
 std::expected<pointless::core::Data, std::string> LocalData::loadDataFromFile(const std::string &filename) const
 {
+    if (!std::filesystem::exists(filename)) {
+        return Data {};
+    }
+
     std::ifstream file(filename);
     if (!file) {
         return std::unexpected("Failed to open file: " + filename);
