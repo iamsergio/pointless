@@ -2,23 +2,16 @@
 // SPDX-License-Identifier: MIT
 
 #include "local_data.h"
+#include "context.h"
 
 #include <filesystem>
 #include <fstream>
-#include <stdexcept>
 #include <cstdlib>
 
+using namespace pointless;
 using namespace pointless::core;
 
-LocalData::LocalData()
-{
-    const char *envVar = std::getenv("POINTLESS_CLIENT_DATA_DIR");
-    if (envVar == nullptr) {
-        throw std::runtime_error("POINTLESS_CLIENT_DATA_DIR environment variable is not set");
-    }
-
-    _dataDir = envVar;
-}
+LocalData::LocalData() = default;
 
 std::expected<std::monostate, std::string> LocalData::loadDataFromFile()
 {
@@ -76,7 +69,7 @@ std::expected<std::monostate, std::string> LocalData::save() const
 
 std::string LocalData::getDataFilePath() const
 {
-    return std::filesystem::path(_dataDir) / "pointless.json";
+    return core::Context::self().localFilePath();
 }
 
 void LocalData::clearServerSyncBits()

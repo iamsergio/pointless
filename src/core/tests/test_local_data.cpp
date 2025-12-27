@@ -3,17 +3,17 @@
 
 #include "local_data.h"
 #include "data.h"
+#include "context.h"
 
 #include <gtest/gtest.h>
 
 #include <filesystem>
-#include <cstdlib>
 
 using namespace pointless::core;
 
 TEST(LocalDataTest, LoadExistingFile)
 {
-    setenv("POINTLESS_CLIENT_DATA_DIR", "/tmp", 1);
+    Context::setContext(Context(IDataProvider::Type::TestsLocal, "/tmp/pointless.json"));
     LocalData localData;
     std::filesystem::path testFile = std::filesystem::path(__FILE__).parent_path() / "test.json";
     auto result = localData.loadDataFromFile(testFile.string());
@@ -27,7 +27,7 @@ TEST(LocalDataTest, LoadExistingFile)
 
 TEST(LocalDataTest, LoadNonExistentFile)
 {
-    setenv("POINTLESS_CLIENT_DATA_DIR", "/tmp", 1);
+    Context::setContext(Context(IDataProvider::Type::TestsLocal, "/tmp/pointless.json"));
     LocalData localData;
     auto result = localData.loadDataFromFile("non_existent_file.json");
     ASSERT_TRUE(result.has_value());
@@ -49,7 +49,7 @@ TEST(LocalDataTest, LoadFromEnvVar)
     std::filesystem::copy_file(sourceFile, destFile, std::filesystem::copy_options::overwrite_existing);
 
     // Set environment variable
-    setenv("POINTLESS_CLIENT_DATA_DIR", tempDir.c_str(), 1);
+    Context::setContext(Context(IDataProvider::Type::TestsLocal, tempDir / "pointless.json"));
 
     LocalData localData;
     auto result = localData.loadDataFromFile();
@@ -65,7 +65,7 @@ TEST(LocalDataTest, LoadFromEnvVar)
 
 TEST(LocalDataTest, ClearServerSyncBits)
 {
-    setenv("POINTLESS_CLIENT_DATA_DIR", "/tmp", 1);
+    Context::setContext(Context(IDataProvider::Type::TestsLocal, "/tmp/pointless.json"));
     LocalData localData;
     Data data;
 
@@ -111,7 +111,7 @@ TEST(LocalDataTest, SaveData)
     std::filesystem::create_directories(tempDir);
 
     // Set environment variable
-    setenv("POINTLESS_CLIENT_DATA_DIR", tempDir.c_str(), 1);
+    Context::setContext(Context(IDataProvider::Type::TestsLocal, tempDir / "pointless.json"));
 
     LocalData localData;
     Data data;

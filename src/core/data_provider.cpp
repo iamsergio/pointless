@@ -11,12 +11,12 @@ std::unique_ptr<IDataProvider> IDataProvider::createProvider()
 {
     const auto &context = pointless::core::Context::self();
 
-    switch (context.dataProviderType) {
+    switch (context.dataProviderType()) {
     case Type::None:
         std::abort();
     case Type::TestsLocal:
 #ifdef POINTLESS_ENABLE_TESTS
-        return std::make_unique<TestLocalDataProvider>(context.localFilePath);
+        return std::make_unique<TestLocalDataProvider>(context.localFilePath());
 #else
         std::abort();
 #endif

@@ -17,6 +17,7 @@
 #include <Spix/QtQmlBot.h>
 #include <Spix/Data/ItemPath.h>
 
+using namespace pointless;
 
 static int g_argc;
 static char **g_argv;
@@ -164,16 +165,10 @@ void initDataProvider(IDataProvider::Type providerType)
 {
     Gui::Clock::setTestNow(QDateTime(QDate(2025, 12, 1), QTime(16, 0)));
 
-    pointless::core::Context context;
-
     if (providerType == IDataProvider::Type::TestsLocal) {
-        context.dataProviderType = IDataProvider::Type::TestsLocal;
-        context.localFilePath = testDataPath;
-        pointless::core::Context::setContext(context);
+        core::Context::setContext({ IDataProvider::Type::TestsLocal, testDataPath });
     } else if (providerType == IDataProvider::Type::TestSupabase) {
-        context.dataProviderType = IDataProvider::Type::TestSupabase;
-        pointless::core::Context::setContext(context);
-
+        core::Context::setContext(core::Context::defaultContextForSupabaseTesting());
         auto provider = IDataProvider::createProvider();
         if (!provider->loginWithDefaults()) {
             P_LOG_CRITICAL("Failed to login to Supabase for test initialization");

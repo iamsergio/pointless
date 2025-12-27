@@ -38,3 +38,20 @@ public:
 private:
     static std::unique_ptr<IDataProvider> s_provider;
 };
+
+
+inline std::string_view enumToString(IDataProvider::Type type)
+{
+    switch (type) {
+    case IDataProvider::Type::None:
+        return "None";
+    case IDataProvider::Type::TestsLocal:
+        return "TestsLocal";
+    case IDataProvider::Type::Supabase:
+        return "Supabase";
+    case IDataProvider::Type::TestSupabase:
+        return "TestSupabase";
+    }
+
+    std::abort();
+}

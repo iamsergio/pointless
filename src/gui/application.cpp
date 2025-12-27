@@ -14,7 +14,6 @@
 #include <QQuickStyle>
 
 #include <cstdlib>
-#include <memory>
 
 using namespace pointless;
 
@@ -34,10 +33,15 @@ Application::Application(int &argc, char **argv)
 
     parser.process(*this);
 
-    if (parser.isSet(testSupabaseOption)) {
-        pointless::core::Context context;
-        context.dataProviderType = IDataProvider::Type::TestSupabase;
-        pointless::core::Context::setContext(context);
+    if (qEnvironmentVariableIsSet("VERBOSE")) {
+        P_LOG_INFO("VERBOSE environment variable is set, using debug log level");
+        Logger::getLogger()->set_log_level(quill::LogLevel::Debug);
+    }
+
+    // Context might have been set already in tests
+    if (!core::Context::hasContext()) {
+        core::Context::setContext(parser.isSet(testSupabaseOption) ? core::Context::defaultContextForSupabaseTesting()
+                                                                   : core::Context::defaultContextForSupabaseRelease());
     }
 
     QQuickStyle::setStyle(QStringLiteral("Fusion"));
@@ -47,10 +51,5 @@ Application::Application(int &argc, char **argv)
     if (_engine.rootObjects().isEmpty()) {
         P_LOG_ERROR("No root objects loaded");
         std::exit(-1);
-    }
-
-    if (qEnvironmentVariableIsSet("VERBOSE")) {
-        P_LOG_INFO("VERBOSE environment variable is set, using debug log level");
-        Logger::getLogger()->set_log_level(quill::LogLevel::Debug);
     }
 }

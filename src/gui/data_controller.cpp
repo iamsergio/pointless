@@ -49,6 +49,7 @@ std::expected<pointless::core::Data, std::string> DataController::pullRemoteData
 
 std::expected<pointless::core::Data, std::string> DataController::refresh()
 {
+    P_LOG_DEBUG("Starting refresh");
     auto localDataResult = _localData.loadDataFromFile();
     if (!localDataResult) {
         return std::unexpected("DataController::refresh: Failed to load local data: " + localDataResult.error());
@@ -84,5 +85,6 @@ std::expected<core::Data, std::string> DataController::sync(const std::optional<
         return remoteData;
     }
 
+    P_LOG_DEBUG("Merging local and remote data");
     return remoteData;
 }
