@@ -89,7 +89,7 @@
         "clang-tidy"
       ],
       "cacheVariables": {
-        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--warnings-as-errors=*"
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy-20;--warnings-as-errors=*"
       }
     },
     {
