@@ -19,6 +19,7 @@ path = [
     ".clangd",
     ".clang-tidy",
     "src/gui/tests/.clang-tidy",
+    "src/core/tests/.clang-tidy",
     ".cmake-format.yaml",
     "TODO",
     ".github/dependabot.yml",
