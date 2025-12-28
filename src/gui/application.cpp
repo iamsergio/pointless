@@ -33,10 +33,7 @@ Application::Application(int &argc, char **argv)
 
     parser.process(*this);
 
-    if (qEnvironmentVariableIsSet("VERBOSE")) {
-        P_LOG_INFO("VERBOSE environment variable is set, using debug log level");
-        Logger::getLogger()->set_log_level(quill::LogLevel::Debug);
-    }
+    Logger::initLogLevel();
 
     // Context might have been set already in tests
     if (!core::Context::hasContext()) {

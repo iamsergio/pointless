@@ -3,6 +3,7 @@
 
 #include "local_data.h"
 #include "context.h"
+#include "logger.h"
 
 #include <filesystem>
 #include <fstream>
@@ -70,7 +71,7 @@ std::expected<std::monostate, std::string> LocalData::save() const
 
 std::expected<std::monostate, std::string> LocalData::setDataAndSave(const Data &data)
 {
-    _data = data;
+    setData(data);
     return save();
 }
 
@@ -82,4 +83,10 @@ std::string LocalData::getDataFilePath() const
 void LocalData::clearServerSyncBits()
 {
     _data.clearServerSyncBits();
+}
+
+void LocalData::setData(const Data &data)
+{
+    _data = data;
+    P_LOG_DEBUG("Set new data");
 }

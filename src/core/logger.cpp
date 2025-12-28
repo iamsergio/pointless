@@ -24,3 +24,11 @@ quill::Logger *Logger::getLogger()
     }
     return s_logger;
 }
+
+void Logger::initLogLevel()
+{
+    if (std::getenv("VERBOSE") != nullptr) {
+        P_LOG_INFO("VERBOSE environment variable is set, using debug log level");
+        Logger::getLogger()->set_log_level(quill::LogLevel::Debug);
+    }
+}

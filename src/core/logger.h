@@ -13,6 +13,7 @@ class Logger
 public:
     static void initialize();
     static quill::Logger *getLogger();
+    static void initLogLevel();
 
 private:
     static quill::Logger *s_logger;

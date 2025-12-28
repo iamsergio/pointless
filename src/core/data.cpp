@@ -354,4 +354,9 @@ bool Data::isEmpty() const
     return _data.tasks.empty() && _data.tags.empty();
 }
 
+bool Data::isValid() const
+{
+    return revision() != -1 || !isEmpty();
+}
+
 }

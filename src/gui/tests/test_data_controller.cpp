@@ -4,6 +4,7 @@
 #include "gui/data_controller.h"
 #include "core/context.h"
 #include "core/data_provider.h"
+#include "core/logger.h"
 
 #include <gtest/gtest.h>
 
@@ -15,8 +16,9 @@ constexpr const char *s_filename = "/tmp/pointless_test_data_controller_sync.jso
 
 /// Sets the data locally and remotely before we start the test
 void initData(DataController &controller, std::optional<core::Data> localData, const core::Data &remoteData)
-
 {
+    Logger::initLogLevel();
+
     ASSERT_TRUE(controller.loginWithDefaults());
 
     std::filesystem::remove(s_filename);
@@ -30,14 +32,15 @@ void initData(DataController &controller, std::optional<core::Data> localData, c
 
 TEST(DataControllerTest, ConstructDestroy)
 {
-    pointless::core::Context::setContext({ IDataProvider::Type::TestSupabase, "/tmp/nonexistent_file.json" });
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, "/tmp/nonexistent_file.json" });
     DataController controller;
 }
 
 // DataController::sync() tests
 TEST(DataControllerTest, Sync)
 {
-    pointless::core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+    Logger::initLogLevel();
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
     DataController controller;
 
     //-----------------------------------------------------------------------
@@ -92,9 +95,16 @@ TEST(DataControllerTest, Sync)
     ASSERT_EQ(syncResult->tagCount(), 1);
     EXPECT_EQ(syncResult->tagAt(0).name, "newTag");
 
+    auto pullResult = controller.pullRemoteData();
+    ASSERT_TRUE(pullResult.has_value());
+    ASSERT_EQ(pullResult->tagCount(), 1);
+    EXPECT_EQ(pullResult->tagAt(0).name, "newTag");
+    EXPECT_EQ(pullResult->tagAt(0).revision, 0);
+
     //-----------------------------------------------------------------------
     // #5: local data has tasks (with rev -1), remote doesn't have the task. after sync, local data task should have revision 0. Then do a pull data to check the remote has the task
     core::Data localDataWithNewTask;
+
     core::Task newTask;
     newTask.uuid = "uuid-task-5";
     newTask.title = "newTask";
@@ -102,6 +112,7 @@ TEST(DataControllerTest, Sync)
     localDataWithNewTask.addTask(newTask);
 
     core::Data remoteDataEmptyTasks;
+    EXPECT_EQ(remoteDataEmptyTasks.revision(), -1);
 
     initData(controller, localDataWithNewTask, remoteDataEmptyTasks);
 
@@ -116,4 +127,30 @@ TEST(DataControllerTest, Sync)
 
     ASSERT_EQ(syncResultTasks->taskCount(), 1);
     EXPECT_EQ(syncResultTasks->taskAt(0).title, "newTask");
+
+    pullResult = controller.pullRemoteData();
+    ASSERT_TRUE(pullResult.has_value());
+    ASSERT_EQ(pullResult->taskCount(), 1);
+    EXPECT_EQ(pullResult->taskAt(0).title, "newTask");
+    EXPECT_EQ(pullResult->taskAt(0).revision, 0);
+
+    //-----------------------------------------------------------------------
+    // #: Test revisions were updated when pushing to remote
+    EXPECT_EQ(pullResult->revision(), 1);
+    EXPECT_EQ(syncResultTasks->revision(), 1);
+
+    //-----------------------------------------------------------------------
+    // #: Test revisions were updated when pushing to remote, again
+    core::Task anotherTask;
+    anotherTask.uuid = "uuid-task-6";
+    anotherTask.title = "anotherTask";
+    anotherTask.revision = -1;
+    controller._localData.data().addTask(anotherTask);
+    EXPECT_EQ(controller._localData.data().newTasks().size(), 1);
+
+    auto syncResult2 = controller.refresh();
+    ASSERT_TRUE(syncResult2.has_value());
+    EXPECT_EQ(syncResult2->revision(), 2);
+
+    //-----------------------------------------------------------------------
 }

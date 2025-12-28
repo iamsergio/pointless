@@ -20,7 +20,7 @@ bool DataController::loginWithDefaults()
     return _dataProvider && _dataProvider->loginWithDefaults();
 }
 
-std::expected<pointless::core::Data, std::string> DataController::pullRemoteData()
+std::expected<core::Data, std::string> DataController::pullRemoteData()
 {
     if (!_dataProvider->isAuthenticated()) {
         return std::unexpected("DataController::refresh: Not authenticated");
@@ -50,8 +50,11 @@ std::expected<pointless::core::Data, std::string> DataController::pullRemoteData
     return result;
 }
 
-std::expected<std::monostate, std::string> DataController::pushRemoteData(const pointless::core::Data &data)
+std::expected<core::Data, std::string> DataController::pushRemoteData(core::Data data)
 {
+    data.clearServerSyncBits();
+    data.setRevision(data.revision() + 1);
+
     if (!_dataProvider->isAuthenticated()) {
         return std::unexpected("DataController::refresh: Not authenticated");
     }
@@ -61,19 +64,25 @@ std::expected<std::monostate, std::string> DataController::pushRemoteData(const 
         return std::unexpected("DataController::pushRemoteData: Failed to serialize data to JSON: " + jsonStrResult.error());
     }
 
-    if (!_dataProvider->pushData(jsonStrResult.value())) {
+    const auto &jsonStr = jsonStrResult.value();
+    if (!_dataProvider->pushData(jsonStr)) {
         return std::unexpected("DataController::pushRemoteData: Failed to push data to remote");
     }
 
-    return std::monostate {};
+    P_LOG_INFO("Data pushed to remote successfully {} bytes", jsonStr.size());
+    return data;
 }
 
-std::expected<pointless::core::Data, std::string> DataController::refresh()
+std::expected<core::Data, std::string> DataController::refresh()
 {
     P_LOG_DEBUG("Starting refresh");
-    auto localDataResult = _localData.loadDataFromFile();
-    if (!localDataResult) {
-        return std::unexpected("DataController::refresh: Failed to load local data: " + localDataResult.error());
+    if (!_localData.data().isValid()) {
+        // The 1st time we load local data. then it stays in memory and we don't load from disk again
+        // we just save to disk
+        auto localDataResult = _localData.loadDataFromFile();
+        if (!localDataResult) {
+            return std::unexpected("DataController::refresh: Failed to load local data: " + localDataResult.error());
+        }
     }
 
     auto remoteDataResult = pullRemoteData();
@@ -83,7 +92,19 @@ std::expected<pointless::core::Data, std::string> DataController::refresh()
     }
 
     auto mergedData = *mergedResult;
-    if (mergedData.needsLocalSave) {
+
+    const bool needsLocalSave = mergedData.needsLocalSave; // since it's overwritten by push
+
+    if (mergedData.needsUpload) {
+        auto pushResult = pushRemoteData(mergedData);
+        if (pushResult) {
+            mergedData = *pushResult;
+        } else {
+            return std::unexpected("DataController::sync: Failed to push remote data: " + pushResult.error());
+        }
+    }
+
+    if (needsLocalSave) {
         auto saveResult = _localData.setDataAndSave(mergedData);
         if (!saveResult) {
             return std::unexpected("DataController::sync: Failed to save local data: " + saveResult.error());

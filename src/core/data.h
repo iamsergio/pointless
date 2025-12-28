@@ -75,6 +75,7 @@ public:
     static std::expected<Data, std::string> fromJson(const std::string &json_str);
     [[nodiscard]] std::expected<std::string, std::string> toJson() const;
     [[nodiscard]] bool isEmpty() const;
+    [[nodiscard]] bool isValid() const;
 
     DataPayload _data;
     mutable bool needsUpload = false;
