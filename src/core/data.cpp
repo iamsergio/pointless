@@ -167,6 +167,11 @@ std::vector<Tag> Data::newTags() const
     return result;
 }
 
+[[nodiscard]] Tag Data::tagAt(size_t index) const
+{
+    return _data.tags.at(index);
+}
+
 void Data::clearTags()
 {
     _data.tags.clear();
@@ -327,7 +332,7 @@ int Data::revision() const
 
 bool Data::isEmpty() const
 {
-    return _data.tasks.empty();
+    return _data.tasks.empty() && _data.tags.empty();
 }
 
 }

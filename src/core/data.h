@@ -52,6 +52,7 @@ public:
     void clearTags();
     [[nodiscard]] size_t tagCount() const;
     [[nodiscard]] std::vector<Tag> newTags() const;
+    [[nodiscard]] Tag tagAt(size_t index) const;
     [[nodiscard]] bool containsTag(const std::string &tagName) const;
 
     [[nodiscard]] std::vector<Tag> getUsedTags() const;

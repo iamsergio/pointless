@@ -111,7 +111,7 @@ std::expected<core::Data, std::string> DataController::sync(const std::optional<
     }
 
     // 4. Add new tags
-    bool needsSave = false;
+    bool needsLocalSave = false;
     auto newTags = localData.newTags();
     for (const auto &newLocalTag : newTags) {
         const auto tagName = newLocalTag.name;
@@ -120,12 +120,12 @@ std::expected<core::Data, std::string> DataController::sync(const std::optional<
             newTag.name = tagName;
             newTag.revision = 0;
             remoteData.addTag(newTag);
-            needsSave = true;
+            needsLocalSave = true;
             P_LOG_DEBUG("Added new tag '{}' to remote data", tagName);
         }
     }
 
-    if (needsSave) {
+    if (needsLocalSave) {
         auto saveResult = _localData.setDataAndSave(remoteData);
         if (!saveResult) {
             return std::unexpected("DataController::sync: Failed to save local data: " + saveResult.error());

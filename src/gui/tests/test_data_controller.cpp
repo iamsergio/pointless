@@ -54,9 +54,9 @@ TEST(DataControllerTest, Sync)
 
     ASSERT_TRUE(std::filesystem::exists(s_filename));
 
-    ASSERT_EQ(controller._localData.data().allTags().size(), 1);
-    EXPECT_EQ(controller._localData.data().allTags().at(0).name, "tag1");
-    EXPECT_EQ(controller._localData.data().allTags().at(0).revision, 1);
+    ASSERT_EQ(controller._localData.data().tagCount(), 1);
+    EXPECT_EQ(controller._localData.data().tagAt(0).name, "tag1");
+    EXPECT_EQ(controller._localData.data().tagAt(0).revision, 1);
     ASSERT_EQ(controller._localData.data().taskCount(), 0);
 
     //-----------------------------------------------------------------------
@@ -64,8 +64,31 @@ TEST(DataControllerTest, Sync)
     controller._localData.data().setRevision(42);
     ASSERT_TRUE(controller.sync({}).has_value());
     EXPECT_EQ(controller._localData.data().revision(), 0);
-    ASSERT_EQ(controller._localData.data().allTags().size(), 1);
-    EXPECT_EQ(controller._localData.data().allTags().at(0).name, "tag1");
-    EXPECT_EQ(controller._localData.data().allTags().at(0).revision, 1);
+    ASSERT_EQ(controller._localData.data().tagCount(), 1);
+    EXPECT_EQ(controller._localData.data().tagAt(0).name, "tag1");
+    EXPECT_EQ(controller._localData.data().tagAt(0).revision, 1);
     ASSERT_EQ(controller._localData.data().taskCount(), 0);
+
+    //-----------------------------------------------------------------------
+    // #4: local data has tags (with rev -1), remote doesn't have the tag. after sync, local data tag should have revision 0. Then do a pull data to check the remote has the tag
+    core::Data localDataWithNewTag;
+    core::Tag newTag;
+    newTag.name = "newTag";
+    newTag.revision = -1;
+    localDataWithNewTag.addTag(newTag);
+
+    core::Data remoteDataEmpty;
+
+    initData(controller, localDataWithNewTag, remoteDataEmpty);
+
+    auto syncResult = controller.refresh();
+    ASSERT_TRUE(syncResult.has_value());
+
+    // Check local data tag has revision 0
+    ASSERT_EQ(controller._localData.data().tagCount(), 1);
+    EXPECT_EQ(controller._localData.data().tagAt(0).name, "newTag");
+    EXPECT_EQ(controller._localData.data().tagAt(0).revision, 0);
+
+    ASSERT_EQ(syncResult->tagCount(), 1);
+    EXPECT_EQ(syncResult->tagAt(0).name, "newTag");
 }
