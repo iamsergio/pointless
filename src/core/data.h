@@ -36,6 +36,7 @@ public:
     bool updateTask(const Task &task);
     void clearTasks();
     [[nodiscard]] size_t taskCount() const;
+    [[nodiscard]] std::vector<Task> newTasks() const;
 
     // Task filtering methods
     [[nodiscard]] std::vector<Task> getTasksByTag(const std::string &tagName) const;
@@ -43,6 +44,7 @@ public:
     [[nodiscard]] std::vector<Task> getPendingTasks() const;
     [[nodiscard]] std::vector<Task> getImportantTasks() const;
     [[nodiscard]] std::vector<Task> getTasksByParent(const std::string &parentUuid) const;
+    [[nodiscard]] Task taskAt(size_t index) const;
 
     // Tag management methods
     void addTag(const Tag &tag);

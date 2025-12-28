@@ -91,4 +91,29 @@ TEST(DataControllerTest, Sync)
 
     ASSERT_EQ(syncResult->tagCount(), 1);
     EXPECT_EQ(syncResult->tagAt(0).name, "newTag");
+
+    //-----------------------------------------------------------------------
+    // #5: local data has tasks (with rev -1), remote doesn't have the task. after sync, local data task should have revision 0. Then do a pull data to check the remote has the task
+    core::Data localDataWithNewTask;
+    core::Task newTask;
+    newTask.uuid = "uuid-task-5";
+    newTask.title = "newTask";
+    newTask.revision = -1;
+    localDataWithNewTask.addTask(newTask);
+
+    core::Data remoteDataEmptyTasks;
+
+    initData(controller, localDataWithNewTask, remoteDataEmptyTasks);
+
+    auto syncResultTasks = controller.refresh();
+    ASSERT_TRUE(syncResultTasks.has_value());
+
+    // Check local data task has revision 0 now
+    ASSERT_EQ(controller._localData.data().taskCount(), 1);
+    auto localTask = controller._localData.data().taskAt(0);
+    EXPECT_EQ(localTask.title, "newTask");
+    EXPECT_EQ(localTask.revision, 0);
+
+    ASSERT_EQ(syncResultTasks->taskCount(), 1);
+    EXPECT_EQ(syncResultTasks->taskAt(0).title, "newTask");
 }

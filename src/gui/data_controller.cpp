@@ -110,8 +110,9 @@ std::expected<core::Data, std::string> DataController::sync(const std::optional<
         return remoteData;
     }
 
-    // 4. Add new tags
     bool needsLocalSave = false;
+
+    // 4. Add new tags
     auto newTags = localData.newTags();
     for (const auto &newLocalTag : newTags) {
         const auto tagName = newLocalTag.name;
@@ -122,6 +123,18 @@ std::expected<core::Data, std::string> DataController::sync(const std::optional<
             remoteData.addTag(newTag);
             needsLocalSave = true;
             P_LOG_DEBUG("Added new tag '{}' to remote data", tagName);
+        }
+    }
+
+    // 5. Add new tasks
+    auto newTasks = localData.newTasks();
+    for (const auto &newLocalTask : newTasks) {
+        if (!remoteData.getTask(newLocalTask.uuid)) {
+            core::Task newTask = newLocalTask;
+            newTask.revision = 0;
+            remoteData.addTask(newTask);
+            needsLocalSave = true;
+            P_LOG_DEBUG("Added new task '{}' to remote data", newTask.title);
         }
     }
 

@@ -155,6 +155,23 @@ bool Data::containsTag(const std::string &tagName) const
     return findTagByName(tagName) != _data.tags.end();
 }
 
+std::vector<Task> Data::newTasks() const
+{
+    std::vector<Task> result;
+    result.reserve(_data.tasks.size());
+
+    std::ranges::copy_if(_data.tasks, std::back_inserter(result), [](const Task &task) {
+        return task.revision == -1;
+    });
+
+    return result;
+}
+
+Task Data::taskAt(size_t index) const
+{
+    return _data.tasks.at(index);
+}
+
 std::vector<Tag> Data::newTags() const
 {
     std::vector<Tag> result;
