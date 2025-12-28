@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <cstdlib>
 
 class IDataProvider
 {
