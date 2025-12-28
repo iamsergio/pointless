@@ -77,8 +77,8 @@ public:
     [[nodiscard]] bool isEmpty() const;
 
     DataPayload _data;
-    bool needsUpload = false;
-    bool needsLocalSave = false;
+    mutable bool needsUpload = false;
+    mutable bool needsLocalSave = false;
 
 private:
     // Helper methods

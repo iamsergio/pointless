@@ -77,7 +77,20 @@ std::expected<pointless::core::Data, std::string> DataController::refresh()
     }
 
     auto remoteDataResult = pullRemoteData();
-    return merge(remoteDataResult ? std::make_optional(*remoteDataResult) : std::nullopt);
+    auto mergedResult = merge(remoteDataResult ? std::make_optional(*remoteDataResult) : std::nullopt);
+    if (!mergedResult) {
+        return mergedResult;
+    }
+
+    auto mergedData = *mergedResult;
+    if (mergedData.needsLocalSave) {
+        auto saveResult = _localData.setDataAndSave(mergedData);
+        if (!saveResult) {
+            return std::unexpected("DataController::sync: Failed to save local data: " + saveResult.error());
+        }
+    }
+
+    return mergedData;
 }
 
 std::expected<core::Data, std::string> DataController::merge(const std::optional<core::Data> &remoteDataOpt)
@@ -100,23 +113,15 @@ std::expected<core::Data, std::string> DataController::merge(const std::optional
     core::Data remoteData = *remoteDataOpt;
     if (localData.revision() == -1 && localData.isEmpty()) {
         // 2. Local data is empty, use remote data.
-        _localData = core::LocalData();
-
-        auto saveResult = _localData.setDataAndSave(remoteData);
-        if (!saveResult) {
-            return std::unexpected("DataController::sync: Failed to save local data: " + saveResult.error());
-        }
         P_LOG_DEBUG("Local data was empty, replaced with remote data");
+        remoteData.needsLocalSave = true;
         return remoteData;
     }
 
     if (localData.revision() > remoteData.revision()) {
         // 3. Doesn't happen, local data never increments revision
         P_LOG_WARNING("sync(): Incoming has higher revision! incoming.rev={} ; remoteData.rev={}", localData.revision(), remoteData.revision());
-        auto saveResult = _localData.setDataAndSave(remoteData);
-        if (!saveResult) {
-            return std::unexpected("DataController::sync: Failed to save local data: " + saveResult.error());
-        }
+        remoteData.needsLocalSave = true;
         return remoteData;
     }
 
@@ -150,13 +155,6 @@ std::expected<core::Data, std::string> DataController::merge(const std::optional
         }
     }
 
-    if (remoteData.needsLocalSave) {
-        auto saveResult = _localData.setDataAndSave(remoteData);
-        if (!saveResult) {
-            return std::unexpected("DataController::sync: Failed to save local data: " + saveResult.error());
-        }
-    }
-
-    P_LOG_DEBUG("Merging local and remote data");
+    P_LOG_DEBUG("Merged local and remote data");
     return remoteData;
 }

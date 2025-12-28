@@ -64,6 +64,7 @@ std::expected<std::monostate, std::string> LocalData::save() const
         return std::unexpected("Failed to write to file: " + filename);
     }
 
+    _data.needsLocalSave = false;
     return std::monostate {};
 }
 
