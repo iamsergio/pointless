@@ -53,6 +53,11 @@ project(pointless_cpp LANGUAGES CXX)
 
 enable_language(CXX)
 
+if(CMAKE_CXX_CLANG_TIDY)
+  # suppress warnings from build dir, such as vcpkg stuff
+  file(COPY "${CMAKE_SOURCE_DIR}/src/core/tests/.clang-tidy" DESTINATION "${CMAKE_BINARY_DIR}")
+endif()
+
 include(cmake/CompilerFlags.cmake)
 
 set(POINTLESS_VERSION "1.0.0")
