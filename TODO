@@ -7,3 +7,4 @@
 - Use std::expected everywhere
 - Use new DataController
 - return views so we dont allocate
+- nest expecteds

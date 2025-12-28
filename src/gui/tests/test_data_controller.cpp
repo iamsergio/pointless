@@ -62,7 +62,7 @@ TEST(DataControllerTest, Sync)
     //-----------------------------------------------------------------------
     // #1: remote data doesn't exist, local data exists -> use local data, reset revision
     controller._localData.data().setRevision(42);
-    ASSERT_TRUE(controller.sync({}).has_value());
+    ASSERT_TRUE(controller.merge({}).has_value());
     EXPECT_EQ(controller._localData.data().revision(), 0);
     ASSERT_EQ(controller._localData.data().tagCount(), 1);
     EXPECT_EQ(controller._localData.data().tagAt(0).name, "tag1");

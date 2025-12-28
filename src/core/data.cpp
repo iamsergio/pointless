@@ -335,6 +335,8 @@ void Data::clearServerSyncBits()
 
     _data.deletedTagNames.clear();
     _data.deletedTaskUuids.clear();
+    needsUpload = false;
+    needsLocalSave = false;
 }
 
 void Data::setRevision(int revision)

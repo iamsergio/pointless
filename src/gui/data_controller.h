@@ -29,7 +29,7 @@ private:
 #endif
     std::expected<std::monostate, std::string> pushRemoteData(const pointless::core::Data &data);
     std::expected<pointless::core::Data, std::string> pullRemoteData();
-    std::expected<pointless::core::Data, std::string> sync(const std::optional<pointless::core::Data> &remoteData);
+    std::expected<pointless::core::Data, std::string> merge(const std::optional<pointless::core::Data> &remoteData);
     pointless::core::LocalData _localData;
     std::unique_ptr<IDataProvider> _dataProvider;
 };

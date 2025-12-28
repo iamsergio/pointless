@@ -44,6 +44,9 @@ std::expected<pointless::core::Data, std::string> DataController::pullRemoteData
         return std::unexpected("Cannot refresh: failed to parse JSON: " + result.error());
     }
 
+    // in case it got to the server somehow
+    result->clearServerSyncBits();
+
     return result;
 }
 
@@ -74,20 +77,23 @@ std::expected<pointless::core::Data, std::string> DataController::refresh()
     }
 
     auto remoteDataResult = pullRemoteData();
-    return sync(remoteDataResult ? std::make_optional(*remoteDataResult) : std::nullopt);
+    return merge(remoteDataResult ? std::make_optional(*remoteDataResult) : std::nullopt);
 }
 
-std::expected<core::Data, std::string> DataController::sync(const std::optional<core::Data> &remoteDataOpt)
+std::expected<core::Data, std::string> DataController::merge(const std::optional<core::Data> &remoteDataOpt)
 {
     core::Data &localData = _localData.data();
     if (!remoteDataOpt.has_value()) {
         // #1. There's no remote data. Reset revision and use local data.
         localData.setRevision(0);
         localData.clearServerSyncBits();
+        localData.needsUpload = true;
+
         if (!_localData.save()) {
             return std::unexpected("DataController::sync: Failed to save local data");
         }
         P_LOG_DEBUG("No remote data, using local data");
+
         return localData;
     }
 
@@ -107,10 +113,12 @@ std::expected<core::Data, std::string> DataController::sync(const std::optional<
     if (localData.revision() > remoteData.revision()) {
         // 3. Doesn't happen, local data never increments revision
         P_LOG_WARNING("sync(): Incoming has higher revision! incoming.rev={} ; remoteData.rev={}", localData.revision(), remoteData.revision());
+        auto saveResult = _localData.setDataAndSave(remoteData);
+        if (!saveResult) {
+            return std::unexpected("DataController::sync: Failed to save local data: " + saveResult.error());
+        }
         return remoteData;
     }
-
-    bool needsLocalSave = false;
 
     // 4. Add new tags
     auto newTags = localData.newTags();
@@ -120,8 +128,10 @@ std::expected<core::Data, std::string> DataController::sync(const std::optional<
             core::Tag newTag;
             newTag.name = tagName;
             newTag.revision = 0;
+            newTag.needsSyncToServer = false;
             remoteData.addTag(newTag);
-            needsLocalSave = true;
+            remoteData.needsLocalSave = true;
+            remoteData.needsUpload = true;
             P_LOG_DEBUG("Added new tag '{}' to remote data", tagName);
         }
     }
@@ -132,13 +142,15 @@ std::expected<core::Data, std::string> DataController::sync(const std::optional<
         if (!remoteData.getTask(newLocalTask.uuid)) {
             core::Task newTask = newLocalTask;
             newTask.revision = 0;
+            newTask.needsSyncToServer = false;
             remoteData.addTask(newTask);
-            needsLocalSave = true;
+            remoteData.needsLocalSave = true;
+            remoteData.needsUpload = true;
             P_LOG_DEBUG("Added new task '{}' to remote data", newTask.title);
         }
     }
 
-    if (needsLocalSave) {
+    if (remoteData.needsLocalSave) {
         auto saveResult = _localData.setDataAndSave(remoteData);
         if (!saveResult) {
             return std::unexpected("DataController::sync: Failed to save local data: " + saveResult.error());
