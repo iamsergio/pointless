@@ -23,7 +23,7 @@ WeekdayModel::WeekdayModel(QObject *parent)
     for (size_t i = 0; i < _taskModels.size(); ++i) {
         auto *filter = new TaskFilterModel(this);
         _taskModels.at(i) = filter;
-        _taskModels.at(i)->setDateFilter(_mondayDate.addDays(i));
+        _taskModels.at(i)->setDateFilter(_mondayDate.addDays(qint64(i)));
     }
 
     connect(this, &QAbstractListModel::rowsInserted, this, &WeekdayModel::countChanged);
@@ -45,7 +45,7 @@ void WeekdayModel::setMondayDate(QDate date)
     beginResetModel();
     _mondayDate = date;
     for (size_t i = 0; i < _taskModels.size(); ++i) {
-        _taskModels.at(i)->setDateFilter(_mondayDate.addDays(i));
+        _taskModels.at(i)->setDateFilter(_mondayDate.addDays(qint64(i)));
     }
     endResetModel();
     Q_EMIT mondayDateChanged();
