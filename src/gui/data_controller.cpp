@@ -101,12 +101,9 @@ std::expected<core::Data, std::string> DataController::merge(const std::optional
         localData.setRevision(0);
         localData.clearServerSyncBits();
         localData.needsUpload = true;
+        localData.needsLocalSave = true;
 
-        if (!_localData.save()) {
-            return std::unexpected("DataController::sync: Failed to save local data");
-        }
         P_LOG_DEBUG("No remote data, using local data");
-
         return localData;
     }
 
