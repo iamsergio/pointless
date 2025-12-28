@@ -42,8 +42,7 @@ jobs:
         POINTLESS_SUPABASE_ANON_KEY: ${{ secrets.POINTLESS_SUPABASE_ANON_KEY }}
         POINTLESS_USERNAME: ${{ secrets.POINTLESS_USERNAME }}
         POINTLESS_PASSWORD: ${{ secrets.POINTLESS_PASSWORD }}
-      run: cmake --preset=dev
+      run: cmake --preset=ci-clang-tidy
 
-    - name: Run clang-tidy
-      run: |
-        find src -type f \( -name '*.cpp' -o -name '*.cc' -o -name '*.cxx' \) -print0 | xargs -0 -n1 -P"$(nproc)" clang-tidy-20 -p build-dev
+    - name: Build
+      run: cmake --build build-ci-clang-tidy
