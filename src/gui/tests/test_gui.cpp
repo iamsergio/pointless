@@ -197,6 +197,10 @@ void initDataProvider(IDataProvider::Type providerType)
 
 int main(int argc, char **argv)
 {
+    if (!std::getenv("QT_QPA_PLATFORM")) {
+        qputenv("QT_QPA_PLATFORM", "offscreen");
+    }
+
     ::testing::InitGoogleTest(&argc, argv);
 
     IDataProvider::Type providerType = {};
