@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    name: Build (${{ matrix.preset }})
+    name: Build (${{ matrix.preset }} ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
 
     strategy:
