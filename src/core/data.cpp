@@ -173,9 +173,13 @@ std::vector<Task> Data::newTasks() const
 
 std::vector<Task> Data::modifiedTasks() const
 {
-    return _data.tasks
-        | std::views::filter([](const Task &task) { return task.needsSyncToServer; })
-        | std::ranges::to<std::vector>();
+    std::vector<Task> result;
+    result.reserve(_data.tasks.size());
+
+    std::ranges::copy_if(_data.tasks, std::back_inserter(result),
+                         [](const Task &task) { return task.needsSyncToServer; });
+
+    return result;
 }
 
 Task Data::taskAt(size_t index) const
