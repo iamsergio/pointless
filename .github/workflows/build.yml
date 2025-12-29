@@ -42,9 +42,11 @@ jobs:
         sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
 
-    - name: Print gcc version
+    - name: Print gcc/clang version
       if: matrix.os == 'ubuntu-latest'
-      run: gcc --version
+      run: |
+        g++ --version
+        clang++ --version
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
