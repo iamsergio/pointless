@@ -63,14 +63,12 @@
     {
       "name": "dev-tsan",
       "inherits": [
-        "dev",
-        "clang"
+        "dev"
       ],
       "description": "dev-tsan",
       "cacheVariables": {
         "POINTLESS_ENABLE_TSAN": "ON",
-        "VCPKG_TARGET_ARCHITECTURE": "x64",
-        "CMAKE_CXX_COMPILER": "clang++"
+        "VCPKG_TARGET_ARCHITECTURE": "x64"
       }
     },
     {
