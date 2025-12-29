@@ -200,6 +200,24 @@ std::expected<core::Data, std::string> DataController::merge(const std::optional
         }
     }
 
+    // 7. deletedTasks
+    for (const auto &deletedTaskUuid : localData._data.deletedTaskUuids) {
+        if (remoteData.removeTask(deletedTaskUuid)) {
+            remoteData.needsLocalSave = true;
+            remoteData.needsUpload = true;
+            P_LOG_DEBUG("Deleted task '{}' from remote data", deletedTaskUuid);
+        }
+    }
+
+    // 8. deleteTags
+    for (const auto &deletedTagName : localData._data.deletedTagNames) {
+        if (remoteData.removeTag(deletedTagName)) {
+            remoteData.needsLocalSave = true;
+            remoteData.needsUpload = true;
+            P_LOG_DEBUG("Deleted tag '{}' from remote data", deletedTagName);
+        }
+    }
+
     P_LOG_DEBUG("Merged local and remote data");
     return remoteData;
 }
