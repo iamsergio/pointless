@@ -27,10 +27,6 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Print gcc version
-      if: matrix.os == 'ubuntu-latest'
-      run: gcc --version
-
     - name: Install clang
       if: matrix.os == 'ubuntu-latest'
       run: |
@@ -43,6 +39,12 @@ jobs:
       run: |
         sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-20 100
         sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-20 100
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
+
+    - name: Print gcc version
+      if: matrix.os == 'ubuntu-latest'
+      run: gcc --version
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
