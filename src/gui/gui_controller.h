@@ -31,6 +31,7 @@ class GuiController : public QObject
     Q_PROPERTY(bool isVerbose READ isVerbose CONSTANT)
     Q_PROPERTY(bool isEditing READ isEditing WRITE setIsEditing NOTIFY isEditingChanged)
     Q_PROPERTY(QString uuidBeingEdited READ uuidBeingEdited WRITE setUuidBeingEdited NOTIFY uuidBeingEditedChanged)
+    Q_PROPERTY(QString windowTitle READ windowTitle CONSTANT)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     enum class ViewType : uint8_t {
@@ -65,6 +66,8 @@ public:
     void setIsEditing(bool isEditing);
     [[nodiscard]] QString uuidBeingEdited() const;
     void setUuidBeingEdited(const QString &uuid);
+
+    [[nodiscard]] QString windowTitle() const;
 
     Q_INVOKABLE void dumpTaskDebug(const QString &taskUuid) const;
 

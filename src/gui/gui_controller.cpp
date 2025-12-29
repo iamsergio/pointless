@@ -14,6 +14,8 @@
 #include "core/data.h"
 #include "core/logger.h"
 #include "core/task.h"
+#include "core/context.h"
+#include "core/data_provider.h"
 
 #include <QTimer>
 #include <QHash>
@@ -240,4 +242,12 @@ void GuiController::dumpTaskDebug(const QString &taskUuid) const
         return;
     }
     task->dumpDebug();
+}
+
+QString GuiController::windowTitle() const
+{
+    if (core::Context::self().dataProviderType() == IDataProvider::Type::TestSupabase) {
+        return QStringLiteral("Pointless (test user)");
+    }
+    return QStringLiteral("Pointless");
 }

@@ -8,13 +8,14 @@ import QtQuick.Layouts
 ApplicationWindow {
     id: mainWindow
     objectName: "mainWindow"
+
     visible: true
     width: Style.fromPixel(640)
     height: Style.fromPixel(480)
     visibility: GuiController.isMobile ? ApplicationWindow.FullScreen : ApplicationWindow.Windowed
     flags: Qt.Window | Qt.ExpandedClientAreaHint | Qt.NoTitleBarBackgroundHint
 
-    title: "Pointless"
+    title: GuiController.windowTitle
     topPadding: 0
     bottomPadding: 0
 
