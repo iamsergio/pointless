@@ -90,3 +90,21 @@ void LocalData::setData(const Data &data)
     _data = data;
     P_LOG_DEBUG("Set new data");
 }
+
+bool LocalData::removeTask(const std::string &uuid)
+{
+    if (_data.removeTask(uuid)) {
+        _data.addDeletedTaskUuid(uuid);
+        return true;
+    }
+    return false;
+}
+
+bool LocalData::removeTag(const std::string &tagName)
+{
+    if (_data.removeTag(tagName)) {
+        _data.addDeletedTagName(tagName);
+        return true;
+    }
+    return false;
+}

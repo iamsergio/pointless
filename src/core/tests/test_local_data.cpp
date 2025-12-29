@@ -84,8 +84,8 @@ TEST(LocalDataTest, ClearServerSyncBits)
     data.addTag(tag);
 
     localData.setData(data);
-    localData.addDeletedTag("deletedTag1");
-    localData.addDeletedTask("deletedTask1");
+    localData.data().addDeletedTagName("deletedTag1");
+    localData.data().addDeletedTaskUuid("deletedTask1");
 
     localData.clearServerSyncBits();
 

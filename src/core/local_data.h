@@ -30,16 +30,6 @@ public:
 
     [[nodiscard]] std::expected<std::monostate, std::string> setDataAndSave(const Data &data);
 
-    void addDeletedTag(const std::string &tag)
-    {
-        _data.addDeletedTagName(tag);
-    }
-
-    void addDeletedTask(const std::string &uuid)
-    {
-        _data.addDeletedTaskUuid(uuid);
-    }
-
     [[nodiscard]] const std::vector<std::string> &deletedTags() const
     {
         return _data.deletedTagNames();
@@ -49,6 +39,9 @@ public:
     {
         return _data.deletedTaskUuids();
     }
+
+    bool removeTask(const std::string &uuid);
+    bool removeTag(const std::string &tagName);
 
     void clearServerSyncBits();
 

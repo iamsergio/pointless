@@ -138,7 +138,7 @@ std::expected<core::Data, std::string> DataController::merge(const std::optional
 
     if (localData.revision() > remoteData.revision()) {
         // 3. Doesn't happen, local data never increments revision
-        P_LOG_WARNING("sync(): Incoming has higher revision! incoming.rev={} ; remoteData.rev={}", localData.revision(), remoteData.revision());
+        P_LOG_WARNING("sync(): Local has higher revision! local.rev={} ; remote.rev={}", localData.revision(), remoteData.revision());
         remoteData.needsLocalSave = true;
         return remoteData;
     }
@@ -181,11 +181,13 @@ std::expected<core::Data, std::string> DataController::merge(const std::optional
         if (remoteTaskOpt) {
             auto remoteTask = *remoteTaskOpt;
             if (remoteTask.revision == localTask.revision) {
+                // 6.1 task was only changed locally, use the local version
                 remoteData.updateTask(localTask, /*incrementTaskRevision=*/true);
                 remoteData.needsLocalSave = true;
                 remoteData.needsUpload = true;
                 P_LOG_DEBUG("Updated modified task '{}' in remote data", localTask.title);
             } else if (remoteTask.revision > localTask.revision) {
+                // 6.2 task was changed both locally and remotely, merge
                 remoteTask.mergeConflict(localTask);
                 remoteData.updateTask(remoteTask, /*incrementTaskRevision=*/true);
                 remoteData.needsLocalSave = true;

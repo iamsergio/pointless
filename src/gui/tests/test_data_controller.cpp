@@ -25,6 +25,8 @@ void initData(DataController &controller, std::optional<core::Data> localData, c
     if (localData.has_value()) {
         auto saveResult = controller._localData.setDataAndSave(*localData);
         ASSERT_TRUE(saveResult) << "Failed to save local data: " << saveResult.error();
+    } else {
+        controller._localData.setData({});
     }
 
     ASSERT_TRUE(controller.pushRemoteData(remoteData).has_value());
@@ -153,4 +155,61 @@ TEST(DataControllerTest, Sync)
     EXPECT_EQ(syncResult2->revision(), 2);
 
     //-----------------------------------------------------------------------
+    // #7. Test task deleted locally
+    core::Data remoteDataWithTask;
+    core::Task taskToDelete;
+    taskToDelete.uuid = "uuid-task-7";
+    taskToDelete.title = "taskToDelete";
+    taskToDelete.revision = 0;
+    remoteDataWithTask.addTask(taskToDelete);
+    remoteDataWithTask.setRevision(10);
+
+    initData(controller, remoteDataWithTask, remoteDataWithTask);
+
+    auto pullResult7 = controller.pullRemoteData();
+    ASSERT_TRUE(pullResult7.has_value());
+    ASSERT_EQ(pullResult7->taskCount(), 1);
+    EXPECT_EQ(pullResult7->taskAt(0).uuid, "uuid-task-7");
+
+    // Delete task from local data
+    ASSERT_TRUE(controller._localData.removeTask("uuid-task-7"));
+    ASSERT_EQ(controller._localData.data().taskCount(), 0);
+
+    // Call refresh again
+    auto syncResult7 = controller.refresh();
+    ASSERT_TRUE(syncResult7.has_value());
+
+    // Call pull and confirm task was removed
+    pullResult7 = controller.pullRemoteData();
+    ASSERT_TRUE(pullResult7.has_value());
+    EXPECT_EQ(pullResult7->taskCount(), 0);
+
+    //-----------------------------------------------------------------------
+    // #8. Test tag deleted locally
+    core::Data remoteDataWithTag;
+    core::Tag tagToDelete;
+    tagToDelete.name = "tagToDelete";
+    tagToDelete.revision = 0;
+    remoteDataWithTag.addTag(tagToDelete);
+    remoteDataWithTag.setRevision(11);
+
+    initData(controller, remoteDataWithTag, remoteDataWithTag);
+
+    auto pullResult8 = controller.pullRemoteData();
+    ASSERT_TRUE(pullResult8.has_value());
+    ASSERT_EQ(pullResult8->tagCount(), 1);
+    EXPECT_EQ(pullResult8->tagAt(0).name, "tagToDelete");
+
+    // Delete tag from local data
+    ASSERT_TRUE(controller._localData.removeTag("tagToDelete"));
+    ASSERT_EQ(controller._localData.data().tagCount(), 0);
+
+    // Call refresh again
+    auto syncResult8 = controller.refresh();
+    ASSERT_TRUE(syncResult8.has_value());
+
+    // Call pull and confirm tag was removed
+    pullResult8 = controller.pullRemoteData();
+    ASSERT_TRUE(pullResult8.has_value());
+    EXPECT_EQ(pullResult8->tagCount(), 0);
 }
