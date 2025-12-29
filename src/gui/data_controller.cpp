@@ -173,6 +173,33 @@ std::expected<core::Data, std::string> DataController::merge(const std::optional
         }
     }
 
+    // 6. Merge modified tasks
+    auto modifiedTasks = localData.modifiedTasks();
+    for (auto &localTask : modifiedTasks) {
+        auto remoteTaskOpt = remoteData.getTask(localTask.uuid);
+        localTask.needsSyncToServer = false;
+        if (remoteTaskOpt) {
+            auto remoteTask = *remoteTaskOpt;
+            if (remoteTask.revision == localTask.revision) {
+                remoteData.updateTask(localTask, /*incrementTaskRevision=*/true);
+                remoteData.needsLocalSave = true;
+                remoteData.needsUpload = true;
+                P_LOG_DEBUG("Updated modified task '{}' in remote data", localTask.title);
+            } else if (remoteTask.revision > localTask.revision) {
+                remoteTask.mergeConflict(localTask);
+                remoteData.updateTask(remoteTask, /*incrementTaskRevision=*/true);
+                remoteData.needsLocalSave = true;
+                remoteData.needsUpload = true;
+            } else {
+                P_LOG_WARNING("Ignoring local task '{}' with higher revision than remote (local.rev={} ; remote.rev={})",
+                              localTask.uuid, localTask.revision, remoteTask.revision);
+            }
+        } else {
+            // It was deleted by another client, it's fine
+            P_LOG_INFO("Modified task '{}' not found in remote data, skipping", localTask.uuid);
+        }
+    }
+
     P_LOG_DEBUG("Merged local and remote data");
     return remoteData;
 }

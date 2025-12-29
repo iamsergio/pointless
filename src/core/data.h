@@ -33,10 +33,11 @@ public:
     bool removeTask(const std::string &uuid);
     [[nodiscard]] std::optional<Task> getTask(const std::string &uuid) const;
     [[nodiscard]] std::vector<Task> getAllTasks() const;
-    bool updateTask(const Task &task);
+    bool updateTask(const Task &task, bool incrementTaskRevision);
     void clearTasks();
     [[nodiscard]] size_t taskCount() const;
     [[nodiscard]] std::vector<Task> newTasks() const;
+    [[nodiscard]] std::vector<Task> modifiedTasks() const;
 
     // Task filtering methods
     [[nodiscard]] std::vector<Task> getTasksByTag(const std::string &tagName) const;

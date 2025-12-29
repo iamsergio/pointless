@@ -41,11 +41,14 @@ std::vector<Task> Data::getAllTasks() const
     return _data.tasks;
 }
 
-bool Data::updateTask(const Task &task)
+bool Data::updateTask(const Task &task, bool incrementTaskRevision)
 {
     auto it = findTaskByUuid(task.uuid);
     if (it != _data.tasks.end()) {
         *it = task;
+        if (incrementTaskRevision) {
+            it->revision++;
+        }
         return true;
     }
     return false;
@@ -165,6 +168,13 @@ std::vector<Task> Data::newTasks() const
     });
 
     return result;
+}
+
+std::vector<Task> Data::modifiedTasks() const
+{
+    return _data.tasks
+        | std::views::filter([](const Task &task) { return task.needsSyncToServer; })
+        | std::ranges::to<std::vector>();
 }
 
 Task Data::taskAt(size_t index) const
