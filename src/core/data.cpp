@@ -4,6 +4,7 @@
 #include "data.h"
 
 #include <algorithm>
+#include <ranges>
 
 namespace pointless::core {
 
