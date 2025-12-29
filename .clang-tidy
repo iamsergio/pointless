@@ -14,6 +14,7 @@ Checks: >
   -hicpp-braces-around-statements,
   -cppcoreguidelines-owning-memory,
   -readability-function-cognitive-complexity,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
   -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-macro-usage,
   -readability-magic-numbers,

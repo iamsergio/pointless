@@ -81,3 +81,6 @@ if(POINTLESS_ENABLE_TESTS)
   target_include_directories(test_data PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
   add_test(NAME test_data COMMAND test_data)
 endif()
+
+add_executable(supabase_push supabase_push.cpp)
+target_link_libraries(supabase_push PRIVATE pointless_core)
