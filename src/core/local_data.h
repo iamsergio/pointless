@@ -36,7 +36,10 @@ public:
     [[nodiscard]] std::expected<std::monostate, std::string> setDataAndSave(const Data &data);
 
     [[nodiscard]] size_t taskCount() const;
+    [[nodiscard]] const Task &taskAt(size_t index) const;
+    [[nodiscard]] const Task *taskForUuid(const std::string &uuid) const;
     [[nodiscard]] size_t tagCount() const;
+    [[nodiscard]] const Tag &tagAt(size_t index) const;
 
     [[nodiscard]] const std::vector<std::string> &deletedTags() const
     {

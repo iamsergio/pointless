@@ -100,6 +100,21 @@ bool LocalData::removeTask(const std::string &uuid)
     return false;
 }
 
+const Task &LocalData::taskAt(size_t index) const
+{
+    return _data.taskAt(index);
+}
+
+const Task *LocalData::taskForUuid(const std::string &uuid) const
+{
+    return _data.taskForUuid(uuid);
+}
+
+const Tag &LocalData::tagAt(size_t index) const
+{
+    return _data.tagAt(index);
+}
+
 bool LocalData::removeTag(const std::string &tagName)
 {
     if (_data.removeTag(tagName)) {

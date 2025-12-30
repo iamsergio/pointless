@@ -45,7 +45,8 @@ public:
     [[nodiscard]] std::vector<Task> getPendingTasks() const;
     [[nodiscard]] std::vector<Task> getImportantTasks() const;
     [[nodiscard]] std::vector<Task> getTasksByParent(const std::string &parentUuid) const;
-    [[nodiscard]] Task taskAt(size_t index) const;
+    [[nodiscard]] const Task &taskAt(size_t index) const;
+    [[nodiscard]] const Task *taskForUuid(const std::string &uuid) const;
 
     // Tag management methods
     void addTag(const Tag &tag);
@@ -55,7 +56,7 @@ public:
     void clearTags();
     [[nodiscard]] size_t tagCount() const;
     [[nodiscard]] std::vector<Tag> newTags() const;
-    [[nodiscard]] Tag tagAt(size_t index) const;
+    [[nodiscard]] const Tag &tagAt(size_t index) const;
     [[nodiscard]] bool containsTag(const std::string &tagName) const;
 
     [[nodiscard]] std::vector<Tag> getUsedTags() const;

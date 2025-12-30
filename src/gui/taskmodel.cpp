@@ -10,6 +10,8 @@
 #include <QDateTime>
 #include <QString>
 
+using namespace pointless;
+
 TaskModel::TaskModel(QObject *parent)
     : QAbstractListModel(parent)
 {
@@ -36,7 +38,7 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         return {};
     }
 
-    const auto &task = localData().data()._data.tasks[index.row()];
+    const auto &task = localData().taskAt(index.row());
 
     switch (role) {
     case UuidRole:
@@ -112,7 +114,7 @@ void TaskModel::reload()
     emit countChanged();
 }
 
-void TaskModel::addTask(const pointless::core::Task &task)
+void TaskModel::addTask(const core::Task &task)
 {
     const int numTasks = static_cast<int>(localData().taskCount());
     beginInsertRows(QModelIndex(), numTasks, numTasks);
@@ -121,32 +123,25 @@ void TaskModel::addTask(const pointless::core::Task &task)
     emit countChanged();
 }
 
-const pointless::core::Task *TaskModel::taskAt(int row) const
+const core::Task *TaskModel::taskAt(int row) const
 {
     if (row < 0 || row >= static_cast<int>(localData().taskCount())) // NOLINT
         return nullptr;
-    return &localData().data()._data.tasks[row];
+    return &(localData().taskAt(row));
 }
 
-const pointless::core::Task *TaskModel::taskForUuid(const QString &taskUuid) const
+const core::Task *TaskModel::taskForUuid(const QString &taskUuid) const
 {
-    std::string uuidStr = taskUuid.toStdString();
-    const auto &tasks = localData().data()._data.tasks;
-    for (const auto &task : tasks) {
-        if (task.uuid == uuidStr) {
-            return &task;
-        }
-    }
-    return nullptr;
+    return localData().taskForUuid(taskUuid.toStdString());
 }
 
-const pointless::core::LocalData &TaskModel::localData() const
+const core::LocalData &TaskModel::localData() const
 {
     auto *guiController = GuiController::instance();
     return guiController->dataController()->localData();
 }
 
-pointless::core::LocalData &TaskModel::localData()
+core::LocalData &TaskModel::localData()
 {
     auto *guiController = GuiController::instance();
     return guiController->dataController()->localData();

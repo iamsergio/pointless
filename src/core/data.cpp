@@ -182,9 +182,18 @@ std::vector<Task> Data::modifiedTasks() const
     return result;
 }
 
-Task Data::taskAt(size_t index) const
+const Task &Data::taskAt(size_t index) const
 {
     return _data.tasks.at(index);
+}
+
+const Task *Data::taskForUuid(const std::string &uuid) const
+{
+    auto it = findTaskByUuid(uuid);
+    if (it != _data.tasks.end()) {
+        return &(*it);
+    }
+    return nullptr;
 }
 
 std::vector<Tag> Data::newTags() const
@@ -199,7 +208,7 @@ std::vector<Tag> Data::newTags() const
     return result;
 }
 
-[[nodiscard]] Tag Data::tagAt(size_t index) const
+[[nodiscard]] const Tag &Data::tagAt(size_t index) const
 {
     return _data.tags.at(index);
 }

@@ -34,7 +34,7 @@ QVariant TagModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || index.row() >= static_cast<int>(localData().tagCount()))
         return {};
 
-    const auto &tag = localData().data()._data.tags[index.row()];
+    const auto &tag = localData().tagAt(index.row());
 
     switch (static_cast<Roles>(role)) {
     case NameRole:
