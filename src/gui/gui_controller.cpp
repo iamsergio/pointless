@@ -89,6 +89,11 @@ TaskFilterModel *GuiController::taskFilterModel() const
     return _taskFilterModel;
 }
 
+TaskModel *GuiController::taskModel() const
+{
+    return _taskModel;
+}
+
 GuiController::ViewType GuiController::currentViewType() const
 {
     return _currentViewType;

@@ -52,7 +52,7 @@
         "request": "launch",
         "program": "${command:cmake.launchTargetPath}",
         "args": [
-          "--supabase"
+          "--test-supabase"
         ],
         "cwd": "${command:cmake.buildDirectory}",
         "initCommands": [

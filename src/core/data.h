@@ -34,6 +34,7 @@ public:
     [[nodiscard]] std::optional<Task> getTask(const std::string &uuid) const;
     [[nodiscard]] std::vector<Task> getAllTasks() const;
     bool updateTask(const Task &task, bool incrementTaskRevision);
+    bool setTask(const Task &task);
     void clearTasks();
     [[nodiscard]] size_t taskCount() const;
     [[nodiscard]] std::vector<Task> newTasks() const;

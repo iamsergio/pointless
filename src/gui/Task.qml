@@ -43,7 +43,7 @@ Rectangle {
             CheckBox {
                 checked: root.taskIsDone
                 onClicked: {
-
+                    GuiController.taskModel.setTaskDone(root.taskUuid, !root.taskIsDone);
                 }
             }
 

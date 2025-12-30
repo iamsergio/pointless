@@ -4,6 +4,7 @@
 #include "local_data.h"
 #include "context.h"
 #include "logger.h"
+#include "Clock.h"
 
 #include <filesystem>
 #include <fstream>
@@ -132,4 +133,13 @@ size_t LocalData::taskCount() const
 size_t LocalData::tagCount() const
 {
     return _data.tagCount();
+}
+
+bool LocalData::updateTask(Task task)
+{
+    task.modificationTimestamp = core::Clock::now();
+    task.needsSyncToServer = true;
+    _data.needsLocalSave = true;
+
+    return _data.setTask(task);
 }

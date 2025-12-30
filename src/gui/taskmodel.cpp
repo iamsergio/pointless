@@ -135,6 +135,18 @@ const core::Task *TaskModel::taskForUuid(const QString &taskUuid) const
     return localData().taskForUuid(taskUuid.toStdString());
 }
 
+int TaskModel::indexForTask(const QString &taskUuid) const
+{
+    const auto uuidStr = taskUuid.toStdString();
+    const auto &tasks = localData().data()._data.tasks;
+    for (size_t i = 0; i < tasks.size(); ++i) {
+        if (tasks[i].uuid == uuidStr) {
+            return static_cast<int>(i);
+        }
+    }
+    return -1;
+}
+
 const core::LocalData &TaskModel::localData() const
 {
     auto *guiController = GuiController::instance();
@@ -145,4 +157,32 @@ core::LocalData &TaskModel::localData()
 {
     auto *guiController = GuiController::instance();
     return guiController->dataController()->localData();
+}
+
+void TaskModel::setTaskDone(const QString &taskUuid, bool isDone)
+{
+    const auto *task = taskForUuid(taskUuid);
+    if (task == nullptr) {
+        P_LOG_ERROR("Invalid task UUID: {}", taskUuid.toStdString());
+        return;
+    }
+
+    if (task->isDone == isDone) {
+        return;
+    }
+
+    const int idx = indexForTask(taskUuid);
+    if (idx == -1) {
+        P_LOG_ERROR("Failed to find index for task UUID: {}", taskUuid.toStdString());
+        return;
+    }
+
+    core::Task updatedTask = *task;
+    updatedTask.isDone = isDone;
+
+    if (localData().updateTask(updatedTask)) {
+        emit dataChanged(index(idx), index(idx));
+    } else {
+        P_LOG_ERROR("Failed to update task UUID: {}", taskUuid.toStdString());
+    }
 }

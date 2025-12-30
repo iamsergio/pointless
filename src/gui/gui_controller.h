@@ -4,6 +4,7 @@
 #pragma once
 
 #include "taskfiltermodel.h"
+#include "taskmodel.h"
 
 #include <QDate>
 #include <QObject>
@@ -25,6 +26,7 @@ class GuiController : public QObject
     Q_PROPERTY(QString navigatorPrettyStartDate READ navigatorPrettyStartDate NOTIFY navigatorStartDateChanged)
     Q_PROPERTY(QString navigatorPrettyEndDate READ navigatorPrettyEndDate NOTIFY navigatorEndDateChanged)
     Q_PROPERTY(TaskFilterModel *taskFilterModel READ taskFilterModel CONSTANT)
+    Q_PROPERTY(TaskModel *taskModel READ taskModel CONSTANT)
     Q_PROPERTY(bool isDebug READ isDebug CONSTANT)
     Q_PROPERTY(bool isMobile READ isMobile CONSTANT)
     Q_PROPERTY(bool isAndroid READ isAndroid CONSTANT)
@@ -35,6 +37,7 @@ class GuiController : public QObject
     Q_PROPERTY(QString windowTitle READ windowTitle CONSTANT)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
+    [[nodiscard]] TaskModel *taskModel() const;
     enum class ViewType : uint8_t {
         Week,
         Soon,

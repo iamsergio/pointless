@@ -55,6 +55,16 @@ bool Data::updateTask(const Task &task, bool incrementTaskRevision)
     return false;
 }
 
+bool Data::setTask(const Task &task)
+{
+    auto it = findTaskByUuid(task.uuid);
+    if (it != _data.tasks.end()) {
+        *it = task;
+        return true;
+    }
+    return false;
+}
+
 void Data::clearTasks()
 {
     _data.tasks.clear();
