@@ -5,6 +5,6 @@
 - Make login async
 - Make new iOS build
 - Use std::expected everywhere
-- Use new DataController
 - return views so we dont allocate
 - nest expecteds
+- make refresh button more interactive

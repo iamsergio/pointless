@@ -16,6 +16,12 @@ class LocalData
 {
 public:
     LocalData();
+    ~LocalData() = default;
+
+    LocalData(const LocalData &) = delete;
+    LocalData &operator=(const LocalData &) = delete;
+    LocalData(LocalData &&) = delete;
+    LocalData &operator=(LocalData &&) = delete;
 
     [[nodiscard]] std::expected<std::monostate, std::string> loadDataFromFile();
     [[nodiscard]] std::expected<Data, std::string> loadDataFromFile(const std::string &filename) const;

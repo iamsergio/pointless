@@ -20,11 +20,17 @@ class DataController : public QObject
     Q_OBJECT
 public:
     explicit DataController(QObject *parent = nullptr);
+    ~DataController() override = default;
 
     bool loginWithDefaults();
     std::expected<pointless::core::Data, std::string> refresh();
 
     pointless::core::LocalData &localData();
+
+    DataController(const DataController &) = delete;
+    DataController &operator=(const DataController &) = delete;
+    DataController(DataController &&) = delete;
+    DataController &operator=(DataController &&) = delete;
 
 #ifndef POINTLESS_ENABLE_TESTS
 private:

@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: MIT
 
 #include "gui/data_controller.h"
+#include "gui/taskmodel.h"
+#include "gui/gui_controller.h"
 #include "core/context.h"
 #include "core/data_provider.h"
 #include "core/logger.h"
@@ -212,4 +214,57 @@ TEST(DataControllerTest, Sync)
     pullResult8 = controller.pullRemoteData();
     ASSERT_TRUE(pullResult8.has_value());
     EXPECT_EQ(pullResult8->tagCount(), 0);
+}
+
+TEST(DataControllerTest, SetTaskDone)
+{
+    Logger::initLogLevel();
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+
+    // Initialize GuiController which creates DataController
+    GuiController *guiController = GuiController::instance();
+    DataController *controller = guiController->dataController();
+
+    // 1. init with empty local data and remote data containing 1 task
+    core::Data remoteData;
+    core::Task task;
+    task.uuid = "uuid-task-done";
+    task.title = "Task to be done";
+    task.isDone = false;
+    task.revision = 0;
+    remoteData.addTask(task);
+    remoteData.setRevision(1);
+
+    initData(*controller, {}, remoteData);
+
+    // 2. call refresh
+    auto syncResult = controller->refresh();
+    ASSERT_TRUE(syncResult.has_value());
+    ASSERT_EQ(syncResult->taskCount(), 1);
+    EXPECT_FALSE(syncResult->taskAt(0).isDone);
+
+    // Setup TaskModel
+    TaskModel *model = TaskModel::instance();
+
+    // 3. call TaskModel's setTaskDone method
+    model->setTaskDone("uuid-task-done", true);
+
+    // 4. confirm it's done in the local data
+    ASSERT_EQ(controller->_localData.data().taskCount(), 1);
+    EXPECT_TRUE(controller->_localData.data().taskAt(0).isDone);
+
+    // 5. confirm localData.modifiedTasks() returns 1 task
+    EXPECT_EQ(controller->_localData.data().modifiedTasks().size(), 1);
+
+    // 6. call refresh again
+    auto syncResult2 = controller->refresh();
+    ASSERT_TRUE(syncResult2.has_value());
+
+    // 7. confirm it's done in the local data and in the return value of refresh
+    EXPECT_TRUE(controller->_localData.data().taskAt(0).isDone);
+    ASSERT_EQ(syncResult2->taskCount(), 1);
+    EXPECT_TRUE(syncResult2->taskAt(0).isDone);
+
+    // 8. confirm localData.modifiedTasks() is empty
+    EXPECT_TRUE(controller->_localData.data().modifiedTasks().empty());
 }

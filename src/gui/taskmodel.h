@@ -48,6 +48,7 @@ public:
     [[nodiscard]] int indexForTask(const QString &taskUuid) const;
 
     Q_INVOKABLE void setTaskDone(const QString &taskUuid, bool isDone);
+
 Q_SIGNALS:
     void countChanged();
 
