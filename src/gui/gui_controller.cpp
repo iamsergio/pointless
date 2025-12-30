@@ -31,12 +31,14 @@
 
 using namespace pointless;
 
+GuiController *s_instance = nullptr;
+
 GuiController::GuiController(QObject *parent)
     : QObject(parent)
-    , _taskModel(TaskModel::instance(this))
-    , _tagModel(new TagModel(this))
-    , _taskFilterModel(new TaskFilterModel(this))
     , _dataController(new DataController(this))
+    , _taskModel(TaskModel::instance(this))
+    , _taskFilterModel(new TaskFilterModel(this))
+    , _tagModel(new TagModel(this))
 {
 
 #ifdef POINTLESS_DEVELOPER_MODE
@@ -250,4 +252,28 @@ QString GuiController::windowTitle() const
         return QStringLiteral("Pointless (test user)");
     }
     return QStringLiteral("Pointless");
+}
+
+/** static */
+GuiController *GuiController::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
+{
+    Q_UNUSED(qmlEngine)
+    Q_UNUSED(jsEngine)
+
+    if (s_instance == nullptr) {
+        P_LOG_CRITICAL("Initialize GuiController before using in QML");
+        std::abort();
+    }
+
+    return s_instance;
+}
+
+/** static */
+GuiController *GuiController::instance()
+{
+    if (s_instance == nullptr) {
+        s_instance = new GuiController();
+    }
+
+    return s_instance;
 }

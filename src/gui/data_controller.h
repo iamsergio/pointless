@@ -24,6 +24,8 @@ public:
     bool loginWithDefaults();
     std::expected<pointless::core::Data, std::string> refresh();
 
+    pointless::core::LocalData &localData();
+
 #ifndef POINTLESS_ENABLE_TESTS
 private:
 #endif

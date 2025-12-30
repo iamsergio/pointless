@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 
 #include "application.h"
+#include "gui_controller.h"
+
 #include "core/logger.h"
-#include "core/test_supabase_provider.h"
-#include "core/data_provider.h"
 #include "core/context.h"
 
 #include <QCommandLineOption>
@@ -40,6 +40,9 @@ Application::Application(int &argc, char **argv)
         core::Context::setContext(parser.isSet(testSupabaseOption) ? core::Context::defaultContextForSupabaseTesting()
                                                                    : core::Context::defaultContextForSupabaseRelease());
     }
+
+    // Initialize the controllers and models before loading QML
+    GuiController::instance();
 
     QQuickStyle::setStyle(QStringLiteral("Fusion"));
 

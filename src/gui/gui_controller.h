@@ -7,6 +7,7 @@
 
 #include <QDate>
 #include <QObject>
+#include <QQmlEngine>
 #include <QtQml/qqmlregistration.h>
 
 class TaskModel;
@@ -42,6 +43,7 @@ public:
     Q_ENUM(ViewType)
 
     explicit GuiController(QObject *parent = nullptr);
+    static GuiController *instance();
 
     [[nodiscard]] ViewType currentViewType() const;
     void setCurrentViewType(ViewType viewType);
@@ -71,6 +73,8 @@ public:
 
     Q_INVOKABLE void dumpTaskDebug(const QString &taskUuid) const;
 
+    static GuiController *create(QQmlEngine *qmlEngine, QJSEngine *);
+
 Q_SIGNALS:
     void currentViewTypeChanged();
     void navigatorStartDateChanged();
@@ -83,8 +87,8 @@ private:
     bool _isEditing = false;
     QString _uuidBeingEdited;
     QDate _navigatorStartDate;
-    TaskModel *_taskModel = nullptr;
-    TagModel *_tagModel = nullptr;
-    TaskFilterModel *_taskFilterModel = nullptr;
     DataController *const _dataController;
+    TaskModel *_taskModel = nullptr;
+    TaskFilterModel *_taskFilterModel = nullptr;
+    TagModel *_tagModel = nullptr;
 };

@@ -3,6 +3,7 @@
 
 #include "taskmodel.h"
 #include "core/logger.h"
+#include "gui/data_controller.h"
 
 #include <QDateTime>
 #include <QString>

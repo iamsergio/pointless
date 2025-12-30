@@ -1,8 +1,11 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
+#include "core/tag.h"
 
-#include <vector>
+#include "core/logger.h"
+#include "tagmodel.h"
+#include "gui/data_controller.h"
 
 #include <QByteArray>
 #include <QHash>
@@ -11,9 +14,7 @@
 #include <QString>
 #include <QVariant>
 
-#include "core/tag.h"
-#include "core/logger.h"
-#include "tagmodel.h"
+#include <vector>
 
 TagModel::TagModel(QObject *parent)
     : QAbstractListModel(parent)

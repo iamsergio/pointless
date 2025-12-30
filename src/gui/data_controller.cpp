@@ -223,3 +223,8 @@ std::expected<core::Data, std::string> DataController::merge(const std::optional
     P_LOG_DEBUG("Merged local and remote data");
     return remoteData;
 }
+
+core::LocalData &DataController::localData()
+{
+    return _localData;
+}
