@@ -5,7 +5,8 @@
 
 #include "core/logger.h"
 #include "tagmodel.h"
-#include "gui/data_controller.h"
+#include "data_controller.h"
+#include "gui_controller.h"
 
 #include <QByteArray>
 #include <QHash>
@@ -24,15 +25,16 @@ TagModel::TagModel(QObject *parent)
 int TagModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return static_cast<int>(_tags.size());
+    const auto &data = localData();
+    return static_cast<int>(data.tagCount());
 }
 
 QVariant TagModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.row() >= static_cast<int>(_tags.size()))
+    if (!index.isValid() || index.row() >= static_cast<int>(localData().tagCount()))
         return {};
 
-    const auto &tag = _tags[index.row()];
+    const auto &tag = localData().data()._data.tags[index.row()];
 
     switch (static_cast<Roles>(role)) {
     case NameRole:
@@ -57,11 +59,22 @@ int TagModel::count() const
     return rowCount();
 }
 
-void TagModel::setTags(const std::vector<pointless::core::Tag> &tags)
+void TagModel::reload()
 {
     beginResetModel();
-    _tags = tags;
-    P_LOG_INFO("size = {}", static_cast<int>(_tags.size()));
+    P_LOG_INFO("size = {}", static_cast<int>(localData().tagCount()));
     endResetModel();
     emit countChanged();
+}
+
+const pointless::core::LocalData &TagModel::localData() const
+{
+    auto *guiController = GuiController::instance();
+    return guiController->dataController()->localData();
+}
+
+pointless::core::LocalData &TagModel::localData()
+{
+    auto *guiController = GuiController::instance();
+    return guiController->dataController()->localData();
 }

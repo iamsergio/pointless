@@ -26,6 +26,11 @@ public:
         return _data;
     }
 
+    [[nodiscard]] const Data &data() const
+    {
+        return _data;
+    }
+
     void setData(const Data &data);
 
     [[nodiscard]] std::expected<std::monostate, std::string> setDataAndSave(const Data &data);

@@ -37,7 +37,6 @@ GuiController::GuiController(QObject *parent)
     : QObject(parent)
     , _dataController(new DataController(this))
     , _taskModel(TaskModel::instance(this))
-    , _taskFilterModel(new TaskFilterModel(this))
     , _tagModel(new TagModel(this))
 {
 
@@ -74,13 +73,17 @@ void GuiController::refresh()
         return;
     }
 
-    core::Data &data = refreshResult.value();
-    _taskModel->setTasks(data.getAllTasks());
-    _tagModel->setTags(data.allTags());
+    _taskModel->reload();
+    _tagModel->reload();
 }
 
 TaskFilterModel *GuiController::taskFilterModel() const
 {
+    if (_taskFilterModel == nullptr) {
+        // Lazy initialization to break a circular dependency between GuiController and TaskFilterModel
+        _taskFilterModel = new TaskFilterModel(const_cast<GuiController *>(this));
+    }
+
     return _taskFilterModel;
 }
 
@@ -252,6 +255,11 @@ QString GuiController::windowTitle() const
         return QStringLiteral("Pointless (test user)");
     }
     return QStringLiteral("Pointless");
+}
+
+DataController *GuiController::dataController() const
+{
+    return _dataController;
 }
 
 /** static */

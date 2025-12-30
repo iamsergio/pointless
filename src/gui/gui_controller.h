@@ -71,6 +71,8 @@ public:
 
     [[nodiscard]] QString windowTitle() const;
 
+    [[nodiscard]] DataController *dataController() const;
+
     Q_INVOKABLE void dumpTaskDebug(const QString &taskUuid) const;
 
     static GuiController *create(QQmlEngine *qmlEngine, QJSEngine *);
@@ -89,6 +91,6 @@ private:
     QDate _navigatorStartDate;
     DataController *const _dataController;
     TaskModel *_taskModel = nullptr;
-    TaskFilterModel *_taskFilterModel = nullptr;
+    mutable TaskFilterModel *_taskFilterModel = nullptr;
     TagModel *_tagModel = nullptr;
 };

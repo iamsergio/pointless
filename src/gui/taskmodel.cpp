@@ -2,8 +2,10 @@
 // SPDX-License-Identifier: MIT
 
 #include "taskmodel.h"
+#include "data_controller.h"
+#include "gui_controller.h"
+
 #include "core/logger.h"
-#include "gui/data_controller.h"
 
 #include <QDateTime>
 #include <QString>
@@ -24,16 +26,17 @@ TaskModel *TaskModel::instance(QObject *parent)
 int TaskModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return static_cast<int>(_tasks.size());
+    const auto &data = localData();
+    return static_cast<int>(data.taskCount());
 }
 
 QVariant TaskModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.row() >= static_cast<int>(_tasks.size())) {
+    if (!index.isValid() || index.row() >= static_cast<int>(localData().taskCount())) {
         return {};
     }
 
-    const auto &task = _tasks[index.row()];
+    const auto &task = localData().data()._data.tasks[index.row()];
 
     switch (role) {
     case UuidRole:
@@ -101,38 +104,50 @@ int TaskModel::count() const
     return rowCount();
 }
 
-void TaskModel::setTasks(const std::vector<pointless::core::Task> &tasks)
+void TaskModel::reload()
 {
     beginResetModel();
-    _tasks = tasks;
-    P_LOG_INFO("size = {}", static_cast<int>(_tasks.size()));
+    P_LOG_INFO("size = {}", static_cast<int>(localData().taskCount()));
     endResetModel();
     emit countChanged();
 }
 
 void TaskModel::addTask(const pointless::core::Task &task)
 {
-    const int numTasks = static_cast<int>(_tasks.size());
+    const int numTasks = static_cast<int>(localData().taskCount());
     beginInsertRows(QModelIndex(), numTasks, numTasks);
-    _tasks.push_back(task);
+    localData().data().addTask(task);
     endInsertRows();
     emit countChanged();
 }
 
 const pointless::core::Task *TaskModel::taskAt(int row) const
 {
-    if (row < 0 || row >= static_cast<int>(_tasks.size())) // NOLINT
+    if (row < 0 || row >= static_cast<int>(localData().taskCount())) // NOLINT
         return nullptr;
-    return &_tasks[row];
+    return &localData().data()._data.tasks[row];
 }
 
 const pointless::core::Task *TaskModel::taskForUuid(const QString &taskUuid) const
 {
     std::string uuidStr = taskUuid.toStdString();
-    for (const auto &task : _tasks) {
+    const auto &tasks = localData().data()._data.tasks;
+    for (const auto &task : tasks) {
         if (task.uuid == uuidStr) {
             return &task;
         }
     }
     return nullptr;
+}
+
+const pointless::core::LocalData &TaskModel::localData() const
+{
+    auto *guiController = GuiController::instance();
+    return guiController->dataController()->localData();
+}
+
+pointless::core::LocalData &TaskModel::localData()
+{
+    auto *guiController = GuiController::instance();
+    return guiController->dataController()->localData();
 }

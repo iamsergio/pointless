@@ -32,8 +32,6 @@ TaskFilterModel::TaskFilterModel(QObject *parent)
     connect(this, &QSortFilterProxyModel::layoutChanged, this, &TaskFilterModel::countChanged);
 
     connect(this, &TaskFilterModel::countChanged, this, &TaskFilterModel::evaluateEmpty);
-
-    _previousRowCount = rowCount();
 }
 int TaskFilterModel::count() const
 {

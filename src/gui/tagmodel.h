@@ -11,6 +11,10 @@
 #include <cstdint>
 #include <vector>
 
+namespace pointless::core {
+class LocalData;
+}
+
 class TagModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -31,11 +35,12 @@ public:
 
     [[nodiscard]] int count() const;
 
-    void setTags(const std::vector<pointless::core::Tag> &tags);
+    void reload();
 
 Q_SIGNALS:
     void countChanged();
 
 private:
-    std::vector<pointless::core::Tag> _tags;
+    [[nodiscard]] const pointless::core::LocalData &localData() const;
+    [[nodiscard]] pointless::core::LocalData &localData();
 };
