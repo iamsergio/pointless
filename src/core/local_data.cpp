@@ -108,3 +108,13 @@ bool LocalData::removeTag(const std::string &tagName)
     }
     return false;
 }
+
+size_t LocalData::taskCount() const
+{
+    return _data.taskCount();
+}
+
+size_t LocalData::tagCount() const
+{
+    return _data.tagCount();
+}
