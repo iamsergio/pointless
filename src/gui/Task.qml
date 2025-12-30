@@ -40,10 +40,12 @@ Rectangle {
             anchors.rightMargin: Style.fromPixel(10)
             spacing: Style.fromPixel(15)
 
-            // CheckBox {
-            //     checked: root.taskIsDone
-            //     onClicked: {}
-            // }
+            CheckBox {
+                checked: root.taskIsDone
+                onClicked: {
+
+                }
+            }
 
             ColumnLayout {
                 Layout.fillWidth: true
