@@ -21,12 +21,6 @@ TagModel::TagModel(QObject *parent)
 {
 }
 
-TagModel::TagModel(const std::vector<pointless::core::Tag> &tags, QObject *parent)
-    : QAbstractListModel(parent)
-    , _tags(tags)
-{
-}
-
 int TagModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
