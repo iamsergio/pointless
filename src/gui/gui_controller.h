@@ -75,7 +75,7 @@ public:
 
     Q_INVOKABLE void dumpTaskDebug(const QString &taskUuid) const;
 
-    static GuiController *create(QQmlEngine *qmlEngine, QJSEngine *);
+    static GuiController *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
 Q_SIGNALS:
     void currentViewTypeChanged();

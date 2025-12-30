@@ -31,7 +31,9 @@
 
 using namespace pointless;
 
-GuiController *s_instance = nullptr;
+namespace {
+GuiController *s_instance = nullptr; // NOLINT // clazy:exclude=non-pod-global-static
+}
 
 GuiController::GuiController(QObject *parent)
     : QObject(parent)
