@@ -4,6 +4,10 @@
 #include <string>
 #include <cstdlib>
 
+#ifdef __APPLE__
+#include <TargetConditionals.h>
+#endif
+
 namespace pointless {
 inline std::string getenv_or_empty(const char *name)
 {
@@ -11,4 +15,14 @@ inline std::string getenv_or_empty(const char *name)
         return v;
     return "";
 }
+
+inline bool isIOS()
+{
+#if TARGET_OS_IPHONE
+    return true;
+#else
+    return false;
+#endif
+}
+
 }
