@@ -3,6 +3,7 @@
 
 #include "context.h"
 #include "logger.h"
+#include "utils.h"
 
 #include <optional>
 #include <filesystem>
@@ -41,7 +42,7 @@ bool Context::hasContext()
     return s_currentContext.has_value();
 }
 
-Context Context::defaultContextForSupabaseTesting()
+std::string Context::clientDataDir()
 {
     const char *envVar = std::getenv("POINTLESS_CLIENT_DATA_DIR");
     if (envVar == nullptr) {
@@ -49,16 +50,15 @@ Context Context::defaultContextForSupabaseTesting()
         std::abort();
     }
 
-    return { IDataProvider::Type::TestSupabase, std::filesystem::path(envVar) / "debug-pointless.json" };
+    return envVar;
+}
+
+Context Context::defaultContextForSupabaseTesting()
+{
+    return { IDataProvider::Type::TestSupabase, std::filesystem::path(clientDataDir()) / "debug-pointless.json" };
 }
 
 Context Context::defaultContextForSupabaseRelease()
 {
-    const char *envVar = std::getenv("POINTLESS_CLIENT_DATA_DIR");
-    if (envVar == nullptr) {
-        P_LOG_CRITICAL("FATAL: POINTLESS_CLIENT_DATA_DIR environment variable is not set");
-        std::abort();
-    }
-
-    return { IDataProvider::Type::Supabase, std::filesystem::path(envVar) / "pointless.json" };
+    return { IDataProvider::Type::Supabase, std::filesystem::path(clientDataDir()) / "pointless.json" };
 }

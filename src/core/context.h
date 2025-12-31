@@ -32,6 +32,7 @@ struct Context
     Context &operator=(const Context &) = default;
     ~Context() = default;
 
+    [[nodiscard]] static std::string clientDataDir();
     [[nodiscard]] static Context defaultContextForSupabaseTesting();
     [[nodiscard]] static Context defaultContextForSupabaseRelease();
 
