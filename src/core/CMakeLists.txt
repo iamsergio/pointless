@@ -82,7 +82,7 @@ if(POINTLESS_ENABLE_TESTS)
   add_test(NAME test_data COMMAND test_data)
 endif()
 
-if(NOT iOS)
+if(NOT IOS)
   add_executable(supabase_push supabase_push.cpp)
   target_link_libraries(supabase_push PRIVATE pointless_core)
 endif()
