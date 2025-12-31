@@ -12,10 +12,18 @@
 #include <QDebug>
 #include <QGuiApplication>
 #include <QQuickStyle>
+#include <QStandardPaths>
 
 #include <cstdlib>
 
 using namespace pointless;
+
+namespace {
+void printDebugInfo()
+{
+    P_LOG_INFO("AppDataLocation: {}", QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).toStdString());
+}
+}
 
 Application::Application(int &argc, char **argv)
     : QGuiApplication(argc, argv)
@@ -47,6 +55,8 @@ Application::Application(int &argc, char **argv)
     QQuickStyle::setStyle(QStringLiteral("Fusion"));
 
     _engine.loadFromModule("pointless", "Main");
+
+    printDebugInfo();
 
     if (_engine.rootObjects().isEmpty()) {
         P_LOG_ERROR("No root objects loaded");
