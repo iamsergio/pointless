@@ -11,6 +11,8 @@
 #include <sstream>
 #include <string>
 
+using namespace pointless;
+
 int main(int argc, char *argv[])
 {
     try {
@@ -19,8 +21,8 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        Logger::initLogLevel();
-        pointless::core::Context::setContext(pointless::core::Context::defaultContextForSupabaseTesting());
+        core::Logger::initLogLevel();
+        core::Context::setContext(core::Context::defaultContextForSupabaseTesting());
 
         std::string filePath = argv[1];
         std::ifstream file(filePath);

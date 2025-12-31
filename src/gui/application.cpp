@@ -33,7 +33,7 @@ Application::Application(int &argc, char **argv)
 
     parser.process(*this);
 
-    Logger::initLogLevel();
+    core::Logger::initLogLevel();
 
     // Context might have been set already in tests
     if (!core::Context::hasContext()) {

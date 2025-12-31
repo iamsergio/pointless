@@ -19,7 +19,7 @@ constexpr const char *s_filename = "/tmp/pointless_test_data_controller_sync.jso
 /// Sets the data locally and remotely before we start the test
 void initData(DataController &controller, std::optional<core::Data> localData, const core::Data &remoteData)
 {
-    Logger::initLogLevel();
+    core::Logger::initLogLevel();
 
     ASSERT_TRUE(controller.loginWithDefaults());
 
@@ -43,7 +43,7 @@ TEST(DataControllerTest, ConstructDestroy)
 // DataController::sync() tests
 TEST(DataControllerTest, Sync)
 {
-    Logger::initLogLevel();
+    core::Logger::initLogLevel();
     core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
     DataController controller;
 
@@ -218,7 +218,7 @@ TEST(DataControllerTest, Sync)
 
 TEST(DataControllerTest, SetTaskDone)
 {
-    Logger::initLogLevel();
+    core::Logger::initLogLevel();
     core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
 
     // Initialize GuiController which creates DataController

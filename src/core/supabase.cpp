@@ -13,7 +13,6 @@
 #include <cstdlib>
 #include <memory>
 #include <string>
-#include <vector>
 #include <stdexcept>
 
 namespace {
@@ -66,17 +65,17 @@ bool SupabaseProvider::login(const std::string &email, const std::string &passwo
         cpr::VerifySsl { shouldVerifySsl() });
 
     if (response.status_code != kHttpOk) {
-        LOG_ERROR(Logger::getLogger(), "Login failed: HTTP={} url={}", response.status_code, auth_url);
-        LOG_ERROR(Logger::getLogger(), "Response: text={} cpr::ErrorCode={} error.msg={}", response.text, static_cast<int>(response.error.code), response.error.message);
+        P_LOG_ERROR("Login failed: HTTP={} url={}", response.status_code, auth_url);
+        P_LOG_ERROR("Response: text={} cpr::ErrorCode={} error.msg={}", response.text, static_cast<int>(response.error.code), response.error.message);
 #ifdef POINTLESS_DEVELOPER_MODE
-        LOG_ERROR(Logger::getLogger(), "Request body: {}", body);
+        P_LOG_ERROR("Request body: {}", body);
 #endif
         return false;
     }
 
     auto json_result = glz::read_json<glz::json_t>(response.text);
     if (!json_result.has_value()) {
-        LOG_ERROR(Logger::getLogger(), "Failed to parse login response JSON");
+        P_LOG_ERROR("Failed to parse login response JSON");
         return false;
     }
 
@@ -87,20 +86,20 @@ bool SupabaseProvider::login(const std::string &email, const std::string &passwo
 
     auto access_token_it = json_obj.get_object().find("access_token");
     if (access_token_it == json_obj.get_object().end() || !access_token_it->second.is_string()) {
-        LOG_ERROR(Logger::getLogger(), "No access_token in login response");
+        P_LOG_ERROR("No access_token in login response");
         return false;
     }
 
     auto user_it = json_obj.get_object().find("user");
     if (user_it == json_obj.get_object().end() || !user_it->second.is_object()) {
-        LOG_ERROR(Logger::getLogger(), "No user object in login response");
+        P_LOG_ERROR("No user object in login response");
         return false;
     }
 
     auto &user_obj = user_it->second.get_object();
     auto id_it = user_obj.find("id");
     if (id_it == user_obj.end() || !id_it->second.is_string()) {
-        LOG_ERROR(Logger::getLogger(), "No user id in login response");
+        P_LOG_ERROR("No user id in login response");
         return false;
     }
 
@@ -123,7 +122,7 @@ bool SupabaseProvider::loginWithDefaults()
     auto [username, password] = defaultLoginPassword();
 
     if (username.empty() || password.empty()) {
-        LOG_WARNING(Logger::getLogger(), "No default credentials available");
+        P_LOG_WARNING("No default credentials available");
         return false;
     }
 
@@ -152,7 +151,7 @@ void SupabaseProvider::logout()
 bool SupabaseProvider::pushData(const std::string &data)
 {
     if (!isAuthenticated()) {
-        LOG_ERROR(Logger::getLogger(), "Cannot update data: not authenticated");
+        P_LOG_ERROR("Cannot update data: not authenticated");
         return false;
     }
 
@@ -173,8 +172,8 @@ bool SupabaseProvider::pushData(const std::string &data)
         cpr::VerifySsl { shouldVerifySsl() });
 
     if (response.status_code != kHttpOk && response.status_code != kHttpCreated && response.status_code != kHttpNoContent) {
-        LOG_ERROR(Logger::getLogger(), "Failed to update data: HTTP {}", response.status_code);
-        LOG_DEBUG(Logger::getLogger(), "Response: {}", response.text);
+        P_LOG_ERROR("Failed to update data: HTTP {}", response.status_code);
+        P_LOG_DEBUG("Response: {}", response.text);
         return false;
     }
 
@@ -195,7 +194,7 @@ std::string SupabaseProvider::pullData()
 std::string SupabaseProvider::retrieveRawData()
 {
     if (!isAuthenticated()) {
-        LOG_ERROR(Logger::getLogger(), "Cannot retrieve data: not authenticated");
+        P_LOG_ERROR("Cannot retrieve data: not authenticated");
         return {};
     }
 
@@ -210,32 +209,32 @@ std::string SupabaseProvider::retrieveRawData()
         cpr::VerifySsl { shouldVerifySsl() });
 
     if (response.status_code != kHttpOk) {
-        LOG_ERROR(Logger::getLogger(), "HTTP request failed with status: {}", response.status_code);
-        LOG_DEBUG(Logger::getLogger(), "Response: {}", response.text);
+        P_LOG_ERROR("HTTP request failed with status: {}", response.status_code);
+        P_LOG_DEBUG("Response: {}", response.text);
         return {};
     }
 
     auto json_result = glz::read_json<glz::json_t>(response.text);
     if (!json_result.has_value()) {
-        LOG_ERROR(Logger::getLogger(), "Failed to parse JSON response");
+        P_LOG_ERROR("Failed to parse JSON response");
         return {};
     }
 
     auto &json_obj = json_result.value();
     if (!json_obj.is_array() || json_obj.get_array().empty()) {
-        LOG_WARNING(Logger::getLogger(), "Response is empty or not an array");
+        P_LOG_WARNING("Response is empty or not an array");
         return {};
     }
 
     auto &first_item = json_obj.get_array()[0];
     if (!first_item.is_object()) {
-        LOG_ERROR(Logger::getLogger(), "First item in response is not an object");
+        P_LOG_ERROR("First item in response is not an object");
         return {};
     }
 
     auto data_it = first_item.get_object().find("data");
     if (data_it == first_item.get_object().end() || !data_it->second.is_string()) {
-        LOG_WARNING(Logger::getLogger(), "No 'data' field found in response");
+        P_LOG_WARNING("No 'data' field found in response");
         return {};
     }
 

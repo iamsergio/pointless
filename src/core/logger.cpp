@@ -3,6 +3,8 @@
 
 #include "logger.h"
 
+using namespace pointless::core;
+
 quill::Logger *Logger::s_logger = nullptr;
 
 void Logger::initialize()

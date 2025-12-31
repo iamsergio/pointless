@@ -8,6 +8,8 @@
 #include <quill/LogMacros.h>
 #include <quill/sinks/ConsoleSink.h>
 
+namespace pointless::core {
+
 class Logger
 {
 public:
@@ -20,8 +22,10 @@ private:
     static bool s_initialized;
 };
 
-#define P_LOG_DEBUG(...) LOG_DEBUG(Logger::getLogger(), __VA_ARGS__)
-#define P_LOG_INFO(...) LOG_INFO(Logger::getLogger(), __VA_ARGS__)
-#define P_LOG_WARNING(...) LOG_WARNING(Logger::getLogger(), __VA_ARGS__)
-#define P_LOG_ERROR(...) LOG_ERROR(Logger::getLogger(), __VA_ARGS__)
-#define P_LOG_CRITICAL(...) LOG_CRITICAL(Logger::getLogger(), __VA_ARGS__)
+}
+
+#define P_LOG_DEBUG(...) LOG_DEBUG(pointless::core::Logger::getLogger(), __VA_ARGS__)
+#define P_LOG_INFO(...) LOG_INFO(pointless::core::Logger::getLogger(), __VA_ARGS__)
+#define P_LOG_WARNING(...) LOG_WARNING(pointless::core::Logger::getLogger(), __VA_ARGS__)
+#define P_LOG_ERROR(...) LOG_ERROR(pointless::core::Logger::getLogger(), __VA_ARGS__)
+#define P_LOG_CRITICAL(...) LOG_CRITICAL(pointless::core::Logger::getLogger(), __VA_ARGS__)
