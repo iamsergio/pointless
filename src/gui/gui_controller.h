@@ -12,7 +12,6 @@
 #include <QtQml/qqmlregistration.h>
 
 class TaskModel;
-class TagModel;
 class DataController;
 
 class GuiController : public QObject
@@ -93,7 +92,5 @@ private:
     QString _uuidBeingEdited;
     QDate _navigatorStartDate;
     DataController *const _dataController;
-    TaskModel *_taskModel = nullptr;
     mutable TaskFilterModel *_taskFilterModel = nullptr;
-    TagModel *_tagModel = nullptr;
 };

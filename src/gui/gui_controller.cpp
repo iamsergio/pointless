@@ -38,8 +38,6 @@ GuiController *s_instance = nullptr; // NOLINT // clazy:exclude=non-pod-global-s
 GuiController::GuiController(QObject *parent)
     : QObject(parent)
     , _dataController(new DataController(this))
-    , _taskModel(TaskModel::instance(this))
-    , _tagModel(new TagModel(this))
 {
 
 #ifdef POINTLESS_DEVELOPER_MODE
@@ -75,8 +73,8 @@ void GuiController::refresh()
         return;
     }
 
-    _taskModel->reload();
-    _tagModel->reload();
+    _dataController->taskModel()->reload();
+    _dataController->tagModel()->reload();
 }
 
 TaskFilterModel *GuiController::taskFilterModel() const
@@ -91,7 +89,7 @@ TaskFilterModel *GuiController::taskFilterModel() const
 
 TaskModel *GuiController::taskModel() const
 {
-    return _taskModel;
+    return _dataController->taskModel();
 }
 
 GuiController::ViewType GuiController::currentViewType() const
@@ -222,7 +220,7 @@ void GuiController::addNewTask(const QString &title)
     task.creationTimestamp = pointless::core::Clock::now();
     task.modificationTimestamp = task.creationTimestamp;
 
-    _taskModel->addTask(task);
+    _dataController->taskModel()->addTask(task);
 }
 
 QString GuiController::colorFromTag(const QString &tagName) const
@@ -248,7 +246,7 @@ bool GuiController::isVerbose()
 
 void GuiController::dumpTaskDebug(const QString &taskUuid) const
 {
-    const auto *task = _taskModel->taskForUuid(taskUuid);
+    const auto *task = _dataController->taskModel()->taskForUuid(taskUuid);
     if (task == nullptr) {
         P_LOG_ERROR("Invalid task UUID: {}", taskUuid.toStdString());
         return;

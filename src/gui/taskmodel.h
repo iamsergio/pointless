@@ -33,7 +33,8 @@ public:
         IsEveningRole
     };
 
-    [[nodiscard]] static TaskModel *instance(QObject *parent = nullptr);
+    explicit TaskModel(QObject *parent = nullptr);
+    ~TaskModel() override;
 
     [[nodiscard]] int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     [[nodiscard]] QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -53,8 +54,6 @@ Q_SIGNALS:
     void countChanged();
 
 private:
-    explicit TaskModel(QObject *parent = nullptr);
-    inline static TaskModel *_instance = nullptr;
     [[nodiscard]] const pointless::core::LocalData &localData() const;
     [[nodiscard]] pointless::core::LocalData &localData();
 };

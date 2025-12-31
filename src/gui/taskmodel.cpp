@@ -17,14 +17,6 @@ TaskModel::TaskModel(QObject *parent)
 {
 }
 
-TaskModel *TaskModel::instance(QObject *parent)
-{
-    if (_instance == nullptr) {
-        _instance = new TaskModel(parent);
-    }
-    return _instance;
-}
-
 int TaskModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
@@ -185,4 +177,9 @@ void TaskModel::setTaskDone(const QString &taskUuid, bool isDone)
     } else {
         P_LOG_ERROR("Failed to update task UUID: {}", taskUuid.toStdString());
     }
+}
+
+TaskModel::~TaskModel()
+{
+    P_LOG_DEBUG("~TaskModel");
 }

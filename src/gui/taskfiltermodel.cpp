@@ -1,13 +1,9 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
-#include <QModelIndex>
-#include <QObject>
-#include <QSortFilterProxyModel>
-#include <QtGlobal> // Q_UNUSED, Q_EMIT
-
 #include "taskfiltermodel.h"
 #include "gui_controller.h"
+#include "data_controller.h"
 #include "taskmodel.h"
 #include "date_utils.h"
 #include "Clock.h"
@@ -15,12 +11,15 @@
 #include "core/task.h"
 #include "core/logger.h"
 
+#include <QModelIndex>
+#include <QObject>
+#include <QSortFilterProxyModel>
 #include <QDate>
 
 TaskFilterModel::TaskFilterModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
-    setSourceModel(TaskModel::instance());
+    setSourceModel(GuiController::instance()->dataController()->taskModel());
 
     setDynamicSortFilter(true);
     setSortCaseSensitivity(Qt::CaseInsensitive);
@@ -33,6 +32,7 @@ TaskFilterModel::TaskFilterModel(QObject *parent)
 
     connect(this, &TaskFilterModel::countChanged, this, &TaskFilterModel::evaluateEmpty);
 }
+
 int TaskFilterModel::count() const
 {
     return rowCount();

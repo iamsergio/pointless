@@ -244,7 +244,7 @@ TEST(DataControllerTest, SetTaskDone)
     EXPECT_FALSE(syncResult->taskAt(0).isDone);
 
     // Setup TaskModel
-    TaskModel *model = TaskModel::instance();
+    TaskModel *model = controller->taskModel();
 
     // 3. call TaskModel's setTaskDone method
     model->setTaskDone("uuid-task-done", true);

@@ -15,6 +15,9 @@
 #include <expected>
 #include <optional>
 
+class TaskModel;
+class TagModel;
+
 class DataController : public QObject
 {
     Q_OBJECT
@@ -26,6 +29,9 @@ public:
     std::expected<pointless::core::Data, std::string> refresh();
 
     pointless::core::LocalData &localData();
+
+    [[nodiscard]] TaskModel *taskModel() const;
+    [[nodiscard]] TagModel *tagModel() const;
 
     DataController(const DataController &) = delete;
     DataController &operator=(const DataController &) = delete;
@@ -40,4 +46,6 @@ private:
     std::expected<pointless::core::Data, std::string> merge(const std::optional<pointless::core::Data> &remoteData);
     pointless::core::LocalData _localData;
     std::unique_ptr<IDataProvider> _dataProvider;
+    TaskModel *_taskModel = nullptr;
+    TagModel *_tagModel = nullptr;
 };

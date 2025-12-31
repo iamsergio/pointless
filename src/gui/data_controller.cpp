@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: MIT
 
 #include "data_controller.h"
+#include "taskmodel.h"
+#include "tagmodel.h"
 #include "core/data_provider.h"
 #include "core/logger.h"
 
@@ -12,6 +14,8 @@ using namespace pointless;
 DataController::DataController(QObject *parent)
     : QObject(parent)
     , _dataProvider(IDataProvider::createProvider())
+    , _taskModel(new TaskModel(this))
+    , _tagModel(new TagModel(this))
 {
 }
 
@@ -227,4 +231,14 @@ std::expected<core::Data, std::string> DataController::merge(const std::optional
 core::LocalData &DataController::localData()
 {
     return _localData;
+}
+
+TaskModel *DataController::taskModel() const
+{
+    return _taskModel;
+}
+
+TagModel *DataController::tagModel() const
+{
+    return _tagModel;
 }
