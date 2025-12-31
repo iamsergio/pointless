@@ -29,5 +29,12 @@ fi
 
 cd "${SCRIPT_DIR}"/../build-ios-dev/
 
-echo "Installing ./bin/${BIN_DIR}/pointless.app ..."
-xcrun devicectl device install app --device "$IPHONE_DEVICE_ID" ./bin/"${BIN_DIR}"/pointless.app
+APP_PATH="$(pwd)/bin/${BIN_DIR}/pointless.app"
+if [[ ! -d "$APP_PATH" ]]; then
+	echo "Error: Application bundle not found at $APP_PATH" >&2
+	echo "Pass --debug for a debug build." >&2
+	exit 1
+fi
+
+echo "Installing $APP_PATH ..."
+xcrun devicectl device install app --device "$IPHONE_DEVICE_ID" "$APP_PATH"
