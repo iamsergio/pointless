@@ -1,4 +1,4 @@
-- refresh model after refresh
+- Add Task
 - Style task menu
 - fix calendar
   - Add tests
@@ -7,4 +7,3 @@
 - Use std::expected everywhere
 - return views so we dont allocate
 - nest expecteds
-- make refresh button more interactive
