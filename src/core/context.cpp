@@ -40,7 +40,7 @@ Context Context::self()
         pointless::abort("FATAL: Context not set");
     }
 
-    return s_currentContext.value();
+    return s_currentContext.value(); // NOLINT
 }
 
 bool Context::hasContext()
