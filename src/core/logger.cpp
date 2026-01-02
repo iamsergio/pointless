@@ -3,9 +3,11 @@
 
 #include "logger.h"
 
+#include <spdlog/sinks/stdout_color_sinks.h>
+
 using namespace pointless::core;
 
-quill::Logger *Logger::s_logger = nullptr;
+std::shared_ptr<spdlog::logger> Logger::s_logger = nullptr;
 
 void Logger::initialize()
 {
@@ -13,13 +15,10 @@ void Logger::initialize()
         return;
     }
 
-    quill::Backend::start();
-
-    auto console_sink = quill::Frontend::create_or_get_sink<quill::ConsoleSink>("console_sink");
-    s_logger = quill::Frontend::create_or_get_logger("pointless", console_sink);
+    s_logger = spdlog::stdout_color_mt("pointless");
 }
 
-quill::Logger *Logger::getLogger()
+std::shared_ptr<spdlog::logger> Logger::getLogger()
 {
     if (s_logger == nullptr) {
         initialize();
@@ -31,6 +30,6 @@ void Logger::initLogLevel()
 {
     if (std::getenv("VERBOSE") != nullptr) {
         P_LOG_INFO("VERBOSE environment variable is set, using debug log level");
-        Logger::getLogger()->set_log_level(quill::LogLevel::Debug);
+        Logger::getLogger()->set_level(spdlog::level::debug);
     }
 }

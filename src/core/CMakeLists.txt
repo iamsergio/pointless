@@ -38,7 +38,7 @@ target_compile_definitions(pointless_core PRIVATE POINTLESS_SUPABASE_URL="$ENV{P
 target_link_libraries(
   pointless_core
   PUBLIC glaze::glaze
-  PRIVATE quill::quill cpr::cpr)
+  PRIVATE spdlog::spdlog cpr::cpr)
 target_include_directories(
   pointless_core
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}

@@ -38,7 +38,7 @@ inline void abort(std::string_view message, std::source_location loc = std::sour
                    loc.file_name(),
                    loc.line(),
                    loc.function_name());
-    core::Logger::getLogger()->flush_log();
+    core::Logger::getLogger()->flush();
     std::abort();
 }
 
