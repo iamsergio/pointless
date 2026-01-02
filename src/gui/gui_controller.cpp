@@ -72,9 +72,6 @@ void GuiController::refresh()
         P_LOG_ERROR("GuiController::refresh: {}", refreshResult.error());
         return;
     }
-
-    _dataController->taskModel()->reload();
-    _dataController->tagModel()->reload();
 }
 
 TaskFilterModel *GuiController::taskFilterModel() const

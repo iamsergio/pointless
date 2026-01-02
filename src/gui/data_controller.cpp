@@ -79,6 +79,33 @@ std::expected<core::Data, std::string> DataController::pushRemoteData(core::Data
 
 std::expected<core::Data, std::string> DataController::refresh()
 {
+    // RAII reloader
+    struct ModelsReloader
+    {
+        TaskModel *taskModel;
+        TagModel *tagModel;
+        ModelsReloader(TaskModel *tm, TagModel *tagm)
+            : taskModel(tm)
+            , tagModel(tagm)
+        {
+        }
+        ~ModelsReloader()
+        {
+            if (taskModel != nullptr) {
+                taskModel->reload();
+            }
+            if (tagModel != nullptr) {
+                tagModel->reload();
+            }
+        }
+        ModelsReloader(const ModelsReloader &) = delete;
+        ModelsReloader(ModelsReloader &&) = delete;
+        ModelsReloader &operator=(const ModelsReloader &) = delete;
+        ModelsReloader &operator=(ModelsReloader &&) = delete;
+    };
+
+    ModelsReloader reloader(_taskModel, _tagModel);
+
     P_LOG_DEBUG("Starting refresh");
     if (!_localData.data().isValid()) {
         // The 1st time we load local data. then it stays in memory and we don't load from disk again
