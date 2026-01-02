@@ -106,7 +106,7 @@ std::expected<core::Data, std::string> DataController::refresh()
 
     ModelsReloader reloader(_taskModel, _tagModel);
 
-    P_LOG_DEBUG("Starting refresh");
+    P_LOG_INFO("Starting refresh");
     if (!_localData.data().isValid()) {
         // The 1st time we load local data. then it stays in memory and we don't load from disk again
         // we just save to disk
