@@ -20,6 +20,12 @@ Context::Context(IDataProvider::Type providerType, std::string localFilePath)
     : _dataProviderType(providerType)
     , _localFilePath(std::move(localFilePath))
 {
+    if (!_localFilePath.empty()) {
+        auto parentPath = std::filesystem::path(_localFilePath).parent_path();
+        if (!parentPath.empty()) {
+            std::filesystem::create_directories(parentPath);
+        }
+    }
 }
 
 void Context::setContext(const Context &context)
