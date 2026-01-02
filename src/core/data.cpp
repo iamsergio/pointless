@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 
 #include "data.h"
+#include "logger.h"
 
 #include <algorithm>
-#include <ranges>
 
 namespace pointless::core {
 
@@ -57,6 +57,7 @@ bool Data::updateTask(const Task &task, bool incrementTaskRevision)
 
 bool Data::setTask(const Task &task)
 {
+    P_LOG_DEBUG("Setting task '{}' Data={}", task.uuid, static_cast<void *>(this));
     auto it = findTaskByUuid(task.uuid);
     if (it != _data.tasks.end()) {
         *it = task;
@@ -391,6 +392,15 @@ bool Data::isEmpty() const
 bool Data::isValid() const
 {
     return revision() != -1 || !isEmpty();
+}
+
+std::string Data::debug_taskUids() const
+{
+    std::string result;
+    for (const auto &task : _data.tasks) {
+        result += task.uuid + " ";
+    }
+    return result;
 }
 
 }

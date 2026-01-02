@@ -48,6 +48,7 @@ public:
     [[nodiscard]] std::vector<Task> getTasksByParent(const std::string &parentUuid) const;
     [[nodiscard]] const Task &taskAt(size_t index) const;
     [[nodiscard]] const Task *taskForUuid(const std::string &uuid) const;
+    [[nodiscard]] std::string debug_taskUids() const;
 
     // Tag management methods
     void addTag(const Tag &tag);

@@ -71,7 +71,7 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
         return true;
     }
 
-    if (task->isDone || task->isGoal) {
+    if ((task->isDone && !task->needsSyncToServer) || task->isGoal) {
         return false;
     }
 

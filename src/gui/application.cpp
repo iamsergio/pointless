@@ -23,6 +23,7 @@ namespace {
 void printDebugInfo()
 {
     P_LOG_INFO("AppDataLocation: {}", QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).toStdString());
+    P_LOG_INFO("localFile: {}", core::Context::self().localFilePath());
 }
 }
 
@@ -43,7 +44,6 @@ Application::Application(int &argc, char **argv)
     parser.process(*this);
 
     core::Logger::initLogLevel();
-    printDebugInfo();
 
     if (pointless::isIOS()) {
         // Set the data dir before creating context, as ctor reads the data dir
@@ -55,6 +55,8 @@ Application::Application(int &argc, char **argv)
         core::Context::setContext(parser.isSet(testSupabaseOption) ? core::Context::defaultContextForSupabaseTesting()
                                                                    : core::Context::defaultContextForSupabaseRelease());
     }
+
+    printDebugInfo();
 
     // Initialize the controllers and models before loading QML
     GuiController::instance();

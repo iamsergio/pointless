@@ -70,6 +70,8 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
             return dt.time().hour() >= 17;
         }
         return false;
+    case NeedsSyncToServerRole:
+        return task.needsSyncToServer;
     default:
         return {};
     }
@@ -90,6 +92,7 @@ QHash<int, QByteArray> TaskModel::roleNames() const
     roles[IsFromCalendarRole] = "isFromCalendar";
     roles[CalendarNameRole] = "calendarName";
     roles[IsEveningRole] = "isEvening";
+    roles[NeedsSyncToServerRole] = "needsSyncToServer";
     return roles;
 }
 

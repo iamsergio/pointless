@@ -137,6 +137,8 @@ size_t LocalData::tagCount() const
 
 bool LocalData::updateTask(Task task)
 {
+    P_LOG_DEBUG("updateTask '{}' LocalData={}", task.uuid, static_cast<void *>(this));
+
     task.modificationTimestamp = core::Clock::now();
     task.needsSyncToServer = true;
     _data.needsLocalSave = true;

@@ -202,7 +202,8 @@ std::expected<core::Data, std::string> DataController::merge(const std::optional
             }
         } else {
             // It was deleted by another client, it's fine
-            P_LOG_INFO("Modified task '{}' not found in remote data, skipping", localTask.uuid);
+            P_LOG_INFO("Modified task uuid='{}' not found in remote data, skipping", localTask.uuid);
+            P_LOG_DEBUG("Known remote tasks: {}", remoteData.debug_taskUids());
         }
     }
 

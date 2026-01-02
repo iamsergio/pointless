@@ -44,7 +44,6 @@ public:
     };
     Q_ENUM(ViewType)
 
-    explicit GuiController(QObject *parent = nullptr);
     static GuiController *instance();
 
     [[nodiscard]] ViewType currentViewType() const;
@@ -76,6 +75,7 @@ public:
     [[nodiscard]] DataController *dataController() const;
 
     Q_INVOKABLE void dumpTaskDebug(const QString &taskUuid) const;
+    Q_INVOKABLE void dumpDebug() const;
 
     static GuiController *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
@@ -87,6 +87,7 @@ Q_SIGNALS:
     void uuidBeingEditedChanged();
 
 private:
+    explicit GuiController(QObject *parent = nullptr);
     ViewType _currentViewType = ViewType::Week;
     bool _isEditing = false;
     QString _uuidBeingEdited;

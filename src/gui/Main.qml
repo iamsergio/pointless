@@ -86,6 +86,7 @@ ApplicationWindow {
                     }
                     visible: GuiController.isDebug
                     z: 100
+                    onClicked: GuiController.dumpDebug()
                 }
 
                 ColumnLayout {

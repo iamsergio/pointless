@@ -39,6 +39,7 @@ GuiController::GuiController(QObject *parent)
     : QObject(parent)
     , _dataController(new DataController(this))
 {
+    Q_ASSERT(s_instance == nullptr);
 
 #ifdef POINTLESS_DEVELOPER_MODE
     // TODO: A better place to put it ?
@@ -251,6 +252,14 @@ void GuiController::dumpTaskDebug(const QString &taskUuid) const
         return;
     }
     task->dumpDebug();
+}
+
+void GuiController::dumpDebug() const
+{
+    core::LocalData &localData = _dataController->localData();
+    const auto &data = localData.data();
+    P_LOG_ERROR("needsLocalSave={} ; needsUpload={} ; Data={} ; LocalData={}", data.needsLocalSave, data.needsUpload,
+                static_cast<const void *>(&data), static_cast<const void *>(&localData));
 }
 
 QString GuiController::windowTitle() const

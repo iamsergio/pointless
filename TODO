@@ -1,9 +1,9 @@
+- refresh model after refresh
 - Style task menu
 - fix calendar
   - Add tests
 - Add login wall
 - Make login async
-- Make new iOS build
 - Use std::expected everywhere
 - return views so we dont allocate
 - nest expecteds
