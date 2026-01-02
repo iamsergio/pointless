@@ -43,6 +43,8 @@ Application::Application(int &argc, char **argv)
 
     core::Logger::initLogLevel();
 
+    printDebugInfo();
+
     // Context might have been set already in tests
     if (!core::Context::hasContext()) {
         core::Context::setContext(parser.isSet(testSupabaseOption) ? core::Context::defaultContextForSupabaseTesting()
@@ -55,8 +57,6 @@ Application::Application(int &argc, char **argv)
     QQuickStyle::setStyle(QStringLiteral("Fusion"));
 
     _engine.loadFromModule("pointless", "Main");
-
-    printDebugInfo();
 
     if (_engine.rootObjects().isEmpty()) {
         P_LOG_ERROR("No root objects loaded");
