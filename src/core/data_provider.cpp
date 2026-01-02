@@ -19,6 +19,7 @@ std::unique_ptr<IDataProvider> IDataProvider::createProvider()
     switch (context.dataProviderType()) {
     case Type::None:
         pointless::abort("invalid IDataProvider::Type enum value");
+        break;
     case Type::TestsLocal:
         return std::make_unique<TestLocalDataProvider>(context.localFilePath());
     case Type::TestSupabase:
@@ -32,10 +33,12 @@ std::unique_ptr<IDataProvider> IDataProvider::createProvider()
     case Type::TestsLocal:
     case Type::None:
         pointless::abort("invalid IDataProvider::Type enum value");
+        break;
     case Type::Supabase:
         return SupabaseProvider::createDefault();
     }
 #endif
 
     pointless::abort("invalid IDataProvider::Type enum value");
+    return {};
 }

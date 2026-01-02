@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
+#pragma once
+
 #include "logger.h"
 
 #include <string>
@@ -29,9 +31,13 @@ inline bool isIOS()
 #endif
 }
 
-inline void abort(std::string_view message, std::source_location location = std::source_location::current())
+inline void abort(std::string_view message, std::source_location loc = std::source_location::current())
 {
-    P_LOG_CRITICAL("aborting: {} at {}", message, location);
+    P_LOG_CRITICAL("aborting: {} at {}:{} {}",
+                   message,
+                   loc.file_name(),
+                   loc.line(),
+                   loc.function_name());
     core::Logger::getLogger()->flush_log();
     std::abort();
 }

@@ -57,4 +57,5 @@ inline std::string_view enumToString(IDataProvider::Type type)
     }
 
     pointless::abort("invalid IDataProvider::Type enum value");
+    return {};
 }
