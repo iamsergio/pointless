@@ -5,6 +5,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import pointless 1.0
+
 ApplicationWindow {
     id: mainWindow
     objectName: "mainWindow"

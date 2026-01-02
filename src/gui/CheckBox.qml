@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: MIT
 
 import QtQuick 2.15
-import QtQuick.Controls
+import QtQuick.Controls as QQC
 
 import pointless 1.0
 
-CheckBox {
+QQC.CheckBox {
     id: root
     indicator: Rectangle {
         implicitWidth: Style.fromPixel(17)
