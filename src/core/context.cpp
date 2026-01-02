@@ -10,6 +10,8 @@
 
 using namespace pointless::core;
 
+std::optional<std::string> Context::_clientDataDir = std::nullopt;
+
 namespace {
 std::optional<Context> s_currentContext; // NOLINT // clazy:exclude=non-pod-global-static
 }
@@ -42,12 +44,22 @@ bool Context::hasContext()
 
 std::string Context::clientDataDir()
 {
+    if (_clientDataDir.has_value()) {
+        return _clientDataDir.value();
+    }
+
+    // fallback to environment variable
     const char *envVar = std::getenv("POINTLESS_CLIENT_DATA_DIR");
     if (envVar == nullptr) {
         pointless::abort("FATAL: POINTLESS_CLIENT_DATA_DIR environment variable is not set");
     }
 
     return envVar;
+}
+
+void Context::setClientDataDir(const std::string &dir)
+{
+    _clientDataDir = dir;
 }
 
 Context Context::defaultContextForSupabaseTesting()

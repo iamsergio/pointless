@@ -6,6 +6,7 @@
 #include "data_provider.h"
 
 #include <string>
+#include <optional>
 
 namespace pointless::core {
 
@@ -33,12 +34,14 @@ struct Context
     ~Context() = default;
 
     [[nodiscard]] static std::string clientDataDir();
+    static void setClientDataDir(const std::string &dir);
     [[nodiscard]] static Context defaultContextForSupabaseTesting();
     [[nodiscard]] static Context defaultContextForSupabaseRelease();
 
 private:
     IDataProvider::Type _dataProviderType;
     std::string _localFilePath;
+    static std::optional<std::string> _clientDataDir;
 };
 
 }

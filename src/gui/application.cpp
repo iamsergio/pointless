@@ -6,6 +6,7 @@
 
 #include "core/logger.h"
 #include "core/context.h"
+#include "core/utils.h"
 
 #include <QCommandLineOption>
 #include <QCommandLineParser>
@@ -42,8 +43,12 @@ Application::Application(int &argc, char **argv)
     parser.process(*this);
 
     core::Logger::initLogLevel();
-
     printDebugInfo();
+
+    if (pointless::isIOS()) {
+        // Set the data dir before creating context, as ctor reads the data dir
+        core::Context::setClientDataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).toStdString());
+    }
 
     // Context might have been set already in tests
     if (!core::Context::hasContext()) {
