@@ -6,7 +6,7 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickControls2)
 
 qt_policy(SET QTP0001 NEW)
 
-qt_add_library(pointless_gui)
+qt_add_library(pointless_gui STATIC)
 
 if(POINTLESS_ENABLE_TESTS)
   target_link_libraries(pointless_gui PRIVATE Spix::QtQuick)
@@ -69,9 +69,12 @@ qt_add_qml_module(
   fonts/FontAwesome7Free-Regular-400.otf
   fonts/FontAwesome7-Solid-900.otf
   OUTPUT_DIRECTORY
-  ${CMAKE_BINARY_DIR}/pointless)
+  ${CMAKE_BINARY_DIR}/pointless
+  # NO_PLUGIN
+)
 
 target_link_libraries(pointless_gui PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Qt6::QuickControls2 pointless_core)
+target_link_libraries(pointless_gui PRIVATE pointless_guiplugin)
 
 qt_add_executable(pointless main.cpp)
 target_link_libraries(pointless PRIVATE pointless_gui Qt6::Core Qt6::Gui Qt6::Quick)
