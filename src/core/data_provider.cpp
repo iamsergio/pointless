@@ -4,6 +4,7 @@
 #include "data_provider.h"
 #include "supabase.h"
 #include "context.h"
+#include "utils.h"
 
 #ifdef POINTLESS_ENABLE_TESTS
 #include "test_local_provider.h"
@@ -17,7 +18,7 @@ std::unique_ptr<IDataProvider> IDataProvider::createProvider()
 #ifdef POINTLESS_ENABLE_TESTS
     switch (context.dataProviderType()) {
     case Type::None:
-        std::abort();
+        pointless::abort("invalid IDataProvider::Type enum value");
     case Type::TestsLocal:
         return std::make_unique<TestLocalDataProvider>(context.localFilePath());
     case Type::TestSupabase:
@@ -30,11 +31,11 @@ std::unique_ptr<IDataProvider> IDataProvider::createProvider()
     case Type::TestSupabase:
     case Type::TestsLocal:
     case Type::None:
-        std::abort();
+        pointless::abort("invalid IDataProvider::Type enum value");
     case Type::Supabase:
         return SupabaseProvider::createDefault();
     }
 #endif
 
-    std::abort();
+    pointless::abort("invalid IDataProvider::Type enum value");
 }

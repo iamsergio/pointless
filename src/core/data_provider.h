@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "utils.h"
+
 #include <memory>
 #include <string>
 #include <utility>
@@ -54,5 +56,5 @@ inline std::string_view enumToString(IDataProvider::Type type)
         return "TestSupabase";
     }
 
-    std::abort();
+    pointless::abort("invalid IDataProvider::Type enum value");
 }

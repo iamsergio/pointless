@@ -29,9 +29,7 @@ void Context::setContext(const Context &context)
 Context Context::self()
 {
     if (s_currentContext == std::nullopt) {
-        P_LOG_CRITICAL("FATAL: Context not set");
-        Logger::getLogger()->flush_log();
-        std::abort();
+        pointless::abort("FATAL: Context not set");
     }
 
     return s_currentContext.value();
@@ -46,8 +44,7 @@ std::string Context::clientDataDir()
 {
     const char *envVar = std::getenv("POINTLESS_CLIENT_DATA_DIR");
     if (envVar == nullptr) {
-        P_LOG_CRITICAL("FATAL: POINTLESS_CLIENT_DATA_DIR environment variable is not set");
-        std::abort();
+        pointless::abort("FATAL: POINTLESS_CLIENT_DATA_DIR environment variable is not set");
     }
 
     return envVar;

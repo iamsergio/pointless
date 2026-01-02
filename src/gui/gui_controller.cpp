@@ -11,7 +11,7 @@
 #include "Clock.h"
 
 #include "core/Clock.h"
-#include "core/data.h"
+#include "core/utils.h"
 #include "core/logger.h"
 #include "core/task.h"
 #include "core/context.h"
@@ -43,8 +43,7 @@ GuiController::GuiController(QObject *parent)
 #ifdef POINTLESS_DEVELOPER_MODE
     // TODO: A better place to put it ?
     if (!_dataController->loginWithDefaults()) {
-        P_LOG_CRITICAL("Failed to login with default credentials in developer mode");
-        std::abort();
+        pointless::abort("Failed to login with default credentials in developer mode");
     }
 #else
     // TODO: A better place to put it ?
@@ -274,8 +273,7 @@ GuiController *GuiController::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
     Q_UNUSED(jsEngine)
 
     if (s_instance == nullptr) {
-        P_LOG_CRITICAL("Initialize GuiController before using in QML");
-        std::abort();
+        pointless::abort("Initialize GuiController before using in QML");
     }
 
     return s_instance;

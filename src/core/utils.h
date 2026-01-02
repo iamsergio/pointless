@@ -1,8 +1,12 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
+#include "logger.h"
+
 #include <string>
+#include <string_view>
 #include <cstdlib>
+#include <source_location>
 
 #ifdef __APPLE__
 #include <TargetConditionals.h>
@@ -23,6 +27,13 @@ inline bool isIOS()
 #else
     return false;
 #endif
+}
+
+inline void abort(std::string_view message, std::source_location location = std::source_location::current())
+{
+    P_LOG_CRITICAL("aborting: {} at {}", message, location);
+    core::Logger::getLogger()->flush_log();
+    std::abort();
 }
 
 }

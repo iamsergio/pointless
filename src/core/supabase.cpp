@@ -135,8 +135,7 @@ std::pair<std::string, std::string> SupabaseProvider::defaultLoginPassword() con
     static const std::string password = pointless::getenv_or_empty("POINTLESS_PASSWORD");
 
     if (username.empty() || password.empty()) {
-        P_LOG_CRITICAL("Environment variables POINTLESS_USERNAME and POINTLESS_PASSWORD must be set for this test.");
-        std::abort();
+        pointless::abort("Environment variables POINTLESS_USERNAME and POINTLESS_PASSWORD must be set for this test.");
     }
 
     return { username, password };
