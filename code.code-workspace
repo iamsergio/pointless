@@ -41,7 +41,9 @@
     "qt-qml.qmlls.verboseOutput": true,
     "qt-qml.qmlls.additionalImportPaths": [
       "/pub_data/sources/pointless_cpp/build-dev/src/gui/"
-    ]
+    ],
+    "cmake.showSystemKits": false,
+    "cmake.enableAutomaticKitScan": false
   },
   "launch": {
     "version": "0.2.0",
