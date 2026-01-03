@@ -50,6 +50,8 @@ std::expected<pointless::core::Data, std::string> LocalData::loadDataFromFile(co
 
 std::expected<std::monostate, std::string> LocalData::save() const
 {
+    P_LOG_INFO("Saving data to disk, numTasks={}, revision={}", _data.taskCount(), _data.revision());
+
     const auto filename = getDataFilePath();
     std::ofstream file(filename);
     if (!file) {

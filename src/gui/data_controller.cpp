@@ -280,8 +280,8 @@ std::expected<core::Data, std::string> DataController::merge(const std::optional
         }
     }
 
-    P_LOG_DEBUG("Merged local and remote data. newData.numTasks={}, newData.revision={}",
-                remoteData.taskCount(), remoteData.revision());
+    P_LOG_DEBUG("Merged local and remote data. newData.numTasks={}, newData.revision={}, newData.needsLocalSave={}",
+                remoteData.taskCount(), remoteData.revision(), remoteData.needsLocalSave);
     return remoteData;
 }
 
