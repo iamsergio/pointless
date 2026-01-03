@@ -109,15 +109,6 @@ void TaskModel::reload()
     emit countChanged();
 }
 
-void TaskModel::addTask(const core::Task &task)
-{
-    const int numTasks = static_cast<int>(localData().taskCount());
-    beginInsertRows(QModelIndex(), numTasks, numTasks);
-    localData().data().addTask(task);
-    endInsertRows();
-    emit countChanged();
-}
-
 const core::Task *TaskModel::taskAt(int row) const
 {
     if (row < 0 || row >= static_cast<int>(localData().taskCount())) // NOLINT
@@ -156,6 +147,15 @@ DataController *TaskModel::dataController() const
 {
     auto *guiController = GuiController::instance();
     return guiController->dataController();
+}
+
+void TaskModel::addTask(const core::Task &task)
+{
+    const int numTasks = static_cast<int>(localData().taskCount());
+    beginInsertRows(QModelIndex(), numTasks, numTasks);
+    localData().addTask(task);
+    endInsertRows();
+    emit countChanged();
 }
 
 void TaskModel::setTaskDone(const QString &taskUuid, bool isDone)

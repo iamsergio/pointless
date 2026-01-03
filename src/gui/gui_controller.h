@@ -76,6 +76,7 @@ public:
 
     Q_INVOKABLE void dumpTaskDebug(const QString &taskUuid) const;
     Q_INVOKABLE void dumpDebug() const;
+    Q_INVOKABLE void onBackClicked();
 
     static GuiController *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
@@ -88,6 +89,7 @@ Q_SIGNALS:
 
 private:
     explicit GuiController(QObject *parent = nullptr);
+    void clearIsEditing();
     ViewType _currentViewType = ViewType::Week;
     bool _isEditing = false;
     QString _uuidBeingEdited;

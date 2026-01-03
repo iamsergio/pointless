@@ -57,6 +57,7 @@ public:
         return _data.deletedTaskUuids();
     }
 
+    bool addTask(Task task);
     bool updateTask(Task task);
     bool removeTask(const std::string &uuid);
     bool removeTag(const std::string &tagName);

@@ -147,3 +147,21 @@ bool LocalData::updateTask(Task task)
 
     return _data.setTask(task);
 }
+
+bool LocalData::addTask(Task task)
+{
+    P_LOG_DEBUG("addTask '{}' LocalData={}", task.uuid, static_cast<void *>(this));
+
+    if (task.uuid.empty()) {
+        P_LOG_ERROR("Cannot add task with empty UUID");
+        return false;
+    }
+
+    task.creationTimestamp = core::Clock::now();
+    task.modificationTimestamp = task.creationTimestamp;
+    task.needsSyncToServer = true;
+    _data.needsLocalSave = true;
+    _data.addTask(task);
+
+    return true;
+}

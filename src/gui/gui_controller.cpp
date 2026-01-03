@@ -10,7 +10,6 @@
 #include "data_controller.h"
 #include "Clock.h"
 
-#include "core/Clock.h"
 #include "core/utils.h"
 #include "core/logger.h"
 #include "core/task.h"
@@ -207,15 +206,15 @@ void GuiController::setIsEditing(bool isEditing)
 
 void GuiController::addNewTask(const QString &title)
 {
+    clearIsEditing();
     if (title.isEmpty()) {
+        P_LOG_ERROR("Won't add task with empty title");
         return;
     }
 
     pointless::core::Task task;
     task.uuid = QUuid::createUuid().toString(QUuid::WithoutBraces).toStdString();
     task.title = title.toStdString();
-    task.creationTimestamp = pointless::core::Clock::now();
-    task.modificationTimestamp = task.creationTimestamp;
 
     _dataController->taskModel()->addTask(task);
 }
@@ -293,4 +292,15 @@ GuiController *GuiController::instance()
     }
 
     return s_instance;
+}
+
+void GuiController::onBackClicked()
+{
+    clearIsEditing();
+}
+
+void GuiController::clearIsEditing()
+{
+    setIsEditing(false);
+    setUuidBeingEdited({});
 }

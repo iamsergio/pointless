@@ -37,14 +37,12 @@ ApplicationWindow {
                 z: mainView.z + 1
 
                 onBackClicked: {
-                    GuiController.isEditing = false;
-                    GuiController.uuidBeingEdited = "";
+                    GuiController.onBackClicked();
                 }
 
                 onSaveClicked: {
                     // Implement save logic here
-                    GuiController.isEditing = false;
-                    GuiController.uuidBeingEdited = "";
+                    GuiController.addNewTask();
                 }
             }
 
