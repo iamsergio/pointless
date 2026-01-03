@@ -169,6 +169,9 @@ std::expected<core::Data, std::string> DataController::refresh()
 std::expected<core::Data, std::string> DataController::merge(const std::optional<core::Data> &remoteDataOpt)
 {
     core::Data &localData = _localData.data();
+    P_LOG_INFO("Merging data: local has numTasks={}, revision={}. remoteData has value={}",
+               localData.taskCount(), localData.revision(), remoteDataOpt.has_value());
+
     if (!remoteDataOpt.has_value()) {
         // #1. There's no remote data. Reset revision and use local data.
         localData.setRevision(0);
@@ -176,14 +179,18 @@ std::expected<core::Data, std::string> DataController::merge(const std::optional
         localData.needsUpload = true;
         localData.needsLocalSave = true;
 
-        P_LOG_DEBUG("No remote data, using local data");
+        P_LOG_INFO("No remote data, using local data");
         return localData;
     }
 
     core::Data remoteData = *remoteDataOpt;
+
+    P_LOG_INFO("Merging data: Remote data has numTasks={}, revision={}",
+               remoteData.taskCount(), remoteData.revision());
+
     if (localData.revision() == -1 && localData.isEmpty()) {
         // 2. Local data is empty, use remote data.
-        P_LOG_DEBUG("Local data was empty, replaced with remote data");
+        P_LOG_INFO("Local data was empty, replaced with remote data");
         remoteData.needsLocalSave = true;
         return remoteData;
     }
