@@ -12,7 +12,13 @@ class Application : public QGuiApplication
 {
     Q_OBJECT
 public:
-    explicit Application(int &argc, char **argv);
+    enum class Option : std::uint8_t {
+        None = 0,
+        GuiTests = 1
+    };
+    Q_DECLARE_FLAGS(Options, Option)
+
+    explicit Application(int &argc, char **argv, Options options = {});
 
 private:
     QQmlApplicationEngine _engine;

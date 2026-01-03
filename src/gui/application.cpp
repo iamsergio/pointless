@@ -27,9 +27,15 @@ void printDebugInfo()
 }
 }
 
-Application::Application(int &argc, char **argv)
+Application::Application(int &argc, char **argv, Options options)
     : QGuiApplication(argc, argv)
 {
+    if ((options & Option::GuiTests) != 0U) {
+        if (std::getenv("QT_QPA_PLATFORM") == nullptr) {
+            qputenv("QT_QPA_PLATFORM", "offscreen");
+        }
+    }
+
     QCoreApplication::setApplicationName(QStringLiteral("pointless"));
     QCoreApplication::setApplicationVersion(QStringLiteral("0.1"));
 

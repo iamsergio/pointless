@@ -282,11 +282,8 @@ public:
     pointless::Application _app;
 
     TestTimerSaveLocal(int &argc, char **argv)
-        : _app(argc, argv)
+        : _app(argc, argv, Application::Option::GuiTests)
     {
-        if (!std::getenv("QT_QPA_PLATFORM")) {
-            qputenv("QT_QPA_PLATFORM", "offscreen");
-        }
     }
 
     void exec()

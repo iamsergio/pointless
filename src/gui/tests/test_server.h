@@ -14,7 +14,7 @@ class TestServer : public spix::TestServer
 {
 public:
     TestServer(int &argc, char **argv)
-        : _app(argc, argv)
+        : _app(argc, argv, Application::Option::GuiTests)
     {
         _bot = new spix::QtQmlBot();
         _bot->runTestServer(*this);
