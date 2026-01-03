@@ -234,10 +234,14 @@ void GuiController::addNewTask(QString title, const QString &tag)
 
     if (!extractedTag.isEmpty()) {
         task.tags.push_back(extractedTag.toStdString());
+    } else if (!tag.isEmpty()) {
+        task.tags.push_back(tag.toStdString());
     }
 
-    if (!tag.isEmpty()) {
-        task.tags.push_back(tag.toStdString());
+    if (_currentViewType == ViewType::Soon) {
+        task.tags.emplace_back("soon");
+    } else if (_currentViewType == ViewType::Week) {
+        task.tags.emplace_back("current");
     }
 
     _dataController->taskModel()->addTask(task);

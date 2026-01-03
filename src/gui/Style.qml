@@ -44,4 +44,7 @@ Item {
     readonly property color calendarHighlight: "#0290f6"
     readonly property color calendarText: "#ffffff"
     readonly property color calendarSecondaryText: "#98999e"
+
+    // plus button:
+    readonly property color plusButtonColor: "#0ea5e9"
 }

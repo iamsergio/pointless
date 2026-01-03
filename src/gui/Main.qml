@@ -88,6 +88,25 @@ ApplicationWindow {
                     onClicked: GuiController.dumpDebug()
                 }
 
+                FontAwesomeButton {
+                    id: addTaskButton
+                    fontAwesomeIcon: "\uf055"
+                    iconSize: Style.fromPixel(32)
+                    iconColor: Style.plusButtonColor
+                    backgroundColor: "transparent"
+                    visible: !GuiController.isEditing
+                    anchors {
+                        right: parent.right
+                        bottom: parent.bottom
+                        rightMargin: Style.fromPixel(16)
+                        bottomMargin: Style.fromPixel(16)
+                    }
+                    z: 100
+                    onClicked: {
+                        GuiController.isEditing = true;
+                    }
+                }
+
                 ColumnLayout {
                     anchors.fill: parent
                     anchors.margins: Style.fromPixel(20)

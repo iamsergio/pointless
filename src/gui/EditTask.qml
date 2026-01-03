@@ -50,7 +50,7 @@ Rectangle {
                 fontAwesomeIcon: "\uf00c" // Check
                 backgroundColor: "transparent"
                 iconColor: "white"
-                onClicked: root.saveClicked(titleInput.text, "current")
+                onClicked: root.saveClicked(titleInput.text, "")
             }
         }
 
