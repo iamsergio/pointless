@@ -34,6 +34,8 @@ Application::Application(int &argc, char **argv, Options options)
         if (std::getenv("QT_QPA_PLATFORM") == nullptr) {
             qputenv("QT_QPA_PLATFORM", "offscreen");
         }
+
+        qputenv("QT_FATAL_WARNINGS", "1");
     }
 
     QCoreApplication::setApplicationName(QStringLiteral("pointless"));
