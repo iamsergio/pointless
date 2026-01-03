@@ -82,21 +82,9 @@ Rectangle {
                 }
             }
 
-            Rectangle {
-                visible: root.taskTagName !== ""
-                color: GuiController.colorFromTag(root.taskTagName)
-                radius: Style.fromPixel(10)
-                implicitHeight: Style.fromPixel(18)
-                implicitWidth: tagText.implicitWidth + Style.fromPixel(14)
+            Tag {
+                tagName: root.taskTagName
                 Layout.alignment: Qt.AlignVCenter
-
-                Text {
-                    id: tagText
-                    anchors.centerIn: parent
-                    text: root.taskTagName
-                    color: "white"
-                    font.pixelSize: Style.fromPixel(12)
-                }
             }
 
             FontAwesomeButton {

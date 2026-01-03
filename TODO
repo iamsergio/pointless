@@ -1,7 +1,8 @@
 - Add Task
-- Style task menu
-- fix calendar
+  - set tag
+  - fix calendar
   - Add tests
+- Style task menu
 - Add login wall
 - Make login async
 - Use std::expected everywhere
