@@ -20,6 +20,7 @@ Checks: >
   -cppcoreguidelines-pro-type-const-cast,
   -readability-magic-numbers,
   -readability-convert-member-functions-to-static,
+  -readability-make-member-function-const,
   -misc-const-correctness,
   -misc-non-private-member-variables-in-classes,
   -misc-include-cleaner,

@@ -15,8 +15,6 @@
 #include <QString>
 #include <QVariant>
 
-#include <vector>
-
 TagModel::TagModel(QObject *parent)
     : QAbstractListModel(parent)
 {
