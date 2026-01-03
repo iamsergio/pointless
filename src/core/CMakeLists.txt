@@ -85,4 +85,7 @@ endif()
 if(NOT IOS)
   add_executable(supabase_push supabase_push.cpp)
   target_link_libraries(supabase_push PRIVATE pointless_core)
+
+  add_executable(supabase_pull supabase_pull.cpp)
+  target_link_libraries(supabase_pull PRIVATE pointless_core)
 endif()
