@@ -35,7 +35,9 @@ Application::Application(int &argc, char **argv, Options options)
             qputenv("QT_QPA_PLATFORM", "offscreen");
         }
 
+        // Tests have fatal warnings
         qputenv("QT_FATAL_WARNINGS", "1");
+        core::Logger::setWarningsFatal(true);
     }
 
     QCoreApplication::setApplicationName(QStringLiteral("pointless"));

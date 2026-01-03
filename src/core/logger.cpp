@@ -9,6 +9,7 @@
 using namespace pointless::core;
 
 std::shared_ptr<spdlog::logger> Logger::s_logger = nullptr;
+bool Logger::s_warningsFatal = false;
 
 void Logger::initialize()
 {
@@ -39,4 +40,14 @@ void Logger::initLogLevel()
         P_LOG_INFO("VERBOSE environment variable is set, using debug log level");
         Logger::getLogger()->set_level(spdlog::level::debug);
     }
+}
+
+void Logger::setWarningsFatal(bool fatal)
+{
+    Logger::s_warningsFatal = fatal;
+}
+
+bool Logger::warningsFatal()
+{
+    return Logger::s_warningsFatal;
 }
