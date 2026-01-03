@@ -4,15 +4,22 @@
 #include "gui/data_controller.h"
 #include "gui/taskmodel.h"
 #include "gui/gui_controller.h"
+#include "gui/application.h"
+
 #include "core/context.h"
 #include "core/data_provider.h"
 #include "core/logger.h"
+
+#include <QTest> // for qWait
 
 #include <gtest/gtest.h>
 
 #include <filesystem>
 
 using namespace pointless;
+
+static int g_argc;
+static char **g_argv;
 
 constexpr const char *s_filename = "/tmp/pointless_test_data_controller_sync.json";
 
@@ -267,4 +274,88 @@ TEST(DataControllerTest, SetTaskDone)
 
     // 8. confirm localData.modifiedTasks() is empty
     EXPECT_TRUE(controller->_localData.data().modifiedTasks().empty());
+}
+
+class TestTimerSaveLocal
+{
+public:
+    pointless::Application _app;
+
+    TestTimerSaveLocal(int &argc, char **argv)
+        : _app(argc, argv)
+    {
+    }
+
+    void exec()
+    {
+        QMetaObject::invokeMethod(&_app, [this] {
+            // needs to run on main thread since it has a QTimer
+            executeTest();
+            _app.quit(); }, Qt::QueuedConnection);
+
+        _app.exec();
+    }
+
+private:
+    void executeTest()
+    {
+        core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+
+        GuiController *guiController = GuiController::instance();
+        ASSERT_EQ(guiController->thread(), QCoreApplication::instance()->thread());
+        DataController *controller = guiController->dataController();
+
+        core::Data remoteData;
+        core::Task task;
+        task.uuid = "uuid-task-timer";
+        task.title = "Task for timer test";
+        task.isDone = false;
+        task.revision = 0;
+        remoteData.addTask(task);
+        remoteData.setRevision(1);
+
+        initData(*controller, {}, remoteData);
+
+        auto syncResult = controller->refresh();
+        ASSERT_TRUE(syncResult.has_value());
+        ASSERT_EQ(syncResult->taskCount(), 1);
+        EXPECT_FALSE(syncResult->taskAt(0).isDone);
+        ASSERT_EQ(controller->_localData.data().taskCount(), 1);
+        EXPECT_FALSE(controller->_localData.data().taskAt(0).isDone);
+
+        P_LOG_INFO("test: Both remote and local have the task, now testing timer...");
+        TaskModel *model = controller->taskModel();
+        model->setTaskDone("uuid-task-timer", true);
+
+        ASSERT_EQ(controller->_localData.data().taskCount(), 1);
+        EXPECT_TRUE(controller->_localData.data().taskAt(0).isDone);
+
+        P_LOG_INFO("test: Starting to wait");
+        QTest::qWait(std::chrono::seconds(3));
+
+        core::LocalData diskData;
+        auto loadResult = diskData.loadDataFromFile();
+        ASSERT_TRUE(loadResult) << "Failed to load data from disk: " << loadResult.error();
+
+        ASSERT_TRUE(diskData.data().isValid());
+
+        ASSERT_EQ(diskData.data().taskCount(), 1);
+        EXPECT_EQ(diskData.data().taskAt(0).uuid, "uuid-task-timer");
+        EXPECT_TRUE(diskData.data().taskAt(0).isDone);
+    }
+};
+
+TEST(DataControllerTest, TimerSavesToDisk)
+{
+    TestTimerSaveLocal testServer(g_argc, g_argv);
+    EXPECT_NO_THROW(testServer.exec());
+}
+
+int main(int argc, char **argv)
+{
+    g_argc = argc;
+    g_argv = argv;
+
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

@@ -8,6 +8,7 @@
 #include "core/logger.h"
 
 #include <fstream>
+#include <chrono>
 
 using namespace pointless;
 
@@ -17,11 +18,31 @@ DataController::DataController(QObject *parent)
     , _taskModel(new TaskModel(this))
     , _tagModel(new TagModel(this))
 {
+    _saveToDiskTimer.setInterval(std::chrono::seconds(1));
+    _saveToDiskTimer.setSingleShot(true);
+    connect(&_saveToDiskTimer, &QTimer::timeout, this, [this] {
+        if (!_localData.data().needsLocalSave) {
+            return;
+        }
+
+        auto saveResult = _localData.save();
+        if (!saveResult) {
+            P_LOG_ERROR("Failed to save data to disk: {}", saveResult.error());
+        } else {
+            P_LOG_DEBUG("Data saved to disk");
+        }
+    });
 }
 
 bool DataController::loginWithDefaults()
 {
     return _dataProvider && _dataProvider->loginWithDefaults();
+}
+
+void DataController::updateTask(const core::Task &task)
+{
+    _localData.updateTask(task);
+    _saveToDiskTimer.start();
 }
 
 std::expected<core::Data, std::string> DataController::pullRemoteData()

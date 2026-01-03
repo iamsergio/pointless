@@ -75,6 +75,8 @@ if(POINTLESS_ENABLE_TESTS)
   enable_testing()
   message(STATUS "Building with tests")
   find_package(GTest CONFIG REQUIRED)
+  find_package(Qt6Test REQUIRED)
+
   add_definitions(-DPOINTLESS_ENABLE_TESTS)
 endif()
 

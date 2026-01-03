@@ -104,7 +104,7 @@ int TaskModel::count() const
 void TaskModel::reload()
 {
     beginResetModel();
-    P_LOG_INFO("size = {}", static_cast<int>(localData().taskCount()));
+    P_LOG_INFO("numTasks = {}", static_cast<int>(localData().taskCount()));
     endResetModel();
     emit countChanged();
 }
@@ -144,14 +144,18 @@ int TaskModel::indexForTask(const QString &taskUuid) const
 
 const core::LocalData &TaskModel::localData() const
 {
-    auto *guiController = GuiController::instance();
-    return guiController->dataController()->localData();
+    return dataController()->localData();
 }
 
 core::LocalData &TaskModel::localData()
 {
+    return dataController()->localData();
+}
+
+DataController *TaskModel::dataController() const
+{
     auto *guiController = GuiController::instance();
-    return guiController->dataController()->localData();
+    return guiController->dataController();
 }
 
 void TaskModel::setTaskDone(const QString &taskUuid, bool isDone)
@@ -175,11 +179,8 @@ void TaskModel::setTaskDone(const QString &taskUuid, bool isDone)
     core::Task updatedTask = *task;
     updatedTask.isDone = isDone;
 
-    if (localData().updateTask(updatedTask)) {
-        emit dataChanged(index(idx), index(idx));
-    } else {
-        P_LOG_ERROR("Failed to update task UUID: {}", taskUuid.toStdString());
-    }
+    dataController()->updateTask(updatedTask);
+    emit dataChanged(index(idx), index(idx));
 }
 
 TaskModel::~TaskModel()

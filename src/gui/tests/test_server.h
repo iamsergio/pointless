@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
-#include "../application.h"
+#include "gui/application.h"
 
 #include <Spix/QtQmlBot.h>
 #include "../../../3rdparty/spix/libs/Scenes/QtQuick/src/Utils/DebugDump.h"

@@ -62,7 +62,7 @@ int TagModel::count() const
 void TagModel::reload()
 {
     beginResetModel();
-    P_LOG_INFO("size = {}", static_cast<int>(localData().tagCount()));
+    P_LOG_INFO("numTags = {}", static_cast<int>(localData().tagCount()));
     endResetModel();
     emit countChanged();
 }

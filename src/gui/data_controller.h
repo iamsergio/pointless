@@ -11,6 +11,7 @@
 #include "core/data.h"
 
 #include <QObject>
+#include <QTimer>
 
 #include <expected>
 #include <optional>
@@ -27,6 +28,7 @@ public:
 
     bool loginWithDefaults();
     std::expected<pointless::core::Data, std::string> refresh();
+    void updateTask(const pointless::core::Task &task);
 
     pointless::core::LocalData &localData();
 
@@ -48,4 +50,5 @@ private:
     std::unique_ptr<IDataProvider> _dataProvider;
     TaskModel *_taskModel = nullptr;
     TagModel *_tagModel = nullptr;
+    QTimer _saveToDiskTimer;
 };
