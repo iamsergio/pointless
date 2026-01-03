@@ -15,7 +15,7 @@ Rectangle {
     required property bool taskIsDone
     required property bool taskIsImportant
     required property bool taskIsEvening
-    required property var taskDueDate
+    required property string taskDueDate
     required property bool taskHasDueDate
     required property string taskTagName
     required property bool taskIsFromCalendar

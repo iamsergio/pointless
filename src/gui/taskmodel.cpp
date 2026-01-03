@@ -51,7 +51,7 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
             }
             return dateStr;
         }
-        return {};
+        return QString();
     case HasDueDateRole:
         return task.dueDate.has_value();
     case TagNameRole:

@@ -99,7 +99,7 @@ Item {
                     required property bool isDone
                     required property bool isImportant
                     required property bool isEvening
-                    required property var dueDate
+                    required property string dueDate
                     required property bool hasDueDate
                     required property string tagName
                     required property bool isFromCalendar
