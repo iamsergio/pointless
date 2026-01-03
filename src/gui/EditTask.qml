@@ -24,6 +24,8 @@ Rectangle {
         onVisibleChanged: {
             if (visible) {
                 titleInput.clear();
+                titleInput.forceActiveFocus();
+                root.selectedTag = "";
             }
         }
 
@@ -72,7 +74,11 @@ Rectangle {
 
             LineEdit {
                 id: titleInput
+                focus: true
                 Layout.fillWidth: true
+                onTextEntered: function (text) {
+                    root.saveClicked(text, root.selectedTag);
+                }
             }
         }
 
