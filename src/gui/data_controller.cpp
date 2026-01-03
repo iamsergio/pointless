@@ -10,6 +10,9 @@
 #include <fstream>
 #include <chrono>
 
+/// Example of running a single test:
+/// ./bin/test_data_controller --gtest_filter=DataControllerTest.MergeNeedsLocalSave
+
 using namespace pointless;
 
 DataController::DataController(QObject *parent)
@@ -200,6 +203,11 @@ std::expected<core::Data, std::string> DataController::merge(const std::optional
         P_LOG_WARNING("sync(): Local has higher revision! local.rev={} ; remote.rev={}", localData.revision(), remoteData.revision());
         remoteData.needsLocalSave = true;
         return remoteData;
+    }
+
+    if (localData.revision() < remoteData.revision()) {
+        P_LOG_INFO("Local data revision behind remote, replaced with remote data");
+        remoteData.needsLocalSave = true;
     }
 
     // 4. Add new tags

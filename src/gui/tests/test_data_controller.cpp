@@ -354,6 +354,34 @@ TEST(DataControllerTest, TimerSavesToDisk)
     EXPECT_NO_THROW(testServer.exec());
 }
 
+TEST(DataControllerTest, MergeNeedsLocalSave)
+{
+    core::Logger::initLogLevel();
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+    DataController controller;
+
+    core::Data localData;
+    localData.setRevision(1);
+
+    core::Data remoteData;
+    core::Task task;
+    task.uuid = "uuid-task-merge";
+    task.title = "Remote Task";
+    task.revision = 0;
+    remoteData.addTask(task);
+    remoteData.setRevision(2);
+
+    initData(controller, localData, remoteData);
+
+    auto pullResult = controller.pullRemoteData();
+    ASSERT_TRUE(pullResult.has_value());
+
+    auto result = controller.merge(*pullResult);
+    ASSERT_TRUE(result.has_value());
+
+    EXPECT_TRUE(result->needsLocalSave);
+}
+
 int main(int argc, char **argv)
 {
     g_argc = argc;
