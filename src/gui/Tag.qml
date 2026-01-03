@@ -17,7 +17,7 @@ Rectangle {
     visible: root.tagName !== ""
     color: GuiController.colorFromTag(root.tagName)
     radius: Style.fromPixel(10)
-    implicitHeight: Style.fromPixel(18)
+    implicitHeight: Style.fromPixel(isInteractive ? 24 : 14)
     implicitWidth: tagText.implicitWidth + Style.fromPixel(14)
 
     border {
