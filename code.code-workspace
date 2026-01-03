@@ -43,7 +43,20 @@
       "/pub_data/sources/pointless_cpp/build-dev/src/gui/"
     ],
     "cmake.showSystemKits": false,
-    "cmake.enableAutomaticKitScan": false
+    "cmake.enableAutomaticKitScan": false,
+    "cmake.options.statusBarVisibility": "hidden",
+    "cmake.options.advanced": {
+      "configurePreset": {
+        "statusBarVisibility": "visible"
+      },
+      "buildTarget": {
+        "statusBarVisibility": "visible"
+      },
+      "launchTarget": {
+        "statusBarVisibility": "visible",
+        "inheritDefault": "visible"
+      },
+    }
   },
   "launch": {
     "version": "0.2.0",
