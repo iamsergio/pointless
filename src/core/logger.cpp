@@ -17,6 +17,7 @@ void Logger::initialize()
     }
 
     s_logger = spdlog::stdout_color_mt("pointless");
+    s_logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [%s:%#] %v");
 }
 
 std::shared_ptr<spdlog::logger> Logger::getLogger()
