@@ -10,6 +10,7 @@ Rectangle {
 
     required property string tagName
     property bool isSelected: false
+    property bool isInteractive: false
 
     signal clicked(string tagName)
 
@@ -20,7 +21,7 @@ Rectangle {
     implicitWidth: tagText.implicitWidth + Style.fromPixel(14)
 
     border {
-        width: isSelected ? Style.fromPixel(2) : 0
+        width: (isInteractive && isSelected) ? Style.fromPixel(2) : 0
         color: "white"
     }
 
@@ -34,6 +35,7 @@ Rectangle {
 
     MouseArea {
         anchors.fill: parent
+        enabled: root.isInteractive
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
