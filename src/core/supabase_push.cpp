@@ -16,15 +16,29 @@ using namespace pointless;
 int main(int argc, char *argv[])
 {
     try {
-        if (argc != 2) {
-            std::cerr << "Usage: " << argv[0] << " <json_file>\n";
+        if (argc != 3) {
+            std::cerr << "Usage: " << argv[0] << " [--test|--release] <json_file>\n";
+            std::cerr << "  --test     Use test Supabase environment\n";
+            std::cerr << "  --release  Use production Supabase environment\n";
+            return 1;
+        }
+
+        std::string mode = argv[1];
+        if (mode != "--test" && mode != "--release") {
+            std::cerr << "Error: First argument must be --test or --release\n";
+            std::cerr << "Usage: " << argv[0] << " [--test|--release] <json_file>\n";
             return 1;
         }
 
         core::Logger::initLogLevel();
-        core::Context::setContext(core::Context::defaultContextForSupabaseTesting());
 
-        std::string filePath = argv[1];
+        if (mode == "--test") {
+            core::Context::setContext(core::Context::defaultContextForSupabaseTesting());
+        } else {
+            core::Context::setContext(core::Context::defaultContextForSupabaseRelease());
+        }
+
+        std::string filePath = argv[2];
         std::ifstream file(filePath);
         if (!file.is_open()) {
             P_LOG_ERROR("Failed to open file: {}", filePath);
