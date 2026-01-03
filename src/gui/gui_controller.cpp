@@ -6,6 +6,7 @@
 #include "taskfiltermodel.h"
 #include "taskmodel.h"
 #include "tagmodel.h"
+#include "tagfiltermodel.h"
 #include "date_utils.h"
 #include "data_controller.h"
 #include "Clock.h"
@@ -87,6 +88,20 @@ TaskFilterModel *GuiController::taskFilterModel() const
 TaskModel *GuiController::taskModel() const
 {
     return _dataController->taskModel();
+}
+
+TagModel *GuiController::tagModel() const
+{
+    return _dataController->tagModel();
+}
+
+TagFilterModel *GuiController::tagFilterModel() const
+{
+    if (_tagFilterModel == nullptr) {
+        _tagFilterModel = new TagFilterModel(const_cast<GuiController *>(this));
+    }
+
+    return _tagFilterModel;
 }
 
 GuiController::ViewType GuiController::currentViewType() const

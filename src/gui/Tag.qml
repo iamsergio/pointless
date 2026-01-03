@@ -9,6 +9,9 @@ Rectangle {
     id: root
 
     required property string tagName
+    property bool isSelected: false
+
+    signal clicked(string tagName)
 
     visible: root.tagName !== ""
     color: GuiController.colorFromTag(root.tagName)
@@ -16,11 +19,25 @@ Rectangle {
     implicitHeight: Style.fromPixel(18)
     implicitWidth: tagText.implicitWidth + Style.fromPixel(14)
 
+    border {
+        width: isSelected ? Style.fromPixel(2) : 0
+        color: "white"
+    }
+
     Text {
         id: tagText
         anchors.centerIn: parent
         text: root.tagName
         color: "white"
         font.pixelSize: Style.fromPixel(12)
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: {
+            root.clicked(root.tagName);
+        }
     }
 }

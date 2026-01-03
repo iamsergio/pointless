@@ -58,6 +58,9 @@ qt_add_qml_module(
   tagmodel.cpp
   tagmodel.h
   taskfiltermodel.cpp
+  taskfiltermodel.h
+  tagfiltermodel.cpp
+  tagfiltermodel.h
   weekdayfiltermodel.cpp
   weekdayfiltermodel.h
   weekdaymodel.cpp

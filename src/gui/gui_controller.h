@@ -5,13 +5,14 @@
 
 #include "taskfiltermodel.h"
 #include "taskmodel.h"
+#include "tagmodel.h"
+#include "tagfiltermodel.h"
 
 #include <QDate>
 #include <QObject>
 #include <QQmlEngine>
 #include <QtQml/qqmlregistration.h>
 
-class TaskModel;
 class DataController;
 
 class GuiController : public QObject
@@ -26,6 +27,8 @@ class GuiController : public QObject
     Q_PROPERTY(QString navigatorPrettyEndDate READ navigatorPrettyEndDate NOTIFY navigatorEndDateChanged)
     Q_PROPERTY(TaskFilterModel *taskFilterModel READ taskFilterModel CONSTANT)
     Q_PROPERTY(TaskModel *taskModel READ taskModel CONSTANT)
+    Q_PROPERTY(TagModel *tagModel READ tagModel CONSTANT)
+    Q_PROPERTY(TagFilterModel *tagFilterModel READ tagFilterModel CONSTANT)
     Q_PROPERTY(bool isDebug READ isDebug CONSTANT)
     Q_PROPERTY(bool isMobile READ isMobile CONSTANT)
     Q_PROPERTY(bool isAndroid READ isAndroid CONSTANT)
@@ -37,6 +40,9 @@ class GuiController : public QObject
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
+    [[nodiscard]] TagModel *tagModel() const;
+    [[nodiscard]] TagFilterModel *tagFilterModel() const;
+
     enum class ViewType : uint8_t {
         Week,
         Soon,
@@ -96,4 +102,5 @@ private:
     QDate _navigatorStartDate;
     DataController *const _dataController;
     mutable TaskFilterModel *_taskFilterModel = nullptr;
+    mutable TagFilterModel *_tagFilterModel = nullptr;
 };

@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
+pragma ComponentBehavior: Bound
+
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import pointless 1.0
@@ -11,6 +13,8 @@ Rectangle {
 
     signal backClicked
     signal saveClicked(string title, string tag)
+
+    property string selectedTag: ""
 
     ColumnLayout {
         anchors.fill: parent
@@ -50,7 +54,7 @@ Rectangle {
                 fontAwesomeIcon: "\uf00c" // Check
                 backgroundColor: "transparent"
                 iconColor: "white"
-                onClicked: root.saveClicked(titleInput.text, "")
+                onClicked: root.saveClicked(titleInput.text, root.selectedTag)
             }
         }
 
@@ -86,28 +90,26 @@ Rectangle {
 
             Rectangle {
                 Layout.fillWidth: true
-                implicitHeight: Style.fromPixel(50)
+                implicitHeight: tagFlow.implicitHeight + Style.fromPixel(20)
                 color: Style.taskBackground
                 radius: 4
 
-                RowLayout {
+                Flow {
+                    id: tagFlow
                     anchors.fill: parent
                     anchors.margins: Style.fromPixel(10)
+                    spacing: Style.fromPixel(8)
 
-                    Text {
-                        text: "life" // Mock tag
-                        color: "white"
-                        font.pixelSize: Style.fromPixel(14)
-                    }
-
-                    Item {
-                        Layout.fillWidth: true
-                    }
-
-                    Text {
-                        text: "+ Add New"
-                        color: "#808080"
-                        font.pixelSize: Style.fromPixel(12)
+                    Repeater {
+                        model: GuiController.tagFilterModel
+                        Tag {
+                            required property string name
+                            isSelected: root.selectedTag === name
+                            tagName: name
+                            onClicked: function (name) {
+                                root.selectedTag = name;
+                            }
+                        }
                     }
                 }
             }
