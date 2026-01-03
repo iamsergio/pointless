@@ -103,8 +103,8 @@ ApplicationWindow {
                     anchors {
                         left: parent.left
                         bottom: parent.bottom
-                        leftMargin: Style.fromPixel(16)
-                        bottomMargin: Style.fromPixel(16)
+                        leftMargin: Style.fromPixel(32)
+                        bottomMargin: Style.fromPixel(32)
                     }
                     visible: GuiController.isDebug
                     z: 100
@@ -121,8 +121,8 @@ ApplicationWindow {
                     anchors {
                         right: parent.right
                         bottom: parent.bottom
-                        rightMargin: Style.fromPixel(16)
-                        bottomMargin: Style.fromPixel(16)
+                        rightMargin: Style.fromPixel(32)
+                        bottomMargin: Style.fromPixel(32)
                     }
                     z: 100
                     onClicked: {
