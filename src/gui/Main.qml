@@ -21,6 +21,19 @@ ApplicationWindow {
     topPadding: 0
     bottomPadding: 0
 
+    Connections {
+        target: GuiController
+        function onIsEditingChanged() {
+            if (!GuiController.isEditing) {
+                withinSafeArea.forceActiveFocus();
+            }
+        }
+    }
+
+    Component.onCompleted: {
+        withinSafeArea.forceActiveFocus();
+    }
+
     Rectangle {
         anchors.fill: parent
         color: Style.background
@@ -29,6 +42,16 @@ ApplicationWindow {
             id: withinSafeArea
             anchors.fill: parent
             anchors.topMargin: parent.SafeArea.margins.top
+
+            Keys.onPressed: function (event) {
+                if (GuiController.isEditing) {
+                    console.warn("Unexpected key press while editing. Ignoring.");
+                    return;
+                }
+
+                if (event.key == Qt.Key_N)
+                    GuiController.isEditing = true;
+            }
 
             EditTask {
                 id: editTaskView
