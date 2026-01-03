@@ -13,6 +13,11 @@ Rectangle {
     radius: 4
 
     signal textEntered(string text)
+    property alias text: input.text
+
+    function clear() {
+        input.text = "";
+    }
 
     RowLayout {
         anchors.fill: parent
@@ -24,6 +29,7 @@ Rectangle {
             Layout.fillWidth: true
             placeholderText: "New Task Title"
             color: "white"
+            placeholderTextColor: "#888888"
             background: null
             font.pixelSize: Style.fromPixel(14)
             selectByMouse: true
@@ -31,8 +37,8 @@ Rectangle {
 
             onAccepted: {
                 if (text.trim() !== "") {
-                    root.textEntered(text)
-                    text = ""
+                    root.textEntered(text);
+                    text = "";
                 }
             }
         }

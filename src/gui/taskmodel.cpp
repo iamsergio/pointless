@@ -72,6 +72,8 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         return false;
     case NeedsSyncToServerRole:
         return task.needsSyncToServer;
+    case RevisionRole:
+        return task.revision;
     default:
         return {};
     }
@@ -93,6 +95,7 @@ QHash<int, QByteArray> TaskModel::roleNames() const
     roles[CalendarNameRole] = "calendarName";
     roles[IsEveningRole] = "isEvening";
     roles[NeedsSyncToServerRole] = "needsSyncToServer";
+    roles[RevisionRole] = "revision";
     return roles;
 }
 
@@ -153,7 +156,7 @@ void TaskModel::addTask(const core::Task &task)
 {
     const int numTasks = static_cast<int>(localData().taskCount());
     beginInsertRows(QModelIndex(), numTasks, numTasks);
-    localData().addTask(task);
+    dataController()->addTask(task);
     endInsertRows();
     emit countChanged();
 }

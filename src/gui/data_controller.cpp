@@ -42,10 +42,22 @@ bool DataController::loginWithDefaults()
     return _dataProvider && _dataProvider->loginWithDefaults();
 }
 
-void DataController::updateTask(const core::Task &task)
+bool DataController::updateTask(const core::Task &task)
 {
-    _localData.updateTask(task);
-    _saveToDiskTimer.start();
+    if (_localData.updateTask(task)) {
+        _saveToDiskTimer.start();
+        return true;
+    }
+    return false;
+}
+
+bool DataController::addTask(const pointless::core::Task &task)
+{
+    if (_localData.addTask(task)) {
+        _saveToDiskTimer.start();
+        return true;
+    }
+    return false;
 }
 
 std::expected<core::Data, std::string> DataController::pullRemoteData()

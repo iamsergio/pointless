@@ -67,7 +67,9 @@ Item {
                     implicitHeight: 32
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                     backgroundColor: "transparent"
-                    onClicked: {}
+                    onClicked: {
+                        GuiController.isEditing = true;
+                    }
                 }
             }
 

@@ -9,13 +9,19 @@ Rectangle {
     id: root
     color: Style.background
 
-    signal backClicked()
-    signal saveClicked()
+    signal backClicked
+    signal saveClicked(string title, string tag)
 
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: Style.fromPixel(16)
         spacing: Style.fromPixel(20)
+
+        onVisibleChanged: {
+            if (visible) {
+                titleInput.clear();
+            }
+        }
 
         // Header
         RowLayout {
@@ -44,7 +50,7 @@ Rectangle {
                 fontAwesomeIcon: "\uf00c" // Check
                 backgroundColor: "transparent"
                 iconColor: "white"
-                onClicked: root.saveClicked()
+                onClicked: root.saveClicked(titleInput.text, "current")
             }
         }
 
@@ -94,7 +100,9 @@ Rectangle {
                         font.pixelSize: Style.fromPixel(14)
                     }
 
-                    Item { Layout.fillWidth: true }
+                    Item {
+                        Layout.fillWidth: true
+                    }
 
                     Text {
                         text: "+ Add New"

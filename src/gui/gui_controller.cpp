@@ -27,6 +27,7 @@
 
 #include <cstdlib>
 #include <string>
+#include <utility>
 
 using namespace pointless;
 
@@ -204,17 +205,40 @@ void GuiController::setIsEditing(bool isEditing)
     emit isEditingChanged();
 }
 
-void GuiController::addNewTask(const QString &title)
+void GuiController::addNewTask(QString title, const QString &tag)
 {
+    P_LOG_INFO("GuiController::addNewTask: Adding new task with title '{}'", title.toStdString());
     clearIsEditing();
-    if (title.isEmpty()) {
+
+    QString processedTitle = std::move(title);
+    QString extractedTag;
+
+    QStringList tokens = processedTitle.split(' ', Qt::SkipEmptyParts);
+    if (!tokens.isEmpty()) {
+        const QString &lastToken = tokens.last();
+        if (lastToken.startsWith(':') && lastToken.length() > 1) {
+            extractedTag = lastToken.mid(1);
+            tokens.removeLast();
+            processedTitle = tokens.join(' ');
+        }
+    }
+
+    if (processedTitle.isEmpty()) {
         P_LOG_ERROR("Won't add task with empty title");
         return;
     }
 
     pointless::core::Task task;
     task.uuid = QUuid::createUuid().toString(QUuid::WithoutBraces).toStdString();
-    task.title = title.toStdString();
+    task.title = processedTitle.toStdString();
+
+    if (!extractedTag.isEmpty()) {
+        task.tags.push_back(extractedTag.toStdString());
+    }
+
+    if (!tag.isEmpty()) {
+        task.tags.push_back(tag.toStdString());
+    }
 
     _dataController->taskModel()->addTask(task);
 }

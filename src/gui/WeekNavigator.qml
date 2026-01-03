@@ -16,7 +16,7 @@ Rectangle {
 
         FontAwesomeButton {
             id: leftIcon
-            fontAwesomeIcon: "\uf053"
+            fontAwesomeIcon: "\uf053" // left arrow
             iconSize: Style.fromPixel(14)
             iconColor: Style.textColor2
             backgroundColor: "transparent"
@@ -43,7 +43,7 @@ Rectangle {
 
         FontAwesomeButton {
             id: rightIcon
-            fontAwesomeIcon: "\uf054"
+            fontAwesomeIcon: "\uf054" // right arrow
             iconSize: leftIcon.iconSize
             iconColor: leftIcon.iconColor
             backgroundColor: leftIcon.backgroundColor

@@ -83,7 +83,7 @@ Rectangle {
             }
 
             Rectangle {
-                visible: root.taskTagName !== "" && GuiController.currentViewType === GuiController.Week
+                visible: root.taskTagName !== ""
                 color: GuiController.colorFromTag(root.taskTagName)
                 radius: Style.fromPixel(10)
                 implicitHeight: Style.fromPixel(18)

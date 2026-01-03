@@ -40,9 +40,8 @@ ApplicationWindow {
                     GuiController.onBackClicked();
                 }
 
-                onSaveClicked: {
-                    // Implement save logic here
-                    GuiController.addNewTask();
+                onSaveClicked: function (title, tag) {
+                    GuiController.addNewTask(title, tag);
                 }
             }
 

@@ -28,7 +28,8 @@ public:
 
     bool loginWithDefaults();
     std::expected<pointless::core::Data, std::string> refresh();
-    void updateTask(const pointless::core::Task &task);
+    bool updateTask(const pointless::core::Task &task);
+    bool addTask(const pointless::core::Task &task);
 
     pointless::core::LocalData &localData();
 

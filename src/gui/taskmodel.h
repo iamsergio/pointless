@@ -33,7 +33,8 @@ public:
         IsFromCalendarRole,
         CalendarNameRole,
         IsEveningRole,
-        NeedsSyncToServerRole
+        NeedsSyncToServerRole,
+        RevisionRole
     };
 
     explicit TaskModel(QObject *parent = nullptr);
