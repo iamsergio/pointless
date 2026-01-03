@@ -25,6 +25,7 @@
 #include <QtGlobal>
 #include <QUuid>
 #include <QDateTime>
+#include <QKeyEvent>
 
 #include <cstdlib>
 #include <string>
@@ -34,6 +35,30 @@ using namespace pointless;
 
 namespace {
 GuiController *s_instance = nullptr; // NOLINT // clazy:exclude=non-pod-global-static
+
+class EventFilter : public QObject
+{
+public:
+    explicit EventFilter(QObject *parent = nullptr)
+        : QObject(parent)
+    {
+    }
+
+    bool eventFilter(QObject * /*obj*/, QEvent *event) override
+    {
+        if (event->type() == QEvent::KeyPress) {
+            auto *keyEvent = static_cast<QKeyEvent *>(event); // NOLINT
+            if (keyEvent->key() == Qt::Key_Escape) {
+                if (GuiController::instance()->isEditing()) {
+                    GuiController::instance()->setIsEditing(false);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+};
+
 }
 
 GuiController::GuiController(QObject *parent)
@@ -41,6 +66,8 @@ GuiController::GuiController(QObject *parent)
     , _dataController(new DataController(this))
 {
     Q_ASSERT(s_instance == nullptr);
+
+    qApp->installEventFilter(new EventFilter(this));
 
 #ifdef POINTLESS_DEVELOPER_MODE
     // TODO: A better place to put it ?
