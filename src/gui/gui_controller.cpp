@@ -255,8 +255,8 @@ void GuiController::dumpDebug() const
 {
     core::LocalData &localData = _dataController->localData();
     const auto &data = localData.data();
-    P_LOG_ERROR("needsLocalSave={} ; needsUpload={} ; Data={} ; LocalData={}", data.needsLocalSave, data.needsUpload,
-                static_cast<const void *>(&data), static_cast<const void *>(&localData));
+    P_LOG_INFO("needsLocalSave={} ; needsUpload={} ; Data={} ; LocalData={}; revision={}; numTasks={}", data.needsLocalSave, data.needsUpload,
+               static_cast<const void *>(&data), static_cast<const void *>(&localData), data.revision(), data.taskCount());
 }
 
 QString GuiController::windowTitle() const
