@@ -284,6 +284,9 @@ public:
     TestTimerSaveLocal(int &argc, char **argv)
         : _app(argc, argv)
     {
+        if (!std::getenv("QT_QPA_PLATFORM")) {
+            qputenv("QT_QPA_PLATFORM", "offscreen");
+        }
     }
 
     void exec()

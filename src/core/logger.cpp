@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "logger.h"
+#include "core/utils.h"
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 
@@ -28,7 +29,12 @@ std::shared_ptr<spdlog::logger> Logger::getLogger()
 
 void Logger::initLogLevel()
 {
-    if (std::getenv("VERBOSE") != nullptr) {
+    bool useVerbose = std::getenv("VERBOSE") != nullptr;
+#ifdef POINTLESS_DEVELOPER_MODE
+    useVerbose = useVerbose || pointless::isIOS();
+#endif
+
+    if (useVerbose) {
         P_LOG_INFO("VERBOSE environment variable is set, using debug log level");
         Logger::getLogger()->set_level(spdlog::level::debug);
     }
