@@ -114,7 +114,7 @@ ApplicationWindow {
                 FontAwesomeButton {
                     id: addTaskButton
                     fontAwesomeIcon: "\uf055"
-                    iconSize: Style.fromPixel(32)
+                    iconSize: Style.plusButtonSize
                     iconColor: Style.plusButtonColor
                     backgroundColor: "transparent"
                     visible: !GuiController.isEditing

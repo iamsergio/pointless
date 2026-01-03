@@ -5,6 +5,8 @@ pragma Singleton
 
 import QtQuick 2.15
 
+import pointless 1.0
+
 Item {
 
     readonly property double scaleFactor: 1.5
@@ -47,4 +49,5 @@ Item {
 
     // plus button:
     readonly property color plusButtonColor: "#0ea5e9"
+    readonly property int plusButtonSize: GuiController.isMobile ? fromPixel(48) : fromPixel(32)
 }
