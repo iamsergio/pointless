@@ -8,11 +8,12 @@ import QtQuick 2.15
 import pointless 1.0
 
 Item {
-
+    id: root
     readonly property double scaleFactor: 1.5
+    readonly property bool isMobile: GuiController.isMobile
 
     function fromPixel(px) {
-        if (GuiController.isMobile)
+        if (root.isMobile)
             return px;
 
         return px * scaleFactor;
