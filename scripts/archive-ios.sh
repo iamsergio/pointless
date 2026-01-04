@@ -28,4 +28,4 @@ cd "$build_dir"
 
 xcodebuild -scheme pointless -configuration Release -destination "generic/platform=iOS" -archivePath pointless.xcarchive archive
 
-xcodebuild -exportArchive -archivePath pointless.xcarchive -exportOptionsPlist ./ExportOptions-TestFlight.plist -exportPath pointless_ipa
+xcodebuild -exportArchive -archivePath pointless.xcarchive -exportOptionsPlist ./ExportOptions-TestFlight.plist -exportPath pointless_ipa -allowProvisioningUpdates
