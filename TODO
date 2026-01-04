@@ -1,9 +1,13 @@
+- iOS GH CI
+- Read from apple calendar
 - Add Task
   - fix calendar
   - Add tests
 - Style task menu
 - Add login wall
 - Make login async
-- Use std::expected everywhere
-- return views so we dont allocate
-- nest expecteds
+
+- Nice to haves:
+  - Use std::expected everywhere
+  - return views so we dont allocate
+  - nest expecteds
