@@ -120,6 +120,7 @@ if(IOS)
       CACHE STRING "iOS development team to use for signing")
 
   configure_file(${CMAKE_SOURCE_DIR}/src/ios/Info.plist.in ${CMAKE_BINARY_DIR}/Info.plist @ONLY)
+  configure_file(${CMAKE_SOURCE_DIR}/src/ios/ExportOptions-TestFlight.plist.in ${CMAKE_BINARY_DIR}/ExportOptions-TestFlight.plist @ONLY)
 endif()
 
 if(POINTLESS_ENABLE_TESTS)

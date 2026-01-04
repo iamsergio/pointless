@@ -24,6 +24,7 @@ path = [
     "TODO",
     ".github/dependabot.yml",
     "src/ios/Info.plist.in",
+    "src/ios/ExportOptions-TestFlight.plist.in",
     ".qmllint.ini"
 ]
 precedence = "aggregate"
