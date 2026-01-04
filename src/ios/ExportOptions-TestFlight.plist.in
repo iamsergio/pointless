@@ -15,7 +15,7 @@
         <key>provisioningProfiles</key>
         <dict>
         <key>com.iamsergio.pointless</key>
-        <string>Pointless</string>
+        <string>Pointless ios-store and test-flight provisioning</string>
         </dict>
         <key>signingCertificate</key>
         <string>iOS Distribution</string>
