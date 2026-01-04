@@ -13,7 +13,7 @@ ApplicationWindow {
 
     visible: true
     width: Style.fromPixel(640)
-    height: Style.fromPixel(480)
+    height: Style.fromPixel(640)
     visibility: GuiController.isMobile ? ApplicationWindow.FullScreen : ApplicationWindow.Windowed
     flags: Qt.Window | Qt.ExpandedClientAreaHint | Qt.NoTitleBarBackgroundHint
 
@@ -70,64 +70,19 @@ ApplicationWindow {
 
             Item {
                 id: mainView
-                anchors.fill: parent
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    top: parent.top
+                    bottom: bottomArea.top
+                    bottomMargin: Style.fromPixel(8)
+                }
 
                 LoginScreen {
                     id: loginScreen
                     anchors.fill: parent
                     visible: false
                     z: 200
-                }
-
-                // Overlaid refresh button
-                FontAwesomeButton {
-                    id: refreshButton
-                    fontAwesomeIcon: "\uf021" // FontAwesome refresh icon
-                    iconSize: Style.fromPixel(16)
-                    iconColor: Style.iconColor
-                    backgroundColor: "transparent"
-                    anchors.top: parent.top
-                    anchors.right: parent.right
-                    anchors.topMargin: Style.fromPixel(16)
-                    anchors.rightMargin: Style.fromPixel(16)
-                    z: 100
-                    onClicked: GuiController.refresh()
-                }
-
-                FontAwesomeButton {
-                    id: debugButton
-                    fontAwesomeIcon: "\uf121"
-                    iconSize: Style.fromPixel(16)
-                    iconColor: "red"
-                    backgroundColor: "transparent"
-                    anchors {
-                        left: parent.left
-                        bottom: parent.bottom
-                        leftMargin: Style.fromPixel(32)
-                        bottomMargin: Style.fromPixel(32)
-                    }
-                    visible: GuiController.isDebug
-                    z: 100
-                    onClicked: GuiController.dumpDebug()
-                }
-
-                FontAwesomeButton {
-                    id: addTaskButton
-                    fontAwesomeIcon: "\uf055"
-                    iconSize: Style.plusButtonSize
-                    iconColor: Style.plusButtonColor
-                    backgroundColor: "transparent"
-                    visible: !GuiController.isEditing
-                    anchors {
-                        right: parent.right
-                        bottom: parent.bottom
-                        rightMargin: Style.fromPixel(32)
-                        bottomMargin: Style.fromPixel(32)
-                    }
-                    z: 100
-                    onClicked: {
-                        GuiController.isEditing = true;
-                    }
                 }
 
                 ColumnLayout {
@@ -194,6 +149,69 @@ ApplicationWindow {
                         visible: GuiController.currentViewType === GuiController.Later
                     }
                 }
+            }
+
+            Item {
+                id: bottomArea
+
+                height: addTaskButton.height
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                    bottomMargin: Style.fromPixel(GuiController.isMobile ? 32 : 16)
+                }
+
+                FontAwesomeButton {
+                    id: addTaskButton
+                    fontAwesomeIcon: "\uf055"
+                    iconSize: Style.plusButtonSize
+                    iconColor: Style.plusButtonColor
+                    backgroundColor: "transparent"
+                    visible: !GuiController.isEditing
+                    anchors {
+                        right: parent.right
+                        bottom: parent.bottom
+                        rightMargin: Style.fromPixel(32)
+                    }
+                    z: 100
+                    onClicked: {
+                        GuiController.isEditing = true;
+                    }
+                }
+
+                FontAwesomeButton {
+                    id: refreshButton
+                    fontAwesomeIcon: "\uf021"
+                    iconSize: Style.plusButtonSize
+                    iconColor: Style.plusButtonColor
+                    backgroundColor: "transparent"
+                    visible: !GuiController.isEditing
+                    anchors {
+                        right: addTaskButton.left
+                        bottom: parent.bottom
+                        rightMargin: Style.fromPixel(16)
+                    }
+                    z: 100
+                    onClicked: GuiController.refresh()
+                }
+            }
+
+            FontAwesomeButton {
+                id: debugButton
+                fontAwesomeIcon: "\uf121"
+                iconSize: Style.fromPixel(16)
+                iconColor: "red"
+                backgroundColor: "transparent"
+                anchors {
+                    left: parent.left
+                    bottom: parent.bottom
+                    leftMargin: Style.fromPixel(32)
+                    bottomMargin: Style.fromPixel(32)
+                }
+                visible: GuiController.isDebug
+                z: 100
+                onClicked: GuiController.dumpDebug()
             }
         }
     }
