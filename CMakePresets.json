@@ -1,0 +1,130 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build-${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "ios-base",
+      "inherits": "base",
+      "generator": "Xcode",
+      "cacheVariables": {
+        "POINTLESS_IOS_BUILD": "ON",
+        "POINTLESS_ENABLE_TESTS": "OFF"
+      }
+    },
+    {
+      "name": "dev",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "POINTLESS_DEVELOPER_MODE": "ON"
+      },
+      "errors": {
+        "dev": true
+      }
+    },
+    {
+      "name": "ios-dev",
+      "inherits": "ios-base",
+      "cacheVariables": {
+        "POINTLESS_DEVELOPER_MODE": "ON"
+      }
+    },
+    {
+      "name": "rel",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "dev-asan",
+      "inherits": "dev",
+      "description": "dev-asan",
+      "cacheVariables": {
+        "POINTLESS_ENABLE_ASAN": "ON"
+      }
+    },
+    {
+      "name": "clang",
+      "hidden": true,
+      "environment": {
+        "CXX": "clang++",
+        "CC": "clang"
+      }
+    },
+    {
+      "name": "dev-tsan",
+      "inherits": [
+        "dev"
+      ],
+      "description": "dev-tsan",
+      "cacheVariables": {
+        "POINTLESS_ENABLE_TSAN": "ON",
+        "VCPKG_TARGET_ARCHITECTURE": "x64"
+      }
+    },
+    {
+      "name": "clang-tidy",
+      "inherits": [
+        "base"
+      ],
+      "cacheVariables": {
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy",
+        "POINTLESS_ENABLE_TESTS": "OFF"
+      }
+    },
+    {
+      "name": "ci-clang-tidy",
+      "inherits": [
+        "clang-tidy"
+      ],
+      "cacheVariables": {
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy-20;--warnings-as-errors=*"
+      }
+    },
+    {
+      "name": "clazy",
+      "inherits": "dev",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "POINTLESS_ENABLE_TESTS": "OFF"
+      },
+      "environment": {
+        "CXX": "clazy",
+        "CCACHE_DISABLE": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "ios-release",
+      "displayName": "Build Release",
+      "configurePreset": "ios-dev",
+      "configuration": "Release"
+    },
+    {
+      "name": "ios-debug",
+      "displayName": "Build Debug",
+      "configurePreset": "ios-dev",
+      "configuration": "Debug"
+    },
+    {
+      "name": "clazy",
+      "configurePreset": "clazy",
+      "environment": {
+        "CLAZY_CHECKS": "level2,detaching-member,heap-allocated-small-trivial-type,isempty-vs-count,qstring-varargs,qvariant-template-instantiation,reserve-candidates,signal-with-return-value,thread-with-slots,no-ctor-missing-parent-argument,no-missing-typeinfo,no-skipped-base-method",
+        "CCACHE_DISABLE": "ON",
+        "CLAZY_IGNORE_DIRS": ".*3rdparty.*|.*build-clazy.*"
+      }
+    }
+  ]
+}

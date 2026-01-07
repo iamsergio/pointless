@@ -1,0 +1,135 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "extensions": {
+    "recommendations": [
+      "vadimcn.vscode-lldb",
+      "llvm-vs-code-extensions.vscode-clangd",
+      "mhutchie.git-graph",
+      "theqtcompany.qt-qml",
+      "ms-vscode.cmake-tools",
+      "sergiokdab.qttest",
+      "cheshirekow.cmake-format"
+    ]
+  },
+  "settings": {
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "C_Cpp.autocomplete": "disabled",
+    "C_Cpp.errorSquiggles": "disabled",
+    "C_Cpp.formatting": "disabled",
+    "files.trimTrailingWhitespace": true,
+    "editor.formatOnSave": true,
+    "clangd.arguments": [
+      "-header-insertion=never",
+      "--clang-tidy=true"
+    ],
+    "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
+    "files.insertFinalNewline": true,
+    "files.associations": {
+      "*.code-workspace.template": "json"
+    },
+    "files.exclude": {
+      "**/3rdparty": true
+    },
+    "search.exclude": {
+      "**/3rdparty": true
+    },
+    "qt-qml.qmlls.customExePath": "/pub_data/installed/Qt/6.10.0/gcc_64/bin/qmlls",
+    "qt-qml.qmlls.verboseOutput": true,
+    "qt-qml.qmlls.additionalImportPaths": [
+      "/pub_data/sources/pointless_cpp/build-dev/src/gui/"
+    ],
+    "cmake.showSystemKits": false,
+    "cmake.enableAutomaticKitScan": false,
+    "cmake.options.statusBarVisibility": "hidden",
+    "cmake.options.advanced": {
+      "configurePreset": {
+        "statusBarVisibility": "visible"
+      },
+      "buildTarget": {
+        "statusBarVisibility": "visible"
+      },
+      "launchTarget": {
+        "statusBarVisibility": "visible",
+        "inheritDefault": "visible"
+      },
+    }
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Current Target (LLDB Linux)",
+        "type": "lldb",
+        "request": "launch",
+        "program": "${command:cmake.launchTargetPath}",
+        "args": [
+          "--local"
+        ],
+        "cwd": "${command:cmake.buildDirectory}",
+        "initCommands": [
+          "command script import /pub_data/installed/Qt/Tools/QtCreator/share/qtcreator/debugger/lldbbridge.py"
+        ],
+        "sourceMap": {
+          "/home/qt/work/qt": "/pub_data/installed/Qt/6.10.0/Src"
+        }
+      },
+      {
+        "name": "Current Target (GDB Linux)",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${command:cmake.launchTargetPath}",
+        "args": [
+          "--local"
+        ],
+        "stopAtEntry": false,
+        "cwd": "${command:cmake.buildDirectory}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ]
+      }
+    ]
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "problemMatcher": [],
+        "label": "Run current target under valgrind",
+        "command": "/usr/bin/valgrind",
+        "type": "shell",
+        "args": [
+          "${command:cmake.launchTargetPath}"
+        ],
+        "presentation": {
+          "reveal": "always"
+        },
+        "options": {
+          "cwd": "${command:cmake.buildDirectory}"
+        }
+      },
+      {
+        "label": "Run Qt Assistant",
+        "type": "shell",
+        "command": "assistant",
+        "problemMatcher": []
+      },
+      {
+        "label": "Run Qt Designer",
+        "type": "shell",
+        "command": "designer",
+        "problemMatcher": []
+      }
+    ]
+  }
+}

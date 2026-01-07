@@ -1,0 +1,12 @@
+- iOS GH CI
+- Receive in the build, list of favorite tags
+- Read from apple calendar
+- Implement calendar and tests
+- Style task menu
+- Add login wall
+- Make login async
+
+- Nice to haves:
+  - Use std::expected everywhere
+  - return views so we dont allocate
+  - nest expecteds

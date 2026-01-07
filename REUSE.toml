@@ -1,0 +1,43 @@
+version = 1
+SPDX-PackageName = "Pointless"
+SPDX-PackageDownloadLocation = "https://www.github.com/iamsergio/pointless"
+
+#misc
+[[annotations]]
+path = [
+    "README.md",
+    "CMakePresets.json",
+    ".gitignore",
+    ".gitmodules",
+    "code.code-workspace",
+    "code.code-workspace.template",
+    "src/core/tests/test.json",
+    "src/core/tests/test_null_values.json",
+    "src/gui/tests/test_data.json",
+    "vcpkg.json",
+    ".clang-format",
+    ".clangd",
+    ".clang-tidy",
+    "src/gui/tests/.clang-tidy",
+    "src/core/tests/.clang-tidy",
+    ".cmake-format.yaml",
+    "TODO",
+    ".github/dependabot.yml",
+    "src/ios/Info.plist.in",
+    "src/ios/ExportOptions-TestFlight.plist.in",
+    ".qmllint.ini"
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Sergio Martins"
+SPDX-License-Identifier = "MIT"
+
+#Font Awesome fonts
+[[annotations]]
+path = [
+    "src/gui/fonts/FontAwesome7-Solid-900.otf",
+    "src/gui/fonts/FontAwesome7Brands-Regular-400.otf",
+    "src/gui/fonts/FontAwesome7Free-Regular-400.otf"
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Fonticons, Inc."
+SPDX-License-Identifier = "OFL-1.1"

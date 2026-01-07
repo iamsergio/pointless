@@ -1,0 +1,11 @@
+{
+    "name": "pointless-cpp",
+    "version": "1.0.0",
+    "dependencies": [
+        "spdlog",
+        "glaze",
+        "gtest",
+        "cpr",
+        "anyrpc"
+    ]
+}

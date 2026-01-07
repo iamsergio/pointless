@@ -1,0 +1,25 @@
+{
+    "revision": 1,
+    "tasks": [
+        {
+            "revision": 2,
+            "isGoal": null,
+            "uuid": "2",
+            "parentUuid": null,
+            "title": "Task 2",
+            "isDone": false,
+            "isImportant": false,
+            "hideOnWeekends": false,
+            "tags": [],
+            "creationTimestamp": 1586385046574,
+            "modificationTimestamp": null,
+            "lastPomodoroDate": null,
+            "dueDate": null,
+            "completionDate": null,
+            "uuidInDeviceCalendar": null,
+            "deviceCalendarUuid": null,
+            "deviceCalendarName": null
+        }
+    ],
+    "tags": []
+}

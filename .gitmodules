@@ -1,0 +1,6 @@
+[submodule "3rdparty/vcpkg"]
+	path = 3rdparty/vcpkg
+	url = https://github.com/iamsergio/vcpkg.git
+[submodule "3rdparty/spix"]
+	path = 3rdparty/spix
+	url = https://github.com/faaxm/spix.git

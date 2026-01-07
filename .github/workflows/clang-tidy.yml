@@ -1,0 +1,51 @@
+# SPDX-FileCopyrightText: 2025 Sergio Martins
+# SPDX-License-Identifier: MIT
+
+name: Clang-Tidy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  clang-tidy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang-tidy-20
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: '6.10.0'
+        cache: true
+
+    - name: Print clang-tidy version
+      run: clang-tidy --version
+
+    - name: Setup vcpkg
+      run: |
+        cd 3rdparty/vcpkg
+        ./bootstrap-vcpkg.sh
+
+    - name: Configure CMake
+      env:
+        POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
+        POINTLESS_SUPABASE_ANON_KEY: ${{ secrets.POINTLESS_SUPABASE_ANON_KEY }}
+        POINTLESS_USERNAME: ${{ secrets.POINTLESS_USERNAME }}
+        POINTLESS_PASSWORD: ${{ secrets.POINTLESS_PASSWORD }}
+      run: cmake --preset=ci-clang-tidy
+
+    - name: Build
+      run: cmake --build build-ci-clang-tidy
