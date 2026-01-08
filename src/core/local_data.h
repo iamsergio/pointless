@@ -23,9 +23,9 @@ public:
     LocalData(LocalData &&) = delete;
     LocalData &operator=(LocalData &&) = delete;
 
-    [[nodiscard]] std::expected<std::monostate, std::string> loadDataFromFile();
+    [[nodiscard]] std::expected<void, std::string> loadDataFromFile();
     [[nodiscard]] std::expected<Data, std::string> loadDataFromFile(const std::string &filename) const;
-    [[nodiscard]] std::expected<std::monostate, std::string> save() const;
+    [[nodiscard]] std::expected<void, std::string> save() const;
 
     [[nodiscard]] Data &data()
     {
@@ -39,7 +39,7 @@ public:
 
     void setData(const Data &data);
 
-    [[nodiscard]] std::expected<std::monostate, std::string> setDataAndSave(const Data &data);
+    [[nodiscard]] std::expected<void, std::string> setDataAndSave(const Data &data);
 
     [[nodiscard]] size_t taskCount() const;
     [[nodiscard]] const Task &taskAt(size_t index) const;

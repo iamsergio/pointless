@@ -15,12 +15,12 @@ using namespace pointless::core;
 
 LocalData::LocalData() = default;
 
-std::expected<std::monostate, std::string> LocalData::loadDataFromFile()
+std::expected<void, std::string> LocalData::loadDataFromFile()
 {
     auto result = loadDataFromFile(getDataFilePath());
     if (result) {
         _data = result.value();
-        return std::monostate {};
+        return {};
     }
 
     _data = {};
@@ -48,7 +48,7 @@ std::expected<pointless::core::Data, std::string> LocalData::loadDataFromFile(co
     return Data::fromJson(json_content);
 }
 
-std::expected<std::monostate, std::string> LocalData::save() const
+std::expected<void, std::string> LocalData::save() const
 {
     P_LOG_INFO("Saving data to disk, numTasks={}, revision={}", _data.taskCount(), _data.revision());
 
@@ -69,10 +69,10 @@ std::expected<std::monostate, std::string> LocalData::save() const
     }
 
     _data.needsLocalSave = false;
-    return std::monostate {};
+    return {};
 }
 
-std::expected<std::monostate, std::string> LocalData::setDataAndSave(const Data &data)
+std::expected<void, std::string> LocalData::setDataAndSave(const Data &data)
 {
     setData(data);
     return save();
