@@ -80,5 +80,6 @@ int CalendarModel::count() const
 
 QDate CalendarModel::startDate() const
 {
-    return Gui::DateUtils::firstMondayOfWeek(_month);
+    const QDate firstOfMonth(_month.year(), _month.month(), 1);
+    return Gui::DateUtils::firstMondayOfWeek(firstOfMonth);
 }

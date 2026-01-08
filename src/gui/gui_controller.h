@@ -77,7 +77,7 @@ public:
     [[nodiscard]] QString uuidBeingEdited() const;
     void setUuidBeingEdited(const QString &uuid);
     [[nodiscard]] QDate dateInEditor() const;
-    void setDateInEditor(QDate date);
+    Q_INVOKABLE void setDateInEditor(QDate date);
 
     [[nodiscard]] QString windowTitle() const;
 

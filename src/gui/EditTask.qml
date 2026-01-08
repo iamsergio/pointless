@@ -143,6 +143,9 @@ Rectangle {
                 currentDate: GuiController.dateInEditor
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                onDateSelected: function (selectedDate) {
+                    GuiController.setDateInEditor(selectedDate);
+                }
             }
         }
     }

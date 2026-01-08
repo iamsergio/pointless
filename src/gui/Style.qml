@@ -47,6 +47,7 @@ Item {
     readonly property color calendarBackground: "#222327"
     readonly property color calendarHighlight: "#0290f6"
     readonly property color calendarText: "#ffffff"
+    readonly property color calendarDisabledText: "#405040"
     readonly property color calendarSecondaryText: "#98999e"
 
     // plus button:

@@ -14,6 +14,8 @@ Rectangle {
 
     required property date currentDate
 
+    signal dateSelected(date selectedDate)
+
     CalendarModel {
         id: calendarModel
     }
@@ -36,7 +38,7 @@ Rectangle {
             }
 
             Text {
-                text: "Today, " + Qt.formatDate(new Date(), "MMM d")
+                text: Qt.formatDate(calendarModel.month, "MMMM yyyy")
                 color: Style.calendarText
                 font.pixelSize: Style.fromPixel(16)
                 font.bold: true
@@ -44,6 +46,19 @@ Rectangle {
 
             Item {
                 Layout.fillWidth: true
+            }
+
+            FontAwesomeButton {
+                id: previousMonthButton
+                fontAwesomeIcon: "\uf053" // Chevron left
+                iconSize: Style.fromPixel(14)
+                iconColor: Style.calendarSecondaryText
+                backgroundColor: "transparent"
+                onClicked: {
+                    var d = calendarModel.month;
+                    var newDate = new Date(d.getFullYear(), d.getMonth() - 1, 1);
+                    calendarModel.month = newDate;
+                }
             }
 
             FontAwesomeButton {
@@ -61,17 +76,22 @@ Rectangle {
         }
 
         // Weekday headers
-        RowLayout {
+        Item {
             Layout.fillWidth: true
-            Repeater {
-                model: ["M", "T", "W", "T", "F", "S", "S"]
-                Text {
-                    required property string modelData
-                    text: modelData
-                    color: Style.calendarSecondaryText
-                    font.pixelSize: Style.fromPixel(12)
-                    Layout.fillWidth: true
-                    horizontalAlignment: Text.AlignHCenter
+            Layout.preferredHeight: Style.fromPixel(20)
+            Row {
+                anchors.fill: parent
+                anchors.topMargin: Style.fromPixel(5)
+                Repeater {
+                    model: ["M", "T", "W", "T", "F", "S", "S"]
+                    Text {
+                        required property string modelData
+                        text: modelData
+                        color: Style.calendarSecondaryText
+                        font.pixelSize: Style.fromPixel(16)
+                        width: parent.width / 7
+                        horizontalAlignment: Text.AlignHCenter
+                    }
                 }
             }
         }
@@ -107,8 +127,16 @@ Rectangle {
                     Text {
                         anchors.centerIn: parent
                         text: delegateRoot.day
-                        color: delegateRoot.isSelectedDay ? "white" : (delegateRoot.isToday ? Style.calendarHighlight : (delegateRoot.isCurrentMonth ? Style.calendarText : "transparent"))
+                        color: delegateRoot.isSelectedDay ? "white" : (delegateRoot.isToday ? Style.calendarHighlight : (delegateRoot.isCurrentMonth ? Style.calendarText : Style.calendarDisabledText))
                         font.pixelSize: Style.fromPixel(14)
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            root.dateSelected(delegateRoot.date)
+                        }
                     }
                 }
             }

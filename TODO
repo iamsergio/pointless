@@ -1,6 +1,5 @@
 - iOS GH CI
 - Read from apple calendar
-- Implement calendar and tests
 - Style task menu
 - Add login wall
 - Make login async
