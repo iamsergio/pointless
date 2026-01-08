@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
+pragma ComponentBehavior: Bound
+
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import pointless 1.0
@@ -9,6 +11,8 @@ Rectangle {
     id: root
     color: Style.calendarBackground
     radius: Style.fromPixel(10)
+
+    required property date currentDate
 
     CalendarModel {
         id: calendarModel
@@ -38,7 +42,9 @@ Rectangle {
                 font.bold: true
             }
 
-            Item { Layout.fillWidth: true }
+            Item {
+                Layout.fillWidth: true
+            }
 
             FontAwesomeButton {
                 id: nextMonthButton
@@ -47,9 +53,9 @@ Rectangle {
                 iconColor: Style.calendarSecondaryText
                 backgroundColor: "transparent"
                 onClicked: {
-                    var d = calendarModel.month
-                    var newDate = new Date(d.getFullYear(), d.getMonth() + 1, 1)
-                    calendarModel.month = newDate
+                    var d = calendarModel.month;
+                    var newDate = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+                    calendarModel.month = newDate;
                 }
             }
         }
@@ -85,21 +91,23 @@ Rectangle {
                 width: GridView.view.cellWidth
                 height: GridView.view.cellHeight
 
+                required property date date
                 required property bool isToday
                 required property string day
                 required property bool isCurrentMonth
+                readonly property bool isSelectedDay: date.getDate() === root.currentDate.getDate() && date.getMonth() === root.currentDate.getMonth() && date.getFullYear() === root.currentDate.getFullYear()
 
                 Rectangle {
                     anchors.centerIn: parent
                     width: Math.min(parent.width, parent.height) * 0.8
                     height: width
                     radius: width / 2
-                    color: delegateRoot.isToday ? Style.calendarHighlight : "transparent"
+                    color: delegateRoot.isSelectedDay ? Style.calendarHighlight : "transparent"
 
                     Text {
                         anchors.centerIn: parent
                         text: delegateRoot.day
-                        color: delegateRoot.isToday ? "white" : (delegateRoot.isCurrentMonth ? Style.calendarText : "transparent")
+                        color: delegateRoot.isSelectedDay ? "white" : (delegateRoot.isToday ? Style.calendarHighlight : (delegateRoot.isCurrentMonth ? Style.calendarText : "transparent"))
                         font.pixelSize: Style.fromPixel(14)
                     }
                 }

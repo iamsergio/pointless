@@ -1,5 +1,4 @@
 - iOS GH CI
-- Receive in the build, list of favorite tags
 - Read from apple calendar
 - Implement calendar and tests
 - Style task menu

@@ -140,6 +140,7 @@ Rectangle {
 
             Calendar {
                 id: calendar
+                currentDate: GuiController.dateInEditor
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
