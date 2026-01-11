@@ -108,7 +108,7 @@
     {
       "name": "ios-release",
       "displayName": "Build Release",
-      "configurePreset": "ios-dev",
+      "configurePreset": "ios-base",
       "configuration": "Release"
     },
     {
