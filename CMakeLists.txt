@@ -113,14 +113,18 @@ if(IOS)
   endif()
 
   if(POINTLESS_DEVELOPER_MODE)
-    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_STYLE "Automatic" CACHE STRING "Sign style")
-  else ()
+    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_STYLE
+        "Automatic"
+        CACHE STRING "Sign style")
+  else()
     if(NOT DEFINED ENV{APPLE_PROVISIONING_PROFILE_UUID})
       message(FATAL_ERROR "APPLE_PROVISIONING_PROFILE_UUID environment variable is not set")
     endif()
     set(CMAKE_XCODE_ATTRIBUTE_PROVISIONING_PROFILE_SPECIFIER "$ENV{APPLE_PROVISIONING_PROFILE_UUID}")
     set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Distribution")
-    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_STYLE "manual" CACHE STRING "Sign style")
+    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_STYLE
+        "manual"
+        CACHE STRING "Sign style")
   endif()
 
   set(BUNDLE_IDENTIFIER "com.iamsergio.pointless")
