@@ -55,7 +55,7 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
     case HasDueDateRole:
         return task.dueDate.has_value();
     case TagNameRole:
-        return QString::fromStdString(task.tagName());
+        return QString::fromStdString(task.tagName()).toLower();
     case IsFromCalendarRole:
         return task.deviceCalendarName.has_value() && !task.deviceCalendarName->empty();
     case CalendarNameRole:
