@@ -21,7 +21,7 @@ Rectangle {
     required property bool taskIsFromCalendar
     required property string taskCalendarName
 
-    height: Style.fromPixel(55)
+    height: Style.taskHeight
     color: taskIsImportant ? Style.taskImportantBackground : (taskIsEvening ? Style.taskEveningBackground : Style.taskBackground)
     radius: 10
 

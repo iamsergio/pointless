@@ -32,6 +32,7 @@ Item {
     readonly property color taskBackground: "#3e3f43"
     readonly property color taskImportantBackground: "#f07e01"
     readonly property color taskEveningBackground: "#484a65"
+    readonly property int taskHeight: fromPixel(55)
 
     readonly property int sectionFontSize: fromPixel(14)
 

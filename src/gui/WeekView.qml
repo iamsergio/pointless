@@ -79,7 +79,7 @@ Item {
             Rectangle {
                 visible: column.tasks.count === 0
                 Layout.fillWidth: true
-                Layout.preferredHeight: 80
+                Layout.preferredHeight: Style.taskHeight
                 color: Style.background2
                 radius: 8
                 border.width: 1
