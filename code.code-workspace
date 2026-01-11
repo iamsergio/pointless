@@ -56,7 +56,8 @@
         "statusBarVisibility": "visible",
         "inheritDefault": "visible"
       },
-    }
+    },
+    "git.blame.ignoreWhitespace": true
   },
   "launch": {
     "version": "0.2.0",
