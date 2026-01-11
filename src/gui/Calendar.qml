@@ -33,7 +33,7 @@ Rectangle {
             Text {
                 text: "\uf073" // Calendar icon
                 font.family: "Font Awesome 6 Free"
-                font.pixelSize: Style.fromPixel(16)
+                font.pixelSize: Style.fromPixel(20)
                 color: Style.calendarSecondaryText
             }
 
@@ -51,7 +51,7 @@ Rectangle {
             FontAwesomeButton {
                 id: previousMonthButton
                 fontAwesomeIcon: "\uf053" // Chevron left
-                iconSize: Style.fromPixel(14)
+                iconSize: Style.fromPixel(18)
                 iconColor: Style.calendarSecondaryText
                 backgroundColor: "transparent"
                 onClicked: {
@@ -64,7 +64,7 @@ Rectangle {
             FontAwesomeButton {
                 id: nextMonthButton
                 fontAwesomeIcon: "\uf054" // Chevron right
-                iconSize: Style.fromPixel(14)
+                iconSize: previousMonthButton.iconSize
                 iconColor: Style.calendarSecondaryText
                 backgroundColor: "transparent"
                 onClicked: {
@@ -135,7 +135,7 @@ Rectangle {
                         anchors.fill: parent
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
-                            root.dateSelected(delegateRoot.date)
+                            root.dateSelected(delegateRoot.date);
                         }
                     }
                 }
