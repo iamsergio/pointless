@@ -18,6 +18,6 @@ function(ios_set_manual_signing_properties target)
 
   set_target_properties(${target} PROPERTIES
     XCODE_ATTRIBUTE_PROVISIONING_PROFILE_SPECIFIER "$ENV{APPLE_PROVISIONING_PROFILE_UUID}"
-    CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Distribution"
+    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Distribution"
   )
 endfunction()

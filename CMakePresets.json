@@ -111,13 +111,19 @@
   "buildPresets": [
     {
       "name": "ios-release",
-      "displayName": "Build Release",
+      "displayName": "Store build (not sideloadable)",
       "configurePreset": "ios-release",
       "configuration": "Release"
     },
     {
+      "name": "ios-dev-release",
+      "displayName": "Dev build in release",
+      "configurePreset": "ios-dev",
+      "configuration": "Release"
+    },
+    {
       "name": "ios-debug",
-      "displayName": "Build Debug",
+      "displayName": "Dev build in debug",
       "configurePreset": "ios-dev",
       "configuration": "Debug"
     },

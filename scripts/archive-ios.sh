@@ -6,7 +6,12 @@
 
 set -e
 
+# Prequisites:
+# - Be sure to build 1st with Release configuration
+# - for example: cmake --preset ios-release && cmake --build --preset ios-release
+
 # 1. Generates pointless.xcarchive inside the build directory
+# 2. Geneates the .ipa file for TestFlight distribution
 
 if [ -z "$1" ]; then
 	echo "Usage: $0 <build-directory>"
@@ -22,7 +27,7 @@ fi
 
 # back to src root
 script_dir=$(dirname "$(realpath "$0")")
-cd "$script_dir"/../../..
+cd "$script_dir"/..
 
 cd "$build_dir"
 
