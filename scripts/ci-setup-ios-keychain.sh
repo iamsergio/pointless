@@ -46,6 +46,8 @@ mkdir -p "$(dirname "${KEYCHAIN_FILE}")"
 if [ ! -f "${KEYCHAIN_FILE}" ]; then
 	security create-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_FILE}"
 	echo "Created new keychain at ${KEYCHAIN_FILE}"
+else
+	echo "Keychain already exists at ${KEYCHAIN_FILE}"
 fi
 
 security unlock-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_FILE}"
@@ -53,7 +55,17 @@ security set-keychain-settings -u "${KEYCHAIN_FILE}"
 
 echo "Adding keychain to search list..."
 CURRENT_SEARCH_LIST=$(security list-keychains -d user | xargs)
-security list-keychains -d user -s "${KEYCHAIN_FILE}" "$CURRENT_SEARCH_LIST"
+
+security list-keychains -s \
+	"${KEYCHAIN_FILE}" \
+    "${HOME}/Library/Keychains/login.keychain-db" \
+    "/Library/Keychains/System.keychain"
+
+echo "---"
+echo "New keychain search list:"
+# To reset them: ./restore-ios-keychain.sh;
+security list-keychains -d user
+echo "---"
 
 # install provisioning profile (in new and old locations)
 echo "Installing provisioning profile..."
