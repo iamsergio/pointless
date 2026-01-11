@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 
+include(cmake/ios-utils.cmake)
+
 if(POINTLESS_IOS_BUILD)
   if(NOT DEFINED ENV{QT_INSTALL})
     message(FATAL_ERROR "QT_INSTALL environment variable is not set")
@@ -117,11 +119,6 @@ if(IOS)
         "Automatic"
         CACHE STRING "Sign style")
   else()
-    if(NOT DEFINED ENV{APPLE_PROVISIONING_PROFILE_UUID})
-      message(FATAL_ERROR "APPLE_PROVISIONING_PROFILE_UUID environment variable is not set")
-    endif()
-    set(CMAKE_XCODE_ATTRIBUTE_PROVISIONING_PROFILE_SPECIFIER "$ENV{APPLE_PROVISIONING_PROFILE_UUID}")
-    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Distribution")
     set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_STYLE
         "manual"
         CACHE STRING "Sign style")

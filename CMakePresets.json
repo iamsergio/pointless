@@ -20,6 +20,10 @@
       }
     },
     {
+      "name": "ios-release",
+      "inherits": "ios-base"
+    },
+    {
       "name": "dev",
       "inherits": "base",
       "cacheVariables": {
@@ -108,7 +112,7 @@
     {
       "name": "ios-release",
       "displayName": "Build Release",
-      "configurePreset": "ios-base",
+      "configurePreset": "ios-release",
       "configuration": "Release"
     },
     {
