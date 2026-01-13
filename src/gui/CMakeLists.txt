@@ -88,12 +88,22 @@ if(IOS)
     ios_set_manual_signing_properties(pointless)
   endif()
 
+  set(asset_catalog_path "${CMAKE_SOURCE_DIR}/assets/ios/Images.xcassets/AppIcon.appiconset")
+      target_sources(myapp PRIVATE "${asset_catalog_path}")
+
+      set_target_properties(myapp PROPERTIES
+          MACOSX_PACKAGE_LOCATION Resources
+          XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME "AppIcon"
+      )
+
   set_target_properties(
     pointless
     PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER ${BUNDLE_IDENTIFIER}
                MACOSX_BUNDLE_IDENTIFIER ${BUNDLE_IDENTIFIER}
                MACOSX_BUNDLE TRUE
                MACOSX_BUNDLE_INFO_PLIST "${CMAKE_BINARY_DIR}/Info.plist")
+
+  target_sources(pointless PRIVATE ${CMAKE_SOURCE_DIR}/assets/ios/Images.xcassets)
 endif()
 
 if(POINTLESS_ENABLE_TESTS)
