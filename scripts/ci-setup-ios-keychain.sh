@@ -58,8 +58,8 @@ CURRENT_SEARCH_LIST=$(security list-keychains -d user | xargs)
 
 security list-keychains -s \
 	"${KEYCHAIN_FILE}" \
-    "${HOME}/Library/Keychains/login.keychain-db" \
-    "/Library/Keychains/System.keychain"
+	"${HOME}/Library/Keychains/login.keychain-db" \
+	"/Library/Keychains/System.keychain"
 
 echo "---"
 echo "New keychain search list:"

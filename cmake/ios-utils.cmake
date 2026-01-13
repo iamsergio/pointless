@@ -1,5 +1,4 @@
-# SPDX-FileCopyrightText: 2025 Sergio Martins
-# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025 Sergio Martins SPDX-License-Identifier: MIT
 
 #[[
 Sets iOS-specific Xcode attributes for a target related to manual code signing.
@@ -13,11 +12,8 @@ Sets the following properties:
 #]]
 function(ios_set_manual_signing_properties target)
   if(NOT DEFINED ENV{APPLE_PROVISIONING_PROFILE_UUID})
-      message(FATAL_ERROR "APPLE_PROVISIONING_PROFILE_UUID environment variable is not set")
+    message(FATAL_ERROR "APPLE_PROVISIONING_PROFILE_UUID environment variable is not set")
   endif()
 
-  set_target_properties(${target} PROPERTIES
-    XCODE_ATTRIBUTE_PROVISIONING_PROFILE_SPECIFIER "$ENV{APPLE_PROVISIONING_PROFILE_UUID}"
-    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Distribution"
-  )
+  set_target_properties(${target} PROPERTIES XCODE_ATTRIBUTE_PROVISIONING_PROFILE_SPECIFIER "$ENV{APPLE_PROVISIONING_PROFILE_UUID}" XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Distribution")
 endfunction()

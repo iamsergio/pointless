@@ -83,7 +83,7 @@ qt_add_executable(pointless main.cpp)
 target_link_libraries(pointless PRIVATE pointless_gui Qt6::Core Qt6::Gui Qt6::Quick)
 
 if(IOS)
-  if (NOT POINTLESS_DEVELOPER_MODE)
+  if(NOT POINTLESS_DEVELOPER_MODE)
     # set release provisioning stuff
     ios_set_manual_signing_properties(pointless)
   endif()
