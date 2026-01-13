@@ -41,3 +41,14 @@ path = [
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Fonticons, Inc."
 SPDX-License-Identifier = "OFL-1.1"
+
+#Application icons and assets
+[[annotations]]
+path = [
+    "assets/android/**",
+    "assets/ios/**",
+    "assets/icon.png"
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Sergio Martins"
+SPDX-License-Identifier = "CC-BY-4.0"
