@@ -12,6 +12,26 @@
 #include <QObject>
 #include <QSortFilterProxyModel>
 
+#include <algorithm>
+
+using namespace pointless;
+
+namespace {
+template<typename T>
+bool isBuiltInTag(const T tagName)
+{
+    static const std::array<T, 3> builtInTags = {
+        "current",
+        "soon",
+        "evening"
+    };
+
+    return std::ranges::any_of(builtInTags, [tagName](const auto &builtInTag) {
+        return tagName == builtInTag;
+    });
+}
+}
+
 TagFilterModel::TagFilterModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
@@ -45,7 +65,7 @@ bool TagFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source_
     const QModelIndex index = tagModel->index(source_row, 0);
     const QString tagName = tagModel->data(index, TagModel::NameRole).toString().toLower();
 
-    return tagName != QLatin1String("current") && tagName != QLatin1String("soon");
+    return core::tagIsBuiltin(tagName.toStdString());
 }
 
 bool TagFilterModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const

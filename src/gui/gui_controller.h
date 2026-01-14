@@ -65,7 +65,7 @@ public:
     Q_INVOKABLE void navigatorGotoNextWeek();
     Q_INVOKABLE void navigatorGotoPreviousWeek();
     Q_INVOKABLE void refresh();
-    Q_INVOKABLE void addNewTask(QString title, const QString &tag);
+    Q_INVOKABLE void addNewTask(QString title, const QString &tag, bool isEvening);
     [[nodiscard]] Q_INVOKABLE QString colorFromTag(const QString &tagName) const;
     [[nodiscard]] static bool isDebug();
     [[nodiscard]] static bool isMobile();

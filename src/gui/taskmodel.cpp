@@ -64,6 +64,9 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         }
         return {};
     case IsEveningRole:
+        if (task.containsTag("evening"))
+            return true;
+
         if (task.dueDate) {
             const auto timeT = std::chrono::system_clock::to_time_t(*task.dueDate);
             const QDateTime dt = QDateTime::fromSecsSinceEpoch(timeT);

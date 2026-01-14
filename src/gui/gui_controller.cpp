@@ -263,7 +263,7 @@ void GuiController::setIsEditing(bool isEditing)
     emit isEditingChanged();
 }
 
-void GuiController::addNewTask(QString title, const QString &tag)
+void GuiController::addNewTask(QString title, const QString &tag, bool isEvening)
 {
     P_LOG_INFO("GuiController::addNewTask: Adding new task with title '{}' and date '{}'",
                title.toStdString(), _dateInEditor.toString(Qt::ISODate).toStdString());
@@ -306,6 +306,10 @@ void GuiController::addNewTask(QString title, const QString &tag)
         task.tags.emplace_back("soon");
     } else if (_currentViewType == ViewType::Week) {
         task.tags.emplace_back("current");
+    }
+
+    if (isEvening) {
+        task.tags.emplace_back("evening");
     }
 
     _dataController->taskModel()->addTask(task);

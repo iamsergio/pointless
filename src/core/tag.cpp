@@ -16,9 +16,10 @@ bool tagIsBuiltin(const Tag &tag)
 
 bool tagIsBuiltin(std::string_view name)
 {
-    static const std::array<std::string_view, 2> builtinTags = {
+    static const std::array<std::string_view, 3> builtinTags = {
         "soon",
-        "current"
+        "current",
+        "evening"
     };
 
     return std::ranges::find(builtinTags, name) != builtinTags.end();

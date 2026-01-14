@@ -13,9 +13,10 @@ Rectangle {
     objectName: "editTask"
 
     signal backClicked
-    signal saveClicked(string title, string tag)
+    signal saveClicked(string title, string tag, bool evening)
 
     property string selectedTag: ""
+    property bool isEvening: false
 
     ColumnLayout {
         anchors.fill: parent
@@ -27,6 +28,7 @@ Rectangle {
                 titleInput.clear();
                 titleInput.forceActiveFocus();
                 root.selectedTag = "";
+                root.isEvening = false;
             }
         }
 
@@ -58,7 +60,7 @@ Rectangle {
                 fontAwesomeIcon: "\uf00c" // Check
                 backgroundColor: "transparent"
                 iconColor: "white"
-                onClicked: root.saveClicked(titleInput.text, root.selectedTag)
+                onClicked: root.saveClicked(titleInput.text, root.selectedTag, root.isEvening)
             }
         }
 
@@ -80,7 +82,7 @@ Rectangle {
                 focus: true
                 Layout.fillWidth: true
                 onTextEntered: function (text) {
-                    root.saveClicked(text, root.selectedTag);
+                    root.saveClicked(text, root.selectedTag, root.isEvening);
                 }
             }
         }
@@ -121,6 +123,32 @@ Rectangle {
                             }
                         }
                     }
+                }
+            }
+        }
+
+        // Evening Section
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: Style.fromPixel(5)
+
+            CheckBox {
+                id: eveningCheckBox
+                objectName: "eveningCheckBox"
+                checked: root.isEvening
+                onCheckedChanged: root.isEvening = checked
+            }
+
+            Text {
+                text: "Evening"
+                color: Style.sectionTextColor
+                font.pixelSize: Style.fromPixel(14)
+                font.bold: true
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: eveningCheckBox.toggle()
                 }
             }
         }
