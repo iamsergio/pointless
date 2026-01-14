@@ -19,3 +19,4 @@ cmake --preset ios-release
 cmake --build --preset ios-release
 
 ./scripts/archive-ios.sh build-ios-release
+./scripts/upload-ios.sh build-ios-release
