@@ -70,7 +70,7 @@ endif()
 include(cmake/CompilerFlags.cmake)
 
 set(POINTLESS_VERSION "1.0.0")
-set(POINTLESS_APPLE_BUILD_NUMBER "1")
+set(POINTLESS_APPLE_BUILD_NUMBER "2")
 
 option(POINTLESS_DEVELOPER_MODE "Build with developer options" OFF)
 option(POINTLESS_ENABLE_TESTS "Build tests" ${POINTLESS_DEVELOPER_MODE})
