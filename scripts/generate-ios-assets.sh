@@ -20,6 +20,8 @@ convert "$SOURCE_IMAGE" -resize 180x180 -strip "$APPICON_DIR/icon_180.png"
 convert "$SOURCE_IMAGE" -resize 40x40   -strip "$APPICON_DIR/icon_40.png"
 convert "$SOURCE_IMAGE" -resize 60x60   -strip "$APPICON_DIR/icon_60.png"
 
+convert "$SOURCE_IMAGE" -resize 1024x1024 -strip "$APPICON_DIR/icon_1024.png"
+
 # Create Contents.json
 cat <<EOF > "$APPICON_DIR/Contents.json"
 {
