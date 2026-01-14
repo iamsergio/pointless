@@ -9,7 +9,7 @@
     <key>CFBundleExecutable</key>
     <string>pointless</string>
     <key>CFBundleIconFile</key>
-    <string></string>
+    <string>AppIcon</string>
     <key>CFBundleIdentifier</key>
     <string>com.iamsergio.pointless</string>
     <key>CFBundleInfoDictionaryVersion</key>
