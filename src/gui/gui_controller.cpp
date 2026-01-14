@@ -54,6 +54,13 @@ public:
                     return true;
                 }
             }
+
+            if (keyEvent->key() == Qt::Key_N) {
+                if (!GuiController::instance()->isEditing()) {
+                    GuiController::instance()->setTaskBeingEdited({}, {});
+                    return true;
+                }
+            }
         }
         return false;
     }

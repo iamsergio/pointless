@@ -48,9 +48,6 @@ ApplicationWindow {
                     console.warn("Unexpected key press while editing. Ignoring.");
                     return;
                 }
-
-                if (event.key == Qt.Key_N)
-                    GuiController.setTaskBeingEdited("", null);
             }
 
             EditTask {

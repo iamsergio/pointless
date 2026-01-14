@@ -65,7 +65,7 @@ bool TagFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source_
     const QModelIndex index = tagModel->index(source_row, 0);
     const QString tagName = tagModel->data(index, TagModel::NameRole).toString().toLower();
 
-    return core::tagIsBuiltin(tagName.toStdString());
+    return !core::tagIsBuiltin(tagName.toStdString());
 }
 
 bool TagFilterModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const
