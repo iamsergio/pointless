@@ -19,11 +19,11 @@ namespace {
 
 bool shouldVerifySsl()
 {
-#if defined(POINTLESS_DEVELOPER_MODE)
-    return !pointless::isIOS();
-#endif
-
+#if POINTLESS_VERIFY_SSL
     return true;
+#else
+    return false;
+#endif
 }
 
 constexpr int kBufferSize = 32768;

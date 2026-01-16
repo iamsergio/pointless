@@ -16,7 +16,8 @@
       "generator": "Xcode",
       "cacheVariables": {
         "POINTLESS_IOS_BUILD": "ON",
-        "POINTLESS_ENABLE_TESTS": "OFF"
+        "POINTLESS_ENABLE_TESTS": "OFF",
+        "POINTLESS_VERIFY_SSL": "OFF"
       }
     },
     {

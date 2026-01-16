@@ -74,10 +74,18 @@ set(POINTLESS_APPLE_BUILD_NUMBER "2")
 
 option(POINTLESS_DEVELOPER_MODE "Build with developer options" OFF)
 option(POINTLESS_ENABLE_TESTS "Build tests" ${POINTLESS_DEVELOPER_MODE})
+option(POINTLESS_VERIFY_SSL "Verify SSL certificates in HTTPS requests" ON)
 
 if(POINTLESS_DEVELOPER_MODE)
   message(STATUS "Building in developer mode")
   add_definitions(-DPOINTLESS_DEVELOPER_MODE)
+endif()
+
+if(NOT POINTLESS_VERIFY_SSL)
+  message(STATUS "SSL verification disabled")
+  add_definitions(-DPOINTLESS_VERIFY_SSL=0)
+else()
+  add_definitions(-DPOINTLESS_VERIFY_SSL=1)
 endif()
 
 if(POINTLESS_ENABLE_TESTS)
