@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        preset: [ios-debug]
+        preset: [ios-dev]
         os: [macos-latest]
 
     steps:
