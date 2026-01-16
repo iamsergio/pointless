@@ -55,11 +55,11 @@ jobs:
         which qmake
         which qt-cmake
 
-    # - name: Configure CMake
-    #   env:
-    #     POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
-    #     POINTLESS_SUPABASE_ANON_KEY: ${{ secrets.POINTLESS_SUPABASE_ANON_KEY }}
-    #   run: cmake --preset=${{ matrix.preset }}
+    - name: Configure CMake
+      env:
+        POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
+        POINTLESS_SUPABASE_ANON_KEY: ${{ secrets.POINTLESS_SUPABASE_ANON_KEY }}
+      run: qt-cmake --preset=${{ matrix.preset }}
 
-    # - name: Build
-    #   run: cmake --build build-${{ matrix.preset }}
+    - name: Build
+      run: cmake --build build-${{ matrix.preset }}
