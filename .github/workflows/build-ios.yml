@@ -38,12 +38,18 @@ jobs:
         version: '6.10.0'
         cache: true
 
+    - name: Print Qt environment
+      run: echo "QT_ROOT_DIR=$QT_ROOT_DIR"
+
     - name: Install Qt for iOS
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.10.0'
         cache: true
         target: ios
+
+    - name: Print Qt environment2
+      run: echo "QT_ROOT_DIR=$QT_ROOT_DIR"
 
     - name: Setup vcpkg
       run: |
