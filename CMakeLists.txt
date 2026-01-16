@@ -70,8 +70,7 @@ endif()
 include(cmake/CompilerFlags.cmake)
 
 set(POINTLESS_VERSION "1.0.0")
-set(POINTLESS_APPLE_BUILD_NUMBER "2")
-
+string(TIMESTAMP POINTLESS_APPLE_BUILD_NUMBER "%y%m%d%H%M")
 option(POINTLESS_DEVELOPER_MODE "Build with developer options" OFF)
 option(POINTLESS_ENABLE_TESTS "Build tests" ${POINTLESS_DEVELOPER_MODE})
 option(POINTLESS_VERIFY_SSL "Verify SSL certificates in HTTPS requests" ON)
