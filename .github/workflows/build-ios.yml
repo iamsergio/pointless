@@ -9,6 +9,11 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+    inputs:
+      release_to_testflight:
+        type: boolean
+        required: true
+        description: "Whether this is a release build to be sent to TestFlight"
 
 jobs:
   build:
@@ -44,6 +49,11 @@ jobs:
       run: |
         cd 3rdparty/vcpkg
         ./bootstrap-vcpkg.sh
+
+    - name: debug
+      run: |
+        which qmake
+        which qt-cmake
 
     # - name: Configure CMake
     #   env:
