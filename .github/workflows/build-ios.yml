@@ -32,6 +32,9 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Setup vcpkg cache
+      uses: lukka/run-vcpkg@v11
+
     - name: Setup signing
       run: |
         ./scripts/ci-dump-base64-to-file.sh
