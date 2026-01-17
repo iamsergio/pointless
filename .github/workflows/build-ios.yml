@@ -13,7 +13,7 @@ on:
       release_to_testflight:
         type: boolean
         required: true
-        description: "Whether this is a release build to be sent to TestFlight"
+        description: "Send to TestFlight"
 
 jobs:
   build:
