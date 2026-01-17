@@ -69,9 +69,8 @@ jobs:
         POINTLESS_SUPABASE_ANON_KEY: ${{ secrets.POINTLESS_SUPABASE_ANON_KEY }}
         APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         QT_INSTALL: ${{ env.QT_ROOT_DIR }}
-      run: cmake --preset=${{ matrix.preset }}
-      env:
         APPLE_PROVISIONING_PROFILE_UUID: ${{ secrets.APPLE_PROVISIONING_PROFILE_UUID }}
+      run: cmake --preset=${{ matrix.preset }}
 
     - name: Build
       env:
