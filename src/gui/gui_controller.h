@@ -89,6 +89,12 @@ public:
 
     Q_INVOKABLE void setTaskBeingEdited(const QString &uuid, QDate date);
     Q_INVOKABLE void clearTaskBeingEdited();
+    Q_INVOKABLE void moveTaskToCurrent(const QString &taskUuid);
+    Q_INVOKABLE void moveTaskToSoon(const QString &taskUuid);
+    Q_INVOKABLE void moveTaskToLater(const QString &taskUuid);
+    Q_INVOKABLE void moveTaskToTomorrow(const QString &taskUuid);
+    Q_INVOKABLE void moveTaskToMonday(const QString &taskUuid);
+    Q_INVOKABLE void deleteTask(const QString &taskUuid);
 
     static GuiController *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 

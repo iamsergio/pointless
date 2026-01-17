@@ -107,6 +107,9 @@ Item {
                     required property string tagName
                     required property bool isFromCalendar
                     required property string calendarName
+                    required property bool isSoon
+                    required property bool isLater
+                    required property bool isCurrent
 
                     objectName: "task_" + column.index + "_" + index
 
@@ -122,6 +125,9 @@ Item {
                     taskTagName: tagName
                     taskIsFromCalendar: isFromCalendar
                     taskCalendarName: calendarName
+                    taskIsSoon: isSoon
+                    taskIsLater: isLater
+                    taskIsCurrent: isCurrent
 
                     onClicked: {
                         GuiController.dumpTaskDebug(uuid);

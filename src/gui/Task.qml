@@ -21,6 +21,10 @@ Rectangle {
     required property bool taskIsFromCalendar
     required property string taskCalendarName
 
+    required property bool taskIsSoon
+    required property bool taskIsLater
+    required property bool taskIsCurrent
+
     height: Style.taskHeight
     color: taskIsImportant ? Style.taskImportantBackground : (taskIsEvening ? Style.taskEveningBackground : Style.taskBackground)
     radius: 10
@@ -105,24 +109,55 @@ Rectangle {
                     }
                 }
                 MenuItem {
+                    id: moveToCurrentMenuItem
+                    text: "Move to Current"
+                    visible: !root.taskIsCurrent
+                    height: visible ? implicitHeight : 0
+                    onTriggered: {
+                        GuiController.moveTaskToCurrent(root.taskUuid);
+                    }
+                }
+                MenuItem {
                     id: moveToSoonMenuItem
                     text: "Move to Soon"
+                    visible: !root.taskIsSoon
+                    height: visible ? implicitHeight : 0
+                    onTriggered: {
+                        GuiController.moveTaskToSoon(root.taskUuid);
+                    }
                 }
                 MenuItem {
                     id: moveToLaterMenuItem
                     text: "Move to Later"
+                    visible: !root.taskIsLater
+                    height: visible ? implicitHeight : 0
+                    onTriggered: {
+                        GuiController.moveTaskToLater(root.taskUuid);
+                    }
                 }
                 MenuItem {
                     id: moveToTomorrowMenuItem
+                    visible: !root.taskIsCurrent
+                    height: visible ? implicitHeight : 0
                     text: "Move to Tomorrow"
+                    onTriggered: {
+                        GuiController.moveTaskToTomorrow(root.taskUuid);
+                    }
                 }
                 MenuItem {
                     id: moveToMondayMenuItem
                     text: "Move to Monday"
+                    height: visible ? implicitHeight : 0
+                    onTriggered: {
+                        GuiController.moveTaskToMonday(root.taskUuid);
+                    }
                 }
                 MenuItem {
                     id: deleteMenuItem
                     text: "Delete"
+                    onTriggered: {
+                        GuiController.deleteTask(root.taskUuid);
+                    }
                 }
             }
         }

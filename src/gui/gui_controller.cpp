@@ -415,3 +415,57 @@ void GuiController::setTaskBeingEdited(const QString &uuid, QDate date)
     setDateInEditor(date);
     setIsEditing(true);
 }
+
+void GuiController::moveTaskToCurrent(const QString &taskUuid)
+{
+    auto *task = _dataController->taskModel()->taskForUuid(taskUuid);
+    if (task == nullptr) {
+        P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
+        return;
+    }
+}
+
+void GuiController::moveTaskToSoon(const QString &taskUuid)
+{
+    auto *task = _dataController->taskModel()->taskForUuid(taskUuid);
+    if (task == nullptr) {
+        P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
+        return;
+    }
+}
+
+void GuiController::moveTaskToLater(const QString &taskUuid)
+{
+    auto *task = _dataController->taskModel()->taskForUuid(taskUuid);
+    if (task == nullptr) {
+        P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
+        return;
+    }
+}
+
+void GuiController::moveTaskToTomorrow(const QString &taskUuid)
+{
+    auto *task = _dataController->taskModel()->taskForUuid(taskUuid);
+    if (task == nullptr) {
+        P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
+        return;
+    }
+}
+
+void GuiController::moveTaskToMonday(const QString &taskUuid)
+{
+    auto *task = _dataController->taskModel()->taskForUuid(taskUuid);
+    if (task == nullptr) {
+        P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
+        return;
+    }
+}
+
+void GuiController::deleteTask(const QString &taskUuid)
+{
+    auto *task = _dataController->taskModel()->taskForUuid(taskUuid);
+    if (task == nullptr) {
+        P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
+        return;
+    }
+}

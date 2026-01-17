@@ -5,6 +5,7 @@
 #include "logger.h"
 #include "tag.h"
 #include "Clock.h"
+#include "date_utils.h"
 
 #include <algorithm>
 #include <iomanip>
@@ -30,7 +31,7 @@ bool Task::containsTag(std::string_view tagName) const
 
 bool Task::isSoon() const
 {
-    return containsTag(BUILTIN_TAG_SOON) || isDueIn(std::chrono::days(15));
+    return containsTag(BUILTIN_TAG_SOON) || (isDueIn(std::chrono::days(15)) && !isCurrent());
 }
 
 bool Task::isLater() const
@@ -40,7 +41,7 @@ bool Task::isLater() const
 
 bool Task::isCurrent() const
 {
-    return containsTag(BUILTIN_TAG_CURRENT);
+    return containsTag(BUILTIN_TAG_CURRENT) || isDueThisWeek();
 }
 
 std::string Task::tagName() const
@@ -61,6 +62,14 @@ bool Task::isDueIn(std::chrono::days days) const
     const auto now = Clock::now();
     const auto due = *dueDate;
     return due <= now + days && due >= now;
+}
+
+bool Task::isDueThisWeek() const
+{
+    if (!dueDate) {
+        return false;
+    }
+    return DateUtils::isThisWeek(*dueDate);
 }
 
 void Task::dumpDebug() const

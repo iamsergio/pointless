@@ -23,6 +23,7 @@ public:
     [[nodiscard]] bool isLater() const;
     [[nodiscard]] bool isCurrent() const;
     [[nodiscard]] bool isDueIn(std::chrono::days days) const;
+    [[nodiscard]] bool isDueThisWeek() const;
 
     void mergeConflict(const Task &other);
 

@@ -89,6 +89,72 @@ TEST(TaskTest, IsDueIn)
     EXPECT_FALSE(task.isDueIn(std::chrono::days(1)));
 }
 
+TEST(TaskTest, IsDueThisWeek)
+{
+    pointless::core::Task task;
+
+    auto monday = std::chrono::sys_days(std::chrono::January / 12 / 2026);
+    auto saturday = std::chrono::sys_days(std::chrono::January / 17 / 2026);
+    auto sunday = std::chrono::sys_days(std::chrono::January / 18 / 2026);
+    auto nextMonday = std::chrono::sys_days(std::chrono::January / 19 / 2026);
+
+    Clock::setTestNow(monday);
+
+    EXPECT_FALSE(task.isDueThisWeek());
+
+    task.dueDate = monday + std::chrono::hours(72);
+    EXPECT_TRUE(task.isDueThisWeek());
+
+    task.dueDate = sunday;
+    EXPECT_TRUE(task.isDueThisWeek());
+
+    task.dueDate = nextMonday;
+    EXPECT_FALSE(task.isDueThisWeek());
+
+    task.dueDate = monday - std::chrono::hours(24);
+    EXPECT_FALSE(task.isDueThisWeek());
+
+    Clock::setTestNow(saturday);
+    task.dueDate = std::nullopt;
+    EXPECT_FALSE(task.isDueThisWeek());
+
+    task.dueDate = saturday + std::chrono::hours(12);
+    EXPECT_TRUE(task.isDueThisWeek());
+
+    task.dueDate = saturday + std::chrono::days(1);
+    EXPECT_TRUE(task.isDueThisWeek());
+
+    task.dueDate = saturday + std::chrono::days(2);
+    EXPECT_FALSE(task.isDueThisWeek());
+
+    task.dueDate = sunday;
+    EXPECT_TRUE(task.isDueThisWeek());
+
+    task.dueDate = nextMonday;
+    EXPECT_FALSE(task.isDueThisWeek());
+
+    task.dueDate = saturday - std::chrono::hours(48);
+    EXPECT_TRUE(task.isDueThisWeek());
+
+    Clock::setTestNow(sunday);
+    task.dueDate = std::nullopt;
+    EXPECT_FALSE(task.isDueThisWeek());
+
+    task.dueDate = sunday + std::chrono::hours(12);
+    EXPECT_TRUE(task.isDueThisWeek());
+
+    task.dueDate = nextMonday;
+    EXPECT_FALSE(task.isDueThisWeek());
+
+    task.dueDate = nextMonday + std::chrono::days(1);
+    EXPECT_FALSE(task.isDueThisWeek());
+
+    task.dueDate = monday;
+    EXPECT_TRUE(task.isDueThisWeek());
+
+    Clock::reset();
+}
+
 TEST(TaskTest, DueDatePreservedOnSerializeDeserialize)
 {
     using namespace std::chrono;
