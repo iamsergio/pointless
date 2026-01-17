@@ -35,7 +35,7 @@ jobs:
     - name: Cache vcpkg binaries
       uses: actions/cache@v4
       with:
-        path: ~/.cache/vcpkg
+        path: ${{ github.workspace }}/.cache/vcpkg
         key: vcpkg-bin-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
         restore-keys: vcpkg-bin-${{ runner.os }}-
 
@@ -77,7 +77,7 @@ jobs:
         APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         QT_INSTALL: ${{ env.QT_ROOT_DIR }}
         APPLE_PROVISIONING_PROFILE_UUID: ${{ secrets.APPLE_PROVISIONING_PROFILE_UUID }}
-        VCPKG_BINARY_SOURCES: 'clear;files,~/.cache/vcpkg,readwrite'
+        VCPKG_BINARY_SOURCES: 'clear;files,${{ github.workspace }}/.cache/vcpkg,readwrite'
       run: cmake --preset=${{ matrix.preset }}
 
     - name: Build
