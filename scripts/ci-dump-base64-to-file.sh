@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2025 Sergio Martins
+#
+# SPDX-License-Identifier: MIT
+
+set -e
+cleanup() {
+    rm -f "$APPLE_CERTIFICATE_P12_PATH" "$APPLE_PROVISIONING_PROFILE_PATH"
+}
+trap cleanup EXIT
+
+if [[ -z "$APPLE_PROVISIONING_PROFILE_BASE64" || -z "$APPLE_CERTIFICATE_P12_BASE64" ]]; then
+    echo "This script requires APPLE_PROVISIONING_PROFILE_BASE64 and APPLE_CERTIFICATE_P12_BASE64 to be set."
+    exit 1
+fi
+if [[ -z "$APPLE_CERTIFICATE_P12_PATH" || -z "$APPLE_PROVISIONING_PROFILE_PATH" ]]; then
+    echo "This script requires APPLE_CERTIFICATE_P12_PATH and APPLE_PROVISIONING_PROFILE_PATH to be set."
+    exit 1
+fi
+
+echo "$APPLE_CERTIFICATE_P12_BASE64" | base64 --decode > "$APPLE_CERTIFICATE_P12_PATH"
+echo "$APPLE_PROVISIONING_PROFILE_BASE64" | base64 --decode > "$APPLE_PROVISIONING_PROFILE_PATH"

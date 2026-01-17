@@ -8,8 +8,6 @@
 
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 if [ -z "${APPLE_CERTIFICATE_P12_PATH}" ]; then
 	echo "APPLE_CERTIFICATE_P12_PATH environment variable must be set"
 	exit 1
