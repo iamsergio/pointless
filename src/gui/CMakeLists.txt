@@ -85,10 +85,13 @@ target_link_libraries(pointless PRIVATE pointless_gui Qt6::Core Qt6::Gui Qt6::Qu
 if(IOS)
   if(NOT POINTLESS_DEVELOPER_MODE)
     # set release provisioning stuff
+
+    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO")
+    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO")
+    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "")
+    set(CMAKE_XCODE_ATTRIBUTE_PROVISIONING_PROFILE_SPECIFIER "")
+
     ios_set_manual_signing_properties(pointless)
-    ios_set_manual_signing_properties(pointless_guiplugin_init)
-    ios_set_manual_signing_properties(pointless_gui_resources_2)
-    ios_set_manual_signing_properties(pointless_gui_resources_3)
   endif()
 
   set_target_properties(
