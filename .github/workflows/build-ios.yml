@@ -73,16 +73,6 @@ jobs:
         cd 3rdparty/vcpkg
         ./bootstrap-vcpkg.sh
 
-    - name: Configure CMake
-      env:
-        POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
-        POINTLESS_SUPABASE_ANON_KEY: ${{ secrets.POINTLESS_SUPABASE_ANON_KEY }}
-        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-        QT_INSTALL: ${{ env.QT_ROOT_DIR }}
-        APPLE_PROVISIONING_PROFILE_UUID: ${{ secrets.APPLE_PROVISIONING_PROFILE_UUID }}
-        VCPKG_BINARY_SOURCES: 'clear;files,${{ github.workspace }}/.cache/vcpkg,readwrite'
-      run: cmake --preset=${{ matrix.preset }}
-
     - name: Build
       env:
         POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
@@ -91,4 +81,10 @@ jobs:
         QT_INSTALL: ${{ env.QT_ROOT_DIR }}
         APPLE_PROVISIONING_PROFILE_UUID: ${{ secrets.APPLE_PROVISIONING_PROFILE_UUID }}
         VCPKG_BINARY_SOURCES: 'clear;files,${{ github.workspace }}/.cache/vcpkg,readwrite'
-      run: cmake --build --preset ${{ matrix.preset }} --verbose
+      run: |
+        cmake --preset=${{ matrix.preset }}
+        cmake --build --preset ${{ matrix.preset }} --verbose
+        ./scripts/archive-ios.sh build-${{ matrix.preset }}/
+        if [[ "${{ inputs.release_to_testflight }}" == "true" ]]; then
+          ./scripts/upload-ipa.sh build-${{ matrix.preset }}/
+        fi
