@@ -200,7 +200,20 @@ const Task &Data::taskAt(size_t index) const
 
 const Task *Data::taskForUuid(const std::string &uuid) const
 {
-    auto it = findTaskByUuid(uuid);
+    auto it = std::ranges::find_if(_data.tasks, [&uuid](const Task &task) {
+        return task.uuid == uuid;
+    });
+    if (it != _data.tasks.end()) {
+        return &(*it);
+    }
+    return nullptr;
+}
+
+Task *Data::taskForUuid(const std::string &uuid)
+{
+    auto it = std::ranges::find_if(_data.tasks, [&uuid](const Task &task) {
+        return task.uuid == uuid;
+    });
     if (it != _data.tasks.end()) {
         return &(*it);
     }

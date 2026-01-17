@@ -72,6 +72,13 @@ bool Task::isDueThisWeek() const
     return DateUtils::isThisWeek(*dueDate);
 }
 
+void Task::removeBuiltinTags()
+{
+    std::erase_if(tags, [](const std::string &tag) {
+        return tagIsBuiltin(tag);
+    });
+}
+
 void Task::dumpDebug() const
 {
     std::string json;

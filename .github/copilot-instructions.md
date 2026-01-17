@@ -20,3 +20,9 @@ CMake files should also have the above, but with # instead of /* */ for comments
 4. Icons
    - Use FontAwesome icons via FontAwesomeButton.qml for buttons and icons in the GUI.
    - Avoid using image files unless asked
+
+5. Tags
+   - Use BUILTIN_TAG_* constants for built-in tags.
+   - Use tagIsBuiltin() function to check if a tag is built-in.
+   - Use removeBuiltinTags() method to remove built-in tags from a Task object.
+   - There is no tag "later"

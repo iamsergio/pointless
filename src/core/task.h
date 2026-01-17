@@ -25,6 +25,7 @@ public:
     [[nodiscard]] bool isDueIn(std::chrono::days days) const;
     [[nodiscard]] bool isDueThisWeek() const;
 
+    void removeBuiltinTags();
     void mergeConflict(const Task &other);
 
     void dumpDebug() const;

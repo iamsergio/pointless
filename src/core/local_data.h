@@ -44,6 +44,7 @@ public:
     [[nodiscard]] size_t taskCount() const;
     [[nodiscard]] const Task &taskAt(size_t index) const;
     [[nodiscard]] const Task *taskForUuid(const std::string &uuid) const;
+    [[nodiscard]] Task *taskForUuid(const std::string &uuid);
     [[nodiscard]] const Task *taskForTitle(const std::string &title) const;
     [[nodiscard]] size_t tagCount() const;
     [[nodiscard]] const Tag &tagAt(size_t index) const;

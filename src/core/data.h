@@ -48,6 +48,7 @@ public:
     [[nodiscard]] std::vector<Task> getTasksByParent(const std::string &parentUuid) const;
     [[nodiscard]] const Task &taskAt(size_t index) const;
     [[nodiscard]] const Task *taskForUuid(const std::string &uuid) const;
+    [[nodiscard]] Task *taskForUuid(const std::string &uuid);
     [[nodiscard]] const Task *taskForTitle(const std::string &title) const;
     [[nodiscard]] std::string debug_taskUids() const;
 

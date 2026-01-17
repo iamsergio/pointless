@@ -423,6 +423,9 @@ void GuiController::moveTaskToCurrent(const QString &taskUuid)
         P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
         return;
     }
+    task->removeBuiltinTags();
+    task->tags.emplace_back(pointless::core::BUILTIN_TAG_CURRENT);
+    taskModel()->updateTask(*task);
 }
 
 void GuiController::moveTaskToSoon(const QString &taskUuid)
@@ -432,6 +435,9 @@ void GuiController::moveTaskToSoon(const QString &taskUuid)
         P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
         return;
     }
+    task->removeBuiltinTags();
+    task->tags.emplace_back(pointless::core::BUILTIN_TAG_SOON);
+    taskModel()->updateTask(*task);
 }
 
 void GuiController::moveTaskToLater(const QString &taskUuid)
@@ -441,6 +447,9 @@ void GuiController::moveTaskToLater(const QString &taskUuid)
         P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
         return;
     }
+
+    task->removeBuiltinTags();
+    taskModel()->updateTask(*task);
 }
 
 void GuiController::moveTaskToTomorrow(const QString &taskUuid)

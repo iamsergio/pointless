@@ -113,6 +113,11 @@ const Task *LocalData::taskForUuid(const std::string &uuid) const
     return _data.taskForUuid(uuid);
 }
 
+Task *LocalData::taskForUuid(const std::string &uuid)
+{
+    return _data.taskForUuid(uuid);
+}
+
 const Task *LocalData::taskForTitle(const std::string &title) const
 {
     return _data.taskForTitle(title);

@@ -136,6 +136,11 @@ const core::Task *TaskModel::taskForUuid(const QString &taskUuid) const
     return localData().taskForUuid(taskUuid.toStdString());
 }
 
+core::Task *TaskModel::taskForUuid(const QString &taskUuid)
+{
+    return localData().taskForUuid(taskUuid.toStdString());
+}
+
 int TaskModel::indexForTask(const QString &taskUuid) const
 {
     const auto uuidStr = taskUuid.toStdString();
@@ -195,6 +200,18 @@ void TaskModel::setTaskDone(const QString &taskUuid, bool isDone)
     updatedTask.isDone = isDone;
 
     dataController()->updateTask(updatedTask);
+    emit dataChanged(index(idx), index(idx));
+}
+
+void TaskModel::updateTask(const core::Task &task)
+{
+    const int idx = indexForTask(QString::fromStdString(task.uuid));
+    if (idx == -1) {
+        P_LOG_ERROR("Failed to find index for task UUID: {}", task.uuid);
+        return;
+    }
+
+    dataController()->updateTask(task);
     emit dataChanged(index(idx), index(idx));
 }
 
