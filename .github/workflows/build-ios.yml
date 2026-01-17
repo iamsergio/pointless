@@ -39,9 +39,9 @@ jobs:
       env:
         APPLE_PROVISIONING_PROFILE_BASE64: ${{ secrets.APPLE_PROVISIONING_PROFILE_BASE64 }}
         APPLE_CERTIFICATE_P12_BASE64: ${{ secrets.APPLE_CERTIFICATE_P12_BASE64 }}
-        APPLE_CERTIFICATE_P12_PATH: ${{ env.HOME }}/cert.p12
-        APPLE_PROVISIONING_PROFILE_PATH: ${{ env.HOME }}/profile.mobileprovision
-        KEYCHAIN_FILE: ${{ env.HOME }}/ios-build.keychain
+        APPLE_CERTIFICATE_P12_PATH: /tmp/cert.p12
+        APPLE_PROVISIONING_PROFILE_PATH: /tmp/profile.mobileprovision
+        KEYCHAIN_FILE: /tmp/ios-build.keychain
         KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
         APPLE_P12_PASSWORD: ${{ secrets.APPLE_P12_PASSWORD }}
 
