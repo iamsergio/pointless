@@ -19,10 +19,10 @@ if [ -z "${APPLE_PROVISIONING_PROFILE_PATH}" ]; then
 fi
 
 if ! gh auth status >/dev/null 2>&1; then
-    echo "Not authenticated. Starting login..."
-    gh auth login
+	echo "Not authenticated. Starting login..."
+	gh auth login
 else
-    echo "Already authenticated."
+	echo "Already authenticated."
 fi
 
 base64 -i "${APPLE_CERTIFICATE_P12_PATH}" | gh secret set APPLE_CERTIFICATE_P12_BASE64
