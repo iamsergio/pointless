@@ -127,6 +127,7 @@ if(IOS)
   endif()
 
   if(POINTLESS_DEVELOPER_MODE)
+    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED YES)
     set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_STYLE
         "Automatic"
         CACHE STRING "Sign style")
@@ -137,7 +138,6 @@ if(IOS)
   endif()
 
   set(BUNDLE_IDENTIFIER "com.iamsergio.pointless")
-  set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED YES)
   set(CMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM
       "$ENV{APPLE_TEAM_ID}"
       CACHE STRING "iOS development team to use for signing")
