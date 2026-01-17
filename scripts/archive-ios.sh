@@ -6,12 +6,12 @@
 
 set -e
 
-# Prequisites:
+# Prerequisites:
 # - Be sure to build 1st with Release configuration
 # - for example: cmake --preset ios-release && cmake --build --preset ios-release
 
 # 1. Generates pointless.xcarchive inside the build directory
-# 2. Geneates the .ipa file for TestFlight distribution
+# 2. Generates the .ipa file for TestFlight distribution
 
 if [ -z "$1" ]; then
 	echo "Usage: $0 <build-directory>"

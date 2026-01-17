@@ -47,9 +47,9 @@ if(POINTLESS_IOS_BUILD)
   # Sets for all targets
   set(CMAKE_XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "com.iamsergio.pointless")
 
-  set(
-      # Sets the app to iPhone only (Value "1"). No iPad support yet.
-      CMAKE_XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1"
+  set(# Sets the app to iPhone only (Value "1"). No iPad support yet.
+      CMAKE_XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY
+      "1"
       CACHE STRING "iOS targeted device family" FORCE)
 endif()
 

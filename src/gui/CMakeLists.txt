@@ -97,11 +97,7 @@ if(IOS)
                MACOSX_BUNDLE_INFO_PLIST "${CMAKE_BINARY_DIR}/Info.plist")
 
   target_sources(pointless PRIVATE ${CMAKE_SOURCE_DIR}/assets/ios/Images.xcassets)
-  set_source_files_properties(
-      "${CMAKE_SOURCE_DIR}/assets/ios/Images.xcassets"
-      PROPERTIES
-          MACOSX_PACKAGE_LOCATION Resources
-  )
+  set_source_files_properties("${CMAKE_SOURCE_DIR}/assets/ios/Images.xcassets" PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 endif()
 
 if(POINTLESS_ENABLE_TESTS)

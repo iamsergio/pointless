@@ -9,7 +9,7 @@ trap 'echo "Build failed with exit code $?"; exit 1' ERR
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-cd ${SCRIPT_DIR}/..
+cd "${SCRIPT_DIR}"/..
 
 rm -rf build-ios-release
 

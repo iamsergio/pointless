@@ -1,4 +1,6 @@
-# SPDX-FileCopyrightText: 2025 Sergio Martins SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025 Sergio Martins
+#
+# SPDX-License-Identifier: MIT
 
 #[[
 Sets iOS-specific Xcode attributes for a target related to manual code signing.

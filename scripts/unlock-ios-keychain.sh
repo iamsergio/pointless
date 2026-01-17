@@ -4,16 +4,14 @@
 #
 # SPDX-License-Identifier: MIT
 
-
-security show-keychain-info "${KEYCHAIN_FILE}" 2>&1 | grep -q "User interaction is not allowed"
-if [ $? -ne 0 ]; then
-    echo "Keychain is already unlocked."
-    exit 0
+if ! security show-keychain-info "${KEYCHAIN_FILE}" 2>&1 | grep -q "User interaction is not allowed"; then
+	echo "Keychain is already unlocked."
+	exit 0
 fi
 
 if [ -z "${KEYCHAIN_FILE}" ]; then
-    echo "KEYCHAIN_FILE environment variable must be set"
-    exit 1
+	echo "KEYCHAIN_FILE environment variable must be set"
+	exit 1
 fi
 
 if [ -z "${KEYCHAIN_PASSWORD}" ]; then

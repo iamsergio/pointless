@@ -44,5 +44,5 @@ fi
 # POINTLESS_APPLE_ID is the Apple ID email used to upload the app
 # POINTLESS_APP_APPLE_ID is the app's Apple ID (the numeric one)
 
-xcrun altool --upload-app -f pointless_ipa/pointless.ipa --type ios --username $POINTLESS_APPLE_ID \
-	--password $APPLE_SPECIFIC_PASSWORD --apple-id $POINTLESS_APP_APPLE_ID
+xcrun altool --upload-app -f pointless_ipa/pointless.ipa --type ios --username "$POINTLESS_APPLE_ID" \
+	--password "$APPLE_SPECIFIC_PASSWORD" --apple-id "$POINTLESS_APP_APPLE_ID"

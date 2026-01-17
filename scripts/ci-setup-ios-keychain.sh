@@ -53,9 +53,6 @@ fi
 security unlock-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_FILE}"
 security set-keychain-settings -u "${KEYCHAIN_FILE}"
 
-echo "Adding keychain to search list..."
-CURRENT_SEARCH_LIST=$(security list-keychains -d user | xargs)
-
 security list-keychains -s \
 	"${KEYCHAIN_FILE}" \
 	"${HOME}/Library/Keychains/login.keychain-db" \
