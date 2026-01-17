@@ -18,6 +18,8 @@ bool isMonday(QDate date);
 
 QDate firstMondayOfWeek(QDate date);
 
+QDate nextMonday(QDate date);
+
 bool isOverdue(QDate dueDate, QDate currentDate);
 
 bool isToday(QDate date);

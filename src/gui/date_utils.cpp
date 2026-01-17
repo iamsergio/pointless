@@ -42,6 +42,13 @@ QDate firstMondayOfWeek(QDate date)
     return date.addDays(1 - date.dayOfWeek());
 }
 
+QDate nextMonday(QDate date)
+{
+    const int dayOfWeek = date.dayOfWeek();
+    const int daysToAdd = (dayOfWeek == 1) ? 7 : (8 - dayOfWeek);
+    return date.addDays(daysToAdd);
+}
+
 bool isOverdue(QDate dueDate, QDate currentDate)
 {
     assert(currentDate.isValid());

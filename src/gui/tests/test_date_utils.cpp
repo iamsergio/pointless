@@ -57,3 +57,14 @@ TEST(DateUtilsTest, QDateRoundTripMultipleDates)
         EXPECT_EQ(originalDate, convertedDate) << "Failed for date: " << originalDate.toString().toStdString();
     }
 }
+
+TEST(DateUtilsTest, NextMonday)
+{
+    EXPECT_EQ(Gui::DateUtils::nextMonday(QDate(2026, 1, 19)), QDate(2026, 1, 26));
+    EXPECT_EQ(Gui::DateUtils::nextMonday(QDate(2026, 1, 20)), QDate(2026, 1, 26));
+    EXPECT_EQ(Gui::DateUtils::nextMonday(QDate(2026, 1, 21)), QDate(2026, 1, 26));
+    EXPECT_EQ(Gui::DateUtils::nextMonday(QDate(2026, 1, 22)), QDate(2026, 1, 26));
+    EXPECT_EQ(Gui::DateUtils::nextMonday(QDate(2026, 1, 23)), QDate(2026, 1, 26));
+    EXPECT_EQ(Gui::DateUtils::nextMonday(QDate(2026, 1, 24)), QDate(2026, 1, 26));
+    EXPECT_EQ(Gui::DateUtils::nextMonday(QDate(2026, 1, 25)), QDate(2026, 1, 26));
+}
