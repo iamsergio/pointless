@@ -32,10 +32,12 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Setup vcpkg cache
-      uses: lukka/run-vcpkg@v11
+    - name: Cache vcpkg binaries
+      uses: actions/cache@v4
       with:
-        vcpkgDirectory: '${{ github.workspace }}/3rdparty/vcpkg'
+        path: ~/.cache/vcpkg
+        key: vcpkg-bin-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+        restore-keys: vcpkg-bin-${{ runner.os }}-
 
     - name: Setup signing
       run: |
@@ -75,6 +77,7 @@ jobs:
         APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         QT_INSTALL: ${{ env.QT_ROOT_DIR }}
         APPLE_PROVISIONING_PROFILE_UUID: ${{ secrets.APPLE_PROVISIONING_PROFILE_UUID }}
+        VCPKG_BINARY_SOURCES: 'clear;files,~/.cache/vcpkg,readwrite'
       run: cmake --preset=${{ matrix.preset }}
 
     - name: Build
