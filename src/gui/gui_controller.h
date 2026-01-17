@@ -93,7 +93,7 @@ public:
     Q_INVOKABLE void moveTaskToSoon(const QString &taskUuid);
     Q_INVOKABLE void moveTaskToLater(const QString &taskUuid);
     Q_INVOKABLE void moveTaskToTomorrow(const QString &taskUuid);
-    Q_INVOKABLE void moveTaskToMonday(const QString &taskUuid);
+    Q_INVOKABLE void moveTaskToNextMonday(const QString &taskUuid);
     Q_INVOKABLE void deleteTask(const QString &taskUuid);
 
     static GuiController *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);

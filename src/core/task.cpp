@@ -64,6 +64,14 @@ bool Task::isDueIn(std::chrono::days days) const
     return due <= now + days && due >= now;
 }
 
+bool Task::isDueTomorrow() const
+{
+    if (!dueDate) {
+        return false;
+    }
+    return DateUtils::isTomorrow(*dueDate);
+}
+
 bool Task::isDueThisWeek() const
 {
     if (!dueDate) {

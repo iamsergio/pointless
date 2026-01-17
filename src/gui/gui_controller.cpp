@@ -459,15 +459,19 @@ void GuiController::moveTaskToTomorrow(const QString &taskUuid)
         P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
         return;
     }
+
+    taskModel()->updateTask(*task);
 }
 
-void GuiController::moveTaskToMonday(const QString &taskUuid)
+void GuiController::moveTaskToNextMonday(const QString &taskUuid)
 {
     auto *task = _dataController->taskModel()->taskForUuid(taskUuid);
     if (task == nullptr) {
         P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
         return;
     }
+
+    taskModel()->updateTask(*task);
 }
 
 void GuiController::deleteTask(const QString &taskUuid)

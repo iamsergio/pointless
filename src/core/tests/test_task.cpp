@@ -426,3 +426,31 @@ TEST(TaskTest, MergeConflict_CurrentWinsOverSoon_BothOnOther)
     EXPECT_TRUE(task1.containsTag("current"));
     EXPECT_FALSE(task1.containsTag("soon"));
 }
+
+TEST(TaskTest, IsDueTomorrow)
+{
+    pointless::core::Task task;
+    auto now = std::chrono::sys_days{ std::chrono::January / 17 / 2026 };
+    pointless::core::Clock::setTestNow(now);
+
+    // No due date
+    EXPECT_FALSE(task.isDueTomorrow());
+
+    // Due today
+    task.dueDate = now;
+    EXPECT_FALSE(task.isDueTomorrow());
+
+    // Due tomorrow
+    task.dueDate = now + std::chrono::days(1);
+    EXPECT_TRUE(task.isDueTomorrow());
+
+    // Due day after tomorrow
+    task.dueDate = now + std::chrono::days(2);
+    EXPECT_FALSE(task.isDueTomorrow());
+
+    // Due yesterday
+    task.dueDate = now - std::chrono::days(1);
+    EXPECT_FALSE(task.isDueTomorrow());
+
+    pointless::core::Clock::reset();
+}

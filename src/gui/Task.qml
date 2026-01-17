@@ -146,10 +146,10 @@ Rectangle {
                 }
                 MenuItem {
                     id: moveToMondayMenuItem
-                    text: "Move to Monday"
+                    text: "Move to Next Monday"
                     height: visible ? implicitHeight : 0
                     onTriggered: {
-                        GuiController.moveTaskToMonday(root.taskUuid);
+                        GuiController.moveTaskToNextMonday(root.taskUuid);
                     }
                 }
                 MenuItem {
