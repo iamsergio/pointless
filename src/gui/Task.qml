@@ -24,6 +24,7 @@ Rectangle {
     required property bool taskIsSoon
     required property bool taskIsLater
     required property bool taskIsCurrent
+    required property bool taskIsDueTomorrow
 
     height: Style.taskHeight
     color: taskIsImportant ? Style.taskImportantBackground : (taskIsEvening ? Style.taskEveningBackground : Style.taskBackground)
@@ -137,7 +138,7 @@ Rectangle {
                 }
                 MenuItem {
                     id: moveToTomorrowMenuItem
-                    visible: !root.taskIsCurrent
+                    visible: !root.taskIsDueTomorrow
                     height: visible ? implicitHeight : 0
                     text: "Move to Tomorrow"
                     onTriggered: {
@@ -150,13 +151,6 @@ Rectangle {
                     height: visible ? implicitHeight : 0
                     onTriggered: {
                         GuiController.moveTaskToNextMonday(root.taskUuid);
-                    }
-                }
-                MenuItem {
-                    id: deleteMenuItem
-                    text: "Delete"
-                    onTriggered: {
-                        GuiController.deleteTask(root.taskUuid);
                     }
                 }
             }

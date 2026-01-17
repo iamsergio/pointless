@@ -37,7 +37,8 @@ public:
         RevisionRole,
         IsSoonRole,
         IsLaterRole,
-        IsCurrentRole
+        IsCurrentRole,
+        IsDueTomorrowRole
     };
 
     explicit TaskModel(QObject *parent = nullptr);

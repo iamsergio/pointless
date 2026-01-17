@@ -33,6 +33,7 @@ ListView {
         required property bool isSoon
         required property bool isLater
         required property bool isCurrent
+        required property bool isDueTomorrow
 
         objectName: "task_" + index
 
@@ -50,5 +51,6 @@ ListView {
         taskIsSoon: isSoon
         taskIsLater: isLater
         taskIsCurrent: isCurrent
+        taskIsDueTomorrow: isDueTomorrow
     }
 }

@@ -83,6 +83,8 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         return task.isLater();
     case IsCurrentRole:
         return task.isCurrent();
+    case IsDueTomorrowRole:
+        return task.isDueTomorrow();
     default:
         return {};
     }
@@ -108,6 +110,7 @@ QHash<int, QByteArray> TaskModel::roleNames() const
     roles[IsSoonRole] = "isSoon";
     roles[IsLaterRole] = "isLater";
     roles[IsCurrentRole] = "isCurrent";
+    roles[IsDueTomorrowRole] = "isDueTomorrow";
     return roles;
 }
 

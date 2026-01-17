@@ -110,6 +110,7 @@ Item {
                     required property bool isSoon
                     required property bool isLater
                     required property bool isCurrent
+                    required property bool isDueTomorrow
 
                     objectName: "task_" + column.index + "_" + index
 
@@ -128,6 +129,7 @@ Item {
                     taskIsSoon: isSoon
                     taskIsLater: isLater
                     taskIsCurrent: isCurrent
+                    taskIsDueTomorrow: isDueTomorrow
 
                     onClicked: {
                         GuiController.dumpTaskDebug(uuid);
