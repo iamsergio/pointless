@@ -460,6 +460,11 @@ void GuiController::moveTaskToTomorrow(const QString &taskUuid)
         return;
     }
 
+    if (task->isDueTomorrow())
+        return;
+
+    QDate tomorrow = Gui::Clock::today().addDays(1);
+    task->dueDate = Gui::DateUtils::qdateToTimepoint(tomorrow);
     taskModel()->updateTask(*task);
 }
 

@@ -87,4 +87,4 @@ jobs:
         APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         QT_INSTALL: ${{ env.QT_ROOT_DIR }}
         APPLE_PROVISIONING_PROFILE_UUID: ${{ secrets.APPLE_PROVISIONING_PROFILE_UUID }}
-      run: cmake --build --preset ${{ matrix.preset }}
+      run: cmake --build --preset ${{ matrix.preset }} --verbose
