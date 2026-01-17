@@ -22,7 +22,10 @@
     },
     {
       "name": "ios-release",
-      "inherits": "ios-base"
+      "inherits": "ios-base",
+      "cacheVariables": {
+        "VCPKG_BUILD_TYPE": "release"
+      }
     },
     {
       "name": "dev",
