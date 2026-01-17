@@ -18,6 +18,16 @@ if [ -z "${APPLE_PROVISIONING_PROFILE_PATH}" ]; then
 	exit 1
 fi
 
+if [ -z "${APPLE_PROVISIONING_PROFILE_UUID}" ]; then
+	echo "APPLE_PROVISIONING_PROFILE_UUID environment variable must be set"
+	exit 1
+fi
+
+if [ -z "${APPLE_TEAM_ID}" ]; then
+	echo "APPLE_TEAM_ID environment variable must be set"
+	exit 1
+fi
+
 if ! gh auth status >/dev/null 2>&1; then
 	echo "Not authenticated. Starting login..."
 	gh auth login
@@ -35,3 +45,6 @@ echo -n "${KEYCHAIN_PASSWORD}" | gh secret set KEYCHAIN_PASSWORD
 echo "Enter APPLE_P12_PASSWORD:"
 read -rs APPLE_P12_PASSWORD
 echo -n "${APPLE_P12_PASSWORD}" | gh secret set APPLE_P12_PASSWORD
+
+echo -n "${APPLE_PROVISIONING_PROFILE_UUID}" | gh secret set APPLE_PROVISIONING_PROFILE_UUID
+echo -n "${APPLE_TEAM_ID}" | gh secret set APPLE_TEAM_ID

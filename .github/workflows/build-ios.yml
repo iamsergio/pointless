@@ -35,8 +35,6 @@ jobs:
     - name: Setup signing
       run: |
         ./scripts/ci-dump-base64-to-file.sh
-        ls /tmp
-        file /tmp/*
         ./scripts/ci-setup-ios-keychain.sh
       env:
         APPLE_PROVISIONING_PROFILE_BASE64: ${{ secrets.APPLE_PROVISIONING_PROFILE_BASE64 }}
