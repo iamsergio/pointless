@@ -44,6 +44,7 @@ jobs:
         KEYCHAIN_FILE: ${{ runner.temp }}/ios-build.keychain
         KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
         APPLE_P12_PASSWORD: ${{ secrets.APPLE_P12_PASSWORD }}
+        APPLE_PROVISIONING_PROFILE_UUID: ${{ secrets.APPLE_PROVISIONING_PROFILE_UUID }}
 
     - name: Install Qt for macOS
       uses: jurplel/install-qt-action@v4
