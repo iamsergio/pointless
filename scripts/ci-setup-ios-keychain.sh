@@ -83,3 +83,6 @@ rm AppleWWDRCA.cer
 
 # allow codesign to access the key
 security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "${KEYCHAIN_FILE}"
+
+echo "Listing valid code signing identities in keychain:"
+security find-identity -v -p codesigning "${KEYCHAIN_FILE}"
