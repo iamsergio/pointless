@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-# Copy the 2 outputs into GH secrets with name APPLE_CERTIFICATE_P12 and APPLE_PROVISIONING_PROFILE
+# Copy the 2 outputs into GH secrets with name APPLE_CERTIFICATE_P12_BASE64 and APPLE_PROVISIONING_PROFILE_BASE64
 
 set -e
 
@@ -27,3 +27,11 @@ fi
 
 base64 -i "${APPLE_CERTIFICATE_P12_PATH}" | gh secret set APPLE_CERTIFICATE_P12_BASE64
 base64 -i "${APPLE_PROVISIONING_PROFILE_PATH}" | gh secret set APPLE_PROVISIONING_PROFILE_BASE64
+
+echo "Enter KEYCHAIN_PASSWORD:"
+read -s KEYCHAIN_PASSWORD
+echo -n "${KEYCHAIN_PASSWORD}" | gh secret set KEYCHAIN_PASSWORD
+
+echo "Enter APPLE_P12_PASSWORD:"
+read -s APPLE_P12_PASSWORD
+echo -n "${APPLE_P12_PASSWORD}" | gh secret set APPLE_P12_PASSWORD

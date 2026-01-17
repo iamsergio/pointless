@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        preset: [ios-dev]
+        preset: [ios-release]
         os: [macos-latest]
 
     steps:
@@ -32,14 +32,24 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Setup signing
+      run: |
+        ./scripts/ci-dump-base64-to-file.sh
+        ./scripts/ci-setup-ios-keychain.sh
+      env:
+        APPLE_PROVISIONING_PROFILE_BASE64: ${{ secrets.APPLE_PROVISIONING_PROFILE_BASE64 }}
+        APPLE_CERTIFICATE_P12_BASE64: ${{ secrets.APPLE_CERTIFICATE_P12_BASE64 }}
+        APPLE_CERTIFICATE_P12_PATH: ${{ env.HOME }}/cert.p12
+        APPLE_PROVISIONING_PROFILE_PATH: ${{ env.HOME }}/profile.mobileprovision
+        KEYCHAIN_FILE: ${{ env.HOME }}/ios-build.keychain
+        KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        APPLE_P12_PASSWORD: ${{ secrets.APPLE_P12_PASSWORD }}
+
     - name: Install Qt for macOS
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.10.0'
         cache: true
-
-    - name: Print Qt environment
-      run: echo "QT_ROOT_DIR=$QT_ROOT_DIR"
 
     - name: Install Qt for iOS
       uses: jurplel/install-qt-action@v4
@@ -47,9 +57,6 @@ jobs:
         version: '6.10.0'
         cache: true
         target: ios
-
-    - name: Print Qt environment2
-      run: echo "QT_ROOT_DIR=$QT_ROOT_DIR"
 
     - name: Setup vcpkg
       run: |
