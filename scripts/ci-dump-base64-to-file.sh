@@ -5,10 +5,6 @@
 # SPDX-License-Identifier: MIT
 
 set -e
-cleanup() {
-	rm -f "$APPLE_CERTIFICATE_P12_PATH" "$APPLE_PROVISIONING_PROFILE_PATH"
-}
-trap cleanup EXIT
 
 if [[ -z "$APPLE_PROVISIONING_PROFILE_BASE64" || -z "$APPLE_CERTIFICATE_P12_BASE64" ]]; then
 	echo "This script requires APPLE_PROVISIONING_PROFILE_BASE64 and APPLE_CERTIFICATE_P12_BASE64 to be set."
