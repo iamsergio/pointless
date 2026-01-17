@@ -86,6 +86,7 @@ if(IOS)
   if(NOT POINTLESS_DEVELOPER_MODE)
     # set release provisioning stuff
     ios_set_manual_signing_properties(pointless)
+    ios_set_manual_signing_properties(pointless_guiplugin_init)
   endif()
 
   set_target_properties(
