@@ -430,7 +430,7 @@ TEST(TaskTest, MergeConflict_CurrentWinsOverSoon_BothOnOther)
 TEST(TaskTest, IsDueTomorrow)
 {
     pointless::core::Task task;
-    auto now = std::chrono::sys_days{ std::chrono::January / 17 / 2026 };
+    auto now = std::chrono::sys_days { std::chrono::January / 17 / 2026 };
     pointless::core::Clock::setTestNow(now);
 
     // No due date
