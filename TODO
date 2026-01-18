@@ -1,9 +1,7 @@
-- Add login wall
-- Read from apple calendar
 - Style task menu
-
+- Read from apple calendar
+- Login with Apple
 
 - Nice to haves:
-  - Login with Apple
-  - return views so we dont allocate
+  - Return views so we dont allocate
   - Make login async
