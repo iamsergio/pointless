@@ -105,7 +105,7 @@ void GuiController::refresh()
 {
     auto refreshResult = _dataController->refresh();
     if (!refreshResult) {
-        P_LOG_ERROR("GuiController::refresh: {}", refreshResult.error());
+        P_LOG_ERROR("GuiController::refresh: {}", refreshResult.error().toString());
         return;
     }
 }

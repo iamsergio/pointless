@@ -15,7 +15,7 @@ using namespace pointless::core;
 
 LocalData::LocalData() = default;
 
-std::expected<void, std::string> LocalData::loadDataFromFile()
+std::expected<void, TraceableError> LocalData::loadDataFromFile()
 {
     auto result = loadDataFromFile(getDataFilePath());
     if (result) {
@@ -24,7 +24,7 @@ std::expected<void, std::string> LocalData::loadDataFromFile()
     }
 
     _data = {};
-    return std::unexpected(result.error());
+    return TraceableError::create(result.error());
 }
 
 std::expected<pointless::core::Data, std::string> LocalData::loadDataFromFile(const std::string &filename) const

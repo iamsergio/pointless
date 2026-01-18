@@ -9,6 +9,7 @@
 #include "core/local_data.h"
 #include "core/data_provider.h"
 #include "core/data.h"
+#include "core/error.h"
 
 #include <QObject>
 #include <QTimer>
@@ -27,7 +28,7 @@ public:
     ~DataController() override = default;
 
     bool loginWithDefaults();
-    std::expected<pointless::core::Data, std::string> refresh();
+    std::expected<pointless::core::Data, TraceableError> refresh();
     bool updateTask(const pointless::core::Task &task);
     bool addTask(const pointless::core::Task &task);
 
@@ -44,9 +45,9 @@ public:
 #ifndef POINTLESS_ENABLE_TESTS
 private:
 #endif
-    std::expected<pointless::core::Data, std::string> pushRemoteData(pointless::core::Data data);
-    std::expected<pointless::core::Data, std::string> pullRemoteData();
-    std::expected<pointless::core::Data, std::string> merge(const std::optional<pointless::core::Data> &remoteData);
+    std::expected<pointless::core::Data, TraceableError> pushRemoteData(pointless::core::Data data);
+    std::expected<pointless::core::Data, TraceableError> pullRemoteData();
+    std::expected<pointless::core::Data, TraceableError> merge(const std::optional<pointless::core::Data> &remoteData);
     pointless::core::LocalData _localData;
     std::unique_ptr<IDataProvider> _dataProvider;
     TaskModel *_taskModel = nullptr;

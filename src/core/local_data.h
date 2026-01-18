@@ -4,6 +4,7 @@
 #pragma once
 
 #include "data.h"
+#include "error.h"
 
 #include <expected>
 #include <string>
@@ -23,7 +24,7 @@ public:
     LocalData(LocalData &&) = delete;
     LocalData &operator=(LocalData &&) = delete;
 
-    [[nodiscard]] std::expected<void, std::string> loadDataFromFile();
+    [[nodiscard]] std::expected<void, TraceableError> loadDataFromFile();
     [[nodiscard]] std::expected<Data, std::string> loadDataFromFile(const std::string &filename) const;
     [[nodiscard]] std::expected<void, std::string> save() const;
 

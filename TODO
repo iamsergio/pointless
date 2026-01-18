@@ -1,10 +1,7 @@
-- iOS GH CI
+- Add login wall
 - Read from apple calendar
 - Style task menu
-- Add login wall
 - Make login async
 
 - Nice to haves:
-  - Use std::expected everywhere
   - return views so we dont allocate
-  - nest expecteds

@@ -60,15 +60,15 @@ bool DataController::addTask(const pointless::core::Task &task)
     return false;
 }
 
-std::expected<core::Data, std::string> DataController::pullRemoteData()
+std::expected<core::Data, TraceableError> DataController::pullRemoteData()
 {
     if (!_dataProvider->isAuthenticated()) {
-        return std::unexpected("DataController::refresh: Not authenticated");
+        return TraceableError::create("DataController::refresh: Not authenticated");
     }
 
     std::string json_str = _dataProvider->pullData();
     if (json_str.empty()) {
-        return std::unexpected("DataController::refresh: No data retrieved");
+        return TraceableError::create("DataController::refresh: No data retrieved");
     }
 
     auto result = core::Data::fromJson(json_str);
@@ -81,39 +81,39 @@ std::expected<core::Data, std::string> DataController::pullRemoteData()
             debugFile.close();
         }
 #endif
-        return std::unexpected("Cannot refresh: failed to parse JSON: " + result.error());
+        return TraceableError::create("Cannot refresh: failed to parse JSON: " + result.error());
     }
 
     // in case it got to the server somehow
     result->clearServerSyncBits();
 
-    return result;
+    return *result;
 }
 
-std::expected<core::Data, std::string> DataController::pushRemoteData(core::Data data)
+std::expected<core::Data, TraceableError> DataController::pushRemoteData(core::Data data)
 {
     data.clearServerSyncBits();
     data.setRevision(data.revision() + 1);
 
     if (!_dataProvider->isAuthenticated()) {
-        return std::unexpected("DataController::refresh: Not authenticated");
+        return TraceableError::create("DataController::refresh: Not authenticated");
     }
 
     auto jsonStrResult = data.toJson();
     if (!jsonStrResult) {
-        return std::unexpected("DataController::pushRemoteData: Failed to serialize data to JSON: " + jsonStrResult.error());
+        return TraceableError::create("DataController::pushRemoteData: Failed to serialize data to JSON: " + jsonStrResult.error());
     }
 
     const auto &jsonStr = jsonStrResult.value();
     if (!_dataProvider->pushData(jsonStr)) {
-        return std::unexpected("DataController::pushRemoteData: Failed to push data to remote");
+        return TraceableError::create("DataController::pushRemoteData: Failed to push data to remote");
     }
 
     P_LOG_INFO("Data pushed to remote successfully {} bytes", jsonStr.size());
     return data;
 }
 
-std::expected<core::Data, std::string> DataController::refresh()
+std::expected<core::Data, TraceableError> DataController::refresh()
 {
     // RAII reloader
     struct ModelsReloader
@@ -148,7 +148,7 @@ std::expected<core::Data, std::string> DataController::refresh()
         // we just save to disk
         auto localDataResult = _localData.loadDataFromFile();
         if (!localDataResult) {
-            return std::unexpected("DataController::refresh: Failed to load local data: " + localDataResult.error());
+            return TraceableError::create("DataController::refresh: Failed to load local data", localDataResult.error());
         }
     }
 
@@ -167,21 +167,21 @@ std::expected<core::Data, std::string> DataController::refresh()
         if (pushResult) {
             mergedData = *pushResult;
         } else {
-            return std::unexpected("DataController::sync: Failed to push remote data: " + pushResult.error());
+            return TraceableError::create("DataController::sync: Failed to push remote data", pushResult.error());
         }
     }
 
     if (needsLocalSave) {
         auto saveResult = _localData.setDataAndSave(mergedData);
         if (!saveResult) {
-            return std::unexpected("DataController::sync: Failed to save local data: " + saveResult.error());
+            return TraceableError::create("DataController::sync: Failed to save local data: " + saveResult.error());
         }
     }
 
     return mergedData;
 }
 
-std::expected<core::Data, std::string> DataController::merge(const std::optional<core::Data> &remoteDataOpt)
+std::expected<core::Data, TraceableError> DataController::merge(const std::optional<core::Data> &remoteDataOpt)
 {
     core::Data &localData = _localData.data();
     P_LOG_INFO("Merging data: local.numTasks={}, local.revision={}, local.numModifiedTasks={}, local.numDeletedTasks={}, remoteData.has_value={}",
