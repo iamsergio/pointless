@@ -26,11 +26,11 @@ struct TraceableError
     }
 
     static std::unexpected<TraceableError> create(std::string msg,
-                                                  TraceableError other,
+                                                  const TraceableError &other,
                                                   std::source_location loc = std::source_location::current())
     {
         TraceableError error { { { .message = std::move(msg), .location = loc } } };
-        error.consume(std::move(other));
+        error.consume(other);
         return std::unexpected(std::move(error));
     }
 
@@ -51,7 +51,7 @@ struct TraceableError
     }
 
 private:
-    TraceableError &consume(TraceableError other)
+    TraceableError &consume(const TraceableError &other)
     {
         stack.insert(stack.end(),
                      std::make_move_iterator(other.stack.begin()),
