@@ -4,7 +4,9 @@
 #include "data_controller.h"
 #include "taskmodel.h"
 #include "tagmodel.h"
+
 #include "core/data_provider.h"
+#include "core/supabase.h"
 #include "core/logger.h"
 
 #include <fstream>
@@ -40,6 +42,57 @@ DataController::DataController(QObject *parent)
 bool DataController::loginWithDefaults()
 {
     return _dataProvider && _dataProvider->loginWithDefaults();
+}
+
+bool DataController::login(const std::string &email, const std::string &password)
+{
+    return _dataProvider && _dataProvider->login(email, password);
+}
+
+void DataController::logout()
+{
+    if (_dataProvider) {
+        _dataProvider->logout();
+    }
+}
+
+bool DataController::isAuthenticated() const
+{
+    return _dataProvider && _dataProvider->isAuthenticated();
+}
+
+std::string DataController::accessToken() const
+{
+    auto *supabase = dynamic_cast<SupabaseProvider *>(_dataProvider.get());
+    if (supabase == nullptr) {
+        return {};
+    }
+    return supabase->accessToken();
+}
+
+std::string DataController::userId() const
+{
+    auto *supabase = dynamic_cast<SupabaseProvider *>(_dataProvider.get());
+    if (supabase == nullptr) {
+        return {};
+    }
+    return supabase->userId();
+}
+
+void DataController::setAccessToken(const std::string &token)
+{
+    auto *supabase = dynamic_cast<SupabaseProvider *>(_dataProvider.get());
+    if (supabase != nullptr) {
+        supabase->setAccessToken(token);
+    }
+}
+
+void DataController::setUserId(const std::string &userId)
+{
+    auto *supabase = dynamic_cast<SupabaseProvider *>(_dataProvider.get());
+    if (supabase != nullptr) {
+        supabase->setUserId(userId);
+    }
 }
 
 bool DataController::updateTask(const core::Task &task)

@@ -33,6 +33,7 @@ Application::Application(int &argc, char **argv, Options options)
     Q_UNUSED(options)
     QCoreApplication::setApplicationName(QStringLiteral("pointless"));
     QCoreApplication::setApplicationVersion(QStringLiteral("0.1"));
+    QCoreApplication::setOrganizationName("com.iamsergio");
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QStringLiteral("Pointless"));
@@ -41,6 +42,11 @@ Application::Application(int &argc, char **argv, Options options)
 
     QCommandLineOption testSupabaseOption(QStringLiteral("test-supabase"), QStringLiteral("Use supabase test user"));
     parser.addOption(testSupabaseOption);
+
+#ifdef POINTLESS_DEVELOPER_MODE
+    QCommandLineOption loginOption(QStringLiteral("login"), QStringLiteral("Auto-login with default credentials"));
+    parser.addOption(loginOption);
+#endif
 
     parser.process(*this);
 

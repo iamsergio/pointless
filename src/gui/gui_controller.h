@@ -38,6 +38,8 @@ class GuiController : public QObject
     Q_PROPERTY(QString uuidBeingEdited READ uuidBeingEdited NOTIFY uuidBeingEditedChanged)
     Q_PROPERTY(QDate dateInEditor READ dateInEditor NOTIFY dateInEditorChanged)
     Q_PROPERTY(QString windowTitle READ windowTitle CONSTANT)
+    Q_PROPERTY(bool isAuthenticated READ isAuthenticated NOTIFY isAuthenticatedChanged)
+    Q_PROPERTY(QString loginError READ loginError NOTIFY loginErrorChanged)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
@@ -80,6 +82,11 @@ public:
     Q_INVOKABLE void setDateInEditor(QDate date);
 
     [[nodiscard]] QString windowTitle() const;
+    [[nodiscard]] bool isAuthenticated() const;
+    [[nodiscard]] QString loginError() const;
+
+    Q_INVOKABLE void login(const QString &email, const QString &password);
+    Q_INVOKABLE void logout();
 
     [[nodiscard]] DataController *dataController() const;
 
@@ -105,6 +112,8 @@ Q_SIGNALS:
     void isEditingChanged();
     void uuidBeingEditedChanged();
     void dateInEditorChanged();
+    void isAuthenticatedChanged();
+    void loginErrorChanged();
 
 private:
     explicit GuiController(QObject *parent = nullptr);
@@ -113,6 +122,7 @@ private:
     QString _uuidBeingEdited;
     QDate _dateInEditor;
     QDate _navigatorStartDate;
+    QString _loginError;
     DataController *const _dataController;
     mutable TaskFilterModel *_taskFilterModel = nullptr;
     mutable TagFilterModel *_tagFilterModel = nullptr;

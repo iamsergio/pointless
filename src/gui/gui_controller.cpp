@@ -9,6 +9,8 @@
 #include "tagfiltermodel.h"
 #include "date_utils.h"
 #include "data_controller.h"
+#include "local_settings.h"
+#include "utils.h"
 #include "Clock.h"
 
 #include "gui/qt_logger.h"
@@ -26,6 +28,8 @@
 #include <QUuid>
 #include <QDateTime>
 #include <QKeyEvent>
+#include <QStandardPaths>
+#include <QSettings>
 
 #include <cstdlib>
 #include <string>
@@ -77,19 +81,29 @@ GuiController::GuiController(QObject *parent)
     if (qApp) // might be running in tests without qApp
         qApp->installEventFilter(new EventFilter(this));
 
-#ifdef POINTLESS_DEVELOPER_MODE
-    // TODO: A better place to put it ?
-    if (!_dataController->loginWithDefaults()) {
-        pointless::abort("Failed to login with default credentials in developer mode");
+    LocalSettings settings;
+    const auto savedToken = settings.accessToken();
+    const auto savedUserId = settings.userId();
+
+    if (!savedToken.empty() && !savedUserId.empty()) {
+        _dataController->setAccessToken(savedToken);
+        _dataController->setUserId(savedUserId);
+        P_LOG_DEBUG("Loaded saved authentication token");
+        Q_EMIT isAuthenticatedChanged();
     }
-#else
-    // TODO: A better place to put it ?
-    _dataController->loginWithDefaults();
-#endif
+
+    if (Gui::isAutoLogin() && !_dataController->isAuthenticated()) {
+        if (!_dataController->loginWithDefaults()) {
+            pointless::abort("Failed to login with default credentials in developer mode");
+        }
+        Q_EMIT isAuthenticatedChanged();
+    }
 
     navigatorGotoToday();
 
-    QTimer::singleShot(0, this, &GuiController::refresh);
+    if (_dataController->isAuthenticated()) {
+        QTimer::singleShot(0, this, &GuiController::refresh);
+    }
 }
 
 bool GuiController::isDebug()
@@ -245,6 +259,44 @@ QString GuiController::uuidBeingEdited() const
     return _uuidBeingEdited;
 }
 
+bool GuiController::isAuthenticated() const
+{
+    return _dataController->isAuthenticated();
+}
+
+QString GuiController::loginError() const
+{
+    return _loginError;
+}
+
+void GuiController::login(const QString &email, const QString &password)
+{
+    _loginError.clear();
+    Q_EMIT loginErrorChanged();
+
+    if (_dataController->login(email.toStdString(), password.toStdString())) {
+        LocalSettings settings;
+        settings.setAccessToken(_dataController->accessToken());
+        settings.setUserId(_dataController->userId());
+        P_LOG_DEBUG("Login successful, saved credentials");
+        Q_EMIT isAuthenticatedChanged();
+        QTimer::singleShot(0, this, &GuiController::refresh);
+    } else {
+        _loginError = "Login failed. Please check your email and password.";
+        P_LOG_WARNING("Login failed for email: {}", email.toStdString());
+        Q_EMIT loginErrorChanged();
+    }
+}
+
+void GuiController::logout()
+{
+    _dataController->logout();
+    LocalSettings settings;
+    settings.clear();
+    P_LOG_DEBUG("Logged out, cleared credentials");
+    Q_EMIT isAuthenticatedChanged();
+}
+
 void GuiController::setUuidBeingEdited(const QString &uuid)
 {
     if (_uuidBeingEdited == uuid) {
@@ -359,6 +411,10 @@ void GuiController::dumpDebug() const
     const auto &data = localData.data();
     P_LOG_INFO("needsLocalSave={} ; needsUpload={} ; Data={} ; LocalData={}; revision={}; numTasks={}", data.needsLocalSave, data.needsUpload,
                static_cast<const void *>(&data), static_cast<const void *>(&localData), data.revision(), data.taskCount());
+
+    P_LOG_INFO("Config location: {}", QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation).toStdString());
+    QSettings s;
+    P_LOG_INFO("QSettings file: {}", s.fileName().toStdString());
 }
 
 QString GuiController::windowTitle() const

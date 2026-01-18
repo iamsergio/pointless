@@ -65,6 +65,13 @@ ApplicationWindow {
                 }
             }
 
+            LoginScreen {
+                id: loginScreen
+                anchors.fill: parent
+                visible: !GuiController.isAuthenticated
+                z: 200
+            }
+
             Item {
                 id: mainView
                 anchors {
@@ -73,13 +80,6 @@ ApplicationWindow {
                     top: parent.top
                     bottom: bottomArea.top
                     bottomMargin: Style.fromPixel(8)
-                }
-
-                LoginScreen {
-                    id: loginScreen
-                    anchors.fill: parent
-                    visible: false
-                    z: 200
                 }
 
                 ColumnLayout {

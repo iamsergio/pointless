@@ -25,6 +25,11 @@ public:
     [[nodiscard]] bool isAuthenticated() const override;
     void logout() override;
 
+    [[nodiscard]] std::string accessToken() const;
+    [[nodiscard]] std::string userId() const;
+    void setAccessToken(const std::string &token);
+    void setUserId(const std::string &userId);
+
     bool pushData(const std::string &data) override;
     std::string pullData() override;
 

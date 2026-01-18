@@ -147,6 +147,26 @@ void SupabaseProvider::logout()
     _userId.clear();
 }
 
+std::string SupabaseProvider::accessToken() const
+{
+    return _accessToken;
+}
+
+std::string SupabaseProvider::userId() const
+{
+    return _userId;
+}
+
+void SupabaseProvider::setAccessToken(const std::string &token)
+{
+    _accessToken = token;
+}
+
+void SupabaseProvider::setUserId(const std::string &userId)
+{
+    _userId = userId;
+}
+
 bool SupabaseProvider::pushData(const std::string &data)
 {
     if (!isAuthenticated()) {

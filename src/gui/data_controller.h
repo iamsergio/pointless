@@ -28,6 +28,13 @@ public:
     ~DataController() override = default;
 
     bool loginWithDefaults();
+    bool login(const std::string &email, const std::string &password);
+    void logout();
+    [[nodiscard]] bool isAuthenticated() const;
+    [[nodiscard]] std::string accessToken() const;
+    [[nodiscard]] std::string userId() const;
+    void setAccessToken(const std::string &token);
+    void setUserId(const std::string &userId);
     std::expected<pointless::core::Data, TraceableError> refresh();
     bool updateTask(const pointless::core::Task &task);
     bool addTask(const pointless::core::Task &task);

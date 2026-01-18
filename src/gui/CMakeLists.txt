@@ -52,7 +52,11 @@ qt_add_qml_module(
   gui_controller.cpp
   data_controller.cpp
   date_utils.cpp
+  local_settings.cpp
+  utils.cpp
   gui_controller.h
+  local_settings.h
+  utils.h
   taskmodel.cpp
   taskmodel.h
   tagmodel.cpp
