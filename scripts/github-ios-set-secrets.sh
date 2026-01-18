@@ -43,6 +43,26 @@ if [ -z "${POINTLESS_APP_APPLE_ID}" ]; then
 	exit 1
 fi
 
+if [ -z "${POINTLESS_APP_APPLE_ID}" ]; then
+	echo "POINTLESS_APP_APPLE_ID environment variable must be set"
+	exit 1
+fi
+
+if [ -z "${POINTLESS_APP_APPLE_ID}" ]; then
+	echo "POINTLESS_APP_APPLE_ID environment variable must be set"
+	exit 1
+fi
+
+if [ -z "${POINTLESS_SUPABASE_URL}" ]; then
+	echo "POINTLESS_SUPABASE_URL environment variable must be set"
+	exit 1
+fi
+
+if [ -z "${POINTLESS_SUPABASE_ANON_KEY}" ]; then
+	echo "POINTLESS_SUPABASE_ANON_KEY environment variable must be set"
+	exit 1
+fi
+
 if ! gh auth status >/dev/null 2>&1; then
 	echo "Not authenticated. Starting login..."
 	gh auth login
@@ -65,3 +85,6 @@ echo -n "${APPLE_TEAM_ID}" | gh secret set APPLE_TEAM_ID
 echo -n "${APPLE_SPECIFIC_PASSWORD}" | gh secret set APPLE_SPECIFIC_PASSWORD
 echo -n "${POINTLESS_APPLE_ID}" | gh secret set POINTLESS_APPLE_ID
 echo -n "${POINTLESS_APP_APPLE_ID}" | gh secret set POINTLESS_APP_APPLE_ID
+
+echo -n "${POINTLESS_SUPABASE_URL}" | gh secret set POINTLESS_SUPABASE_URL
+echo -n "${POINTLESS_SUPABASE_ANON_KEY}" | gh secret set POINTLESS_SUPABASE_ANON_KEY
