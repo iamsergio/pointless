@@ -8,6 +8,8 @@ import QtQuick.Layouts 1.15
 FocusScope {
     id: root
 
+    property bool passwordVisible: false
+
     Rectangle {
         color: "#131c27"
         border.width: Style.fromPixel(1)
@@ -113,7 +115,7 @@ FocusScope {
                             id: passwordInput
                             Layout.fillWidth: true
                             placeholderText: "Enter your password"
-                            echoMode: TextInput.Password
+                            echoMode: root.passwordVisible ? TextInput.Normal : TextInput.Password
                             font.pixelSize: Style.fromPixel(16)
                             color: "white"
                             placeholderTextColor: "#8a97a8"
@@ -121,10 +123,16 @@ FocusScope {
                         }
 
                         Text {
-                            text: "\uf070"
+                            text: root.passwordVisible ? "\uf06e" : "\uf070"
                             font.family: "Font Awesome 7 Free"
                             font.pixelSize: Style.fromPixel(16)
                             color: "#8a97a8"
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: root.passwordVisible = !root.passwordVisible
+                            }
                         }
                     }
                 }
