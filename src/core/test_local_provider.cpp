@@ -32,7 +32,7 @@ void TestLocalDataProvider::logout()
 {
 }
 
-bool TestLocalDataProvider::isAuthenticated() const
+bool TestLocalDataProvider::isAuthenticated()
 {
     return true;
 }
@@ -49,13 +49,14 @@ std::string TestLocalDataProvider::pullData()
     return buffer.str();
 }
 
-bool TestLocalDataProvider::pushData(const std::string &data)
+std::expected<void, TraceableError> TestLocalDataProvider::pushData(const std::string &data)
 {
     std::ofstream file(_filePath);
     if (!file.is_open()) {
-        P_LOG_ERROR("Failed to open file for writing: {}", _filePath);
-        return false;
+        const std::string msg = "Failed to open file for writing: " + _filePath;
+        P_LOG_ERROR("{}", msg);
+        return TraceableError::create(msg);
     }
     file << data;
-    return true;
+    return {};
 }

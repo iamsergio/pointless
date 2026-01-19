@@ -78,6 +78,8 @@ GuiController::GuiController(QObject *parent)
 {
     Q_ASSERT(s_instance == nullptr);
 
+    connect(_dataController, &DataController::isAuthenticatedChanged, this, &GuiController::isAuthenticatedChanged);
+
     if (qApp) // might be running in tests without qApp
         qApp->installEventFilter(new EventFilter(this));
 

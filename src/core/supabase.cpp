@@ -30,6 +30,7 @@ constexpr int kBufferSize = 32768;
 constexpr int kHttpOk = 200;
 constexpr int kHttpCreated = 201;
 constexpr int kHttpNoContent = 204;
+constexpr int kHttpUnauthorized = 401;
 }
 
 
@@ -112,11 +113,6 @@ bool SupabaseProvider::login(const std::string &email, const std::string &passwo
     return true;
 }
 
-bool SupabaseProvider::isAuthenticated() const
-{
-    return !_accessToken.empty() && !_userId.empty();
-}
-
 bool SupabaseProvider::loginWithDefaults()
 {
     auto [username, password] = defaultLoginPassword();
@@ -167,11 +163,12 @@ void SupabaseProvider::setUserId(const std::string &userId)
     _userId = userId;
 }
 
-bool SupabaseProvider::pushData(const std::string &data)
+std::expected<void, TraceableError> SupabaseProvider::pushData(const std::string &data)
 {
     if (!isAuthenticated()) {
-        P_LOG_ERROR("Cannot update data: not authenticated");
-        return false;
+        const std::string msg = "Cannot update data: not authenticated";
+        P_LOG_ERROR("{}", msg);
+        return TraceableError::create(msg);
     }
 
     auto compressed_bytes = compress(data);
@@ -190,13 +187,19 @@ bool SupabaseProvider::pushData(const std::string &data)
         cpr::Body { body },
         cpr::VerifySsl { shouldVerifySsl() });
 
+    if (response.status_code == kHttpUnauthorized) {
+        P_LOG_INFO("SupabaseProvider::pushData: Unauthorized (401). Clearing access token and user ID.");
+        logout();
+        return TraceableError::create("Unauthorized (401): Access token may have expired.");
+    }
+
     if (response.status_code != kHttpOk && response.status_code != kHttpCreated && response.status_code != kHttpNoContent) {
         P_LOG_ERROR("Failed to update data: HTTP {}", response.status_code);
         P_LOG_DEBUG("Response: {}", response.text);
-        return false;
+        return TraceableError::create("Failed to update data: HTTP " + std::to_string(response.status_code));
     }
 
-    return true;
+    return {};
 }
 
 std::string SupabaseProvider::pullData()
@@ -393,4 +396,32 @@ std::string SupabaseProvider::base64Encode(const std::vector<uint8_t> &data)
     }
 
     return result;
+}
+
+bool SupabaseProvider::isAuthenticated()
+{
+    // 1. Quick local check: if we don't even have a token, we aren't authenticated.
+    if (_accessToken.empty()) {
+        return false;
+    }
+
+    // 2. Network check: request the current user profile from Supabase Auth.
+    // This endpoint is designed to return the user object for the provided Bearer token.
+    const std::string auth_user_url = "https://" + _baseUrl + "/auth/v1/user";
+
+    auto response = cpr::Get(
+        cpr::Url { auth_user_url },
+        cpr::Header {
+            { "apikey", _anonKey },
+            { "Authorization", "Bearer " + _accessToken } },
+        cpr::VerifySsl { shouldVerifySsl() });
+
+    if (response.status_code == kHttpOk) {
+        return true;
+    }
+
+    // 3. If we get a 401 or other error, the token is likely expired or revoked.
+    P_LOG_INFO("Token validation failed: HTTP {}. Clearing session.", response.status_code);
+    logout();
+    return false;
 }

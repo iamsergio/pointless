@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <sstream>
 
 struct ErrorNode
 {
@@ -45,10 +46,7 @@ struct TraceableError
         return result;
     }
 
-    [[nodiscard]] std::string toString() const
-    {
-        return static_cast<std::string>(*this);
-    }
+    [[nodiscard]] std::string toString() const;
 
 private:
     TraceableError &consume(const TraceableError &other)
@@ -70,4 +68,12 @@ inline std::ostream &operator<<(std::ostream &os, const TraceableError &error)
     }
     os << ")";
     return os;
+}
+
+
+inline std::string TraceableError::toString() const
+{
+    std::stringstream ss;
+    ss << *this;
+    return ss.str();
 }

@@ -44,6 +44,10 @@ public:
     [[nodiscard]] TaskModel *taskModel() const;
     [[nodiscard]] TagModel *tagModel() const;
 
+Q_SIGNALS:
+    void isAuthenticatedChanged();
+
+public:
     DataController(const DataController &) = delete;
     DataController &operator=(const DataController &) = delete;
     DataController(DataController &&) = delete;

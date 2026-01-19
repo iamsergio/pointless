@@ -116,6 +116,7 @@ bool DataController::addTask(const pointless::core::Task &task)
 std::expected<core::Data, TraceableError> DataController::pullRemoteData()
 {
     if (!_dataProvider->isAuthenticated()) {
+        Q_EMIT isAuthenticatedChanged();
         return TraceableError::create("DataController::refresh: Not authenticated");
     }
 
@@ -158,8 +159,9 @@ std::expected<core::Data, TraceableError> DataController::pushRemoteData(core::D
     }
 
     const auto &jsonStr = jsonStrResult.value();
-    if (!_dataProvider->pushData(jsonStr)) {
-        return TraceableError::create("DataController::pushRemoteData: Failed to push data to remote");
+    auto result = _dataProvider->pushData(jsonStr);
+    if (!result) {
+        return TraceableError::create("DataController::pushRemoteData: Failed to push data to remote", result.error());
     }
 
     P_LOG_INFO("Data pushed to remote successfully {} bytes", jsonStr.size());

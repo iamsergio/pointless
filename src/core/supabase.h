@@ -22,7 +22,7 @@ public:
     bool login(const std::string &email, const std::string &password) final;
     bool loginWithDefaults() override;
     [[nodiscard]] std::pair<std::string, std::string> defaultLoginPassword() const override;
-    [[nodiscard]] bool isAuthenticated() const override;
+    [[nodiscard]] bool isAuthenticated() override;
     void logout() override;
 
     [[nodiscard]] std::string accessToken() const;
@@ -30,7 +30,7 @@ public:
     void setAccessToken(const std::string &token);
     void setUserId(const std::string &userId);
 
-    bool pushData(const std::string &data) override;
+    std::expected<void, TraceableError> pushData(const std::string &data) override;
     std::string pullData() override;
 
     SupabaseProvider(const SupabaseProvider &) = delete;

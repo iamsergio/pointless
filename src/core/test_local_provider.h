@@ -17,9 +17,9 @@ public:
     [[nodiscard]] std::pair<std::string, std::string> defaultLoginPassword() const override;
     void logout() override;
 
-    [[nodiscard]] bool isAuthenticated() const override;
+    [[nodiscard]] bool isAuthenticated() override;
     std::string pullData() override;
-    bool pushData(const std::string &data) override;
+    std::expected<void, TraceableError> pushData(const std::string &data) override;
 
 private:
     std::string _filePath;

@@ -219,8 +219,9 @@ void initDataProvider(IDataProvider::Type providerType)
         buffer << t.rdbuf();
         std::string jsonContent = buffer.str();
 
-        if (!provider->pushData(jsonContent)) {
-            P_LOG_CRITICAL("Failed to update Supabase with test data");
+        auto result = provider->pushData(jsonContent);
+        if (!result) {
+            P_LOG_CRITICAL("Failed to update Supabase with test data: {}", result.error().toString());
             std::abort();
         }
 

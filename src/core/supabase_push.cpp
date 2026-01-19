@@ -60,10 +60,11 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        if (provider->pushData(jsonData)) {
+        auto result = provider->pushData(jsonData);
+        if (result) {
             P_LOG_INFO("Data pushed successfully");
         } else {
-            P_LOG_ERROR("Failed to push data");
+            P_LOG_ERROR("Failed to push data: {}", result.error().toString());
             return 1;
         }
 

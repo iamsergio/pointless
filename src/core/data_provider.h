@@ -4,6 +4,7 @@
 #pragma once
 
 #include "utils.h"
+#include "error.h"
 
 #include <memory>
 #include <string>
@@ -28,13 +29,13 @@ public:
     IDataProvider &operator=(const IDataProvider &) = delete;
     IDataProvider &operator=(IDataProvider &&) = delete;
 
-    [[nodiscard]] virtual bool isAuthenticated() const = 0;
+    [[nodiscard]] virtual bool isAuthenticated() = 0;
     virtual bool login(const std::string &email, const std::string &password) = 0;
     virtual bool loginWithDefaults() = 0;
     [[nodiscard]] virtual std::pair<std::string, std::string> defaultLoginPassword() const = 0;
     virtual void logout() = 0;
     virtual std::string pullData() = 0;
-    virtual bool pushData(const std::string &data) = 0;
+    virtual std::expected<void, TraceableError> pushData(const std::string &data) = 0;
 
     static std::unique_ptr<IDataProvider> createProvider();
 
