@@ -127,12 +127,8 @@ bool SupabaseProvider::loginWithDefaults()
 
 std::pair<std::string, std::string> SupabaseProvider::defaultLoginPassword() const
 {
-    static const std::string username = pointless::getenv_or_empty("POINTLESS_USERNAME");
-    static const std::string password = pointless::getenv_or_empty("POINTLESS_PASSWORD");
-
-    if (username.empty() || password.empty()) {
-        pointless::abort("Environment variables POINTLESS_USERNAME and POINTLESS_PASSWORD must be set for this test.");
-    }
+    const std::string username = pointless::getenv_or_empty("POINTLESS_USERNAME");
+    const std::string password = pointless::getenv_or_empty("POINTLESS_PASSWORD");
 
     return { username, password };
 }

@@ -4,6 +4,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import pointless 1.0
 
 FocusScope {
     id: root
@@ -63,6 +64,7 @@ FocusScope {
                             id: emailInput
                             Layout.fillWidth: true
                             placeholderText: "Enter your email"
+                            text: GuiController.defaultLoginUsername
                             font.pixelSize: Style.fromPixel(16)
                             color: "white"
                             placeholderTextColor: "#8a97a8"

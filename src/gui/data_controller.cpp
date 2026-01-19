@@ -49,6 +49,11 @@ bool DataController::login(const std::string &email, const std::string &password
     return _dataProvider && _dataProvider->login(email, password);
 }
 
+std::string DataController::defaultLoginUsername() const
+{
+    return _dataProvider ? _dataProvider->defaultLoginPassword().first : std::string {};
+}
+
 void DataController::logout()
 {
     if (_dataProvider) {

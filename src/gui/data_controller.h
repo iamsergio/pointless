@@ -30,6 +30,7 @@ public:
     bool loginWithDefaults();
     bool login(const std::string &email, const std::string &password);
     void logout();
+    [[nodiscard]] std::string defaultLoginUsername() const;
     [[nodiscard]] bool isAuthenticated() const;
     [[nodiscard]] std::string accessToken() const;
     [[nodiscard]] std::string userId() const;

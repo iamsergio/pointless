@@ -266,6 +266,11 @@ bool GuiController::isAuthenticated() const
     return _dataController->isAuthenticated();
 }
 
+QString GuiController::defaultLoginUsername() const
+{
+    return QString::fromStdString(_dataController->defaultLoginUsername());
+}
+
 QString GuiController::loginError() const
 {
     return _loginError;

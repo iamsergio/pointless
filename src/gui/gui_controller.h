@@ -39,12 +39,14 @@ class GuiController : public QObject
     Q_PROPERTY(QDate dateInEditor READ dateInEditor NOTIFY dateInEditorChanged)
     Q_PROPERTY(QString windowTitle READ windowTitle CONSTANT)
     Q_PROPERTY(bool isAuthenticated READ isAuthenticated NOTIFY isAuthenticatedChanged)
+    Q_PROPERTY(QString defaultLoginUsername READ defaultLoginUsername CONSTANT)
     Q_PROPERTY(QString loginError READ loginError NOTIFY loginErrorChanged)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
     [[nodiscard]] TagModel *tagModel() const;
     [[nodiscard]] TagFilterModel *tagFilterModel() const;
+    [[nodiscard]] QString defaultLoginUsername() const;
 
     enum class ViewType : uint8_t {
         Week,
