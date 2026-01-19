@@ -19,6 +19,18 @@ std::string LocalSettings::accessToken() const
     return settings.value("auth/accessToken").toString().toStdString();
 }
 
+void LocalSettings::setRefreshToken(const std::string &token)
+{
+    QSettings settings;
+    settings.setValue("auth/refreshToken", QString::fromStdString(token));
+}
+
+std::string LocalSettings::refreshToken() const
+{
+    QSettings settings;
+    return settings.value("auth/refreshToken").toString().toStdString();
+}
+
 void LocalSettings::setUserId(const std::string &userId)
 {
     QSettings settings;
@@ -35,5 +47,6 @@ void LocalSettings::clear()
 {
     QSettings settings;
     settings.remove("auth/accessToken");
+    settings.remove("auth/refreshToken");
     settings.remove("auth/userId");
 }

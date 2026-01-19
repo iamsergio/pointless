@@ -107,6 +107,10 @@ bool SupabaseProvider::login(const std::string &email, const std::string &passwo
     _accessToken = access_token_it->second.get_string();
     _userId = id_it->second.get_string();
 
+    auto refresh_token_it = json_obj.get_object().find("refresh_token");
+    if (refresh_token_it != json_obj.get_object().end() && refresh_token_it->second.is_string()) {
+        _refreshToken = refresh_token_it->second.get_string();
+    }
 
     P_LOG_DEBUG("Logged in with user={}", _userId);
 
@@ -136,6 +140,7 @@ std::pair<std::string, std::string> SupabaseProvider::defaultLoginPassword() con
 void SupabaseProvider::logout()
 {
     _accessToken.clear();
+    _refreshToken.clear();
     _userId.clear();
 }
 
@@ -149,6 +154,11 @@ std::string SupabaseProvider::userId() const
     return _userId;
 }
 
+std::string SupabaseProvider::refreshToken() const
+{
+    return _refreshToken;
+}
+
 void SupabaseProvider::setAccessToken(const std::string &token)
 {
     _accessToken = token;
@@ -157,6 +167,11 @@ void SupabaseProvider::setAccessToken(const std::string &token)
 void SupabaseProvider::setUserId(const std::string &userId)
 {
     _userId = userId;
+}
+
+void SupabaseProvider::setRefreshToken(const std::string &token)
+{
+    _refreshToken = token;
 }
 
 std::expected<void, TraceableError> SupabaseProvider::pushData(const std::string &data)
@@ -394,15 +409,58 @@ std::string SupabaseProvider::base64Encode(const std::vector<uint8_t> &data)
     return result;
 }
 
+bool SupabaseProvider::refreshAccessToken()
+{
+    const std::string refresh_url = "https://" + _baseUrl + "/auth/v1/token?grant_type=refresh_token";
+    const std::string body = R"({"refresh_token":")" + _refreshToken + R"("})"; // NOLINT(performance-inefficient-string-concatenation)
+
+    auto response = cpr::Post(
+        cpr::Url { refresh_url },
+        cpr::Header {
+            { "apikey", _anonKey },
+            { "Content-Type", "application/json" } },
+        cpr::Body { body },
+        cpr::VerifySsl { shouldVerifySsl() });
+
+    if (response.status_code != kHttpOk) {
+        P_LOG_ERROR("Token refresh failed: HTTP={}", response.status_code);
+        return false;
+    }
+
+    auto json_result = glz::read_json<glz::json_t>(response.text);
+    if (!json_result.has_value()) {
+        P_LOG_ERROR("Failed to parse token refresh response JSON");
+        return false;
+    }
+
+    auto &json_obj = json_result.value();
+    if (!json_obj.is_object()) {
+        return false;
+    }
+
+    auto access_token_it = json_obj.get_object().find("access_token");
+    if (access_token_it == json_obj.get_object().end() || !access_token_it->second.is_string()) {
+        P_LOG_ERROR("No access_token in refresh response");
+        return false;
+    }
+
+    _accessToken = access_token_it->second.get_string();
+
+    auto refresh_token_it = json_obj.get_object().find("refresh_token");
+    if (refresh_token_it != json_obj.get_object().end() && refresh_token_it->second.is_string()) {
+        _refreshToken = refresh_token_it->second.get_string();
+    }
+
+    P_LOG_DEBUG("Token refreshed successfully");
+    return true;
+}
+
 bool SupabaseProvider::isAuthenticated()
 {
-    // 1. Quick local check: if we don't even have a token, we aren't authenticated.
     if (_accessToken.empty()) {
         return false;
     }
 
-    // 2. Network check: request the current user profile from Supabase Auth.
-    // This endpoint is designed to return the user object for the provided Bearer token.
     const std::string auth_user_url = "https://" + _baseUrl + "/auth/v1/user";
 
     auto response = cpr::Get(
@@ -416,7 +474,10 @@ bool SupabaseProvider::isAuthenticated()
         return true;
     }
 
-    // 3. If we get a 401 or other error, the token is likely expired or revoked.
+    if (response.status_code == kHttpUnauthorized && !_refreshToken.empty()) {
+        return refreshAccessToken();
+    }
+
     P_LOG_INFO("Token validation failed: HTTP {}. Clearing session.", response.status_code);
     logout();
     return false;

@@ -27,8 +27,10 @@ public:
 
     [[nodiscard]] std::string accessToken() const;
     [[nodiscard]] std::string userId() const;
+    [[nodiscard]] std::string refreshToken() const;
     void setAccessToken(const std::string &token);
     void setUserId(const std::string &userId);
+    void setRefreshToken(const std::string &token);
 
     std::expected<void, TraceableError> pushData(const std::string &data) override;
     std::string pullData() override;
@@ -42,11 +44,13 @@ private:
     std::string _baseUrl;
     std::string _anonKey;
     std::string _accessToken;
+    std::string _refreshToken;
     std::string _userId;
     std::string _defaultUser;
     std::string _defaultPassword;
 
     std::string retrieveRawData();
+    bool refreshAccessToken();
 
     static std::vector<uint8_t> compress(const std::string &data);
     static std::string decompress(const std::vector<uint8_t> &compressed_data);

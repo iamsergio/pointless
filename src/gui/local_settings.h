@@ -14,6 +14,9 @@ public:
     void setAccessToken(const std::string &token);
     [[nodiscard]] std::string accessToken() const;
 
+    void setRefreshToken(const std::string &token);
+    [[nodiscard]] std::string refreshToken() const;
+
     void setUserId(const std::string &userId);
     [[nodiscard]] std::string userId() const;
 
