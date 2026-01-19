@@ -18,6 +18,7 @@
 #include "core/task.h"
 #include "core/context.h"
 #include "core/data_provider.h"
+#include "core/tag.h"
 
 #include <QTimer>
 #include <QHash>
@@ -52,16 +53,22 @@ public:
     {
         if (event->type() == QEvent::KeyPress) {
             auto *keyEvent = static_cast<QKeyEvent *>(event); // NOLINT
+            auto *gc = GuiController::instance();
             if (keyEvent->key() == Qt::Key_Escape) {
-                if (GuiController::instance()->isEditing()) {
-                    GuiController::instance()->setIsEditing(false);
+                if (gc->isEditing()) {
+                    gc->setIsEditing(false);
+                    return true;
+                }
+
+                if (gc->taskMenuVisible()) {
+                    gc->setTaskMenuUuid({});
                     return true;
                 }
             }
 
             if (keyEvent->key() == Qt::Key_N) {
-                if (!GuiController::instance()->isEditing()) {
-                    GuiController::instance()->setTaskBeingEdited({}, {});
+                if (!gc->isEditing()) {
+                    gc->setTaskBeingEdited({}, {});
                     return true;
                 }
             }
@@ -552,4 +559,52 @@ void GuiController::deleteTask(const QString &taskUuid)
         P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
         return;
     }
+}
+
+bool GuiController::taskMenuVisible() const
+{
+    return !_taskMenuUuid.isEmpty();
+}
+
+QString GuiController::taskMenuUuid() const
+{
+    return _taskMenuUuid;
+}
+
+void GuiController::setTaskMenuUuid(const QString &uuid) // NOLINT
+{
+    if (_taskMenuUuid == uuid) {
+        if (!uuid.isEmpty()) {
+            // toggling also clears
+            setTaskMenuUuid("");
+        }
+        return;
+    }
+
+    _taskMenuUuid = uuid;
+    Q_EMIT taskMenuUuidChanged();
+}
+
+bool GuiController::moveToCurrentVisible() const
+{
+    const auto *task = _dataController->taskModel()->taskForUuid(_taskMenuUuid);
+    return task != nullptr && !task->isCurrent();
+}
+
+bool GuiController::moveToSoonVisible() const
+{
+    const auto *task = _dataController->taskModel()->taskForUuid(_taskMenuUuid);
+    return task != nullptr && !task->isSoon();
+}
+
+bool GuiController::moveToLaterVisible() const
+{
+    const auto *task = _dataController->taskModel()->taskForUuid(_taskMenuUuid);
+    return task != nullptr && !task->isLater();
+}
+
+bool GuiController::moveToTomorrowVisible() const
+{
+    const auto *task = _dataController->taskModel()->taskForUuid(_taskMenuUuid);
+    return task != nullptr && !task->isDueTomorrow();
 }

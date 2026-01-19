@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 import QtQuick 2.15
-import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
 import pointless 1.0
@@ -97,62 +96,7 @@ Rectangle {
                 fontAwesomeIcon: "ellipsis-vertical"
                 iconColor: Style.iconColor
                 backgroundColor: "transparent"
-                onClicked: optionsMenu.popup()
-            }
-
-            Menu {
-                id: optionsMenu
-                MenuItem {
-                    id: editMenuItem
-                    text: "Edit..."
-                    onTriggered: {
-                        GuiController.setTaskBeingEdited(root.taskUuid, null);
-                    }
-                }
-                MenuItem {
-                    id: moveToCurrentMenuItem
-                    text: "Move to Current"
-                    visible: !root.taskIsCurrent
-                    height: visible ? implicitHeight : 0
-                    onTriggered: {
-                        GuiController.moveTaskToCurrent(root.taskUuid);
-                    }
-                }
-                MenuItem {
-                    id: moveToSoonMenuItem
-                    text: "Move to Soon"
-                    visible: !root.taskIsSoon
-                    height: visible ? implicitHeight : 0
-                    onTriggered: {
-                        GuiController.moveTaskToSoon(root.taskUuid);
-                    }
-                }
-                MenuItem {
-                    id: moveToLaterMenuItem
-                    text: "Move to Later"
-                    visible: !root.taskIsLater
-                    height: visible ? implicitHeight : 0
-                    onTriggered: {
-                        GuiController.moveTaskToLater(root.taskUuid);
-                    }
-                }
-                MenuItem {
-                    id: moveToTomorrowMenuItem
-                    visible: !root.taskIsDueTomorrow
-                    height: visible ? implicitHeight : 0
-                    text: "Move to Tomorrow"
-                    onTriggered: {
-                        GuiController.moveTaskToTomorrow(root.taskUuid);
-                    }
-                }
-                MenuItem {
-                    id: moveToMondayMenuItem
-                    text: "Move to Next Monday"
-                    height: visible ? implicitHeight : 0
-                    onTriggered: {
-                        GuiController.moveTaskToNextMonday(root.taskUuid);
-                    }
-                }
+                onClicked: GuiController.setTaskMenuUuid(root.taskUuid)
             }
         }
     }

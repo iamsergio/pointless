@@ -41,6 +41,12 @@ class GuiController : public QObject
     Q_PROPERTY(bool isAuthenticated READ isAuthenticated NOTIFY isAuthenticatedChanged)
     Q_PROPERTY(QString defaultLoginUsername READ defaultLoginUsername CONSTANT)
     Q_PROPERTY(QString loginError READ loginError NOTIFY loginErrorChanged)
+    Q_PROPERTY(bool taskMenuVisible READ taskMenuVisible NOTIFY taskMenuUuidChanged)
+    Q_PROPERTY(QString taskMenuUuid READ taskMenuUuid NOTIFY taskMenuUuidChanged)
+    Q_PROPERTY(bool moveToCurrentVisible READ moveToCurrentVisible NOTIFY taskMenuUuidChanged)
+    Q_PROPERTY(bool moveToSoonVisible READ moveToSoonVisible NOTIFY taskMenuUuidChanged)
+    Q_PROPERTY(bool moveToLaterVisible READ moveToLaterVisible NOTIFY taskMenuUuidChanged)
+    Q_PROPERTY(bool moveToTomorrowVisible READ moveToTomorrowVisible NOTIFY taskMenuUuidChanged)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
@@ -86,7 +92,14 @@ public:
     [[nodiscard]] QString windowTitle() const;
     [[nodiscard]] bool isAuthenticated() const;
     [[nodiscard]] QString loginError() const;
+    [[nodiscard]] bool taskMenuVisible() const;
+    [[nodiscard]] QString taskMenuUuid() const;
+    [[nodiscard]] bool moveToCurrentVisible() const;
+    [[nodiscard]] bool moveToSoonVisible() const;
+    [[nodiscard]] bool moveToLaterVisible() const;
+    [[nodiscard]] bool moveToTomorrowVisible() const;
 
+    Q_INVOKABLE void setTaskMenuUuid(const QString &uuid);
     Q_INVOKABLE void login(const QString &email, const QString &password);
     Q_INVOKABLE void logout();
 
@@ -116,6 +129,7 @@ Q_SIGNALS:
     void dateInEditorChanged();
     void isAuthenticatedChanged();
     void loginErrorChanged();
+    void taskMenuUuidChanged();
 
 private:
     explicit GuiController(QObject *parent = nullptr);
@@ -125,6 +139,7 @@ private:
     QDate _dateInEditor;
     QDate _navigatorStartDate;
     QString _loginError;
+    QString _taskMenuUuid;
     DataController *const _dataController;
     mutable TaskFilterModel *_taskFilterModel = nullptr;
     mutable TagFilterModel *_tagFilterModel = nullptr;

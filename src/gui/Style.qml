@@ -54,4 +54,7 @@ Item {
     // plus button:
     readonly property color plusButtonColor: "#0ea5e9"
     readonly property int plusButtonSize: GuiController.isMobile ? fromPixel(32) : fromPixel(32)
+
+    // menu:
+    readonly property int menuHeight: fromPixel(35)
 }

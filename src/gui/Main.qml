@@ -2,19 +2,19 @@
 // SPDX-License-Identifier: MIT
 
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as QC
 import QtQuick.Layouts
 
 import pointless 1.0
 
-ApplicationWindow {
+QC.ApplicationWindow {
     id: mainWindow
     objectName: "mainWindow"
 
     visible: true
     width: Style.fromPixel(640)
     height: Style.fromPixel(640)
-    visibility: GuiController.isMobile ? ApplicationWindow.FullScreen : ApplicationWindow.Windowed
+    visibility: GuiController.isMobile ? QC.ApplicationWindow.FullScreen : QC.ApplicationWindow.Windowed
     flags: Qt.Window | Qt.ExpandedClientAreaHint | Qt.NoTitleBarBackgroundHint
 
     title: GuiController.windowTitle
@@ -191,6 +191,72 @@ ApplicationWindow {
                     }
                     z: 100
                     onClicked: GuiController.refresh()
+                }
+            }
+
+            Menu {
+                id: taskMenu
+                visible: GuiController.taskMenuVisible
+                anchors {
+                    bottom: parent.bottom
+                    left: parent.left
+                    right: parent.right
+                    leftMargin: Style.fromPixel(7)
+                    rightMargin: Style.fromPixel(7)
+                }
+                z: 300
+
+                MenuItem {
+                    id: editMenuItem
+                    text: "Edit..."
+                    onTriggered: {
+                        GuiController.setTaskBeingEdited(GuiController.taskMenuUuid, new Date(NaN));
+                        GuiController.setTaskMenuUuid("");
+                    }
+                }
+                MenuItem {
+                    id: moveToCurrentMenuItem
+                    text: "Move to Current"
+                    visible: GuiController.moveToCurrentVisible
+                    onTriggered: {
+                        GuiController.moveTaskToCurrent(GuiController.taskMenuUuid);
+                        GuiController.setTaskMenuUuid("");
+                    }
+                }
+                MenuItem {
+                    id: moveToSoonMenuItem
+                    text: "Move to Soon"
+                    visible: GuiController.moveToSoonVisible
+                    onTriggered: {
+                        GuiController.moveTaskToSoon(GuiController.taskMenuUuid);
+                        GuiController.setTaskMenuUuid("");
+                    }
+                }
+                MenuItem {
+                    id: moveToLaterMenuItem
+                    text: "Move to Later"
+                    visible: GuiController.moveToLaterVisible
+                    onTriggered: {
+                        GuiController.moveTaskToLater(GuiController.taskMenuUuid);
+                        GuiController.setTaskMenuUuid("");
+                    }
+                }
+                MenuItem {
+                    id: moveToTomorrowMenuItem
+                    visible: GuiController.moveToTomorrowVisible
+                    text: "Move to Tomorrow"
+                    onTriggered: {
+                        GuiController.moveTaskToTomorrow(GuiController.taskMenuUuid);
+                        GuiController.setTaskMenuUuid("");
+                    }
+                }
+                MenuItem {
+                    id: moveToMondayMenuItem
+                    text: "Move to Next Monday"
+                    onTriggered: {
+                        GuiController.moveTaskToNextMonday(GuiController.taskMenuUuid);
+                        GuiController.setTaskMenuUuid("");
+                    }
                 }
             }
 

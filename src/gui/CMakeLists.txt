@@ -35,7 +35,9 @@ set(PLAIN_QML_FILES
     CheckBox.qml
     Calendar.qml
     LineEdit.qml
-    EditTask.qml)
+    EditTask.qml
+    Menu.qml
+    MenuItem.qml)
 
 qt_add_qml_module(
   pointless_gui
