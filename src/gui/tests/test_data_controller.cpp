@@ -380,6 +380,44 @@ TEST(DataControllerTest, MergeNeedsLocalSave)
     EXPECT_TRUE(result->needsLocalSave);
 }
 
+TEST(DataControllerTest, MoveToSoonClearsDueDate)
+{
+    core::Logger::initLogLevel();
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+
+    GuiController *guiController = GuiController::instance();
+    DataController *controller = guiController->dataController();
+
+    // 1. Create task due today
+    core::Data remoteData;
+    core::Task task;
+    task.uuid = "uuid-task-soon-test";
+    task.title = "Task for soon test";
+    task.dueDate = std::chrono::system_clock::now();
+    task.revision = 0;
+    remoteData.addTask(task);
+    remoteData.setRevision(1);
+
+    initData(*controller, {}, remoteData);
+
+    auto syncResult = controller->refresh();
+    ASSERT_TRUE(syncResult.has_value());
+
+    // Check isCurrent is true, isSoon is false
+    auto *storedTask = controller->taskModel()->taskForUuid("uuid-task-soon-test");
+    ASSERT_NE(storedTask, nullptr);
+    EXPECT_TRUE(storedTask->isCurrent());
+    EXPECT_FALSE(storedTask->isSoon());
+
+    // 2. Call moveToSoon
+    guiController->moveTaskToSoon("uuid-task-soon-test");
+
+    // 3. Assert due date was cleared
+    auto *updatedTask = controller->taskModel()->taskForUuid("uuid-task-soon-test");
+    ASSERT_NE(updatedTask, nullptr);
+    EXPECT_FALSE(updatedTask->dueDate.has_value()) << "Due date was not cleared!";
+}
+
 int main(int argc, char **argv)
 {
     g_argc = argc;

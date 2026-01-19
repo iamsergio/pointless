@@ -500,6 +500,7 @@ void GuiController::moveTaskToSoon(const QString &taskUuid)
     }
     task->removeBuiltinTags();
     task->tags.emplace_back(pointless::core::BUILTIN_TAG_SOON);
+    task->dueDate = std::nullopt;
     taskModel()->updateTask(*task);
 }
 
