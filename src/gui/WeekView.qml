@@ -27,6 +27,9 @@ Item {
 
     ListView {
         id: weekdayListView
+
+        cacheBuffer: 1000
+
         anchors {
             left: parent.left
             right: parent.right
