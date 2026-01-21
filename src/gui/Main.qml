@@ -258,6 +258,15 @@ QC.ApplicationWindow {
                         GuiController.setTaskMenuUuid("");
                     }
                 }
+                MenuItem {
+                    id: moveToEveningMenuItem
+                    text: "Move to Evening"
+                    visible: GuiController.moveToEveningVisible
+                    onTriggered: {
+                        GuiController.moveTaskToEvening(GuiController.taskMenuUuid);
+                        GuiController.setTaskMenuUuid("");
+                    }
+                }
             }
 
             FontAwesomeButton {

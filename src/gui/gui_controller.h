@@ -47,6 +47,7 @@ class GuiController : public QObject
     Q_PROPERTY(bool moveToSoonVisible READ moveToSoonVisible NOTIFY taskMenuUuidChanged)
     Q_PROPERTY(bool moveToLaterVisible READ moveToLaterVisible NOTIFY taskMenuUuidChanged)
     Q_PROPERTY(bool moveToTomorrowVisible READ moveToTomorrowVisible NOTIFY taskMenuUuidChanged)
+    Q_PROPERTY(bool moveToEveningVisible READ moveToEveningVisible NOTIFY taskMenuUuidChanged)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
@@ -98,6 +99,7 @@ public:
     [[nodiscard]] bool moveToSoonVisible() const;
     [[nodiscard]] bool moveToLaterVisible() const;
     [[nodiscard]] bool moveToTomorrowVisible() const;
+    [[nodiscard]] bool moveToEveningVisible() const;
 
     Q_INVOKABLE void setTaskMenuUuid(const QString &uuid);
     Q_INVOKABLE void login(const QString &email, const QString &password);
@@ -116,6 +118,7 @@ public:
     Q_INVOKABLE void moveTaskToLater(const QString &taskUuid);
     Q_INVOKABLE void moveTaskToTomorrow(const QString &taskUuid);
     Q_INVOKABLE void moveTaskToNextMonday(const QString &taskUuid);
+    Q_INVOKABLE void moveTaskToEvening(const QString &taskUuid);
     Q_INVOKABLE void deleteTask(const QString &taskUuid);
 
     static GuiController *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);

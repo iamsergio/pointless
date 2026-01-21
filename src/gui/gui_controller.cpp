@@ -461,7 +461,8 @@ GuiController *GuiController::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
 GuiController *GuiController::instance()
 {
     if (s_instance == nullptr) {
-        s_instance = new GuiController();
+        s_instance = new GuiController(qApp);
+        QJSEngine::setObjectOwnership(s_instance, QJSEngine::CppOwnership);
     }
 
     return s_instance;
@@ -539,6 +540,20 @@ void GuiController::moveTaskToTomorrow(const QString &taskUuid)
     taskModel()->updateTask(*task);
 }
 
+void GuiController::moveTaskToEvening(const QString &taskUuid)
+{
+    auto *task = _dataController->taskModel()->taskForUuid(taskUuid);
+    if (task == nullptr) {
+        P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
+        return;
+    }
+
+    if (!task->containsTag("evening")) {
+        task->tags.emplace_back("evening");
+        taskModel()->updateTask(*task);
+    }
+}
+
 void GuiController::moveTaskToNextMonday(const QString &taskUuid)
 {
     auto *task = _dataController->taskModel()->taskForUuid(taskUuid);
@@ -607,4 +622,10 @@ bool GuiController::moveToTomorrowVisible() const
 {
     const auto *task = _dataController->taskModel()->taskForUuid(_taskMenuUuid);
     return task != nullptr && !task->isDueTomorrow();
+}
+
+bool GuiController::moveToEveningVisible() const
+{
+    const auto *task = _dataController->taskModel()->taskForUuid(_taskMenuUuid);
+    return task != nullptr && !task->containsTag("evening") && task->isCurrent();
 }
