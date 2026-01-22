@@ -10,6 +10,7 @@ ListView {
 
     clip: true
     spacing: Style.taskSpacing
+    cacheBuffer: 1000
 
     TaskFilterModel {
         id: taskFilterModel

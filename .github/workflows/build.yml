@@ -54,22 +54,6 @@ jobs:
         version: '6.11.0'
         cache: true
 
-    - name: debug
-      run: which qmake
-
-    - name: Install Qt 6.11.0 using aqt directly
-      if: ${{ matrix.config.qt_version == '6.11.0' }}
-      run: |
-        pip install aqtinstall
-        if [ "${{ runner.os }}" == "Linux" ]; then
-          aqt install-qt linux desktop 6.11.0 linux_gcc_64
-        elif [ "${{ runner.os }}" == "macOS" ]; then
-          aqt install-qt mac desktop 6.11.0 clang_64
-        elif [ "${{ runner.os }}" == "Windows" ]; then
-          aqt install-qt windows desktop 6.11.0 win64_msvc2019_64
-        fi
-      shell: bash
-
     - name: Setup vcpkg
       run: |
         cd 3rdparty/vcpkg
