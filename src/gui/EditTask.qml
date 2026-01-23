@@ -25,10 +25,10 @@ Rectangle {
 
         onVisibleChanged: {
             if (visible) {
-                titleInput.clear();
+                titleInput.text = GuiController.titleInEditor;
                 titleInput.forceActiveFocus();
-                root.selectedTag = "";
-                root.isEvening = false;
+                root.selectedTag = GuiController.tagInEditor;
+                root.isEvening = GuiController.isEveningInEditor;
             }
         }
 
@@ -115,6 +115,7 @@ Rectangle {
                         model: GuiController.tagFilterModel
                         Tag {
                             required property string name
+                            objectName: "tag_" + name
                             isInteractive: true
                             isSelected: root.selectedTag === name
                             tagName: name

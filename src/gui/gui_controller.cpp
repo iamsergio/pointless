@@ -336,11 +336,23 @@ void GuiController::setIsEditing(bool isEditing)
     emit isEditingChanged();
 }
 
-void GuiController::addNewTask(QString title, const QString &tag, bool isEvening)
+QString GuiController::titleInEditor() const
 {
-    P_LOG_INFO("GuiController::addNewTask: Adding new task with title '{}' and date '{}'",
-               title.toStdString(), _dateInEditor.toString(Qt::ISODate).toStdString());
+    return _titleInEditor;
+}
 
+QString GuiController::tagInEditor() const
+{
+    return _tagInEditor;
+}
+
+bool GuiController::isEveningInEditor() const
+{
+    return _isEveningInEditor;
+}
+
+void GuiController::saveTask(QString title, const QString &tag, bool isEvening) // NOLINT
+{
     auto guard = qScopeGuard([this] { clearTaskBeingEdited(); });
 
     QString processedTitle = std::move(title);
@@ -357,35 +369,74 @@ void GuiController::addNewTask(QString title, const QString &tag, bool isEvening
     }
 
     if (processedTitle.isEmpty()) {
-        P_LOG_ERROR("Won't add task with empty title");
+        P_LOG_ERROR("Won't save task with empty title");
         return;
     }
 
-    pointless::core::Task task;
-    task.uuid = QUuid::createUuid().toString(QUuid::WithoutBraces).toStdString();
-    task.title = processedTitle.toStdString();
+    pointless::core::Task newTask;
+    pointless::core::Task *task = nullptr;
+
+    const bool isNew = _uuidBeingEdited.isEmpty();
+
+    if (isNew) {
+        task = &newTask;
+        task->uuid = QUuid::createUuid().toString(QUuid::WithoutBraces).toStdString();
+        // Set default context tags for new tasks
+        if (_currentViewType == ViewType::Soon) {
+            task->tags.emplace_back("soon");
+        } else if (_currentViewType == ViewType::Week) {
+            task->tags.emplace_back("current");
+        }
+    } else {
+        task = taskModel()->taskForUuid(_uuidBeingEdited);
+        if (task == nullptr) {
+            P_LOG_ERROR("GuiController::saveTask: Task not found for UUID: {}", _uuidBeingEdited.toStdString());
+            return;
+        }
+    }
+
+    task->title = processedTitle.toStdString();
+
+    std::string newTag = extractedTag.isEmpty() ? tag.toStdString() : extractedTag.toStdString();
+
+    std::vector<std::string> newTags;
+    // Keep internal builtins ("soon", "current")
+    // "evening" is builtin but we control it via bool arg.
+    // So keep "soon", "current", ignore "evening".
+    for (const auto &t : task->tags) {
+        if (pointless::core::tagIsBuiltin(t)) {
+            if (t != "evening") {
+                newTags.push_back(t);
+            }
+        }
+    }
+
+    if (!newTag.empty()) {
+        newTags.push_back(newTag);
+    }
+    if (isEvening) {
+        newTags.emplace_back("evening");
+    }
+
+    task->tags = newTags;
 
     if (_dateInEditor.isValid()) {
-        task.dueDate = Gui::DateUtils::qdateToTimepoint(_dateInEditor);
+        task->dueDate = Gui::DateUtils::qdateToTimepoint(_dateInEditor);
+    } else {
+        task->dueDate = std::nullopt;
     }
 
-    if (!extractedTag.isEmpty()) {
-        task.tags.push_back(extractedTag.toStdString());
-    } else if (!tag.isEmpty()) {
-        task.tags.push_back(tag.toStdString());
+    if (isNew) {
+        taskModel()->addTask(*task);
+    } else {
+        taskModel()->updateTask(*task);
     }
+}
 
-    if (_currentViewType == ViewType::Soon) {
-        task.tags.emplace_back("soon");
-    } else if (_currentViewType == ViewType::Week) {
-        task.tags.emplace_back("current");
-    }
-
-    if (isEvening) {
-        task.tags.emplace_back("evening");
-    }
-
-    _dataController->taskModel()->addTask(task);
+void GuiController::addNewTask(QString title, const QString &tag, bool isEvening)
+{
+    setUuidBeingEdited({});
+    saveTask(std::move(title), tag, isEvening);
 }
 
 QString GuiController::colorFromTag(const QString &tagName) const
@@ -483,7 +534,30 @@ void GuiController::clearTaskBeingEdited()
 void GuiController::setTaskBeingEdited(const QString &uuid, QDate date)
 {
     setUuidBeingEdited(uuid);
-    setDateInEditor(date);
+
+    if (uuid.isEmpty()) {
+        setDateInEditor(date);
+        _titleInEditor.clear();
+        _tagInEditor.clear();
+        _isEveningInEditor = false;
+    } else {
+        const auto *task = taskModel()->taskForUuid(uuid);
+        if (task != nullptr) {
+            _titleInEditor = QString::fromStdString(task->title);
+            _tagInEditor = QString::fromStdString(task->tagName());
+            _isEveningInEditor = task->containsTag("evening");
+
+            if (task->dueDate) {
+                setDateInEditor(Gui::DateUtils::timepointToQDate(task->dueDate));
+            } else {
+                setDateInEditor(QDate());
+            }
+        }
+    }
+
+    emit titleInEditorChanged();
+    emit tagInEditorChanged();
+    emit isEveningInEditorChanged();
     setIsEditing(true);
 }
 

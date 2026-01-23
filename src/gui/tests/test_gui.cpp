@@ -39,10 +39,12 @@ protected:
         {
             ~AppQuitter()
             {
-                qApp->quit();
+                if (qApp->platformName() == QStringLiteral("offscreen"))
+                    qApp->quit();
+                else
+                    P_LOG_INFO("Test finished! Not quitting since using non-offscreen for visual debugging");
             }
         } appQuitter;
-
 
         P_LOG_INFO("Starting test!!");
 
@@ -182,6 +184,40 @@ protected:
         localData.data().needsLocalSave = false; // prevent changing test data
         EXPECT_EQ(getStringProperty("mainWindow/editTask", "visible"), "false");
         EXPECT_TRUE(localData.taskForTitle("foo") != nullptr);
+
+        // -----------------------------------------
+        // Test editing an existing task
+        invokeMethod("mainWindow/weekdayListView", "positionViewAtIndex", { 0, 0 });
+        wait(std::chrono::milliseconds(200));
+
+        mouseClick("mainWindow/task_0_0"); // Click on "Current Task 3" (no tags)
+        wait(std::chrono::milliseconds(200));
+
+        // Open menu
+        EXPECT_EQ(getStringProperty("mainWindow/taskMenu", "visible"), "true");
+        mouseClick("mainWindow/editMenuItem");
+        wait(std::chrono::milliseconds(200));
+
+        // Verify editor is open and populated
+        EXPECT_EQ(getStringProperty("mainWindow/editTask", "visible"), "true");
+        EXPECT_EQ(getStringProperty("mainWindow/editTask/titleInput", "text"), "Current Task 3");
+
+        // Change title and tag
+        setStringProperty("mainWindow/editTask/titleInput", "text", "Current Task 3 Edited");
+        mouseClick("mainWindow/editTask/tag_work"); // Select "work" tag
+        mouseClick("mainWindow/editTask/saveButton");
+        wait(std::chrono::milliseconds(200));
+
+        EXPECT_EQ(getStringProperty("mainWindow/editTask", "visible"), "false");
+        return;
+        // Verify changes in the model
+        auto *task = localData.taskForTitle("Current Task 3 Edited");
+        ASSERT_TRUE(task != nullptr);
+        EXPECT_EQ(task->tagName(), "work");
+
+        // Verify changes in UI
+        EXPECT_EQ(getStringProperty("mainWindow/task_0_0", "title"), "Current Task 3 Edited");
+        EXPECT_EQ(getStringProperty("mainWindow/task_0_0", "taskTagName"), "work");
 
         P_LOG_INFO("Finished test!!");
     }

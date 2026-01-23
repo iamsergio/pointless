@@ -61,7 +61,7 @@ QC.ApplicationWindow {
                 }
 
                 onSaveClicked: function (title, tag, evening) {
-                    GuiController.addNewTask(title, tag, evening);
+                    GuiController.saveTask(title, tag, evening);
                 }
             }
 

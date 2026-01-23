@@ -36,6 +36,9 @@ class GuiController : public QObject
     Q_PROPERTY(bool isVerbose READ isVerbose CONSTANT)
     Q_PROPERTY(bool isEditing READ isEditing NOTIFY isEditingChanged)
     Q_PROPERTY(QString uuidBeingEdited READ uuidBeingEdited NOTIFY uuidBeingEditedChanged)
+    Q_PROPERTY(QString titleInEditor READ titleInEditor NOTIFY titleInEditorChanged)
+    Q_PROPERTY(QString tagInEditor READ tagInEditor NOTIFY tagInEditorChanged)
+    Q_PROPERTY(bool isEveningInEditor READ isEveningInEditor NOTIFY isEveningInEditorChanged)
     Q_PROPERTY(QDate dateInEditor READ dateInEditor NOTIFY dateInEditorChanged)
     Q_PROPERTY(QString windowTitle READ windowTitle CONSTANT)
     Q_PROPERTY(bool isAuthenticated READ isAuthenticated NOTIFY isAuthenticatedChanged)
@@ -76,6 +79,7 @@ public:
     Q_INVOKABLE void navigatorGotoNextWeek();
     Q_INVOKABLE void navigatorGotoPreviousWeek();
     Q_INVOKABLE void refresh();
+    Q_INVOKABLE void saveTask(QString title, const QString &tag, bool isEvening);
     Q_INVOKABLE void addNewTask(QString title, const QString &tag, bool isEvening);
     [[nodiscard]] Q_INVOKABLE QString colorFromTag(const QString &tagName) const;
     [[nodiscard]] static bool isDebug();
@@ -87,6 +91,9 @@ public:
     void setIsEditing(bool isEditing);
     [[nodiscard]] QString uuidBeingEdited() const;
     void setUuidBeingEdited(const QString &uuid);
+    [[nodiscard]] QString titleInEditor() const;
+    [[nodiscard]] QString tagInEditor() const;
+    [[nodiscard]] bool isEveningInEditor() const;
     [[nodiscard]] QDate dateInEditor() const;
     Q_INVOKABLE void setDateInEditor(QDate date);
 
@@ -125,6 +132,9 @@ public:
 
 Q_SIGNALS:
     void currentViewTypeChanged();
+    void titleInEditorChanged();
+    void tagInEditorChanged();
+    void isEveningInEditorChanged();
     void navigatorStartDateChanged();
     void navigatorEndDateChanged();
     void isEditingChanged();
@@ -139,6 +149,9 @@ private:
     ViewType _currentViewType = ViewType::Week;
     bool _isEditing = false;
     QString _uuidBeingEdited;
+    QString _titleInEditor;
+    QString _tagInEditor;
+    bool _isEveningInEditor = false;
     QDate _dateInEditor;
     QDate _navigatorStartDate;
     QString _loginError;

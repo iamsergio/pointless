@@ -135,6 +135,7 @@ Item {
                     taskIsDueTomorrow: isDueTomorrow
 
                     onClicked: {
+                        GuiController.setTaskMenuUuid(uuid);
                         GuiController.dumpTaskDebug(uuid);
                     }
                 }
