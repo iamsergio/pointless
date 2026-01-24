@@ -18,7 +18,7 @@ public:
     };
     Q_DECLARE_FLAGS(Options, Option)
 
-    explicit Application(int &argc, char **argv, Options options = {});
+    explicit Application(int &argc, char **argv, const QString &orgName, Options options = {});
 
 private:
     QQmlApplicationEngine _engine;

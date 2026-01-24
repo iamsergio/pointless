@@ -27,13 +27,13 @@ void printDebugInfo()
 }
 }
 
-Application::Application(int &argc, char **argv, Options options)
+Application::Application(int &argc, char **argv, const QString &orgName, Options options)
     : QGuiApplication(argc, argv)
 {
     Q_UNUSED(options)
     QCoreApplication::setApplicationName(QStringLiteral("pointless"));
     QCoreApplication::setApplicationVersion(QStringLiteral("0.1"));
-    QCoreApplication::setOrganizationName("com.iamsergio");
+    QCoreApplication::setOrganizationName(orgName);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QStringLiteral("Pointless"));

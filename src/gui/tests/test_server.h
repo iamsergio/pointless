@@ -16,7 +16,7 @@ class TestServer : public spix::TestServer
 {
 public:
     TestServer(int &argc, char **argv)
-        : _app(argc, argv, initPlatform())
+        : _app(argc, argv, "com.pointless.tests", initPlatform())
     {
         _bot = new spix::QtQmlBot();
         _bot->runTestServer(*this);
