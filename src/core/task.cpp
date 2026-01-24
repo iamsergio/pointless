@@ -31,7 +31,10 @@ bool Task::containsTag(std::string_view tagName) const
 
 bool Task::isSoon() const
 {
-    return containsTag(BUILTIN_TAG_SOON) || (isDueIn(std::chrono::days(15)) && !isCurrent());
+    if (isCurrent())
+        return false;
+
+    return containsTag(BUILTIN_TAG_SOON) || isDueIn(std::chrono::days(15));
 }
 
 bool Task::isLater() const
