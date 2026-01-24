@@ -58,7 +58,7 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
 endif()
 
 cmake_minimum_required(VERSION 3.21)
-project(pointless_cpp LANGUAGES CXX)
+project(pointless_cpp LANGUAGES CXX OBJCXX)
 
 enable_language(CXX)
 

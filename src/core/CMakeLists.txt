@@ -23,7 +23,8 @@ add_library(
   local_data.cpp
   merger.cpp
   ${POINTLESS_TESTS_SRCS}
-  logger.cpp)
+  logger.cpp
+  calendar_provider.cpp)
 
 if(NOT DEFINED ENV{POINTLESS_SUPABASE_ANON_KEY})
   message(FATAL_ERROR "POINTLESS_SUPABASE_ANON_KEY environment variable is not set")
@@ -39,6 +40,16 @@ target_link_libraries(
   pointless_core
   PUBLIC glaze::glaze
   PRIVATE spdlog::spdlog cpr::cpr)
+
+if(APPLE)
+  find_library(EVENTKIT_LIB EventKit REQUIRED)
+  find_library(COREGRAPHICS_LIB CoreGraphics REQUIRED)
+  target_link_libraries(pointless_core PRIVATE ${EVENTKIT_LIB} ${COREGRAPHICS_LIB})
+  target_sources(pointless_core PRIVATE apple_calendar_provider.mm)
+
+  add_executable(calendar_info calendar_info.cpp)
+  target_link_libraries(calendar_info PRIVATE pointless_core)
+endif()
 target_include_directories(
   pointless_core
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
