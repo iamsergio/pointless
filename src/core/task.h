@@ -22,6 +22,7 @@ public:
     [[nodiscard]] bool isSoon() const;
     [[nodiscard]] bool isLater() const;
     [[nodiscard]] bool isCurrent() const;
+    [[nodiscard]] bool isEvening() const;
     [[nodiscard]] bool isDueIn(std::chrono::days days) const;
     [[nodiscard]] bool isDueTomorrow() const;
     [[nodiscard]] bool isDueThisWeek() const;
@@ -33,7 +34,7 @@ public:
 
     [[nodiscard]] std::string tagName() const;
     void setTags(const std::vector<std::string> &tags);
-    void addTag(std::string_view tag);
+    bool addTag(std::string_view tag);
 
     int revision = -1;
     bool needsSyncToServer = false;

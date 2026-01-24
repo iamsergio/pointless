@@ -622,8 +622,7 @@ void GuiController::moveTaskToEvening(const QString &taskUuid)
         return;
     }
 
-    if (!task->containsTag(core::BUILTIN_TAG_EVENING)) {
-        task->addTag(core::BUILTIN_TAG_EVENING);
+    if (task->addTag(core::BUILTIN_TAG_EVENING)) {
         taskModel()->updateTask(*task);
     }
 }
@@ -701,5 +700,5 @@ bool GuiController::moveToTomorrowVisible() const
 bool GuiController::moveToEveningVisible() const
 {
     const auto *task = _dataController->taskModel()->taskForUuid(_taskMenuUuid);
-    return task != nullptr && !task->containsTag(core::BUILTIN_TAG_EVENING) && task->isCurrent();
+    return task != nullptr && !task->isEvening() && task->isCurrent();
 }

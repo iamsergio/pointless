@@ -44,6 +44,11 @@ bool Task::isCurrent() const
     return containsTag(BUILTIN_TAG_CURRENT) || isDueThisWeek();
 }
 
+bool Task::isEvening() const
+{
+    return containsTag(BUILTIN_TAG_EVENING);
+}
+
 std::string Task::tagName() const
 {
     for (const auto &tag : tags) {
@@ -88,11 +93,13 @@ void Task::setTags(const std::vector<std::string> &newTags)
     }
 }
 
-void Task::addTag(std::string_view tag)
+bool Task::addTag(std::string_view tag)
 {
     if (!tag.empty() && !containsTag(tag)) {
         tags.emplace_back(tag);
+        return true;
     }
+    return false;
 }
 
 void Task::removeBuiltinTags()
