@@ -352,9 +352,10 @@ std::expected<core::Data, TraceableError> DataController::merge(const std::optio
 
     if (localData.revision() > remoteData.revision()) {
         // 3. Doesn't happen, local data never increments revision
-        P_LOG_WARNING("sync(): Local has higher revision! local.rev={} ; remote.rev={}", localData.revision(), remoteData.revision());
-        remoteData.needsLocalSave = true;
-        return remoteData;
+        P_LOG_CRITICAL("sync(): Local has higher revision! local.rev={} ; remote.rev={}", localData.revision(), remoteData.revision());
+
+        // Avoid potential data loss
+        std::abort();
     }
 
     if (localData.revision() < remoteData.revision()) {
