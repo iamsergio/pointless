@@ -49,12 +49,15 @@ if(APPLE AND NOT IOS)
 
   add_executable(calendar_info calendar_info.cpp)
   target_link_libraries(calendar_info PRIVATE pointless_core)
+
   set_target_properties(
     calendar_info
     PROPERTIES MACOSX_BUNDLE TRUE
                MACOSX_BUNDLE_GUI_IDENTIFIER "com.iamsergio.pointless.calendar-info"
                MACOSX_BUNDLE_BUNDLE_NAME "CalendarInfo"
                MACOSX_BUNDLE_INFO_PLIST "${CMAKE_BINARY_DIR}/Info.plist")
+  target_sources(calendar_info PRIVATE ${CMAKE_SOURCE_DIR}/src/mac/pointless.entitlements)
+  set_source_files_properties("${CMAKE_SOURCE_DIR}/src/mac/pointless.entitlements" PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 endif()
 
 target_include_directories(
