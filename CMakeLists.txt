@@ -58,9 +58,12 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
 endif()
 
 cmake_minimum_required(VERSION 3.21)
-project(pointless_cpp LANGUAGES CXX OBJCXX)
+project(pointless_cpp LANGUAGES CXX)
 
 enable_language(CXX)
+if (APPLE)
+  enable_language(OBJCXX)
+endif()
 
 if(CMAKE_CXX_CLANG_TIDY)
   # suppress warnings from build dir, such as vcpkg stuff
