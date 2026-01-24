@@ -31,5 +31,7 @@ public:
     LocalSettings &operator=(LocalSettings &&) = delete;
 
 private:
+    [[nodiscard]] std::string maskedToken(const std::string &token) const;
+
     QSettings _settings;
 };

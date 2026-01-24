@@ -404,6 +404,8 @@ std::string SupabaseProvider::base64Encode(const std::vector<uint8_t> &data)
 
 bool SupabaseProvider::refreshAccessToken()
 {
+    P_LOG_INFO("Refreshing access token");
+
     const std::string refresh_url = "https://" + _baseUrl + "/auth/v1/token?grant_type=refresh_token";
     const std::string body = R"({"refresh_token":")" + _refreshToken + R"("})"; // NOLINT(performance-inefficient-string-concatenation)
 
@@ -458,6 +460,7 @@ bool SupabaseProvider::refreshAccessToken()
 bool SupabaseProvider::isAuthenticated()
 {
     if (_accessToken.empty()) {
+        P_LOG_INFO("NSupabaseProvider::isAuthenticated: Not authenticated: access token is empty");
         return false;
     }
 

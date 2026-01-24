@@ -2,10 +2,14 @@
 // SPDX-License-Identifier: MIT
 
 #include "local_settings.h"
+#include "core/logger.h"
 
 #include <QSettings>
 
-LocalSettings::LocalSettings() = default;
+LocalSettings::LocalSettings()
+{
+    P_LOG_INFO("LocalSettings ctor: refresh token={}", maskedToken(refreshToken()));
+}
 
 void LocalSettings::save()
 {
@@ -24,6 +28,7 @@ std::string LocalSettings::accessToken() const
 
 void LocalSettings::setRefreshToken(const std::string &token)
 {
+    P_LOG_INFO("setRefreshToken: {}", maskedToken(token));
     _settings.setValue("auth/refreshToken", QString::fromStdString(token));
 }
 
@@ -47,4 +52,10 @@ void LocalSettings::clear()
     _settings.remove("auth/accessToken");
     _settings.remove("auth/refreshToken");
     _settings.remove("auth/userId");
+    save();
+}
+
+std::string LocalSettings::maskedToken(const std::string &token) const
+{
+    return token.substr(0, 6);
 }

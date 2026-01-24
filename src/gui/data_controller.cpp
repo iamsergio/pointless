@@ -36,16 +36,92 @@ DataController::DataController(QObject *parent)
             P_LOG_DEBUG("Data saved to disk");
         }
     });
+
+    _tokenCheckTimer.setInterval(std::chrono::minutes(5));
+    _tokenCheckTimer.setSingleShot(false);
+    connect(&_tokenCheckTimer, &QTimer::timeout, this, [this] {
+        const auto currentAccess = accessToken();
+        const auto currentRefresh = refreshToken();
+        bool changed = false;
+
+        if (!currentAccess.empty() && currentAccess != _localSettings.accessToken()) {
+            _localSettings.setAccessToken(currentAccess);
+            changed = true;
+        }
+
+        if (!currentRefresh.empty() && currentRefresh != _localSettings.refreshToken()) {
+            _localSettings.setRefreshToken(currentRefresh);
+            changed = true;
+        }
+
+        if (changed) {
+            _localSettings.save();
+            P_LOG_DEBUG("Tokens updated from polling");
+        }
+    });
+    _tokenCheckTimer.start();
 }
 
 bool DataController::loginWithDefaults()
 {
-    return _dataProvider && _dataProvider->loginWithDefaults();
+    if (!_dataProvider) {
+        return false;
+    }
+
+    auto [username, password] = _dataProvider->defaultLoginPassword();
+    if (username.empty() || password.empty()) {
+        P_LOG_WARNING("No default credentials available");
+        return false;
+    }
+
+    return login(username, password);
 }
 
 bool DataController::login(const std::string &email, const std::string &password)
 {
-    return _dataProvider && _dataProvider->login(email, password);
+    if (_dataProvider && _dataProvider->login(email, password)) {
+        saveAuth();
+        P_LOG_DEBUG("Login successful, saved credentials");
+        Q_EMIT isAuthenticatedChanged();
+        return true;
+    }
+
+    Q_EMIT isAuthenticatedChanged();
+    return false;
+}
+
+void DataController::saveAuth()
+{
+    if (accessToken().empty() || userId().empty() || refreshToken().empty()) {
+        P_LOG_INFO("DataController::saveAuth: No tokens to save");
+        return;
+    }
+
+    P_LOG_INFO("Saving authentication tokens");
+    _localSettings.setAccessToken(accessToken());
+    _localSettings.setUserId(userId());
+    _localSettings.setRefreshToken(refreshToken());
+    _localSettings.save();
+}
+
+bool DataController::restoreAuth()
+{
+    const auto savedToken = _localSettings.accessToken();
+    const auto savedUserId = _localSettings.userId();
+
+    if (!savedToken.empty() && !savedUserId.empty()) {
+        setAccessToken(savedToken);
+        setUserId(savedUserId);
+        const auto savedRefreshToken = _localSettings.refreshToken();
+        if (!savedRefreshToken.empty()) {
+            setRefreshToken(savedRefreshToken);
+        }
+        P_LOG_DEBUG("Loaded saved authentication token");
+        Q_EMIT isAuthenticatedChanged();
+        return true;
+    }
+
+    return false;
 }
 
 std::string DataController::defaultLoginUsername() const
@@ -57,6 +133,8 @@ void DataController::logout()
 {
     if (_dataProvider) {
         _dataProvider->logout();
+        _localSettings.clear();
+        Q_EMIT isAuthenticatedChanged();
     }
 }
 
@@ -130,7 +208,7 @@ std::expected<core::Data, TraceableError> DataController::pullRemoteData()
     if (!json_str_expr) {
         return TraceableError::create("DataController::refresh", json_str_expr.error());
     }
-    const std::string& json_str = *json_str_expr;
+    const std::string &json_str = *json_str_expr;
 
     auto result = core::Data::fromJson(json_str);
     if (!result) {
@@ -370,6 +448,11 @@ std::expected<core::Data, TraceableError> DataController::merge(const std::optio
 core::LocalData &DataController::localData()
 {
     return _localData;
+}
+
+LocalSettings &DataController::localSettings()
+{
+    return _localSettings;
 }
 
 TaskModel *DataController::taskModel() const

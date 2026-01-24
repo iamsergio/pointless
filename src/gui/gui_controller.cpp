@@ -9,7 +9,6 @@
 #include "tagfiltermodel.h"
 #include "date_utils.h"
 #include "data_controller.h"
-#include "local_settings.h"
 #include "utils.h"
 #include "Clock.h"
 
@@ -91,43 +90,7 @@ GuiController::GuiController(QObject *parent)
     if (qApp) // might be running in tests without qApp
         qApp->installEventFilter(new EventFilter(this));
 
-    const auto savedToken = _localSettings.accessToken();
-    const auto savedUserId = _localSettings.userId();
-
-    if (!savedToken.empty() && !savedUserId.empty()) {
-        _dataController->setAccessToken(savedToken);
-        _dataController->setUserId(savedUserId);
-        const auto savedRefreshToken = _localSettings.refreshToken();
-        if (!savedRefreshToken.empty()) {
-            _dataController->setRefreshToken(savedRefreshToken);
-        }
-        P_LOG_DEBUG("Loaded saved authentication token");
-        Q_EMIT isAuthenticatedChanged();
-    }
-
-    _tokenCheckTimer.setInterval(std::chrono::minutes(5));
-    _tokenCheckTimer.setSingleShot(false);
-    connect(&_tokenCheckTimer, &QTimer::timeout, this, [this] {
-        const auto currentAccess = _dataController->accessToken();
-        const auto currentRefresh = _dataController->refreshToken();
-        bool changed = false;
-
-        if (!currentAccess.empty() && currentAccess != _localSettings.accessToken()) {
-            _localSettings.setAccessToken(currentAccess);
-            changed = true;
-        }
-
-        if (!currentRefresh.empty() && currentRefresh != _localSettings.refreshToken()) {
-            _localSettings.setRefreshToken(currentRefresh);
-            changed = true;
-        }
-
-        if (changed) {
-            _localSettings.save();
-            P_LOG_DEBUG("Tokens updated from polling");
-        }
-    });
-    _tokenCheckTimer.start();
+    _dataController->restoreAuth();
 
     if (Gui::isAutoLogin() && !_dataController->isAuthenticated()) {
         if (!_dataController->loginWithDefaults()) {
@@ -311,32 +274,32 @@ QString GuiController::loginError() const
     return _loginError;
 }
 
+void GuiController::setLoginError(const QString &error)
+{
+    if (_loginError == error) {
+        return;
+    }
+
+    _loginError = error;
+    Q_EMIT loginErrorChanged();
+}
+
 void GuiController::login(const QString &email, const QString &password)
 {
-    _loginError.clear();
-    Q_EMIT loginErrorChanged();
+    setLoginError({});
 
     if (_dataController->login(email.toStdString(), password.toStdString())) {
-        _localSettings.setAccessToken(_dataController->accessToken());
-        _localSettings.setUserId(_dataController->userId());
-        _localSettings.save();
-        P_LOG_DEBUG("Login successful, saved credentials");
-        Q_EMIT isAuthenticatedChanged();
         QTimer::singleShot(0, this, &GuiController::refresh);
     } else {
-        _loginError = "Login failed. Please check your email and password.";
+        setLoginError(QStringLiteral("Login failed. Please check your email and password."));
         P_LOG_WARNING("Login failed for email: {}", email.toStdString());
-        Q_EMIT loginErrorChanged();
     }
 }
 
 void GuiController::logout()
 {
     _dataController->logout();
-    _localSettings.clear();
-    _localSettings.save();
     P_LOG_DEBUG("Logged out, cleared credentials");
-    Q_EMIT isAuthenticatedChanged();
 }
 
 void GuiController::setUuidBeingEdited(const QString &uuid)

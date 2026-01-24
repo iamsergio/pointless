@@ -10,6 +10,7 @@
 #include "core/data_provider.h"
 #include "core/data.h"
 #include "core/error.h"
+#include "local_settings.h"
 
 #include <QObject>
 #include <QTimer>
@@ -29,6 +30,8 @@ public:
 
     bool loginWithDefaults();
     bool login(const std::string &email, const std::string &password);
+    bool restoreAuth();
+    void saveAuth();
     void logout();
     [[nodiscard]] std::string defaultLoginUsername() const;
     [[nodiscard]] bool isAuthenticated() const;
@@ -43,6 +46,7 @@ public:
     bool addTask(const pointless::core::Task &task);
 
     pointless::core::LocalData &localData();
+    LocalSettings &localSettings();
 
     [[nodiscard]] TaskModel *taskModel() const;
     [[nodiscard]] TagModel *tagModel() const;
@@ -63,8 +67,10 @@ private:
     std::expected<pointless::core::Data, TraceableError> pullRemoteData();
     std::expected<pointless::core::Data, TraceableError> merge(const std::optional<pointless::core::Data> &remoteData);
     pointless::core::LocalData _localData;
+    LocalSettings _localSettings;
     std::unique_ptr<IDataProvider> _dataProvider;
     TaskModel *_taskModel = nullptr;
     TagModel *_tagModel = nullptr;
     QTimer _saveToDiskTimer;
+    QTimer _tokenCheckTimer;
 };

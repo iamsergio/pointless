@@ -68,7 +68,7 @@
         "request": "launch",
         "program": "${command:cmake.launchTargetPath}",
         "args": [
-          "--local"
+          "--login"
         ],
         "cwd": "${command:cmake.buildDirectory}",
         "initCommands": [
@@ -84,7 +84,7 @@
         "request": "launch",
         "program": "${command:cmake.launchTargetPath}",
         "args": [
-          "--local"
+          "--login"
         ],
         "stopAtEntry": false,
         "cwd": "${command:cmake.buildDirectory}",

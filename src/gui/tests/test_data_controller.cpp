@@ -6,6 +6,7 @@
 #include "gui/gui_controller.h"
 #include "gui/application.h"
 #include "gui/tests/test_utils.h"
+#include "gui/local_settings.h"
 
 #include "core/context.h"
 #include "core/data_provider.h"
@@ -18,6 +19,9 @@
 #include <filesystem>
 
 using namespace pointless;
+
+// to run a single test:
+// ./bin/test_data_controller --gtest_filter=DataControllerTest.LogoutTokenMetaTest
 
 static int g_argc;
 static char **g_argv;
@@ -416,6 +420,34 @@ TEST(DataControllerTest, MoveToSoonClearsDueDate)
     auto *updatedTask = controller->taskModel()->taskForUuid("uuid-task-soon-test");
     ASSERT_NE(updatedTask, nullptr);
     EXPECT_FALSE(updatedTask->dueDate.has_value()) << "Due date was not cleared!";
+}
+
+TEST(DataControllerTest, LogoutTokenMetaTest)
+{
+    // Requested test:
+    // starts with logout(), checks settings to see that refresh token is empty, login.
+    // then check its not empty. then logout again, and check that its not empty, but different from initial.
+
+    // Setup environment
+    core::Logger::initLogLevel();
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+
+    GuiController *gui = GuiController::instance();
+    DataController *controller = gui->dataController();
+    LocalSettings &settings = controller->localSettings();
+
+    // 1. Logout
+    controller->logout();
+
+    // 2. Check settings empty
+    EXPECT_TRUE(settings.refreshToken().empty()) << "Refresh token should be empty after logout";
+
+    // 3. Login
+    ASSERT_TRUE(controller->loginWithDefaults());
+
+    // 4. Check settings not empty
+    std::string firstToken = settings.refreshToken();
+    EXPECT_FALSE(firstToken.empty()) << "Refresh token should not be empty after login";
 }
 
 int main(int argc, char **argv)

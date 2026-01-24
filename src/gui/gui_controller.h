@@ -7,7 +7,6 @@
 #include "taskmodel.h"
 #include "tagmodel.h"
 #include "tagfiltermodel.h"
-#include "local_settings.h"
 
 #include <QDate>
 #include <QObject>
@@ -103,6 +102,7 @@ public:
     [[nodiscard]] QString windowTitle() const;
     [[nodiscard]] bool isAuthenticated() const;
     [[nodiscard]] QString loginError() const;
+    void setLoginError(const QString &error);
     [[nodiscard]] bool taskMenuVisible() const;
     [[nodiscard]] QString taskMenuUuid() const;
     [[nodiscard]] bool moveToCurrentVisible() const;
@@ -160,8 +160,6 @@ private:
     QString _loginError;
     QString _taskMenuUuid;
     DataController *const _dataController;
-    LocalSettings _localSettings;
     mutable TaskFilterModel *_taskFilterModel = nullptr;
     mutable TagFilterModel *_tagFilterModel = nullptr;
-    QTimer _tokenCheckTimer;
 };
