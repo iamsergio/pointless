@@ -10,7 +10,7 @@ int main()
     auto calendars = provider.getCalendars();
 
     std::cout << "Found " << calendars.size() << " calendars:\n";
-    for (const auto& cal : calendars) {
+    for (const auto &cal : calendars) {
         std::cout << "Title: " << cal.title << "\n";
         std::cout << "ID: " << cal.id << "\n";
         std::cout << "Color: " << cal.color << "\n";
