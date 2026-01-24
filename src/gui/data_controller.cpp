@@ -125,10 +125,11 @@ std::expected<core::Data, TraceableError> DataController::pullRemoteData()
         return TraceableError::create("DataController::refresh: Not authenticated");
     }
 
-    std::string json_str = _dataProvider->pullData();
-    if (json_str.empty()) {
-        return TraceableError::create("DataController::refresh: No data retrieved");
+    std::expected<std::string, TraceableError> json_str_expr = _dataProvider->pullData();
+    if (!json_str_expr) {
+        return TraceableError::create("DataController::refresh", json_str_expr.error());
     }
+    const std::string& json_str = *json_str_expr;
 
     auto result = core::Data::fromJson(json_str);
     if (!result) {

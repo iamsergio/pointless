@@ -177,9 +177,7 @@ void SupabaseProvider::setRefreshToken(const std::string &token)
 std::expected<void, TraceableError> SupabaseProvider::pushData(const std::string &data)
 {
     if (!isAuthenticated()) {
-        const std::string msg = "Cannot update data: not authenticated";
-        P_LOG_ERROR("{}", msg);
-        return TraceableError::create(msg);
+        return TraceableError::create("Cannot update data: not authenticated");
     }
 
     auto compressed_bytes = compress(data);
@@ -200,7 +198,6 @@ std::expected<void, TraceableError> SupabaseProvider::pushData(const std::string
 
     if (response.status_code == kHttpUnauthorized) {
         P_LOG_INFO("SupabaseProvider::pushData: Unauthorized (401). Clearing access token and user ID.");
-        logout();
         return TraceableError::create("Unauthorized (401): Access token may have expired.");
     }
 
@@ -213,22 +210,21 @@ std::expected<void, TraceableError> SupabaseProvider::pushData(const std::string
     return {};
 }
 
-std::string SupabaseProvider::pullData()
+std::expected<std::string, TraceableError> SupabaseProvider::pullData()
 {
-    auto raw_data = retrieveRawData();
-    if (raw_data.empty()) {
-        return {};
+    auto raw_data_result = retrieveRawData();
+    if (!raw_data_result) {
+        return std::unexpected(raw_data_result.error());
     }
 
-    auto compressed_bytes = base64Decode(raw_data);
+    auto compressed_bytes = base64Decode(*raw_data_result);
     return decompress(compressed_bytes);
 }
 
-std::string SupabaseProvider::retrieveRawData()
+std::expected<std::string, TraceableError> SupabaseProvider::retrieveRawData()
 {
     if (!isAuthenticated()) {
-        P_LOG_ERROR("Cannot retrieve data: not authenticated");
-        return {};
+        return TraceableError::create("Cannot retrieve data: not authenticated");
     }
 
     const std::string full_url = "https://" + _baseUrl + "/rest/v1/Documents";
@@ -242,38 +238,30 @@ std::string SupabaseProvider::retrieveRawData()
         cpr::VerifySsl { shouldVerifySsl() });
 
     if (response.status_code != kHttpOk) {
-        P_LOG_ERROR("HTTP request failed with status: {}", response.status_code);
-        P_LOG_DEBUG("Response: {}", response.text);
-        return {};
+        return TraceableError::create("HTTP request failed with status: " + std::to_string(response.status_code));
     }
 
     auto json_result = glz::read_json<glz::json_t>(response.text);
     if (!json_result.has_value()) {
-        P_LOG_ERROR("Failed to parse JSON response");
-        return {};
+        return TraceableError::create("Failed to parse JSON response");
     }
 
     auto &json_obj = json_result.value();
     if (!json_obj.is_array() || json_obj.get_array().empty()) {
-        P_LOG_WARNING("Response is empty or not an array");
-        return {};
+        return TraceableError::create("Response is empty or not an array");
     }
 
     auto &first_item = json_obj.get_array()[0];
     if (!first_item.is_object()) {
-        P_LOG_ERROR("First item in response is not an object");
-        return {};
+        return TraceableError::create("First item in response is not an object");
     }
 
     auto data_it = first_item.get_object().find("data");
     if (data_it == first_item.get_object().end() || !data_it->second.is_string()) {
-        P_LOG_WARNING("No 'data' field found in response");
-        return {};
+        return TraceableError::create("No 'data' field found in response");
     }
 
     std::string data = data_it->second.get_string();
-
-
     return data;
 }
 
@@ -435,6 +423,7 @@ bool SupabaseProvider::refreshAccessToken()
 
     auto &json_obj = json_result.value();
     if (!json_obj.is_object()) {
+        P_LOG_ERROR("2 Failed to parse token refresh response JSON");
         return false;
     }
 
@@ -451,7 +440,7 @@ bool SupabaseProvider::refreshAccessToken()
         _refreshToken = refresh_token_it->second.get_string();
     }
 
-    P_LOG_DEBUG("Token refreshed successfully");
+    P_LOG_INFO("Token refreshed successfully");
     return true;
 }
 
@@ -478,7 +467,6 @@ bool SupabaseProvider::isAuthenticated()
         return refreshAccessToken();
     }
 
-    P_LOG_INFO("Token validation failed: HTTP {}. Clearing session.", response.status_code);
-    logout();
+    P_LOG_INFO("Token validation failed: HTTP {}. Clearing session. ; token={}", response.status_code, _accessToken);
     return false;
 }

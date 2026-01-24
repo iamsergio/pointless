@@ -37,12 +37,11 @@ bool TestLocalDataProvider::isAuthenticated()
     return true;
 }
 
-std::string TestLocalDataProvider::pullData()
+std::expected<std::string, TraceableError> TestLocalDataProvider::pullData()
 {
     std::ifstream file(_filePath);
     if (!file.is_open()) {
-        P_LOG_ERROR("Failed to open file for reading: {}", _filePath);
-        return {};
+        return TraceableError::create("Failed to open file for reading: " + _filePath);
     }
     std::stringstream buffer;
     buffer << file.rdbuf();

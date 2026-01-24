@@ -10,6 +10,7 @@
 #include <string>
 #include <utility>
 #include <cstdlib>
+#include <expected>
 
 class IDataProvider
 {
@@ -34,7 +35,7 @@ public:
     virtual bool loginWithDefaults() = 0;
     [[nodiscard]] virtual std::pair<std::string, std::string> defaultLoginPassword() const = 0;
     virtual void logout() = 0;
-    virtual std::string pullData() = 0;
+    virtual std::expected<std::string, TraceableError> pullData() = 0;
     virtual std::expected<void, TraceableError> pushData(const std::string &data) = 0;
 
     static std::unique_ptr<IDataProvider> createProvider();

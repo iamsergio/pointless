@@ -33,7 +33,7 @@ public:
     void setRefreshToken(const std::string &token);
 
     std::expected<void, TraceableError> pushData(const std::string &data) override;
-    std::string pullData() override;
+    std::expected<std::string, TraceableError> pullData() override;
 
     SupabaseProvider(const SupabaseProvider &) = delete;
     SupabaseProvider &operator=(const SupabaseProvider &) = delete;
@@ -49,7 +49,7 @@ private:
     std::string _defaultUser;
     std::string _defaultPassword;
 
-    std::string retrieveRawData();
+    std::expected<std::string, TraceableError> retrieveRawData();
     bool refreshAccessToken();
 
     static std::vector<uint8_t> compress(const std::string &data);

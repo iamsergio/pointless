@@ -18,7 +18,7 @@ public:
     void logout() override;
 
     [[nodiscard]] bool isAuthenticated() override;
-    std::string pullData() override;
+    std::expected<std::string, TraceableError> pullData() override;
     std::expected<void, TraceableError> pushData(const std::string &data) override;
 
 private:

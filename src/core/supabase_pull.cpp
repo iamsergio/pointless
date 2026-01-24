@@ -49,11 +49,13 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        std::string jsonData = provider->pullData();
-        if (jsonData.empty()) {
-            P_LOG_ERROR("Failed to pull data or data is empty");
+        auto jsonDataResult = provider->pullData();
+        if (!jsonDataResult) {
+            P_LOG_ERROR("Failed to pull data: {}", std::string(jsonDataResult.error()));
             return 1;
         }
+
+        std::string jsonData = *jsonDataResult;
 
         glz::json_t json {};
         auto error = glz::read_json(json, jsonData);

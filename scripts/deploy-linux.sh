@@ -10,9 +10,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cd "${SCRIPT_DIR}"/../
 
-cmake --preset=rel
-cmake --build build-rel
-cp build-rel/bin/pointless /pub_data/installation/bin
+PRESET=dev
+
+cmake --preset=${PRESET}
+cmake --build build-${PRESET}
+cp build-${PRESET}/bin/pointless /pub_data/installation/bin
 
 echo
 echo "Deployed pointless to /pub_data/installation/bin"
