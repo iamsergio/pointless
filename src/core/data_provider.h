@@ -38,13 +38,31 @@ public:
     virtual std::expected<std::string, TraceableError> pullData() = 0;
     virtual std::expected<void, TraceableError> pushData(const std::string &data) = 0;
 
-    [[nodiscard]] virtual std::string accessToken() const { return {}; }
-    [[nodiscard]] virtual std::string refreshToken() const { return {}; }
-    [[nodiscard]] virtual std::string userId() const { return {}; }
+    [[nodiscard]] virtual std::string accessToken() const
+    {
+        return {};
+    }
+    [[nodiscard]] virtual std::string refreshToken() const
+    {
+        return {};
+    }
+    [[nodiscard]] virtual std::string userId() const
+    {
+        return {};
+    }
 
-    virtual void setAccessToken(const std::string &token) { (void)token; }
-    virtual void setRefreshToken(const std::string &token) { (void)token; }
-    virtual void setUserId(const std::string &userId) { (void)userId; }
+    virtual void setAccessToken(const std::string &token)
+    {
+        ( void )token;
+    }
+    virtual void setRefreshToken(const std::string &token)
+    {
+        ( void )token;
+    }
+    virtual void setUserId(const std::string &userId)
+    {
+        ( void )userId;
+    }
 
     static std::unique_ptr<IDataProvider> createProvider();
 

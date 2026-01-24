@@ -25,6 +25,7 @@ path = [
     ".github/dependabot.yml",
     "src/ios/Info.plist.in",
     "src/mac/Info.plist.in",
+    "src/mac/pointless.entitlements",
     "src/ios/ExportOptions-TestFlight.plist.in",
     ".qmllint.ini",
 ]

@@ -14,6 +14,7 @@
 #include <QGuiApplication>
 #include <QQuickStyle>
 #include <QStandardPaths>
+#include <QSettings>
 
 #include <cstdlib>
 
@@ -22,7 +23,7 @@ using namespace pointless;
 namespace {
 void printDebugInfo()
 {
-    P_LOG_INFO("AppDataLocation: {}", QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+    P_LOG_INFO("AppDataLocation: {}", QSettings().fileName().toStdString());
     P_LOG_INFO("localFile: {}", core::Context::self().localFilePath());
 }
 }
