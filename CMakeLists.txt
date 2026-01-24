@@ -144,6 +144,8 @@ if(IOS)
 
   configure_file(${CMAKE_SOURCE_DIR}/src/ios/Info.plist.in ${CMAKE_BINARY_DIR}/Info.plist @ONLY)
   configure_file(${CMAKE_SOURCE_DIR}/src/ios/ExportOptions-TestFlight.plist.in ${CMAKE_BINARY_DIR}/ExportOptions-TestFlight.plist @ONLY)
+elseif(APPLE)
+  configure_file(${CMAKE_SOURCE_DIR}/src/mac/Info.plist.in ${CMAKE_BINARY_DIR}/Info.plist @ONLY)
 endif()
 
 if(POINTLESS_ENABLE_TESTS)

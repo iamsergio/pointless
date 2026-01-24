@@ -41,7 +41,7 @@ target_link_libraries(
   PUBLIC glaze::glaze
   PRIVATE spdlog::spdlog cpr::cpr)
 
-if(APPLE)
+if(APPLE AND NOT IOS)
   find_library(EVENTKIT_LIB EventKit REQUIRED)
   find_library(COREGRAPHICS_LIB CoreGraphics REQUIRED)
   target_link_libraries(pointless_core PRIVATE ${EVENTKIT_LIB} ${COREGRAPHICS_LIB})
@@ -49,7 +49,13 @@ if(APPLE)
 
   add_executable(calendar_info calendar_info.cpp)
   target_link_libraries(calendar_info PRIVATE pointless_core)
+  set_target_properties(calendar_info PROPERTIES
+    MACOSX_BUNDLE TRUE
+    MACOSX_BUNDLE_GUI_IDENTIFIER "com.iamsergio.pointless.calendar-info"
+    MACOSX_BUNDLE_BUNDLE_NAME "CalendarInfo"
+    MACOSX_BUNDLE_INFO_PLIST "${CMAKE_BINARY_DIR}/Info.plist")
 endif()
+
 target_include_directories(
   pointless_core
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
