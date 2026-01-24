@@ -80,6 +80,21 @@ bool Task::isDueThisWeek() const
     return DateUtils::isThisWeek(*dueDate);
 }
 
+void Task::setTags(const std::vector<std::string> &newTags)
+{
+    tags = {};
+    for (const auto &tag : newTags) {
+        addTag(tag);
+    }
+}
+
+void Task::addTag(std::string_view tag)
+{
+    if (!tag.empty() && !containsTag(tag)) {
+        tags.emplace_back(tag);
+    }
+}
+
 void Task::removeBuiltinTags()
 {
     std::erase_if(tags, [](const std::string &tag) {
@@ -144,11 +159,11 @@ void Task::mergeConflict(const Task &other)
     }
 
     // Tags: Union
+    std::vector<std::string> newTags = tags;
     for (const auto &tag : other.tags) {
-        if (!containsTag(tag)) {
-            tags.push_back(tag);
-        }
+        newTags.push_back(tag);
     }
+    setTags(newTags);
 
     // Special Rule: Current wins over Soon
     bool hasCurrent = containsTag(BUILTIN_TAG_CURRENT);

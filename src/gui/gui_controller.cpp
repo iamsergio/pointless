@@ -405,7 +405,7 @@ void GuiController::saveTask(QString title, const QString &tag, bool isEvening) 
     // So keep "soon", "current", ignore "evening".
     for (const auto &t : task->tags) {
         if (pointless::core::tagIsBuiltin(t)) {
-            if (t != "evening") {
+            if (t != core::BUILTIN_TAG_EVENING) {
                 newTags.push_back(t);
             }
         }
@@ -415,10 +415,10 @@ void GuiController::saveTask(QString title, const QString &tag, bool isEvening) 
         newTags.push_back(newTag);
     }
     if (isEvening) {
-        newTags.emplace_back("evening");
+        newTags.emplace_back(core::BUILTIN_TAG_EVENING);
     }
 
-    task->tags = newTags;
+    task->setTags(newTags);
 
     if (_dateInEditor.isValid()) {
         task->dueDate = Gui::DateUtils::qdateToTimepoint(_dateInEditor);
@@ -569,7 +569,7 @@ void GuiController::moveTaskToCurrent(const QString &taskUuid)
         return;
     }
     task->removeBuiltinTags();
-    task->tags.emplace_back(pointless::core::BUILTIN_TAG_CURRENT);
+    task->addTag(pointless::core::BUILTIN_TAG_CURRENT);
     taskModel()->updateTask(*task);
 }
 
@@ -581,7 +581,7 @@ void GuiController::moveTaskToSoon(const QString &taskUuid)
         return;
     }
     task->removeBuiltinTags();
-    task->tags.emplace_back(pointless::core::BUILTIN_TAG_SOON);
+    task->addTag(pointless::core::BUILTIN_TAG_SOON);
     task->dueDate = std::nullopt;
     taskModel()->updateTask(*task);
 }
@@ -622,8 +622,8 @@ void GuiController::moveTaskToEvening(const QString &taskUuid)
         return;
     }
 
-    if (!task->containsTag("evening")) {
-        task->tags.emplace_back("evening");
+    if (!task->containsTag(core::BUILTIN_TAG_EVENING)) {
+        task->addTag(core::BUILTIN_TAG_EVENING);
         taskModel()->updateTask(*task);
     }
 }
@@ -701,5 +701,5 @@ bool GuiController::moveToTomorrowVisible() const
 bool GuiController::moveToEveningVisible() const
 {
     const auto *task = _dataController->taskModel()->taskForUuid(_taskMenuUuid);
-    return task != nullptr && !task->containsTag("evening") && task->isCurrent();
+    return task != nullptr && !task->containsTag(core::BUILTIN_TAG_EVENING) && task->isCurrent();
 }

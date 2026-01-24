@@ -64,7 +64,7 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         }
         return {};
     case IsEveningRole:
-        if (task.containsTag("evening"))
+        if (task.containsTag(core::BUILTIN_TAG_EVENING))
             return true;
 
         if (task.dueDate) {

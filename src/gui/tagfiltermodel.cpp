@@ -16,22 +16,6 @@
 
 using namespace pointless;
 
-namespace {
-template<typename T>
-bool isBuiltInTag(const T tagName)
-{
-    static const std::array<T, 3> builtInTags = {
-        "current",
-        "soon",
-        "evening"
-    };
-
-    return std::ranges::any_of(builtInTags, [tagName](const auto &builtInTag) {
-        return tagName == builtInTag;
-    });
-}
-}
-
 TagFilterModel::TagFilterModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {

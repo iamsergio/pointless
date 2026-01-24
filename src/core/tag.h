@@ -11,6 +11,7 @@ namespace pointless::core {
 
 constexpr auto BUILTIN_TAG_SOON = "soon";
 constexpr auto BUILTIN_TAG_CURRENT = "current";
+constexpr auto BUILTIN_TAG_EVENING = "evening";
 
 class Tag
 {

@@ -32,6 +32,8 @@ public:
     void dumpDebug() const;
 
     [[nodiscard]] std::string tagName() const;
+    void setTags(const std::vector<std::string> &tags);
+    void addTag(std::string_view tag);
 
     int revision = -1;
     bool needsSyncToServer = false;
