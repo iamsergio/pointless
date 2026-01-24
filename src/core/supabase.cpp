@@ -112,6 +112,11 @@ bool SupabaseProvider::login(const std::string &email, const std::string &passwo
         _refreshToken = refresh_token_it->second.get_string();
     }
 
+    auto expires_in_it = json_obj.get_object().find("expires_in");
+    if (expires_in_it != json_obj.get_object().end() && expires_in_it->second.is_number()) {
+        P_LOG_INFO("Login successful. Access Token expires in {} seconds", expires_in_it->second.get_number());
+    }
+
     P_LOG_DEBUG("Logged in with user={}", _userId);
 
     return true;
@@ -435,9 +440,15 @@ bool SupabaseProvider::refreshAccessToken()
 
     _accessToken = access_token_it->second.get_string();
 
+    auto expires_in_it = json_obj.get_object().find("expires_in");
+    if (expires_in_it != json_obj.get_object().end() && expires_in_it->second.is_number()) {
+        P_LOG_INFO("Token refresh successful. New Access Token expires in {} seconds", expires_in_it->second.get_number());
+    }
+
     auto refresh_token_it = json_obj.get_object().find("refresh_token");
     if (refresh_token_it != json_obj.get_object().end() && refresh_token_it->second.is_string()) {
         _refreshToken = refresh_token_it->second.get_string();
+        P_LOG_INFO("Token refresh successful. New Refresh Token received");
     }
 
     P_LOG_INFO("Token refreshed successfully");
@@ -467,6 +478,6 @@ bool SupabaseProvider::isAuthenticated()
         return refreshAccessToken();
     }
 
-    P_LOG_INFO("Token validation failed: HTTP {}. Clearing session. ; token={}", response.status_code, _accessToken);
+    P_LOG_INFO("Token validation failed: HTTP {}. Clearing session.", response.status_code);
     return false;
 }

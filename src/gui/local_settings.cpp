@@ -7,46 +7,44 @@
 
 LocalSettings::LocalSettings() = default;
 
+void LocalSettings::save()
+{
+    _settings.sync();
+}
+
 void LocalSettings::setAccessToken(const std::string &token)
 {
-    QSettings settings;
-    settings.setValue("auth/accessToken", QString::fromStdString(token));
+    _settings.setValue("auth/accessToken", QString::fromStdString(token));
 }
 
 std::string LocalSettings::accessToken() const
 {
-    QSettings settings;
-    return settings.value("auth/accessToken").toString().toStdString();
+    return _settings.value("auth/accessToken").toString().toStdString();
 }
 
 void LocalSettings::setRefreshToken(const std::string &token)
 {
-    QSettings settings;
-    settings.setValue("auth/refreshToken", QString::fromStdString(token));
+    _settings.setValue("auth/refreshToken", QString::fromStdString(token));
 }
 
 std::string LocalSettings::refreshToken() const
 {
-    QSettings settings;
-    return settings.value("auth/refreshToken").toString().toStdString();
+    return _settings.value("auth/refreshToken").toString().toStdString();
 }
 
 void LocalSettings::setUserId(const std::string &userId)
 {
-    QSettings settings;
-    settings.setValue("auth/userId", QString::fromStdString(userId));
+    _settings.setValue("auth/userId", QString::fromStdString(userId));
 }
 
 std::string LocalSettings::userId() const
 {
-    QSettings settings;
-    return settings.value("auth/userId").toString().toStdString();
+    return _settings.value("auth/userId").toString().toStdString();
 }
 
 void LocalSettings::clear()
 {
-    QSettings settings;
-    settings.remove("auth/accessToken");
-    settings.remove("auth/refreshToken");
-    settings.remove("auth/userId");
+    _settings.remove("auth/accessToken");
+    _settings.remove("auth/refreshToken");
+    _settings.remove("auth/userId");
 }

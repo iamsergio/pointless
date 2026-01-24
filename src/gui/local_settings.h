@@ -4,12 +4,15 @@
 #pragma once
 
 #include <string>
+#include <QSettings>
 
 class LocalSettings
 {
 public:
     LocalSettings();
     ~LocalSettings() = default;
+
+    void save();
 
     void setAccessToken(const std::string &token);
     [[nodiscard]] std::string accessToken() const;
@@ -26,4 +29,7 @@ public:
     LocalSettings &operator=(const LocalSettings &) = delete;
     LocalSettings(LocalSettings &&) = delete;
     LocalSettings &operator=(LocalSettings &&) = delete;
+
+private:
+    QSettings _settings;
 };

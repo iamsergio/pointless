@@ -90,9 +90,8 @@ GuiController::GuiController(QObject *parent)
     if (qApp) // might be running in tests without qApp
         qApp->installEventFilter(new EventFilter(this));
 
-    LocalSettings settings;
-    const auto savedToken = settings.accessToken();
-    const auto savedUserId = settings.userId();
+    const auto savedToken = _localSettings.accessToken();
+    const auto savedUserId = _localSettings.userId();
 
     if (!savedToken.empty() && !savedUserId.empty()) {
         _dataController->setAccessToken(savedToken);
@@ -289,9 +288,9 @@ void GuiController::login(const QString &email, const QString &password)
     Q_EMIT loginErrorChanged();
 
     if (_dataController->login(email.toStdString(), password.toStdString())) {
-        LocalSettings settings;
-        settings.setAccessToken(_dataController->accessToken());
-        settings.setUserId(_dataController->userId());
+        _localSettings.setAccessToken(_dataController->accessToken());
+        _localSettings.setUserId(_dataController->userId());
+        _localSettings.save();
         P_LOG_DEBUG("Login successful, saved credentials");
         Q_EMIT isAuthenticatedChanged();
         QTimer::singleShot(0, this, &GuiController::refresh);
@@ -305,8 +304,8 @@ void GuiController::login(const QString &email, const QString &password)
 void GuiController::logout()
 {
     _dataController->logout();
-    LocalSettings settings;
-    settings.clear();
+    _localSettings.clear();
+    _localSettings.save();
     P_LOG_DEBUG("Logged out, cleared credentials");
     Q_EMIT isAuthenticatedChanged();
 }

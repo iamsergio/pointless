@@ -7,6 +7,7 @@
 #include "taskmodel.h"
 #include "tagmodel.h"
 #include "tagfiltermodel.h"
+#include "local_settings.h"
 
 #include <QDate>
 #include <QObject>
@@ -157,6 +158,7 @@ private:
     QString _loginError;
     QString _taskMenuUuid;
     DataController *const _dataController;
+    LocalSettings _localSettings;
     mutable TaskFilterModel *_taskFilterModel = nullptr;
     mutable TagFilterModel *_tagFilterModel = nullptr;
 };
