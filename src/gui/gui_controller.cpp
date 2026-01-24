@@ -35,6 +35,7 @@
 #include <cstdlib>
 #include <string>
 #include <utility>
+#include <chrono>
 
 using namespace pointless;
 
@@ -96,9 +97,37 @@ GuiController::GuiController(QObject *parent)
     if (!savedToken.empty() && !savedUserId.empty()) {
         _dataController->setAccessToken(savedToken);
         _dataController->setUserId(savedUserId);
+        const auto savedRefreshToken = _localSettings.refreshToken();
+        if (!savedRefreshToken.empty()) {
+            _dataController->setRefreshToken(savedRefreshToken);
+        }
         P_LOG_DEBUG("Loaded saved authentication token");
         Q_EMIT isAuthenticatedChanged();
     }
+
+    _tokenCheckTimer.setInterval(std::chrono::minutes(5));
+    _tokenCheckTimer.setSingleShot(false);
+    connect(&_tokenCheckTimer, &QTimer::timeout, this, [this] {
+        const auto currentAccess = _dataController->accessToken();
+        const auto currentRefresh = _dataController->refreshToken();
+        bool changed = false;
+
+        if (!currentAccess.empty() && currentAccess != _localSettings.accessToken()) {
+            _localSettings.setAccessToken(currentAccess);
+            changed = true;
+        }
+
+        if (!currentRefresh.empty() && currentRefresh != _localSettings.refreshToken()) {
+            _localSettings.setRefreshToken(currentRefresh);
+            changed = true;
+        }
+
+        if (changed) {
+            _localSettings.save();
+            P_LOG_DEBUG("Tokens updated from polling");
+        }
+    });
+    _tokenCheckTimer.start();
 
     if (Gui::isAutoLogin() && !_dataController->isAuthenticated()) {
         if (!_dataController->loginWithDefaults()) {

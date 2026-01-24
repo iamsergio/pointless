@@ -13,8 +13,10 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <QtQml/qqmlregistration.h>
+#include <QTimer>
 
 class DataController;
+
 
 class GuiController : public QObject
 {
@@ -161,4 +163,5 @@ private:
     LocalSettings _localSettings;
     mutable TaskFilterModel *_taskFilterModel = nullptr;
     mutable TagFilterModel *_tagFilterModel = nullptr;
+    QTimer _tokenCheckTimer;
 };

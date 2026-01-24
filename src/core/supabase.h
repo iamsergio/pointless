@@ -25,12 +25,12 @@ public:
     [[nodiscard]] bool isAuthenticated() override;
     void logout() override;
 
-    [[nodiscard]] std::string accessToken() const;
-    [[nodiscard]] std::string userId() const;
-    [[nodiscard]] std::string refreshToken() const;
-    void setAccessToken(const std::string &token);
-    void setUserId(const std::string &userId);
-    void setRefreshToken(const std::string &token);
+    [[nodiscard]] std::string accessToken() const override;
+    [[nodiscard]] std::string userId() const override;
+    [[nodiscard]] std::string refreshToken() const override;
+    void setAccessToken(const std::string &token) override;
+    void setUserId(const std::string &userId) override;
+    void setRefreshToken(const std::string &token) override;
 
     std::expected<void, TraceableError> pushData(const std::string &data) override;
     std::expected<std::string, TraceableError> pullData() override;

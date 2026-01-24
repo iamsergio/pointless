@@ -6,7 +6,6 @@
 #include "tagmodel.h"
 
 #include "core/data_provider.h"
-#include "core/supabase.h"
 #include "core/logger.h"
 
 #include <fstream>
@@ -68,35 +67,37 @@ bool DataController::isAuthenticated() const
 
 std::string DataController::accessToken() const
 {
-    auto *supabase = dynamic_cast<SupabaseProvider *>(_dataProvider.get());
-    if (supabase == nullptr) {
-        return {};
-    }
-    return supabase->accessToken();
+    return _dataProvider ? _dataProvider->accessToken() : std::string {};
+}
+
+std::string DataController::refreshToken() const
+{
+    return _dataProvider ? _dataProvider->refreshToken() : std::string {};
 }
 
 std::string DataController::userId() const
 {
-    auto *supabase = dynamic_cast<SupabaseProvider *>(_dataProvider.get());
-    if (supabase == nullptr) {
-        return {};
-    }
-    return supabase->userId();
+    return _dataProvider ? _dataProvider->userId() : std::string {};
 }
 
 void DataController::setAccessToken(const std::string &token)
 {
-    auto *supabase = dynamic_cast<SupabaseProvider *>(_dataProvider.get());
-    if (supabase != nullptr) {
-        supabase->setAccessToken(token);
+    if (_dataProvider) {
+        _dataProvider->setAccessToken(token);
+    }
+}
+
+void DataController::setRefreshToken(const std::string &token)
+{
+    if (_dataProvider) {
+        _dataProvider->setRefreshToken(token);
     }
 }
 
 void DataController::setUserId(const std::string &userId)
 {
-    auto *supabase = dynamic_cast<SupabaseProvider *>(_dataProvider.get());
-    if (supabase != nullptr) {
-        supabase->setUserId(userId);
+    if (_dataProvider) {
+        _dataProvider->setUserId(userId);
     }
 }
 
