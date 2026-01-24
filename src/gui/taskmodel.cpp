@@ -85,6 +85,13 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         return task.isCurrent();
     case IsDueTomorrowRole:
         return task.isDueTomorrow();
+    case HasDueDateTimeRole:
+        if (task.dueDate) {
+            const auto timeT = std::chrono::system_clock::to_time_t(*task.dueDate);
+            const QDateTime dt = QDateTime::fromSecsSinceEpoch(timeT);
+            return dt.time() != QTime(0, 0);
+        }
+        return false;
     default:
         return {};
     }
@@ -111,6 +118,7 @@ QHash<int, QByteArray> TaskModel::roleNames() const
     roles[IsLaterRole] = "isLater";
     roles[IsCurrentRole] = "isCurrent";
     roles[IsDueTomorrowRole] = "isDueTomorrow";
+    roles[HasDueDateTimeRole] = "hasDueDateTime";
     return roles;
 }
 

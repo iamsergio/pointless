@@ -114,6 +114,7 @@ Item {
                     required property bool isLater
                     required property bool isCurrent
                     required property bool isDueTomorrow
+                    required property bool hasDueDateTime
 
                     objectName: "task_" + column.index + "_" + index
 
@@ -126,6 +127,7 @@ Item {
                     taskIsEvening: isEvening
                     taskDueDate: dueDate
                     taskHasDueDate: hasDueDate
+                    taskHasDueDateTime: hasDueDateTime
                     taskTagName: tagName
                     taskIsFromCalendar: isFromCalendar
                     taskCalendarName: calendarName

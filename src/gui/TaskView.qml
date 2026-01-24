@@ -35,6 +35,7 @@ ListView {
         required property bool isLater
         required property bool isCurrent
         required property bool isDueTomorrow
+        required property bool hasDueDateTime
 
         objectName: "task_" + index
 
@@ -49,6 +50,7 @@ ListView {
         taskIsFromCalendar: isFromCalendar
         taskCalendarName: calendarName
         taskHasDueDate: hasDueDate
+        taskHasDueDateTime: hasDueDateTime
         taskIsSoon: isSoon
         taskIsLater: isLater
         taskIsCurrent: isCurrent

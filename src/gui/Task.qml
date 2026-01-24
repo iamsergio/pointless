@@ -16,6 +16,7 @@ Rectangle {
     required property bool taskIsEvening
     required property string taskDueDate
     required property bool taskHasDueDate
+    required property bool taskHasDueDateTime
     required property string taskTagName
     required property bool taskIsFromCalendar
     required property string taskCalendarName
@@ -66,11 +67,14 @@ Rectangle {
 
                 RowLayout {
                     spacing: Style.fromPixel(8)
-                    visible: dateText.visible || calendarText.visible
+                    visible: shouldShowCalendar || shouldShowDueDate
+
+                    readonly property bool shouldShowCalendar: root.taskIsFromCalendar && root.taskCalendarName !== ""
+                    readonly property bool shouldShowDueDate: (root.taskHasDueDate && GuiController.currentViewType !== GuiController.Week) || root.taskHasDueDateTime
 
                     Text {
                         id: calendarText
-                        visible: root.taskIsFromCalendar && root.taskCalendarName !== ""
+                        visible: parent.shouldShowCalendar
                         text: "[" + root.taskCalendarName + "]"
                         font.pixelSize: Style.fromPixel(11)
                         color: root.taskIsDone ? Style.taskCalendarTextDisabled : "#00ff00"
@@ -81,7 +85,7 @@ Rectangle {
                         text: root.taskHasDueDate ? root.taskDueDate : ""
                         font.pixelSize: Style.fromPixel(11)
                         color: Style.taskSecondaryTextColor
-                        visible: GuiController.currentViewType !== GuiController.Week
+                        visible: parent.shouldShowDueDate
                     }
                 }
             }
