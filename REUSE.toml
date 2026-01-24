@@ -24,8 +24,9 @@ path = [
     "TODO",
     ".github/dependabot.yml",
     "src/ios/Info.plist.in",
+    "src/mac/Info.plist.in",
     "src/ios/ExportOptions-TestFlight.plist.in",
-    ".qmllint.ini"
+    ".qmllint.ini",
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2025 Sergio Martins"

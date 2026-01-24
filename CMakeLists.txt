@@ -61,7 +61,7 @@ cmake_minimum_required(VERSION 3.21)
 project(pointless_cpp LANGUAGES CXX)
 
 enable_language(CXX)
-if (APPLE)
+if(APPLE)
   enable_language(OBJCXX)
 endif()
 

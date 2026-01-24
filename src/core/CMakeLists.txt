@@ -49,11 +49,12 @@ if(APPLE AND NOT IOS)
 
   add_executable(calendar_info calendar_info.cpp)
   target_link_libraries(calendar_info PRIVATE pointless_core)
-  set_target_properties(calendar_info PROPERTIES
-    MACOSX_BUNDLE TRUE
-    MACOSX_BUNDLE_GUI_IDENTIFIER "com.iamsergio.pointless.calendar-info"
-    MACOSX_BUNDLE_BUNDLE_NAME "CalendarInfo"
-    MACOSX_BUNDLE_INFO_PLIST "${CMAKE_BINARY_DIR}/Info.plist")
+  set_target_properties(
+    calendar_info
+    PROPERTIES MACOSX_BUNDLE TRUE
+               MACOSX_BUNDLE_GUI_IDENTIFIER "com.iamsergio.pointless.calendar-info"
+               MACOSX_BUNDLE_BUNDLE_NAME "CalendarInfo"
+               MACOSX_BUNDLE_INFO_PLIST "${CMAKE_BINARY_DIR}/Info.plist")
 endif()
 
 target_include_directories(
