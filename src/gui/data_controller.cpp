@@ -8,6 +8,8 @@
 #include "core/data_provider.h"
 #include "core/logger.h"
 
+#include <QtConcurrent/QtConcurrent>
+
 #include <fstream>
 #include <chrono>
 
@@ -21,6 +23,7 @@ DataController::DataController(QObject *parent)
     , _dataProvider(IDataProvider::createProvider())
     , _taskModel(new TaskModel(this))
     , _tagModel(new TagModel(this))
+    , _refreshWatcher(new QFutureWatcher<std::expected<core::Data, TraceableError>>(this))
 {
     _saveToDiskTimer.setInterval(std::chrono::seconds(1));
     _saveToDiskTimer.setSingleShot(true);
@@ -60,6 +63,23 @@ DataController::DataController(QObject *parent)
         }
     });
     _tokenCheckTimer.start();
+
+    connect(_refreshWatcher, &QFutureWatcherBase::finished, this, [this] {
+        _isRefreshing = false;
+
+        auto result = _refreshWatcher->result();
+        if (result) {
+            P_LOG_INFO("Async refresh completed successfully");
+            Q_EMIT refreshFinished(true);
+        } else {
+            P_LOG_ERROR("Async refresh failed: {}", result.error().toString());
+            Q_EMIT refreshFinished(false);
+        }
+
+        // Reload models on MAIN thread
+        _taskModel->reload();
+        _tagModel->reload();
+    });
 }
 
 bool DataController::loginWithDefaults()
@@ -255,34 +275,57 @@ std::expected<core::Data, TraceableError> DataController::pushRemoteData(core::D
 
 std::expected<core::Data, TraceableError> DataController::refresh()
 {
-    // RAII reloader
-    struct ModelsReloader
-    {
-        TaskModel *taskModel;
-        TagModel *tagModel;
-        ModelsReloader(TaskModel *tm, TagModel *tagm)
-            : taskModel(tm)
-            , tagModel(tagm)
-        {
-        }
-        ~ModelsReloader()
-        {
-            if (taskModel != nullptr) {
-                taskModel->reload();
-            }
-            if (tagModel != nullptr) {
-                tagModel->reload();
-            }
-        }
-        ModelsReloader(const ModelsReloader &) = delete;
-        ModelsReloader(ModelsReloader &&) = delete;
-        ModelsReloader &operator=(const ModelsReloader &) = delete;
-        ModelsReloader &operator=(ModelsReloader &&) = delete;
-    };
+    // Concurrency control: Don't allow multiple simultaneous refreshes
+    bool expected = false;
+    if (!_isRefreshing.compare_exchange_strong(expected, true)) {
+        P_LOG_WARNING("Refresh already in progress, ignoring duplicate request");
+        return TraceableError::create("Refresh already in progress");
+    }
 
-    ModelsReloader reloader(_taskModel, _tagModel);
+    Q_EMIT refreshStarted();
 
-    P_LOG_INFO("Starting refresh");
+    // Launch async refresh
+    QFuture<std::expected<core::Data, TraceableError>> future =
+        QtConcurrent::run(&DataController::performRefreshInBackground, this);
+
+    _refreshWatcher->setFuture(future);
+
+    // Return immediately - actual result comes via signal
+    return core::Data {};
+}
+
+#ifdef POINTLESS_ENABLE_TESTS
+std::expected<core::Data, TraceableError> DataController::refreshBlocking()
+{
+    P_LOG_INFO("Starting blocking refresh for tests");
+
+    Q_EMIT refreshStarted();
+
+    // Call the background method directly (synchronously)
+    auto result = performRefreshInBackground();
+
+    // Reload models on main thread
+    if (result) {
+        _taskModel->reload();
+        _tagModel->reload();
+        Q_EMIT refreshFinished(true);
+    } else {
+        P_LOG_ERROR("Blocking refresh failed: {}", result.error().toString());
+        Q_EMIT refreshFinished(false);
+    }
+
+    return result;
+}
+#endif
+
+std::expected<core::Data, TraceableError> DataController::performRefreshInBackground()
+{
+    // This runs in a BACKGROUND thread
+    // Do NOT touch Qt models or QML-exposed objects here!
+
+    P_LOG_INFO("Starting async refresh in background thread");
+
+    // Load local data if needed (file I/O - safe in background)
     if (!_localData.data().isValid()) {
         // The 1st time we load local data. then it stays in memory and we don't load from disk again
         // we just save to disk
@@ -292,6 +335,7 @@ std::expected<core::Data, TraceableError> DataController::refresh()
         }
     }
 
+    // Network operations (safe in background thread)
     auto remoteDataResult = pullRemoteData();
     auto mergedResult = merge(remoteDataResult ? std::make_optional(*remoteDataResult) : std::nullopt);
     if (!mergedResult) {
@@ -318,6 +362,7 @@ std::expected<core::Data, TraceableError> DataController::refresh()
         }
     }
 
+    // Model reload happens in QFutureWatcher::finished() on MAIN thread
     return mergedData;
 }
 

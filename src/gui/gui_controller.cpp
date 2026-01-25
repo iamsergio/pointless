@@ -87,6 +87,20 @@ GuiController::GuiController(QObject *parent)
 
     connect(_dataController, &DataController::isAuthenticatedChanged, this, &GuiController::isAuthenticatedChanged);
 
+    connect(_dataController, &DataController::refreshStarted, this, [this] {
+        _isRefreshing = true;
+        Q_EMIT isRefreshingChanged();
+    });
+
+    connect(_dataController, &DataController::refreshFinished, this, [this](bool success) {
+        _isRefreshing = false;
+        Q_EMIT isRefreshingChanged();
+
+        if (!success) {
+            P_LOG_ERROR("Refresh failed");
+        }
+    });
+
     if (qApp) // might be running in tests without qApp
         qApp->installEventFilter(new EventFilter(this));
 
@@ -117,11 +131,21 @@ bool GuiController::isDebug()
 
 void GuiController::refresh()
 {
+    // Don't start refresh if already refreshing (redundant check, but defensive)
+    if (_isRefreshing) {
+        P_LOG_INFO("Refresh already in progress");
+        return;
+    }
+
     auto refreshResult = _dataController->refresh();
     if (!refreshResult) {
         P_LOG_ERROR("GuiController::refresh: {}", refreshResult.error().toString());
-        return;
     }
+}
+
+bool GuiController::isRefreshing() const
+{
+    return _isRefreshing;
 }
 
 TaskFilterModel *GuiController::taskFilterModel() const

@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickControls2)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickControls2 Concurrent)
 
 qt_policy(SET QTP0001 NEW)
 
@@ -82,7 +82,7 @@ qt_add_qml_module(
   # NO_PLUGIN
 )
 
-target_link_libraries(pointless_gui PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Qt6::QuickControls2 pointless_core)
+target_link_libraries(pointless_gui PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Qt6::QuickControls2 Qt6::Concurrent pointless_core)
 target_link_libraries(pointless_gui PRIVATE pointless_guiplugin)
 
 qt_add_executable(pointless main.cpp)
@@ -121,7 +121,7 @@ if(POINTLESS_ENABLE_TESTS)
   # add_test(NAME test_gui_supabase COMMAND test_gui --supabase)
 
   add_executable(test_data_controller tests/test_data_controller.cpp)
-  target_link_libraries(test_data_controller PRIVATE pointless_core pointless_gui GTest::gtest_main Qt6::Core Qt6::Quick Qt6::Test)
+  target_link_libraries(test_data_controller PRIVATE pointless_core pointless_gui GTest::gtest_main Qt6::Core Qt6::Quick Qt6::Test Qt6::Concurrent)
   target_include_directories(test_data_controller PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
   add_test(NAME test_data_controller COMMAND test_data_controller)
 

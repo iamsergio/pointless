@@ -53,6 +53,7 @@ class GuiController : public QObject
     Q_PROPERTY(bool moveToLaterVisible READ moveToLaterVisible NOTIFY taskMenuUuidChanged)
     Q_PROPERTY(bool moveToTomorrowVisible READ moveToTomorrowVisible NOTIFY taskMenuUuidChanged)
     Q_PROPERTY(bool moveToEveningVisible READ moveToEveningVisible NOTIFY taskMenuUuidChanged)
+    Q_PROPERTY(bool isRefreshing READ isRefreshing NOTIFY isRefreshingChanged)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
@@ -110,6 +111,7 @@ public:
     [[nodiscard]] bool moveToLaterVisible() const;
     [[nodiscard]] bool moveToTomorrowVisible() const;
     [[nodiscard]] bool moveToEveningVisible() const;
+    [[nodiscard]] bool isRefreshing() const;
 
     Q_INVOKABLE void setTaskMenuUuid(const QString &uuid);
     Q_INVOKABLE void login(const QString &email, const QString &password);
@@ -146,6 +148,7 @@ Q_SIGNALS:
     void isAuthenticatedChanged();
     void loginErrorChanged();
     void taskMenuUuidChanged();
+    void isRefreshingChanged();
 
 private:
     explicit GuiController(QObject *parent = nullptr);
@@ -159,6 +162,7 @@ private:
     QDate _navigatorStartDate;
     QString _loginError;
     QString _taskMenuUuid;
+    bool _isRefreshing = false;
     DataController *const _dataController;
     mutable TaskFilterModel *_taskFilterModel = nullptr;
     mutable TagFilterModel *_tagFilterModel = nullptr;

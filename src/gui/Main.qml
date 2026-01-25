@@ -184,6 +184,7 @@ QC.ApplicationWindow {
                     iconColor: Style.plusButtonColor
                     backgroundColor: "transparent"
                     visible: !GuiController.isEditing
+                    enabled: !GuiController.isRefreshing
                     anchors {
                         right: addTaskButton.left
                         bottom: parent.bottom
@@ -191,6 +192,22 @@ QC.ApplicationWindow {
                     }
                     z: 100
                     onClicked: GuiController.refresh()
+
+                    rotation: GuiController.isRefreshing ? 360 : 0
+
+                    RotationAnimation on rotation {
+                        id: spinAnimation
+                        from: 0
+                        to: 360
+                        duration: 1000
+                        loops: Animation.Infinite
+                        running: GuiController.isRefreshing
+                    }
+
+                    Behavior on rotation {
+                        enabled: !GuiController.isRefreshing
+                        NumberAnimation { duration: 200 }
+                    }
                 }
             }
 

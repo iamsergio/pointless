@@ -14,7 +14,10 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QFutureWatcher>
+#include <QFuture>
 
+#include <atomic>
 #include <expected>
 #include <optional>
 
@@ -51,8 +54,14 @@ public:
     [[nodiscard]] TaskModel *taskModel() const;
     [[nodiscard]] TagModel *tagModel() const;
 
+#ifdef POINTLESS_ENABLE_TESTS
+    std::expected<pointless::core::Data, TraceableError> refreshBlocking();
+#endif
+
 Q_SIGNALS:
     void isAuthenticatedChanged();
+    void refreshStarted();
+    void refreshFinished(bool success);
 
 public:
     DataController(const DataController &) = delete;
@@ -66,6 +75,7 @@ private:
     std::expected<pointless::core::Data, TraceableError> pushRemoteData(pointless::core::Data data);
     std::expected<pointless::core::Data, TraceableError> pullRemoteData();
     std::expected<pointless::core::Data, TraceableError> merge(const std::optional<pointless::core::Data> &remoteData);
+    std::expected<pointless::core::Data, TraceableError> performRefreshInBackground();
     pointless::core::LocalData _localData;
     LocalSettings _localSettings;
     std::unique_ptr<IDataProvider> _dataProvider;
@@ -73,4 +83,6 @@ private:
     TagModel *_tagModel = nullptr;
     QTimer _saveToDiskTimer;
     QTimer _tokenCheckTimer;
+    QFutureWatcher<std::expected<pointless::core::Data, TraceableError>> *_refreshWatcher = nullptr;
+    std::atomic<bool> _isRefreshing { false };
 };

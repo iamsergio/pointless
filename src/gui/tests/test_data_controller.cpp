@@ -69,7 +69,7 @@ TEST(DataControllerTest, Sync)
 
     initData(controller, {}, remoteData);
     ASSERT_FALSE(std::filesystem::exists(s_filename));
-    ASSERT_TRUE(controller.refresh().has_value());
+    ASSERT_TRUE(controller.refreshBlocking().has_value());
 
     ASSERT_TRUE(std::filesystem::exists(s_filename));
 
@@ -100,7 +100,7 @@ TEST(DataControllerTest, Sync)
 
     initData(controller, localDataWithNewTag, remoteDataEmpty);
 
-    auto syncResult = controller.refresh();
+    auto syncResult = controller.refreshBlocking();
     ASSERT_TRUE(syncResult.has_value());
 
     // Check local data tag has revision 0
@@ -132,7 +132,7 @@ TEST(DataControllerTest, Sync)
 
     initData(controller, localDataWithNewTask, remoteDataEmptyTasks);
 
-    auto syncResultTasks = controller.refresh();
+    auto syncResultTasks = controller.refreshBlocking();
     ASSERT_TRUE(syncResultTasks.has_value());
 
     // Check local data task has revision 0 now
@@ -164,7 +164,7 @@ TEST(DataControllerTest, Sync)
     controller._localData.data().addTask(anotherTask);
     EXPECT_EQ(controller._localData.data().newTasks().size(), 1);
 
-    auto syncResult2 = controller.refresh();
+    auto syncResult2 = controller.refreshBlocking();
     ASSERT_TRUE(syncResult2.has_value());
     EXPECT_EQ(syncResult2->revision(), 2);
 
@@ -190,7 +190,7 @@ TEST(DataControllerTest, Sync)
     ASSERT_EQ(controller._localData.data().taskCount(), 0);
 
     // Call refresh again
-    auto syncResult7 = controller.refresh();
+    auto syncResult7 = controller.refreshBlocking();
     ASSERT_TRUE(syncResult7.has_value());
 
     // Call pull and confirm task was removed
@@ -219,7 +219,7 @@ TEST(DataControllerTest, Sync)
     ASSERT_EQ(controller._localData.data().tagCount(), 0);
 
     // Call refresh again
-    auto syncResult8 = controller.refresh();
+    auto syncResult8 = controller.refreshBlocking();
     ASSERT_TRUE(syncResult8.has_value());
 
     // Call pull and confirm tag was removed
@@ -250,7 +250,7 @@ TEST(DataControllerTest, SetTaskDone)
     initData(*controller, {}, remoteData);
 
     // 2. call refresh
-    auto syncResult = controller->refresh();
+    auto syncResult = controller->refreshBlocking();
     ASSERT_TRUE(syncResult.has_value());
     ASSERT_EQ(syncResult->taskCount(), 1);
     EXPECT_FALSE(syncResult->taskAt(0).isDone);
@@ -269,7 +269,7 @@ TEST(DataControllerTest, SetTaskDone)
     EXPECT_EQ(controller->_localData.data().modifiedTasks().size(), 1);
 
     // 6. call refresh again
-    auto syncResult2 = controller->refresh();
+    auto syncResult2 = controller->refreshBlocking();
     ASSERT_TRUE(syncResult2.has_value());
 
     // 7. confirm it's done in the local data and in the return value of refresh
@@ -321,7 +321,7 @@ private:
 
         initData(*controller, {}, remoteData);
 
-        auto syncResult = controller->refresh();
+        auto syncResult = controller->refreshBlocking();
         ASSERT_TRUE(syncResult.has_value());
         ASSERT_EQ(syncResult->taskCount(), 1);
         EXPECT_FALSE(syncResult->taskAt(0).isDone);
@@ -404,7 +404,7 @@ TEST(DataControllerTest, MoveToSoonClearsDueDate)
 
     initData(*controller, {}, remoteData);
 
-    auto syncResult = controller->refresh();
+    auto syncResult = controller->refreshBlocking();
     ASSERT_TRUE(syncResult.has_value());
 
     // Check isCurrent is true, isSoon is false
