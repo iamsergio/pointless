@@ -41,12 +41,14 @@ target_link_libraries(
   PUBLIC glaze::glaze
   PRIVATE spdlog::spdlog cpr::cpr)
 
-if(APPLE AND NOT IOS)
+if(APPLE)
   find_library(EVENTKIT_LIB EventKit REQUIRED)
   find_library(COREGRAPHICS_LIB CoreGraphics REQUIRED)
   target_link_libraries(pointless_core PRIVATE ${EVENTKIT_LIB} ${COREGRAPHICS_LIB})
   target_sources(pointless_core PRIVATE apple_calendar_provider.mm)
+endif()
 
+if(APPLE AND NOT IOS)
   add_executable(calendar_info calendar_info.cpp)
   target_link_libraries(calendar_info PRIVATE pointless_core)
 
