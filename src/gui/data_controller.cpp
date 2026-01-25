@@ -273,13 +273,23 @@ std::expected<core::Data, TraceableError> DataController::pushRemoteData(core::D
     return data;
 }
 
-std::expected<core::Data, TraceableError> DataController::refresh()
+std::expected<void, TraceableError> DataController::refresh()
 {
     // Concurrency control: Don't allow multiple simultaneous refreshes
     bool expected = false;
     if (!_isRefreshing.compare_exchange_strong(expected, true)) {
         P_LOG_WARNING("Refresh already in progress, ignoring duplicate request");
         return TraceableError::create("Refresh already in progress");
+    }
+
+    // Load local data on MAIN thread before launching background task
+    // This prevents race conditions with updateTask()/addTask() accessing _localData
+    if (!_localData.data().isValid()) {
+        auto localDataResult = _localData.loadDataFromFile();
+        if (!localDataResult) {
+            _isRefreshing = false; // Reset flag on error
+            return TraceableError::create("Failed to load local data", localDataResult.error());
+        }
     }
 
     Q_EMIT refreshStarted();
@@ -291,13 +301,21 @@ std::expected<core::Data, TraceableError> DataController::refresh()
     _refreshWatcher->setFuture(future);
 
     // Return immediately - actual result comes via signal
-    return core::Data {};
+    return {};
 }
 
 #ifdef POINTLESS_ENABLE_TESTS
 std::expected<core::Data, TraceableError> DataController::refreshBlocking()
 {
     P_LOG_INFO("Starting blocking refresh for tests");
+
+    // Load data on main thread if needed (for thread safety consistency)
+    if (!_localData.data().isValid()) {
+        auto localDataResult = _localData.loadDataFromFile();
+        if (!localDataResult) {
+            return TraceableError::create("Failed to load local data", localDataResult.error());
+        }
+    }
 
     Q_EMIT refreshStarted();
 
@@ -325,15 +343,7 @@ std::expected<core::Data, TraceableError> DataController::performRefreshInBackgr
 
     P_LOG_INFO("Starting async refresh in background thread");
 
-    // Load local data if needed (file I/O - safe in background)
-    if (!_localData.data().isValid()) {
-        // The 1st time we load local data. then it stays in memory and we don't load from disk again
-        // we just save to disk
-        auto localDataResult = _localData.loadDataFromFile();
-        if (!localDataResult) {
-            return TraceableError::create("DataController::refresh: Failed to load local data", localDataResult.error());
-        }
-    }
+    // NOTE: Initial data load moved to refresh() on main thread to prevent race conditions
 
     // Network operations (safe in background thread)
     auto remoteDataResult = pullRemoteData();

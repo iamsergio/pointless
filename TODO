@@ -1,3 +1,4 @@
+- Fix thread races in _localData access from 2nd thread
 - Style task menu
 - Read from apple calendar
 - Login with Apple
