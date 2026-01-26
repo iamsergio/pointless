@@ -2,6 +2,10 @@
 - Style task menu
 - Read from apple calendar
 - Login with Apple
+- Add ErrorPopup
+- Add ofline mode
+- Make buttons react to touch
+
 
 - Nice to haves:
   - Return views so we dont allocate
