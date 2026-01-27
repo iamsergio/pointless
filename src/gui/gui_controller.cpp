@@ -9,6 +9,7 @@
 #include "tagfiltermodel.h"
 #include "date_utils.h"
 #include "data_controller.h"
+#include "error_controller.h"
 #include "utils.h"
 #include "Clock.h"
 
@@ -82,6 +83,7 @@ public:
 GuiController::GuiController(QObject *parent)
     : QObject(parent)
     , _dataController(new DataController(this))
+    , _errorController(new ErrorController(this))
 {
     Q_ASSERT(s_instance == nullptr);
 
@@ -508,6 +510,11 @@ QString GuiController::windowTitle() const
 DataController *GuiController::dataController() const
 {
     return _dataController;
+}
+
+ErrorController *GuiController::errorController() const
+{
+    return _errorController;
 }
 
 /** static */

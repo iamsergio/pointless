@@ -53,6 +53,7 @@ qt_add_qml_module(
   Clock.cpp
   gui_controller.cpp
   data_controller.cpp
+  error_controller.cpp
   date_utils.cpp
   local_settings.cpp
   utils.cpp

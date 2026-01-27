@@ -7,6 +7,7 @@
 #include "taskmodel.h"
 #include "tagmodel.h"
 #include "tagfiltermodel.h"
+#include "error_controller.h"
 
 #include <QDate>
 #include <QObject>
@@ -15,6 +16,7 @@
 #include <QTimer>
 
 class DataController;
+class ErrorController;
 
 
 class GuiController : public QObject
@@ -54,6 +56,7 @@ class GuiController : public QObject
     Q_PROPERTY(bool moveToTomorrowVisible READ moveToTomorrowVisible NOTIFY taskMenuUuidChanged)
     Q_PROPERTY(bool moveToEveningVisible READ moveToEveningVisible NOTIFY taskMenuUuidChanged)
     Q_PROPERTY(bool isRefreshing READ isRefreshing NOTIFY isRefreshingChanged)
+    Q_PROPERTY(ErrorController *errorController READ errorController CONSTANT)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
@@ -118,6 +121,7 @@ public:
     Q_INVOKABLE void logout();
 
     [[nodiscard]] DataController *dataController() const;
+    [[nodiscard]] ErrorController *errorController() const;
 
     Q_INVOKABLE void dumpTaskDebug(const QString &taskUuid) const;
     Q_INVOKABLE void dumpDebug() const;
@@ -164,6 +168,7 @@ private:
     QString _taskMenuUuid;
     bool _isRefreshing = false;
     DataController *const _dataController;
+    ErrorController *const _errorController;
     mutable TaskFilterModel *_taskFilterModel = nullptr;
     mutable TagFilterModel *_tagFilterModel = nullptr;
 };

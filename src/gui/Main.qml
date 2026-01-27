@@ -302,6 +302,16 @@ QC.ApplicationWindow {
                 z: 100
                 onClicked: GuiController.dumpDebug()
             }
+
+            ErrorPopup {
+                id: errorPopup
+                anchors.fill: parent
+                visible: GuiController.errorController.errorText.length > 0
+                z: 400
+                onOkClicked: {
+                    GuiController.errorController.errorText = ""
+                }
+            }
         }
     }
 }
