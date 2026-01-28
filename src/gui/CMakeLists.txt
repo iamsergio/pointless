@@ -36,6 +36,7 @@ set(PLAIN_QML_FILES
     Calendar.qml
     LineEdit.qml
     EditTask.qml
+    ErrorPopup.qml
     Menu.qml
     MenuItem.qml)
 
