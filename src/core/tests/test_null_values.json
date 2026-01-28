@@ -19,6 +19,25 @@
             "uuidInDeviceCalendar": null,
             "deviceCalendarUuid": null,
             "deviceCalendarName": null
+        },
+        {
+            "revision": 2,
+            "isGoal": null,
+            "uuid": "3",
+            "parentUuid": null,
+            "title": "Task 3",
+            "isDone": false,
+            "isImportant": false,
+            "hideOnWeekends": null,
+            "tags": [],
+            "creationTimestamp": 1586385046574,
+            "modificationTimestamp": null,
+            "lastPomodoroDate": null,
+            "dueDate": null,
+            "completionDate": null,
+            "uuidInDeviceCalendar": null,
+            "deviceCalendarUuid": null,
+            "deviceCalendarName": null
         }
     ],
     "tags": []

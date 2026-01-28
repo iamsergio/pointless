@@ -49,8 +49,8 @@ TEST(TaskManagerTest, TestNullValues)
     auto managerResult = Data::fromJson(json_content);
     ASSERT_TRUE(managerResult.has_value()) << managerResult.error();
     const Data &manager = managerResult.value();
-    ASSERT_EQ(manager.taskCount(), 1);
+    ASSERT_EQ(manager.taskCount(), 2);
     auto tasks = manager.getAllTasks();
-    ASSERT_EQ(tasks.size(), 1);
+    ASSERT_EQ(tasks.size(), 2);
     const auto &task = tasks[0];
 }

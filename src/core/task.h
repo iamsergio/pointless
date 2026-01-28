@@ -44,7 +44,7 @@ public:
     bool isDone = false;
     std::optional<bool> isGoal;
     bool isImportant = false;
-    bool hideOnWeekends = false;
+    std::optional<bool> hideOnWeekends;
     int timesPerWeek = 1;
     std::vector<int> lastCompletions;
     std::string sectionName;
