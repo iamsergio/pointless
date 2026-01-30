@@ -104,6 +104,22 @@ GuiController::GuiController(QObject *parent)
         }
     });
 
+    connect(_dataController, &DataController::loginStarted, this, [this] {
+        _isLoggingIn = true;
+        Q_EMIT isLoggingInChanged();
+    });
+
+    connect(_dataController, &DataController::loginFinished, this, [this](bool success) {
+        _isLoggingIn = false;
+        Q_EMIT isLoggingInChanged();
+        if (success) {
+            QTimer::singleShot(0, this, &GuiController::refresh);
+        } else {
+            _errorController->setLoginError(QStringLiteral("Login failed. Please check your email and password."));
+            P_LOG_WARNING("Login failed");
+        }
+    });
+
     if (qApp) // might be running in tests without qApp
         qApp->installEventFilter(new EventFilter(this));
 
@@ -150,6 +166,11 @@ void GuiController::refresh()
 bool GuiController::isRefreshing() const
 {
     return _isRefreshing;
+}
+
+bool GuiController::isLoggingIn() const
+{
+    return _isLoggingIn;
 }
 
 TaskFilterModel *GuiController::taskFilterModel() const
@@ -300,13 +321,7 @@ QString GuiController::defaultLoginUsername() const
 void GuiController::login(const QString &email, const QString &password)
 {
     _errorController->setLoginError({});
-
-    if (_dataController->login(email.toStdString(), password.toStdString())) {
-        QTimer::singleShot(0, this, &GuiController::refresh);
-    } else {
-        _errorController->setLoginError(QStringLiteral("Login failed. Please check your email and password."));
-        P_LOG_WARNING("Login failed for email: {}", email.toStdString());
-    }
+    _dataController->login(email.toStdString(), password.toStdString());
 }
 
 void GuiController::logout()

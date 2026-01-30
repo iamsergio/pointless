@@ -32,7 +32,7 @@ public:
     ~DataController() override = default;
 
     bool loginWithDefaults();
-    bool login(const std::string &email, const std::string &password);
+    void login(const std::string &email, const std::string &password);
     bool restoreAuth();
     void saveAuth();
     void logout();
@@ -56,12 +56,15 @@ public:
 
 #ifdef POINTLESS_ENABLE_TESTS
     std::expected<pointless::core::Data, TraceableError> refreshBlocking();
+    bool loginBlocking(const std::string &email, const std::string &password);
 #endif
 
 Q_SIGNALS:
     void isAuthenticatedChanged();
     void refreshStarted();
     void refreshFinished(bool success, const QString &errorMessage);
+    void loginStarted();
+    void loginFinished(bool success);
 
 public:
     DataController(const DataController &) = delete;
@@ -76,6 +79,7 @@ private:
     std::expected<pointless::core::Data, TraceableError> pullRemoteData();
     std::expected<pointless::core::Data, TraceableError> merge(const std::optional<pointless::core::Data> &remoteData);
     std::expected<pointless::core::Data, TraceableError> performRefreshInBackground();
+    bool performLoginSync(const std::string &email, const std::string &password);
     pointless::core::LocalData _localData;
     LocalSettings _localSettings;
     std::unique_ptr<IDataProvider> _dataProvider;
@@ -85,4 +89,6 @@ private:
     QTimer _tokenCheckTimer;
     QFutureWatcher<std::expected<pointless::core::Data, TraceableError>> *_refreshWatcher = nullptr;
     std::atomic<bool> _isRefreshing { false };
+    QFutureWatcher<bool> *_loginWatcher = nullptr;
+    std::atomic<bool> _isLoggingIn { false };
 };

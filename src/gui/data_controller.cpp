@@ -25,6 +25,7 @@ DataController::DataController(QObject *parent)
     , _taskModel(new TaskModel(this))
     , _tagModel(new TagModel(this))
     , _refreshWatcher(new QFutureWatcher<std::expected<core::Data, TraceableError>>(this))
+    , _loginWatcher(new QFutureWatcher<bool>(this))
 {
     _saveToDiskTimer.setInterval(std::chrono::seconds(1));
     _saveToDiskTimer.setSingleShot(true);
@@ -81,6 +82,17 @@ DataController::DataController(QObject *parent)
         _taskModel->reload();
         _tagModel->reload();
     });
+
+    connect(_loginWatcher, &QFutureWatcherBase::finished, this, [this] {
+        _isLoggingIn = false;
+        bool success = _loginWatcher->result();
+        if (success) {
+            saveAuth();
+            P_LOG_DEBUG("Login successful, saved credentials");
+        }
+        Q_EMIT isAuthenticatedChanged();
+        Q_EMIT loginFinished(success);
+    });
 }
 
 bool DataController::loginWithDefaults()
@@ -95,12 +107,7 @@ bool DataController::loginWithDefaults()
         return false;
     }
 
-    return login(username, password);
-}
-
-bool DataController::login(const std::string &email, const std::string &password)
-{
-    if (_dataProvider && _dataProvider->login(email, password)) {
+    if (performLoginSync(username, password)) {
         saveAuth();
         P_LOG_DEBUG("Login successful, saved credentials");
         Q_EMIT isAuthenticatedChanged();
@@ -109,6 +116,24 @@ bool DataController::login(const std::string &email, const std::string &password
 
     Q_EMIT isAuthenticatedChanged();
     return false;
+}
+
+void DataController::login(const std::string &email, const std::string &password)
+{
+    bool expected = false;
+    if (!_isLoggingIn.compare_exchange_strong(expected, true)) {
+        P_LOG_WARNING("Login already in progress");
+        return;
+    }
+
+    Q_EMIT loginStarted();
+    QFuture<bool> future = QtConcurrent::run(&DataController::performLoginSync, this, email, password);
+    _loginWatcher->setFuture(future);
+}
+
+bool DataController::performLoginSync(const std::string &email, const std::string &password)
+{
+    return _dataProvider && _dataProvider->login(email, password);
 }
 
 void DataController::saveAuth()
@@ -335,6 +360,20 @@ std::expected<core::Data, TraceableError> DataController::refreshBlocking()
     }
 
     return result;
+}
+
+bool DataController::loginBlocking(const std::string &email, const std::string &password)
+{
+    P_LOG_INFO("Starting blocking login for tests");
+    Q_EMIT loginStarted();
+    bool success = performLoginSync(email, password);
+    if (success) {
+        saveAuth();
+        P_LOG_DEBUG("Login successful, saved credentials");
+    }
+    Q_EMIT isAuthenticatedChanged();
+    Q_EMIT loginFinished(success);
+    return success;
 }
 #endif
 

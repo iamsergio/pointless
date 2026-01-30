@@ -144,6 +144,7 @@ FocusScope {
                 id: loginButton
                 text: "Login"
                 font.pixelSize: Style.fromPixel(20)
+                enabled: !GuiController.isLoggingIn
                 background: Rectangle {
                     color: "#1884f7"
                     radius: 12
@@ -160,6 +161,30 @@ FocusScope {
                 implicitHeight: Style.fromPixel(56)
                 onClicked: {
                     GuiController.login(emailInput.text, passwordInput.text);
+                }
+            }
+
+            FontAwesomeButton {
+                fontAwesomeIcon: "\uf021"
+                iconSize: Style.fromPixel(24)
+                iconColor: "#1884f7"
+                backgroundColor: "transparent"
+                visible: GuiController.isLoggingIn
+                enabled: false
+                Layout.alignment: Qt.AlignHCenter
+                rotation: GuiController.isLoggingIn ? 360 : 0
+                RotationAnimation on rotation {
+                    from: 0
+                    to: 360
+                    duration: 1000
+                    loops: Animation.Infinite
+                    running: GuiController.isLoggingIn
+                }
+                Behavior on rotation {
+                    enabled: !GuiController.isLoggingIn
+                    NumberAnimation {
+                        duration: 200
+                    }
                 }
             }
 
