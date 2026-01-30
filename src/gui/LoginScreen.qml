@@ -187,6 +187,17 @@ FocusScope {
                     font.pixelSize: Style.fromPixel(16)
                 }
             }
+            Text {
+                text: "Offline mode"
+                color: "#8a97a8"
+                font.pixelSize: Style.fromPixel(16)
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+
+                    }
+                }
+            }
         }
     }
 }

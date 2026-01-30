@@ -293,6 +293,8 @@ std::expected<void, TraceableError> DataController::refresh()
         }
     }
 
+    // TODO return immediately if offline mode
+
     Q_EMIT refreshStarted();
 
     // Launch async refresh
@@ -342,8 +344,6 @@ std::expected<core::Data, TraceableError> DataController::performRefreshInBackgr
     // Do NOT touch Qt models or QML-exposed objects here!
 
     P_LOG_INFO("Starting async refresh in background thread");
-
-    // NOTE: Initial data load moved to refresh() on main thread to prevent race conditions
 
     // Network operations (safe in background thread)
     auto remoteDataResult = pullRemoteData();
