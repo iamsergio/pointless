@@ -94,12 +94,13 @@ GuiController::GuiController(QObject *parent)
         Q_EMIT isRefreshingChanged();
     });
 
-    connect(_dataController, &DataController::refreshFinished, this, [this](bool success) {
+    connect(_dataController, &DataController::refreshFinished, this, [this](bool success, const QString &errorMessage) {
         _isRefreshing = false;
         Q_EMIT isRefreshingChanged();
 
         if (!success) {
             P_LOG_ERROR("Refresh failed");
+            _errorController->setErrorText(errorMessage);
         }
     });
 
@@ -142,6 +143,7 @@ void GuiController::refresh()
     auto refreshResult = _dataController->refresh();
     if (!refreshResult) {
         P_LOG_ERROR("GuiController::refresh: {}", refreshResult.error().toString());
+        _errorController->setErrorText(QString::fromStdString(refreshResult.error().toString()));
     }
 }
 

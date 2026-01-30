@@ -12,6 +12,7 @@
 
 #include <fstream>
 #include <chrono>
+#include <format>
 
 /// Example of running a single test:
 /// ./bin/test_data_controller --gtest_filter=DataControllerTest.MergeNeedsLocalSave
@@ -70,10 +71,10 @@ DataController::DataController(QObject *parent)
         auto result = _refreshWatcher->result();
         if (result) {
             P_LOG_INFO("Async refresh completed successfully");
-            Q_EMIT refreshFinished(true);
+            Q_EMIT refreshFinished(true, QString());
         } else {
             P_LOG_ERROR("Async refresh failed: {}", result.error().toString());
-            Q_EMIT refreshFinished(false);
+            Q_EMIT refreshFinished(false, QString::fromStdString(result.error().toString()));
         }
 
         // Reload models on MAIN thread
@@ -326,10 +327,9 @@ std::expected<core::Data, TraceableError> DataController::refreshBlocking()
     if (result) {
         _taskModel->reload();
         _tagModel->reload();
-        Q_EMIT refreshFinished(true);
+        Q_EMIT refreshFinished(true, {});
     } else {
-        P_LOG_ERROR("Blocking refresh failed: {}", result.error().toString());
-        Q_EMIT refreshFinished(false);
+        Q_EMIT refreshFinished(false, QStringLiteral("Blocking refresh failed: ") + QString::fromStdString(result.error().toString()));
     }
 
     return result;

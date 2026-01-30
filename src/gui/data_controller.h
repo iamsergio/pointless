@@ -61,7 +61,7 @@ public:
 Q_SIGNALS:
     void isAuthenticatedChanged();
     void refreshStarted();
-    void refreshFinished(bool success);
+    void refreshFinished(bool success, const QString &errorMessage);
 
 public:
     DataController(const DataController &) = delete;
