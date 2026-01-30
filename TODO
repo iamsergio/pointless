@@ -9,4 +9,3 @@
 
 - Nice to haves:
   - Return views so we dont allocate
-  - Make login async
