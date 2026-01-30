@@ -87,6 +87,11 @@ GuiController::GuiController(QObject *parent)
 {
     Q_ASSERT(s_instance == nullptr);
 
+    std::ignore = std::atexit([] {
+        // Singleton is cleaned before main exits
+        Q_ASSERT(s_instance == nullptr);
+    });
+
     connect(_dataController, &DataController::isAuthenticatedChanged, this, &GuiController::isAuthenticatedChanged);
 
     connect(_dataController, &DataController::refreshStarted, this, [this] {
@@ -139,6 +144,12 @@ GuiController::GuiController(QObject *parent)
     if (_dataController->isAuthenticated()) {
         QTimer::singleShot(0, this, &GuiController::refresh);
     }
+}
+
+GuiController::~GuiController()
+{
+    Q_ASSERT(s_instance == this);
+    s_instance = nullptr;
 }
 
 bool GuiController::isDebug()

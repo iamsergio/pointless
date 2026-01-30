@@ -63,7 +63,7 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
 
     // Context might have been set already in tests
     if (!core::Context::hasContext()) {
-        unsigned int startupOptions = static_cast<unsigned int>(core::Context::StartupOption::RestoreAuth);
+        auto startupOptions = static_cast<unsigned int>(core::Context::StartupOption::RestoreAuth);
         if (parser.isSet(noRestoreAuthOption)) {
             startupOptions = static_cast<unsigned int>(core::Context::StartupOption::None);
         }
@@ -85,4 +85,10 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
         P_LOG_ERROR("No root objects loaded");
         std::exit(-1);
     }
+}
+
+Application::~Application()
+{
+    P_LOG_INFO("Application exiting");
+    delete GuiController::instance();
 }

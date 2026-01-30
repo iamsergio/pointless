@@ -19,6 +19,12 @@ public:
     Q_DECLARE_FLAGS(Options, Option)
 
     explicit Application(int &argc, char **argv, const QString &orgName, Options options = {});
+    ~Application() override;
+
+    Application(const Application &) = delete;
+    Application(Application &&) = delete;
+    Application &operator=(const Application &) = delete;
+    Application &operator=(Application &&) = delete;
 
 private:
     QQmlApplicationEngine _engine;

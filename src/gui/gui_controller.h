@@ -73,6 +73,11 @@ public:
     Q_ENUM(ViewType)
 
     static GuiController *instance();
+    ~GuiController() override;
+    GuiController(const GuiController &) = delete;
+    GuiController &operator=(const GuiController &) = delete;
+    GuiController(GuiController &&) = delete;
+    GuiController &operator=(GuiController &&) = delete;
 
     [[nodiscard]] ViewType currentViewType() const;
     void setCurrentViewType(ViewType viewType);
