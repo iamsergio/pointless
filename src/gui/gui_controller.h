@@ -57,6 +57,7 @@ class GuiController : public QObject
     Q_PROPERTY(bool isRefreshing READ isRefreshing NOTIFY isRefreshingChanged)
     Q_PROPERTY(bool isLoggingIn READ isLoggingIn NOTIFY isLoggingInChanged)
     Q_PROPERTY(ErrorController *errorController READ errorController CONSTANT)
+    Q_PROPERTY(bool isOfflineMode READ isOfflineMode NOTIFY isOfflineModeChanged)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
@@ -118,6 +119,9 @@ public:
     Q_INVOKABLE void setTaskMenuUuid(const QString &uuid);
     Q_INVOKABLE void login(const QString &email, const QString &password);
     Q_INVOKABLE void logout();
+    Q_INVOKABLE void enableOfflineMode();
+
+    [[nodiscard]] bool isOfflineMode() const;
 
     [[nodiscard]] DataController *dataController() const;
     [[nodiscard]] ErrorController *errorController() const;
@@ -152,6 +156,7 @@ Q_SIGNALS:
     void taskMenuUuidChanged();
     void isRefreshingChanged();
     void isLoggingInChanged();
+    void isOfflineModeChanged();
 
 private:
     explicit GuiController(QObject *parent = nullptr);
@@ -166,6 +171,7 @@ private:
     QString _taskMenuUuid;
     bool _isRefreshing = false;
     bool _isLoggingIn = false;
+    bool _isOfflineMode = false;
     DataController *const _dataController;
     ErrorController *const _errorController;
     mutable TaskFilterModel *_taskFilterModel = nullptr;

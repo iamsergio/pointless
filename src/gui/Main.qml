@@ -68,7 +68,7 @@ QC.ApplicationWindow {
             LoginScreen {
                 id: loginScreen
                 anchors.fill: parent
-                visible: !GuiController.isAuthenticated
+                visible: !GuiController.isAuthenticated && !GuiController.isOfflineMode
                 z: 200
             }
 

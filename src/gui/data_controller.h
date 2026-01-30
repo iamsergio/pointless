@@ -44,7 +44,7 @@ public:
     void setAccessToken(const std::string &token);
     void setRefreshToken(const std::string &token);
     void setUserId(const std::string &userId);
-    std::expected<void, TraceableError> refresh();
+    std::expected<void, TraceableError> refresh(bool isOfflineMode = false);
     bool updateTask(const pointless::core::Task &task);
     bool addTask(const pointless::core::Task &task);
 

@@ -232,6 +232,13 @@ TEST(DummyTest, BasicAssertions)
     EXPECT_NO_THROW(testServer.exec());
 }
 
+// TEST(OfflineMode, EnableOfflineMode)
+// {
+//     EXPECT_FALSE(GuiController::instance()->isOfflineMode());
+//     GuiController::instance()->enableOfflineMode();
+//     EXPECT_TRUE(GuiController::instance()->isOfflineMode());
+// }
+
 void initDataProvider(IDataProvider::Type providerType)
 {
     Gui::Clock::setTestNow(QDateTime(QDate(2025, 12, 1), QTime(16, 0)));

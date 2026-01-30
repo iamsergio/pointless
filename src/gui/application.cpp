@@ -44,6 +44,9 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
     QCommandLineOption testSupabaseOption(QStringLiteral("test-supabase"), QStringLiteral("Use supabase test user"));
     parser.addOption(testSupabaseOption);
 
+    QCommandLineOption noRestoreAuthOption(QStringLiteral("no-restore-auth"), QStringLiteral("Do not restore authentication on startup"));
+    parser.addOption(noRestoreAuthOption);
+
 #ifdef POINTLESS_DEVELOPER_MODE
     QCommandLineOption loginOption(QStringLiteral("login"), QStringLiteral("Auto-login with default credentials"));
     parser.addOption(loginOption);
@@ -60,8 +63,13 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
 
     // Context might have been set already in tests
     if (!core::Context::hasContext()) {
-        core::Context::setContext(parser.isSet(testSupabaseOption) ? core::Context::defaultContextForSupabaseTesting()
-                                                                   : core::Context::defaultContextForSupabaseRelease());
+        unsigned int startupOptions = static_cast<unsigned int>(core::Context::StartupOption::RestoreAuth);
+        if (parser.isSet(noRestoreAuthOption)) {
+            startupOptions = static_cast<unsigned int>(core::Context::StartupOption::None);
+        }
+
+        core::Context::setContext(parser.isSet(testSupabaseOption) ? core::Context::defaultContextForSupabaseTesting(startupOptions)
+                                                                   : core::Context::defaultContextForSupabaseRelease(startupOptions));
     }
 
     printDebugInfo();

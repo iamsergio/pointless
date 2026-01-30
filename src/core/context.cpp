@@ -16,9 +16,10 @@ namespace {
 std::optional<Context> s_currentContext; // NOLINT // clazy:exclude=non-pod-global-static
 }
 
-Context::Context(IDataProvider::Type providerType, std::string localFilePath)
+Context::Context(IDataProvider::Type providerType, std::string localFilePath, unsigned int startupOptions)
     : _dataProviderType(providerType)
     , _localFilePath(std::move(localFilePath))
+    , _startupOptions(startupOptions)
 {
     if (!_localFilePath.empty()) {
         auto parentPath = std::filesystem::path(_localFilePath).parent_path();
@@ -68,12 +69,12 @@ void Context::setClientDataDir(const std::string &dir)
     _clientDataDir = dir;
 }
 
-Context Context::defaultContextForSupabaseTesting()
+Context Context::defaultContextForSupabaseTesting(unsigned int startupOptions)
 {
-    return { IDataProvider::Type::TestSupabase, std::filesystem::path(clientDataDir()) / "debug-pointless.json" };
+    return { IDataProvider::Type::TestSupabase, std::filesystem::path(clientDataDir()) / "debug-pointless.json", startupOptions };
 }
 
-Context Context::defaultContextForSupabaseRelease()
+Context Context::defaultContextForSupabaseRelease(unsigned int startupOptions)
 {
-    return { IDataProvider::Type::Supabase, std::filesystem::path(clientDataDir()) / "pointless.json" };
+    return { IDataProvider::Type::Supabase, std::filesystem::path(clientDataDir()) / "pointless.json", startupOptions };
 }

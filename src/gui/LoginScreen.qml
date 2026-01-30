@@ -219,7 +219,7 @@ FocusScope {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-
+                        GuiController.enableOfflineMode()
                     }
                 }
             }

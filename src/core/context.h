@@ -12,6 +12,10 @@ namespace pointless::core {
 
 struct Context
 {
+    enum class StartupOption : uint8_t {
+        None = 0,
+        RestoreAuth = 1
+    };
     static void setContext(const Context &context);
     static Context self();
     static bool hasContext();
@@ -26,7 +30,17 @@ struct Context
         return _localFilePath;
     }
 
-    Context(IDataProvider::Type providerType, std::string localFilePath);
+    [[nodiscard]] unsigned int startupOptions() const
+    {
+        return _startupOptions;
+    }
+
+    [[nodiscard]] bool shouldRestoreAuth() const
+    {
+        return (_startupOptions & static_cast<unsigned int>(StartupOption::RestoreAuth)) != 0U;
+    }
+
+    Context(IDataProvider::Type providerType, std::string localFilePath, unsigned int startupOptions = static_cast<unsigned int>(StartupOption::RestoreAuth));
     Context(const Context &) = default;
     Context(Context &&) = delete;
     Context &operator=(Context &&) = delete;
@@ -35,12 +49,13 @@ struct Context
 
     [[nodiscard]] static std::string clientDataDir();
     static void setClientDataDir(const std::string &dir);
-    [[nodiscard]] static Context defaultContextForSupabaseTesting();
-    [[nodiscard]] static Context defaultContextForSupabaseRelease();
+    [[nodiscard]] static Context defaultContextForSupabaseTesting(unsigned int startupOptions = static_cast<unsigned int>(StartupOption::RestoreAuth));
+    [[nodiscard]] static Context defaultContextForSupabaseRelease(unsigned int startupOptions = static_cast<unsigned int>(StartupOption::RestoreAuth));
 
 private:
     IDataProvider::Type _dataProviderType;
     std::string _localFilePath;
+    unsigned int _startupOptions;
     static std::optional<std::string> _clientDataDir;
 };
 

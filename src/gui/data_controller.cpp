@@ -299,7 +299,7 @@ std::expected<core::Data, TraceableError> DataController::pushRemoteData(core::D
     return data;
 }
 
-std::expected<void, TraceableError> DataController::refresh()
+std::expected<void, TraceableError> DataController::refresh(bool isOfflineMode)
 {
     // Concurrency control: Don't allow multiple simultaneous refreshes
     bool expected = false;
@@ -318,7 +318,14 @@ std::expected<void, TraceableError> DataController::refresh()
         }
     }
 
-    // TODO return immediately if offline mode
+    if (isOfflineMode) {
+        Q_EMIT refreshStarted();
+        _taskModel->reload();
+        _tagModel->reload();
+        Q_EMIT refreshFinished(true, {});
+        _isRefreshing = false;
+        return {};
+    }
 
     Q_EMIT refreshStarted();
 

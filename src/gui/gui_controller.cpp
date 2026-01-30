@@ -123,7 +123,9 @@ GuiController::GuiController(QObject *parent)
     if (qApp) // might be running in tests without qApp
         qApp->installEventFilter(new EventFilter(this));
 
-    _dataController->restoreAuth();
+    if (core::Context::self().shouldRestoreAuth()) {
+        _dataController->restoreAuth();
+    }
 
     if (Gui::isAutoLogin() && !_dataController->isAuthenticated()) {
         if (!_dataController->loginWithDefaults()) {
@@ -156,7 +158,7 @@ void GuiController::refresh()
         return;
     }
 
-    auto refreshResult = _dataController->refresh();
+    auto refreshResult = _dataController->refresh(_isOfflineMode);
     if (!refreshResult) {
         P_LOG_ERROR("GuiController::refresh: {}", refreshResult.error().toString());
         _errorController->setErrorText(QString::fromStdString(refreshResult.error().toString()));
@@ -171,6 +173,20 @@ bool GuiController::isRefreshing() const
 bool GuiController::isLoggingIn() const
 {
     return _isLoggingIn;
+}
+
+void GuiController::enableOfflineMode()
+{
+    if (!_isOfflineMode) {
+        _isOfflineMode = true;
+        Q_EMIT isOfflineModeChanged();
+        refresh();
+    }
+}
+
+bool GuiController::isOfflineMode() const
+{
+    return _isOfflineMode;
 }
 
 TaskFilterModel *GuiController::taskFilterModel() const
