@@ -297,29 +297,14 @@ QString GuiController::defaultLoginUsername() const
     return QString::fromStdString(_dataController->defaultLoginUsername());
 }
 
-QString GuiController::loginError() const
-{
-    return _loginError;
-}
-
-void GuiController::setLoginError(const QString &error)
-{
-    if (_loginError == error) {
-        return;
-    }
-
-    _loginError = error;
-    Q_EMIT loginErrorChanged();
-}
-
 void GuiController::login(const QString &email, const QString &password)
 {
-    setLoginError({});
+    _errorController->setLoginError({});
 
     if (_dataController->login(email.toStdString(), password.toStdString())) {
         QTimer::singleShot(0, this, &GuiController::refresh);
     } else {
-        setLoginError(QStringLiteral("Login failed. Please check your email and password."));
+        _errorController->setLoginError(QStringLiteral("Login failed. Please check your email and password."));
         P_LOG_WARNING("Login failed for email: {}", email.toStdString());
     }
 }

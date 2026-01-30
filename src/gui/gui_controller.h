@@ -47,7 +47,6 @@ class GuiController : public QObject
     Q_PROPERTY(QString windowTitle READ windowTitle CONSTANT)
     Q_PROPERTY(bool isAuthenticated READ isAuthenticated NOTIFY isAuthenticatedChanged)
     Q_PROPERTY(QString defaultLoginUsername READ defaultLoginUsername CONSTANT)
-    Q_PROPERTY(QString loginError READ loginError NOTIFY loginErrorChanged)
     Q_PROPERTY(bool taskMenuVisible READ taskMenuVisible NOTIFY taskMenuUuidChanged)
     Q_PROPERTY(QString taskMenuUuid READ taskMenuUuid NOTIFY taskMenuUuidChanged)
     Q_PROPERTY(bool moveToCurrentVisible READ moveToCurrentVisible NOTIFY taskMenuUuidChanged)
@@ -105,8 +104,6 @@ public:
 
     [[nodiscard]] QString windowTitle() const;
     [[nodiscard]] bool isAuthenticated() const;
-    [[nodiscard]] QString loginError() const;
-    void setLoginError(const QString &error);
     [[nodiscard]] bool taskMenuVisible() const;
     [[nodiscard]] QString taskMenuUuid() const;
     [[nodiscard]] bool moveToCurrentVisible() const;
@@ -150,7 +147,6 @@ Q_SIGNALS:
     void uuidBeingEditedChanged();
     void dateInEditorChanged();
     void isAuthenticatedChanged();
-    void loginErrorChanged();
     void taskMenuUuidChanged();
     void isRefreshingChanged();
 
@@ -164,7 +160,6 @@ private:
     bool _isEveningInEditor = false;
     QDate _dateInEditor;
     QDate _navigatorStartDate;
-    QString _loginError;
     QString _taskMenuUuid;
     bool _isRefreshing = false;
     DataController *const _dataController;

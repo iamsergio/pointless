@@ -22,3 +22,18 @@ void ErrorController::setErrorText(const QString &errorText)
     _errorText = errorText;
     Q_EMIT errorTextChanged();
 }
+
+QString ErrorController::loginError() const
+{
+    return _loginError;
+}
+
+void ErrorController::setLoginError(const QString &error)
+{
+    if (_loginError == error) {
+        return;
+    }
+
+    _loginError = error;
+    Q_EMIT loginErrorChanged();
+}

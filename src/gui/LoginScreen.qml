@@ -164,12 +164,12 @@ FocusScope {
             }
 
             Text {
-                text: GuiController.loginError
+                text: GuiController.errorController.loginError
                 color: "#ff4444"
                 font.pixelSize: Style.fromPixel(14)
                 Layout.fillWidth: true
                 horizontalAlignment: Text.AlignHCenter
-                visible: GuiController.loginError.length > 0
+                visible: GuiController.errorController.loginError.length > 0
                 wrapMode: Text.WordWrap
             }
 
