@@ -15,7 +15,7 @@ DEST=${PUB_DATA_DIR}/etc/bin/
 
 cmake --preset=${PRESET}
 cmake --build build-${PRESET}
-cp build-${PRESET}/bin/pointless ${DEST}
+cp build-${PRESET}/bin/pointless "${DEST}"
 
 echo
 echo "Deployed pointless to ${DEST}"

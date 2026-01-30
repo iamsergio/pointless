@@ -123,7 +123,15 @@ if(POINTLESS_ENABLE_TESTS)
   # add_test(NAME test_gui_supabase COMMAND test_gui --supabase)
 
   add_executable(test_data_controller tests/test_data_controller.cpp)
-  target_link_libraries(test_data_controller PRIVATE pointless_core pointless_gui GTest::gtest_main Qt6::Core Qt6::Quick Qt6::Test Qt6::Concurrent)
+  target_link_libraries(
+    test_data_controller
+    PRIVATE pointless_core
+            pointless_gui
+            GTest::gtest_main
+            Qt6::Core
+            Qt6::Quick
+            Qt6::Test
+            Qt6::Concurrent)
   target_include_directories(test_data_controller PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
   add_test(NAME test_data_controller COMMAND test_data_controller)
 
