@@ -519,10 +519,18 @@ void GuiController::dumpDebug() const
 
 QString GuiController::windowTitle() const
 {
+    QString title;
     if (core::Context::self().dataProviderType() == IDataProvider::Type::TestSupabase) {
-        return QStringLiteral("Pointless (test user)");
+        title = QStringLiteral("Pointless (test user)");
+    } else {
+        title = QStringLiteral("Pointless");
     }
-    return QStringLiteral("Pointless");
+
+    if (isOfflineMode()) {
+        title += QStringLiteral(" (offline)");
+    }
+
+    return title;
 }
 
 DataController *GuiController::dataController() const

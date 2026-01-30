@@ -44,7 +44,7 @@ class GuiController : public QObject
     Q_PROPERTY(QString tagInEditor READ tagInEditor NOTIFY tagInEditorChanged)
     Q_PROPERTY(bool isEveningInEditor READ isEveningInEditor NOTIFY isEveningInEditorChanged)
     Q_PROPERTY(QDate dateInEditor READ dateInEditor NOTIFY dateInEditorChanged)
-    Q_PROPERTY(QString windowTitle READ windowTitle CONSTANT)
+    Q_PROPERTY(QString windowTitle READ windowTitle NOTIFY isOfflineModeChanged)
     Q_PROPERTY(bool isAuthenticated READ isAuthenticated NOTIFY isAuthenticatedChanged)
     Q_PROPERTY(QString defaultLoginUsername READ defaultLoginUsername CONSTANT)
     Q_PROPERTY(bool taskMenuVisible READ taskMenuVisible NOTIFY taskMenuUuidChanged)

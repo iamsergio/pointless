@@ -183,7 +183,7 @@ QC.ApplicationWindow {
                     iconSize: Style.plusButtonSize
                     iconColor: Style.plusButtonColor
                     backgroundColor: "transparent"
-                    visible: !GuiController.isEditing
+                    visible: !GuiController.isEditing && !GuiController.isOfflineMode
                     enabled: !GuiController.isRefreshing
                     anchors {
                         right: addTaskButton.left
@@ -206,7 +206,9 @@ QC.ApplicationWindow {
 
                     Behavior on rotation {
                         enabled: !GuiController.isRefreshing
-                        NumberAnimation { duration: 200 }
+                        NumberAnimation {
+                            duration: 200
+                        }
                     }
                 }
             }
@@ -309,7 +311,7 @@ QC.ApplicationWindow {
                 visible: GuiController.errorController.errorText.length > 0
                 z: 400
                 onOkClicked: {
-                    GuiController.errorController.errorText = ""
+                    GuiController.errorController.errorText = "";
                 }
             }
         }
