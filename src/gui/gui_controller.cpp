@@ -92,6 +92,11 @@ GuiController::GuiController(QObject *parent)
         Q_ASSERT(s_instance == nullptr);
     });
 
+    navigatorGotoToday();
+
+    if (qApp) // might be running in tests without qApp
+        qApp->installEventFilter(new EventFilter(this));
+
     connect(_dataController, &DataController::isAuthenticatedChanged, this, &GuiController::isAuthenticatedChanged);
 
     connect(_dataController, &DataController::refreshStarted, this, [this] {
@@ -125,25 +130,7 @@ GuiController::GuiController(QObject *parent)
         }
     });
 
-    if (qApp) // might be running in tests without qApp
-        qApp->installEventFilter(new EventFilter(this));
-
-    if (core::Context::self().shouldRestoreAuth()) {
-        _dataController->restoreAuth();
-    }
-
-    if (Gui::isAutoLogin() && !_dataController->isAuthenticated()) {
-        if (!_dataController->loginWithDefaults()) {
-            pointless::abort("Failed to login with default credentials in developer mode");
-        }
-        Q_EMIT isAuthenticatedChanged();
-    }
-
-    navigatorGotoToday();
-
-    if (_dataController->isAuthenticated()) {
-        QTimer::singleShot(0, this, &GuiController::refresh);
-    }
+    QTimer::singleShot(0, this, &GuiController::refresh);
 }
 
 GuiController::~GuiController()

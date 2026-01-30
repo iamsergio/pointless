@@ -68,7 +68,7 @@
         "request": "launch",
         "program": "${command:cmake.launchTargetPath}",
         "args": [
-          "--login"
+          "--no-restore-auth"
         ],
         "cwd": "${command:cmake.buildDirectory}",
         "initCommands": [

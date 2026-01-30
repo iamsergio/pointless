@@ -9,7 +9,7 @@ import pointless 1.0
 Item {
     id: root
 
-    signal okClicked()
+    signal okClicked
 
     Rectangle {
         color: "#80000000"
@@ -18,7 +18,7 @@ Item {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                root.okClicked()
+                root.okClicked();
             }
         }
 
@@ -48,7 +48,7 @@ Item {
 
                 Text {
                     text: GuiController.errorController.errorText
-                    font.pixelSize: Style.fromPixel(16)
+                    font.pixelSize: Style.fromPixel(12)
                     color: "white"
                     wrapMode: Text.WordWrap
                     horizontalAlignment: Text.AlignHCenter
@@ -74,7 +74,7 @@ Item {
                     Layout.fillWidth: true
                     implicitHeight: Style.fromPixel(48)
                     onClicked: {
-                        root.okClicked()
+                        root.okClicked();
                     }
                 }
             }

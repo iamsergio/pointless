@@ -7,6 +7,8 @@
 
 #include "core/data_provider.h"
 #include "core/logger.h"
+#include "core/context.h"
+#include "utils.h"
 
 #include <QtConcurrent/QtConcurrent>
 
@@ -93,6 +95,17 @@ DataController::DataController(QObject *parent)
         Q_EMIT isAuthenticatedChanged();
         Q_EMIT loginFinished(success);
     });
+
+    if (core::Context::self().shouldRestoreAuth()) {
+        restoreAuth();
+    }
+
+    if (Gui::isAutoLogin() && !isAuthenticated()) {
+        if (!loginWithDefaults()) {
+            pointless::abort("Failed to login with default credentials in developer mode");
+        }
+        Q_EMIT isAuthenticatedChanged();
+    }
 }
 
 bool DataController::loginWithDefaults()
@@ -281,7 +294,7 @@ std::expected<core::Data, TraceableError> DataController::pushRemoteData(core::D
     data.setRevision(data.revision() + 1);
 
     if (!_dataProvider->isAuthenticated()) {
-        return TraceableError::create("DataController::refresh: Not authenticated");
+        return TraceableError::create("DataController::pushRemoteData: Not authenticated");
     }
 
     auto jsonStrResult = data.toJson();
@@ -313,16 +326,20 @@ std::expected<void, TraceableError> DataController::refresh(bool isOfflineMode)
     if (!_localData.data().isValid()) {
         auto localDataResult = _localData.loadDataFromFile();
         if (!localDataResult) {
-            _isRefreshing = false; // Reset flag on error
+            _isRefreshing = false;
             return TraceableError::create("Failed to load local data", localDataResult.error());
         }
     }
 
     if (isOfflineMode) {
-        Q_EMIT refreshStarted();
         _taskModel->reload();
         _tagModel->reload();
-        Q_EMIT refreshFinished(true, {});
+        _isRefreshing = false;
+        return {};
+    }
+
+    if (!isAuthenticated()) {
+        // not authed and not offline mode, nothing to do
         _isRefreshing = false;
         return {};
     }
