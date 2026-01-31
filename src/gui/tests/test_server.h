@@ -22,6 +22,11 @@ public:
         _bot->runTestServer(*this);
     }
 
+    ~TestServer()
+    {
+        delete _bot;
+    }
+
     int exec()
     {
         return _app.exec();
