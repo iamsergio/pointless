@@ -19,9 +19,10 @@ inline bool isWhiteListed(const QString &msg)
         "Populating font family aliases took"
     };
 
-    return whiteList.contains(msg);
+    return std::ranges::any_of(whiteList.begin(), whiteList.end(), [&](const QString &entry) {
+        return msg.contains(entry);
+    });
 }
-
 
 inline void qtMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
