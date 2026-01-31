@@ -13,7 +13,7 @@
 
 namespace pointless::gui {
 
-bool isWhiteListed(const QString &msg)
+inline bool isWhiteListed(const QString &msg)
 {
     static QStringList whiteList = {
         "Populating font family aliases took"
