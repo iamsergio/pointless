@@ -235,9 +235,7 @@ TEST(DataControllerTest, SetTaskDone)
     core::Logger::initLogLevel();
     core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
 
-    // Initialize GuiController which creates DataController
-    GuiController *guiController = GuiController::instance();
-    DataController *controller = guiController->dataController();
+    DataController controller;
 
     // 1. init with empty local data and remote data containing 1 task
     core::Data remoteData;
@@ -249,38 +247,38 @@ TEST(DataControllerTest, SetTaskDone)
     remoteData.addTask(task);
     remoteData.setRevision(1);
 
-    initData(*controller, {}, remoteData);
+    initData(controller, {}, remoteData);
 
     // 2. call refresh
-    auto syncResult = controller->refreshBlocking();
+    auto syncResult = controller.refreshBlocking();
     ASSERT_TRUE(syncResult.has_value());
     ASSERT_EQ(syncResult->taskCount(), 1);
     EXPECT_FALSE(syncResult->taskAt(0).isDone);
 
     // Setup TaskModel
-    TaskModel *model = controller->taskModel();
+    TaskModel *model = controller.taskModel();
 
     // 3. call TaskModel's setTaskDone method
     model->setTaskDone("uuid-task-done", true);
 
     // 4. confirm it's done in the local data
-    ASSERT_EQ(controller->_localData.data().taskCount(), 1);
-    EXPECT_TRUE(controller->_localData.data().taskAt(0).isDone);
+    ASSERT_EQ(controller._localData.data().taskCount(), 1);
+    EXPECT_TRUE(controller._localData.data().taskAt(0).isDone);
 
     // 5. confirm localData.modifiedTasks() returns 1 task
-    EXPECT_EQ(controller->_localData.data().modifiedTasks().size(), 1);
+    EXPECT_EQ(controller._localData.data().modifiedTasks().size(), 1);
 
     // 6. call refresh again
-    auto syncResult2 = controller->refreshBlocking();
+    auto syncResult2 = controller.refreshBlocking();
     ASSERT_TRUE(syncResult2.has_value());
 
     // 7. confirm it's done in the local data and in the return value of refresh
-    EXPECT_TRUE(controller->_localData.data().taskAt(0).isDone);
+    EXPECT_TRUE(controller._localData.data().taskAt(0).isDone);
     ASSERT_EQ(syncResult2->taskCount(), 1);
     EXPECT_TRUE(syncResult2->taskAt(0).isDone);
 
     // 8. confirm localData.modifiedTasks() is empty
-    EXPECT_TRUE(controller->_localData.data().modifiedTasks().empty());
+    EXPECT_TRUE(controller._localData.data().modifiedTasks().empty());
 }
 
 
@@ -289,9 +287,8 @@ TEST(DataControllerTest, TimerSavesToDisk)
     QGuiApplication _app(g_argc, g_argv);
     core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
 
-    GuiController *guiController = GuiController::instance();
-    ASSERT_EQ(guiController->thread(), QCoreApplication::instance()->thread());
-    DataController *controller = guiController->dataController();
+    DataController controller;
+    ASSERT_EQ(controller.thread(), QCoreApplication::instance()->thread());
 
     core::Data remoteData;
     core::Task task;
@@ -302,21 +299,21 @@ TEST(DataControllerTest, TimerSavesToDisk)
     remoteData.addTask(task);
     remoteData.setRevision(1);
 
-    initData(*controller, {}, remoteData);
+    initData(controller, {}, remoteData);
 
-    auto syncResult = controller->refreshBlocking();
+    auto syncResult = controller.refreshBlocking();
     ASSERT_TRUE(syncResult.has_value());
     ASSERT_EQ(syncResult->taskCount(), 1);
     EXPECT_FALSE(syncResult->taskAt(0).isDone);
-    ASSERT_EQ(controller->_localData.data().taskCount(), 1);
-    EXPECT_FALSE(controller->_localData.data().taskAt(0).isDone);
+    ASSERT_EQ(controller._localData.data().taskCount(), 1);
+    EXPECT_FALSE(controller._localData.data().taskAt(0).isDone);
 
     P_LOG_INFO("test: Both remote and local have the task, now testing timer...");
-    TaskModel *model = controller->taskModel();
+    TaskModel *model = controller.taskModel();
     model->setTaskDone("uuid-task-timer", true);
 
-    ASSERT_EQ(controller->_localData.data().taskCount(), 1);
-    EXPECT_TRUE(controller->_localData.data().taskAt(0).isDone);
+    ASSERT_EQ(controller._localData.data().taskCount(), 1);
+    EXPECT_TRUE(controller._localData.data().taskAt(0).isDone);
 
     P_LOG_INFO("test: Starting to wait");
     QTest::qWait(std::chrono::seconds(3));
@@ -398,6 +395,8 @@ TEST(DataControllerTest, MoveToSoonClearsDueDate)
     auto *updatedTask = controller->taskModel()->taskForUuid("uuid-task-soon-test");
     ASSERT_NE(updatedTask, nullptr);
     EXPECT_FALSE(updatedTask->dueDate.has_value()) << "Due date was not cleared!";
+
+    delete guiController;
 }
 
 TEST(DataControllerTest, LogoutTokenMetaTest)
@@ -411,18 +410,17 @@ TEST(DataControllerTest, LogoutTokenMetaTest)
     core::Logger::initLogLevel();
     core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
 
-    GuiController *gui = GuiController::instance();
-    DataController *controller = gui->dataController();
-    LocalSettings &settings = controller->localSettings();
+    DataController controller;
+    LocalSettings &settings = controller.localSettings();
 
     // 1. Logout
-    controller->logout();
+    controller.logout();
 
     // 2. Check settings empty
     EXPECT_TRUE(settings.refreshToken().empty()) << "Refresh token should be empty after logout";
 
     // 3. Login
-    ASSERT_TRUE(controller->loginWithDefaults());
+    ASSERT_TRUE(controller.loginWithDefaults());
 
     // 4. Check settings not empty
     std::string firstToken = settings.refreshToken();

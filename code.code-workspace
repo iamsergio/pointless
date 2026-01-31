@@ -84,7 +84,7 @@
         "request": "launch",
         "program": "${command:cmake.launchTargetPath}",
         "args": [
-          "--login"
+          "--gtest_filter=DataControllerTest.SetTaskDone"
         ],
         "stopAtEntry": false,
         "cwd": "${command:cmake.buildDirectory}",
