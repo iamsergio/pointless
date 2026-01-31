@@ -9,6 +9,11 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+    inputs:
+      test_name:
+        description: 'Specific test executable to run (e.g., test_data_controller)'
+        required: false
+        type: string
 
 jobs:
   build:
@@ -76,7 +81,12 @@ jobs:
         POINTLESS_DEBUG_USERNAME: ${{ secrets.POINTLESS_DEBUG_USERNAME }}
         POINTLESS_DEBUG_PASSWORD: ${{ secrets.POINTLESS_DEBUG_PASSWORD }}
         QT_QPA_PLATFORM: offscreen
-      run: ctest --output-on-failure --verbose --test-dir build-${{ matrix.preset }}
+      run: |
+        if [ -n "${{ github.event.inputs.test_name }}" ]; then
+          build-${{ matrix.preset }}/bin/${{ github.event.inputs.test_name }}
+        else
+          ctest --output-on-failure --verbose --test-dir build-${{ matrix.preset }}
+        fi
 
     - name: Run qmllint
       run: |
