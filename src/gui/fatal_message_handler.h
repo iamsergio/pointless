@@ -7,10 +7,22 @@
 
 #include <QtGlobal>
 #include <QString>
+#include <QList>
 
 #include <cstdlib>
 
 namespace pointless::gui {
+
+bool isWhiteListed(const QString &msg)
+{
+    static QStringList whiteList = {
+        "Populating font family aliases took"
+    };
+
+    return whiteList.contains(msg);
+}
+
+
 inline void qtMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     const char *file = (context.file != nullptr) ? context.file : "";
@@ -36,7 +48,7 @@ inline void qtMessageHandler(QtMsgType type, const QMessageLogContext &context, 
     }
 
 #ifdef POINTLESS_DEVELOPER_MODE
-    if (type == QtWarningMsg || type == QtCriticalMsg || type == QtFatalMsg) {
+    if (!isWhiteListed(msg) && (type == QtWarningMsg || type == QtCriticalMsg || type == QtFatalMsg)) {
         std::abort();
     }
 #endif
