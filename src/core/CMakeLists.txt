@@ -26,12 +26,12 @@ add_library(
   logger.cpp
   calendar_provider.cpp)
 
-if(NOT DEFINED ENV{POINTLESS_SUPABASE_ANON_KEY})
-  message(FATAL_ERROR "POINTLESS_SUPABASE_ANON_KEY environment variable is not set")
+if("$ENV{POINTLESS_SUPABASE_ANON_KEY}" STREQUAL "")
+  message(FATAL_ERROR "POINTLESS_SUPABASE_ANON_KEY environment variable is empty or not set")
 endif()
 
-if(NOT DEFINED ENV{POINTLESS_SUPABASE_URL})
-  message(FATAL_ERROR "POINTLESS_SUPABASE_URL environment variable is not set")
+if("$ENV{POINTLESS_SUPABASE_URL}" STREQUAL "")
+  message(FATAL_ERROR "POINTLESS_SUPABASE_URL environment variable is empty or not set")
 endif()
 
 target_compile_definitions(pointless_core PRIVATE POINTLESS_SUPABASE_URL="$ENV{POINTLESS_SUPABASE_URL}" POINTLESS_SUPABASE_ANON_KEY="$ENV{POINTLESS_SUPABASE_ANON_KEY}")
