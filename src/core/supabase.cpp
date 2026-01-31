@@ -136,7 +136,11 @@ bool SupabaseProvider::loginWithDefaults()
 
 std::pair<std::string, std::string> SupabaseProvider::defaultLoginPassword() const
 {
+#ifdef POINTLESS_USERNAME
+    const std::string username = POINTLESS_USERNAME;
+#else
     const std::string username = pointless::getenv_or_empty("POINTLESS_USERNAME");
+#endif
     const std::string password = pointless::getenv_or_empty("POINTLESS_PASSWORD");
 
     return { username, password };

@@ -36,6 +36,10 @@ endif()
 
 target_compile_definitions(pointless_core PRIVATE POINTLESS_SUPABASE_URL="$ENV{POINTLESS_SUPABASE_URL}" POINTLESS_SUPABASE_ANON_KEY="$ENV{POINTLESS_SUPABASE_ANON_KEY}")
 
+if(NOT "$ENV{POINTLESS_USERNAME}" STREQUAL "")
+  target_compile_definitions(pointless_core PRIVATE POINTLESS_USERNAME="$ENV{POINTLESS_USERNAME}")
+endif()
+
 target_link_libraries(
   pointless_core
   PUBLIC glaze::glaze
