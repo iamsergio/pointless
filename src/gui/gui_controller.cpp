@@ -157,7 +157,7 @@ void GuiController::refresh()
 
     auto refreshResult = _dataController->refresh(_isOfflineMode);
     if (!refreshResult) {
-        P_LOG_ERROR("GuiController::refresh: {}", refreshResult.error().toString());
+        P_LOG_ERROR("{}", refreshResult.error().toString());
         _errorController->setErrorText(QString::fromStdString(refreshResult.error().toString()));
     }
 }
@@ -422,7 +422,7 @@ void GuiController::saveTask(QString title, const QString &tag, bool isEvening) 
     } else {
         task = taskModel()->taskForUuid(_uuidBeingEdited);
         if (task == nullptr) {
-            P_LOG_ERROR("GuiController::saveTask: Task not found for UUID: {}", _uuidBeingEdited.toStdString());
+            P_LOG_ERROR("Task not found for UUID: {}", _uuidBeingEdited.toStdString());
             return;
         }
     }

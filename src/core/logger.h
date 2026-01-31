@@ -27,23 +27,23 @@ private:
 
 }
 
-#define P_LOG_DEBUG(...) pointless::core::Logger::getLogger()->debug(__VA_ARGS__)
-#define P_LOG_INFO(...) pointless::core::Logger::getLogger()->info(__VA_ARGS__)
-#define P_LOG_WARNING(...)                                       \
-    do {                                                         \
-        pointless::core::Logger::getLogger()->warn(__VA_ARGS__); \
-        if (pointless::core::Logger::warningsFatal())            \
-            std::abort();                                        \
+#define P_LOG_DEBUG(...) pointless::core::Logger::getLogger()->log(spdlog::source_loc{__FILE__, __LINE__, __FUNCTION__}, spdlog::level::debug, __VA_ARGS__)
+#define P_LOG_INFO(...) pointless::core::Logger::getLogger()->log(spdlog::source_loc{__FILE__, __LINE__, __FUNCTION__}, spdlog::level::info, __VA_ARGS__)
+#define P_LOG_WARNING(...)                                                                                                                        \
+    do {                                                                                                                                          \
+        pointless::core::Logger::getLogger()->log(spdlog::source_loc{__FILE__, __LINE__, __FUNCTION__}, spdlog::level::warn, __VA_ARGS__);        \
+        if (pointless::core::Logger::warningsFatal())                                                                                             \
+            std::abort();                                                                                                                         \
     } while (0)
-#define P_LOG_ERROR(...)                                          \
-    do {                                                          \
-        pointless::core::Logger::getLogger()->error(__VA_ARGS__); \
-        if (pointless::core::Logger::warningsFatal())             \
-            std::abort();                                         \
+#define P_LOG_ERROR(...)                                                                                                                          \
+    do {                                                                                                                                          \
+        pointless::core::Logger::getLogger()->log(spdlog::source_loc{__FILE__, __LINE__, __FUNCTION__}, spdlog::level::err, __VA_ARGS__);         \
+        if (pointless::core::Logger::warningsFatal())                                                                                             \
+            std::abort();                                                                                                                         \
     } while (0)
-#define P_LOG_CRITICAL(...)                                          \
-    do {                                                             \
-        pointless::core::Logger::getLogger()->critical(__VA_ARGS__); \
-        if (pointless::core::Logger::warningsFatal())                \
-            std::abort();                                            \
+#define P_LOG_CRITICAL(...)                                                                                                                       \
+    do {                                                                                                                                          \
+        pointless::core::Logger::getLogger()->log(spdlog::source_loc{__FILE__, __LINE__, __FUNCTION__}, spdlog::level::critical, __VA_ARGS__);    \
+        if (pointless::core::Logger::warningsFatal())                                                                                             \
+            std::abort();                                                                                                                         \
     } while (0)

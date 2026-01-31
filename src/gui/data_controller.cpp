@@ -155,7 +155,7 @@ bool DataController::performLoginSync(const std::string &email, const std::strin
 void DataController::saveAuth()
 {
     if (accessToken().empty() || userId().empty() || refreshToken().empty()) {
-        P_LOG_INFO("DataController::saveAuth: No tokens to save");
+        P_LOG_INFO("No tokens to save");
         return;
     }
 
@@ -263,18 +263,18 @@ std::expected<core::Data, TraceableError> DataController::pullRemoteData()
 {
     if (!_dataProvider->isAuthenticated()) {
         Q_EMIT isAuthenticatedChanged();
-        return TraceableError::create("DataController::refresh: Not authenticated");
+        return TraceableError::create("DataController::pullRemoteData: Not authenticated");
     }
 
     std::expected<std::string, TraceableError> json_str_expr = _dataProvider->pullData();
     if (!json_str_expr) {
-        return TraceableError::create("DataController::refresh", json_str_expr.error());
+        return TraceableError::create("DataController::pullRemoteData", json_str_expr.error());
     }
     const std::string &json_str = *json_str_expr;
 
     auto result = core::Data::fromJson(json_str);
     if (!result) {
-        P_LOG_ERROR("Cannot refresh: failed to parse JSON: {}", result.error());
+        P_LOG_ERROR("failed to parse JSON: {}", result.error());
 #ifdef POINTLESS_DEVELOPER_MODE
         std::ofstream debugFile("/tmp/debug.json");
         if (debugFile.is_open()) {
@@ -282,7 +282,7 @@ std::expected<core::Data, TraceableError> DataController::pullRemoteData()
             debugFile.close();
         }
 #endif
-        return TraceableError::create("Cannot refresh: failed to parse JSON: " + result.error());
+        return TraceableError::create("failed to parse JSON: " + result.error());
     }
 
     // in case it got to the server somehow
@@ -297,18 +297,18 @@ std::expected<core::Data, TraceableError> DataController::pushRemoteData(core::D
     data.setRevision(data.revision() + 1);
 
     if (!_dataProvider->isAuthenticated()) {
-        return TraceableError::create("DataController::pushRemoteData: Not authenticated");
+        return TraceableError::create("Not authenticated");
     }
 
     auto jsonStrResult = data.toJson();
     if (!jsonStrResult) {
-        return TraceableError::create("DataController::pushRemoteData: Failed to serialize data to JSON: " + jsonStrResult.error());
+        return TraceableError::create("Failed to serialize data to JSON: " + jsonStrResult.error());
     }
 
     const auto &jsonStr = jsonStrResult.value();
     auto result = _dataProvider->pushData(jsonStr);
     if (!result) {
-        return TraceableError::create("DataController::pushRemoteData: Failed to push data to remote", result.error());
+        return TraceableError::create("Failed to push data to remote", result.error());
     }
 
     P_LOG_INFO("Data pushed to remote successfully {} bytes", jsonStr.size());
@@ -427,14 +427,14 @@ std::expected<core::Data, TraceableError> DataController::performRefreshInBackgr
         if (pushResult) {
             mergedData = *pushResult;
         } else {
-            return TraceableError::create("DataController::sync: Failed to push remote data", pushResult.error());
+            return TraceableError::create("Failed to push remote data", pushResult.error());
         }
     }
 
     if (needsLocalSave) {
         auto saveResult = _localData.setDataAndSave(mergedData);
         if (!saveResult) {
-            return TraceableError::create("DataController::sync: Failed to save local data: " + saveResult.error());
+            return TraceableError::create("Failed to save local data: " + saveResult.error());
         }
     }
 
@@ -445,7 +445,7 @@ std::expected<core::Data, TraceableError> DataController::performRefreshInBackgr
 std::expected<core::Data, TraceableError> DataController::merge(const std::optional<core::Data> &remoteDataOpt)
 {
     core::Data &localData = _localData.data();
-    P_LOG_INFO("Merging data: local.numTasks={}, local.revision={}, local.numModifiedTasks={}, local.numDeletedTasks={}, remoteData.has_value={}",
+    P_LOG_INFO("local.numTasks={}, local.revision={}, local.numModifiedTasks={}, local.numDeletedTasks={}, remoteData.has_value={}",
                localData.taskCount(), localData.revision(), localData.modifiedTasks().size(), localData._data.deletedTaskUuids.size(), remoteDataOpt.has_value());
 
     if (!remoteDataOpt.has_value()) {
@@ -461,7 +461,7 @@ std::expected<core::Data, TraceableError> DataController::merge(const std::optio
 
     core::Data remoteData = *remoteDataOpt;
 
-    P_LOG_INFO("Merging data: Remote data has numTasks={}, revision={}",
+    P_LOG_INFO("Remote data has numTasks={}, revision={}",
                remoteData.taskCount(), remoteData.revision());
 
     if (localData.revision() == -1 && localData.isEmpty()) {
@@ -473,7 +473,7 @@ std::expected<core::Data, TraceableError> DataController::merge(const std::optio
 
     if (localData.revision() > remoteData.revision()) {
         // 3. Doesn't happen, local data never increments revision
-        P_LOG_CRITICAL("sync(): Local has higher revision! local.rev={} ; remote.rev={}", localData.revision(), remoteData.revision());
+        P_LOG_CRITICAL("Local has higher revision! local.rev={} ; remote.rev={}", localData.revision(), remoteData.revision());
 
         // Avoid potential data loss
         std::abort();
