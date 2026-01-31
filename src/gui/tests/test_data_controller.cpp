@@ -4,7 +4,6 @@
 #include "gui/data_controller.h"
 #include "gui/taskmodel.h"
 #include "gui/gui_controller.h"
-#include "gui/application.h"
 #include "gui/tests/test_utils.h"
 #include "gui/local_settings.h"
 
@@ -48,6 +47,7 @@ void initData(DataController &controller, std::optional<core::Data> localData, c
 
 TEST(DataControllerTest, ConstructDestroy)
 {
+    QGuiApplication _app(g_argc, g_argv);
     core::Context::setContext({ IDataProvider::Type::TestSupabase, "/tmp/nonexistent_file.json" });
     DataController controller;
 }
@@ -55,6 +55,7 @@ TEST(DataControllerTest, ConstructDestroy)
 // DataController::sync() tests
 TEST(DataControllerTest, Sync)
 {
+    QGuiApplication _app(g_argc, g_argv);
     core::Logger::initLogLevel();
     core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
     DataController controller;
@@ -230,6 +231,7 @@ TEST(DataControllerTest, Sync)
 
 TEST(DataControllerTest, SetTaskDone)
 {
+    QGuiApplication _app(g_argc, g_argv);
     core::Logger::initLogLevel();
     core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
 
@@ -281,83 +283,58 @@ TEST(DataControllerTest, SetTaskDone)
     EXPECT_TRUE(controller->_localData.data().modifiedTasks().empty());
 }
 
-class TestTimerSaveLocal
-{
-public:
-    pointless::Application _app;
-
-    TestTimerSaveLocal(int &argc, char **argv)
-        : _app(argc, argv, "com.pointless.tests", initPlatform())
-    {
-    }
-
-    void exec()
-    {
-        QMetaObject::invokeMethod(&_app, [this] {
-            // needs to run on main thread since it has a QTimer
-            executeTest();
-            _app.quit(); }, Qt::QueuedConnection);
-
-        _app.exec();
-    }
-
-private:
-    void executeTest()
-    {
-        core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
-
-        GuiController *guiController = GuiController::instance();
-        ASSERT_EQ(guiController->thread(), QCoreApplication::instance()->thread());
-        DataController *controller = guiController->dataController();
-
-        core::Data remoteData;
-        core::Task task;
-        task.uuid = "uuid-task-timer";
-        task.title = "Task for timer test";
-        task.isDone = false;
-        task.revision = 0;
-        remoteData.addTask(task);
-        remoteData.setRevision(1);
-
-        initData(*controller, {}, remoteData);
-
-        auto syncResult = controller->refreshBlocking();
-        ASSERT_TRUE(syncResult.has_value());
-        ASSERT_EQ(syncResult->taskCount(), 1);
-        EXPECT_FALSE(syncResult->taskAt(0).isDone);
-        ASSERT_EQ(controller->_localData.data().taskCount(), 1);
-        EXPECT_FALSE(controller->_localData.data().taskAt(0).isDone);
-
-        P_LOG_INFO("test: Both remote and local have the task, now testing timer...");
-        TaskModel *model = controller->taskModel();
-        model->setTaskDone("uuid-task-timer", true);
-
-        ASSERT_EQ(controller->_localData.data().taskCount(), 1);
-        EXPECT_TRUE(controller->_localData.data().taskAt(0).isDone);
-
-        P_LOG_INFO("test: Starting to wait");
-        QTest::qWait(std::chrono::seconds(3));
-
-        core::LocalData diskData;
-        auto loadResult = diskData.loadDataFromFile();
-        ASSERT_TRUE(loadResult) << "Failed to load data from disk: " << loadResult.error();
-
-        ASSERT_TRUE(diskData.data().isValid());
-
-        ASSERT_EQ(diskData.data().taskCount(), 1);
-        EXPECT_EQ(diskData.data().taskAt(0).uuid, "uuid-task-timer");
-        EXPECT_TRUE(diskData.data().taskAt(0).isDone);
-    }
-};
 
 TEST(DataControllerTest, TimerSavesToDisk)
 {
-    TestTimerSaveLocal testServer(g_argc, g_argv);
-    EXPECT_NO_THROW(testServer.exec());
+    QGuiApplication _app(g_argc, g_argv);
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+
+    GuiController *guiController = GuiController::instance();
+    ASSERT_EQ(guiController->thread(), QCoreApplication::instance()->thread());
+    DataController *controller = guiController->dataController();
+
+    core::Data remoteData;
+    core::Task task;
+    task.uuid = "uuid-task-timer";
+    task.title = "Task for timer test";
+    task.isDone = false;
+    task.revision = 0;
+    remoteData.addTask(task);
+    remoteData.setRevision(1);
+
+    initData(*controller, {}, remoteData);
+
+    auto syncResult = controller->refreshBlocking();
+    ASSERT_TRUE(syncResult.has_value());
+    ASSERT_EQ(syncResult->taskCount(), 1);
+    EXPECT_FALSE(syncResult->taskAt(0).isDone);
+    ASSERT_EQ(controller->_localData.data().taskCount(), 1);
+    EXPECT_FALSE(controller->_localData.data().taskAt(0).isDone);
+
+    P_LOG_INFO("test: Both remote and local have the task, now testing timer...");
+    TaskModel *model = controller->taskModel();
+    model->setTaskDone("uuid-task-timer", true);
+
+    ASSERT_EQ(controller->_localData.data().taskCount(), 1);
+    EXPECT_TRUE(controller->_localData.data().taskAt(0).isDone);
+
+    P_LOG_INFO("test: Starting to wait");
+    QTest::qWait(std::chrono::seconds(3));
+
+    core::LocalData diskData;
+    auto loadResult = diskData.loadDataFromFile();
+    ASSERT_TRUE(loadResult) << "Failed to load data from disk: " << loadResult.error();
+
+    ASSERT_TRUE(diskData.data().isValid());
+
+    ASSERT_EQ(diskData.data().taskCount(), 1);
+    EXPECT_EQ(diskData.data().taskAt(0).uuid, "uuid-task-timer");
+    EXPECT_TRUE(diskData.data().taskAt(0).isDone);
 }
 
 TEST(DataControllerTest, MergeNeedsLocalSave)
 {
+    QGuiApplication _app(g_argc, g_argv);
     core::Logger::initLogLevel();
     core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
     DataController controller;
@@ -386,6 +363,7 @@ TEST(DataControllerTest, MergeNeedsLocalSave)
 
 TEST(DataControllerTest, MoveToSoonClearsDueDate)
 {
+    QGuiApplication _app(g_argc, g_argv);
     core::Logger::initLogLevel();
     core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
 
@@ -429,6 +407,7 @@ TEST(DataControllerTest, LogoutTokenMetaTest)
     // then check its not empty. then logout again, and check that its not empty, but different from initial.
 
     // Setup environment
+    QGuiApplication _app(g_argc, g_argv);
     core::Logger::initLogLevel();
     core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
 
@@ -454,6 +433,8 @@ int main(int argc, char **argv)
 {
     g_argc = argc;
     g_argv = argv;
+
+    QCoreApplication::setOrganizationName("com.pointless.tests");
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

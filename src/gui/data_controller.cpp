@@ -9,6 +9,7 @@
 #include "core/logger.h"
 #include "core/context.h"
 #include "utils.h"
+#include "fatal_message_handler.h"
 
 #include <QtConcurrent/QtConcurrent>
 
@@ -29,6 +30,8 @@ DataController::DataController(QObject *parent)
     , _refreshWatcher(new QFutureWatcher<std::expected<core::Data, TraceableError>>(this))
     , _loginWatcher(new QFutureWatcher<bool>(this))
 {
+    qInstallMessageHandler(pointless::gui::qtMessageHandler);
+
     _saveToDiskTimer.setInterval(std::chrono::seconds(1));
     _saveToDiskTimer.setSingleShot(true);
     connect(&_saveToDiskTimer, &QTimer::timeout, this, [this] {

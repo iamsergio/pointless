@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
-
 #include "gui_controller.h"
 #include "taskfiltermodel.h"
 #include "taskmodel.h"
