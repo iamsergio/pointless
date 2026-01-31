@@ -84,6 +84,7 @@ GuiController::GuiController(QObject *parent)
     , _dataController(new DataController(this))
     , _errorController(new ErrorController(this))
 {
+    P_LOG_DEBUG("");
     Q_ASSERT(s_instance == nullptr);
 
     std::ignore = std::atexit([] {

@@ -2,11 +2,10 @@
 // SPDX-License-Identifier: MIT
 
 #include "core/tag.h"
-
 #include "core/logger.h"
+
 #include "tagmodel.h"
 #include "data_controller.h"
-#include "gui_controller.h"
 
 #include <QByteArray>
 #include <QHash>
@@ -67,12 +66,17 @@ void TagModel::reload()
 
 const pointless::core::LocalData &TagModel::localData() const
 {
-    auto *guiController = GuiController::instance();
-    return guiController->dataController()->localData();
+    return dataController()->localData();
 }
 
 pointless::core::LocalData &TagModel::localData()
 {
-    auto *guiController = GuiController::instance();
-    return guiController->dataController()->localData();
+    return dataController()->localData();
+}
+
+DataController *TagModel::dataController() const
+{
+    auto *dc = qobject_cast<DataController *>(parent());
+    Q_ASSERT(dc != nullptr);
+    return dc;
 }

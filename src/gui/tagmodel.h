@@ -15,6 +15,8 @@ namespace pointless::core {
 class LocalData;
 }
 
+class DataController;
+
 class TagModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -43,4 +45,5 @@ Q_SIGNALS:
 private:
     [[nodiscard]] const pointless::core::LocalData &localData() const;
     [[nodiscard]] pointless::core::LocalData &localData();
+    [[nodiscard]] DataController *dataController() const;
 };

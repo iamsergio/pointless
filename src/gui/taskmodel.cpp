@@ -3,9 +3,7 @@
 
 #include "taskmodel.h"
 #include "data_controller.h"
-#include "gui_controller.h"
-
-#include "gui/qt_logger.h"
+#include "qt_logger.h"
 
 #include <QDateTime>
 #include <QString>
@@ -176,8 +174,9 @@ core::LocalData &TaskModel::localData()
 
 DataController *TaskModel::dataController() const
 {
-    auto *guiController = GuiController::instance();
-    return guiController->dataController();
+    auto *dc = qobject_cast<DataController *>(parent());
+    Q_ASSERT(dc != nullptr);
+    return dc;
 }
 
 void TaskModel::addTask(const core::Task &task)

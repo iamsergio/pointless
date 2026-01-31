@@ -197,6 +197,8 @@ void DataController::logout()
         _dataProvider->logout();
         _localSettings.clear();
         Q_EMIT isAuthenticatedChanged();
+    } else {
+        P_LOG_INFO("No data provider, nothing to logout");
     }
 }
 

@@ -8,7 +8,7 @@
 
 LocalSettings::LocalSettings()
 {
-    P_LOG_INFO("LocalSettings ctor: refresh token={}", maskedToken(refreshToken()));
+    P_LOG_INFO("refresh token={}", maskedToken(refreshToken()));
 }
 
 void LocalSettings::save()
@@ -28,7 +28,7 @@ std::string LocalSettings::accessToken() const
 
 void LocalSettings::setRefreshToken(const std::string &token)
 {
-    P_LOG_INFO("setRefreshToken: {}", maskedToken(token));
+    P_LOG_INFO("auth/refreshToken={}", maskedToken(token));
     _settings.setValue("auth/refreshToken", QString::fromStdString(token));
 }
 
@@ -39,6 +39,7 @@ std::string LocalSettings::refreshToken() const
 
 void LocalSettings::setUserId(const std::string &userId)
 {
+    P_LOG_INFO("auth/userId={}", userId);
     _settings.setValue("auth/userId", QString::fromStdString(userId));
 }
 
