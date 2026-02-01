@@ -655,6 +655,7 @@ void GuiController::moveTaskToTomorrow(const QString &taskUuid)
     if (task->isDueTomorrow())
         return;
 
+    task->removeBuiltinTags();
     const QDate tomorrow = Gui::Clock::today().addDays(1);
     task->dueDate = Gui::DateUtils::qdateToTimepoint(tomorrow);
     taskModel()->updateTask(*task);
@@ -681,6 +682,7 @@ void GuiController::moveTaskToNextMonday(const QString &taskUuid)
         return;
     }
 
+    task->removeBuiltinTags();
     const QDate nextMonday = Gui::DateUtils::nextMonday(Gui::Clock::today());
     task->dueDate = Gui::DateUtils::qdateToTimepoint(nextMonday);
     taskModel()->updateTask(*task);

@@ -135,6 +135,19 @@ if(POINTLESS_ENABLE_TESTS)
   target_include_directories(test_data_controller PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
   add_test(NAME test_data_controller COMMAND test_data_controller)
 
+  add_executable(test_gui_controller tests/test_gui_controller.cpp)
+  target_link_libraries(
+    test_gui_controller
+    PRIVATE pointless_core
+            pointless_gui
+            GTest::gtest_main
+            Qt6::Core
+            Qt6::Quick
+            Qt6::Test
+            Qt6::Concurrent)
+  target_include_directories(test_gui_controller PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+  add_test(NAME test_gui_controller COMMAND test_gui_controller)
+
   add_executable(test_gui_date_utils tests/test_date_utils.cpp)
   target_link_libraries(test_gui_date_utils PRIVATE pointless_core pointless_gui GTest::gtest_main Qt6::Core)
   target_include_directories(test_gui_date_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
