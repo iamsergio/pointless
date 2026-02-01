@@ -11,6 +11,7 @@ Checks: >
   -modernize-use-trailing-return-type,
   -readability-braces-around-statements,
   -readability-identifier-length,
+  -readability-implicit-bool-conversion,
   -hicpp-braces-around-statements,
   -cppcoreguidelines-owning-memory,
   -readability-function-cognitive-complexity,
