@@ -76,7 +76,8 @@
       "description": "dev-tsan",
       "cacheVariables": {
         "POINTLESS_ENABLE_TSAN": "ON",
-        "VCPKG_TARGET_ARCHITECTURE": "x64"
+        "VCPKG_TARGET_ARCHITECTURE": "x64",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-tsan"
       }
     },
     {
