@@ -23,13 +23,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        preset: [dev, rel, dev-asan, dev-tsan]
-        os: [ubuntu-latest, macos-latest]
+        preset: [dev, dev-asan, dev-tsan]
+        os: [ubuntu-latest]
         include:
           - preset: dev-asan
-            sanitizer-name: asan
+            qt-flavor: asan
           - preset: dev-tsan
-            sanitizer-name: tsan
+            qt-flavor: tsan
+          - preset: dev
+            qt-flavor: debug
+          - preset: rel
+            qt-flavor: profile
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -37,14 +42,12 @@ jobs:
         submodules: recursive
 
     - name: Install clang
-      if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
         sudo apt-get install -y clang-20
         sudo apt-get remove --purge clang-18
 
     - name: Set clang-20 as default clang/clang++
-      if: matrix.os == 'ubuntu-latest'
       run: |
         sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-20 100
         sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-20 100
@@ -52,19 +55,12 @@ jobs:
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
 
     - name: Print gcc/clang version
-      if: matrix.os == 'ubuntu-latest'
       run: |
         g++ --version
         clang++ --version
 
-    - name: Install Qt
-      if: matrix.preset == 'dev' || matrix.preset == 'rel' || matrix.os == 'macos-latest'
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: '6.11.0'
-        cache: true
-
     - name: Checkout CI tools
+      if: matrix.preset == 'dev-asan' || matrix.preset == 'dev-tsan'
       uses: actions/checkout@v4
       with:
         repository: KDABLabs/ci-release-tools
@@ -72,11 +68,10 @@ jobs:
         ref: main
 
     - name: Setup Sanitized Qt
-      if: (matrix.preset == 'dev-asan' || matrix.preset == 'dev-tsan') && matrix.os == 'ubuntu-latest'
       run: |
-        ./ci-release-tools/src/build_qt/ci-download-qt.sh 6.11.0 qt-6.11-${{ matrix.sanitizer-name }}
-        echo "~/Qt/qt-6.11-${{ matrix.sanitizer-name }}/bin" >> $GITHUB_PATH
-        echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Qt/qt-6.11-${{ matrix.sanitizer-name }}/lib/" >> $GITHUB_ENV
+        ./ci-release-tools/src/build_qt/ci-download-qt.sh 6.11.0 qt-6.11-${{ matrix.qt-flavor }}
+        echo "~/Qt/qt-6.11-${{ matrix.qt-flavor }}/bin" >> $GITHUB_PATH
+        echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Qt/qt-6.11-${{ matrix.qt-flavor }}/lib/" >> $GITHUB_ENV
 
     - name: Setup vcpkg
       run: |
@@ -93,7 +88,7 @@ jobs:
       run: cmake --build build-${{ matrix.preset }}
 
     - name: Run tests
-      if: startsWith(matrix.preset, 'dev-') && matrix.preset != 'dev-tsan' && matrix.os == 'ubuntu-latest'
+      if: startsWith(matrix.preset, 'dev-') && matrix.preset != 'dev-tsan'
       env:
         POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
         POINTLESS_SUPABASE_ANON_KEY: ${{ secrets.POINTLESS_SUPABASE_ANON_KEY }}
