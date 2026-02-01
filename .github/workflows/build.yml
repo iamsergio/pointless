@@ -32,8 +32,8 @@ jobs:
             qt-flavor: tsan
           - preset: dev
             qt-flavor: debug
-          # - preset: rel
-          #   qt-flavor: profile
+          - preset: rel
+            qt-flavor: profile
 
     steps:
     - name: Checkout code
@@ -113,7 +113,7 @@ jobs:
       run: cmake --build build-${{ matrix.preset }}
 
     - name: Run tests
-      if: startsWith(matrix.preset, 'dev-') && matrix.preset != 'dev-tsan'
+      if: startsWith(matrix.preset, 'dev')
       env:
         POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
         POINTLESS_SUPABASE_ANON_KEY: ${{ secrets.POINTLESS_SUPABASE_ANON_KEY }}
