@@ -57,7 +57,8 @@
       "inherits": "dev",
       "description": "dev-asan",
       "cacheVariables": {
-        "POINTLESS_ENABLE_ASAN": "ON"
+        "POINTLESS_ENABLE_ASAN": "ON",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-asan"
       }
     },
     {
