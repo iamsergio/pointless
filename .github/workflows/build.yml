@@ -25,7 +25,11 @@ jobs:
       matrix:
         preset: [dev, rel, dev-asan, dev-tsan]
         os: [ubuntu-latest, macos-latest]
-
+        include:
+          - preset: dev-asan
+            sanitizer-name: asan
+          - preset: dev-tsan
+            sanitizer-name: tsan
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -54,10 +58,25 @@ jobs:
         clang++ --version
 
     - name: Install Qt
+      if: matrix.preset == 'dev' || matrix.preset == 'rel'
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.11.0'
         cache: true
+
+    - name: Checkout CI tools
+      uses: actions/checkout@v4
+      with:
+        repository: KDABLabs/ci-release-tools
+        path: ci-release-tools
+        ref: main
+
+    - name: Setup Sanitized Qt
+      if: matrix.preset == 'dev-asan' || matrix.preset == 'dev-tsan'
+      run: |
+        ./ci-release-tools/src/build_qt/ci-download-qt.sh 6.11.0 qt-6.11-${{ matrix.sanitizer-name }}.tar.zst
+        echo "~/Qt/qt-6.11-${{ matrix.sanitizer-name }}/bin" >> $GITHUB_PATH
+        echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Qt/qt-6.11-${{ matrix.sanitizer-name }}/lib/" >> $GITHUB_ENV
 
     - name: Setup vcpkg
       run: |
