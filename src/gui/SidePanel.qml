@@ -107,7 +107,7 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        GuiController.cleanup();
+                        GuiController.cleanupOldData();
                         root.isOpen = false;
                     }
                 }
@@ -152,7 +152,6 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        GuiController.cleanup();
                         root.isOpen = false;
                     }
                 }

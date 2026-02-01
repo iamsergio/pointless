@@ -64,6 +64,7 @@ public:
     bool updateTask(Task task);
     bool removeTask(const std::string &uuid);
     bool removeTag(const std::string &tagName);
+    int cleanupOldData();
 
     void clearServerSyncBits();
 

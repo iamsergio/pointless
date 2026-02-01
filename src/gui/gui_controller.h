@@ -150,7 +150,7 @@ public:
     Q_INVOKABLE void moveTaskToEvening(const QString &taskUuid);
     Q_INVOKABLE void deleteTask(const QString &taskUuid);
     Q_INVOKABLE void removeTag(const QString &tagName);
-    Q_INVOKABLE void cleanup();
+    Q_INVOKABLE void cleanupOldData();
 
     static GuiController *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 

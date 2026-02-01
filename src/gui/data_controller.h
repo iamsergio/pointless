@@ -47,6 +47,7 @@ public:
     std::expected<void, TraceableError> refresh(bool isOfflineMode = false);
     bool updateTask(const pointless::core::Task &task);
     bool addTask(const pointless::core::Task &task);
+    void cleanupOldData();
 
     pointless::core::LocalData &localData();
     LocalSettings &localSettings();

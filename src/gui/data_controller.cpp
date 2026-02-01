@@ -261,6 +261,14 @@ bool DataController::addTask(const pointless::core::Task &task)
     return false;
 }
 
+void DataController::cleanupOldData()
+{
+    if (_localData.cleanupOldData() > 0) {
+        _saveToDiskTimer.start();
+        _taskModel->reload();
+    }
+}
+
 std::expected<core::Data, TraceableError> DataController::pullRemoteData()
 {
     if (!_dataProvider->isAuthenticated()) {

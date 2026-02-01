@@ -88,6 +88,12 @@ bool Task::isDueThisWeek() const
     return DateUtils::isThisWeek(*dueDate);
 }
 
+bool Task::shouldBeCleanedUp() const
+{
+    const auto twoWeeksAgo = core::Clock::now() - std::chrono::days(14);
+    return isDone && ((modificationTimestamp && *modificationTimestamp < twoWeeksAgo) || !modificationTimestamp);
+}
+
 void Task::setTags(const std::vector<std::string> &newTags)
 {
     tags = {};

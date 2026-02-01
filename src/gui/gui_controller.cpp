@@ -709,8 +709,9 @@ void GuiController::removeTag(const QString &tagName)
     _dataController->tagModel()->reload();
 }
 
-void GuiController::cleanup()
+void GuiController::cleanupOldData()
 {
+    _dataController->cleanupOldData();
 }
 
 void GuiController::deleteTask(const QString &taskUuid)

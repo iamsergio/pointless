@@ -158,6 +158,29 @@ bool LocalData::updateTask(Task task)
     return _data.setTask(task);
 }
 
+int LocalData::cleanupOldData()
+{
+    std::vector<std::string> uuidsToRemove;
+
+    for (size_t i = 0; i < _data.taskCount(); ++i) {
+        const auto &task = _data.taskAt(i);
+        if (task.shouldBeCleanedUp()) {
+            uuidsToRemove.push_back(task.uuid);
+        }
+    }
+
+    for (const auto &uuid : uuidsToRemove) {
+        removeTask(uuid);
+    }
+
+    if (!uuidsToRemove.empty()) {
+        _data.needsLocalSave = true;
+    }
+
+    P_LOG_INFO("Cleaned up {} old tasks", uuidsToRemove.size());
+    return static_cast<int>(uuidsToRemove.size());
+}
+
 bool LocalData::addTask(Task task)
 {
     P_LOG_DEBUG("addTask '{}' LocalData={}", task.uuid, static_cast<void *>(this));
