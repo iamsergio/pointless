@@ -19,7 +19,6 @@ public:
         : _app(argc, argv, "com.pointless.tests", initPlatform())
     {
         _bot = new spix::QtQmlBot();
-        _bot->runTestServer(*this);
     }
 
     ~TestServer()
@@ -29,6 +28,7 @@ public:
 
     int exec()
     {
+        _bot->runTestServer(*this);
         return _app.exec();
     }
 

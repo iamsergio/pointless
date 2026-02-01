@@ -83,7 +83,7 @@ int main(int argc, char **argv)
     g_argc = argc;
     g_argv = argv;
 
-    QCoreApplication::setOrganizationName("com.pointless.tests");
+    initPlatform();
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
