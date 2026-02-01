@@ -58,7 +58,7 @@ jobs:
         clang++ --version
 
     - name: Install Qt
-      if: matrix.preset == 'dev' || matrix.preset == 'rel'
+      if: matrix.preset == 'dev' || matrix.preset == 'rel' || matrix.os == 'macos-latest'
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.11.0'
@@ -72,7 +72,7 @@ jobs:
         ref: main
 
     - name: Setup Sanitized Qt
-      if: matrix.preset == 'dev-asan' || matrix.preset == 'dev-tsan'
+      if: (matrix.preset == 'dev-asan' || matrix.preset == 'dev-tsan') && matrix.os == 'ubuntu-latest'
       run: |
         ./ci-release-tools/src/build_qt/ci-download-qt.sh 6.11.0 qt-6.11-${{ matrix.sanitizer-name }}.tar.zst
         echo "~/Qt/qt-6.11-${{ matrix.sanitizer-name }}/bin" >> $GITHUB_PATH
