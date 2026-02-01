@@ -4,6 +4,7 @@
 
 find_package(glaze CONFIG REQUIRED)
 find_package(cpr CONFIG REQUIRED)
+find_package(ZLIB REQUIRED)
 
 if(POINTLESS_ENABLE_TESTS)
   set(POINTLESS_TESTS_SRCS test_local_provider.cpp test_supabase_provider.cpp)
@@ -43,7 +44,7 @@ endif()
 target_link_libraries(
   pointless_core
   PUBLIC glaze::glaze
-  PRIVATE spdlog::spdlog cpr::cpr)
+  PRIVATE spdlog::spdlog cpr::cpr ZLIB::ZLIB)
 
 if(APPLE)
   find_library(EVENTKIT_LIB EventKit REQUIRED)
