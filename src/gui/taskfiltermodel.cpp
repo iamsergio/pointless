@@ -99,7 +99,10 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
         }
 
     } else if ((_viewType == ViewType::Soon && task->isSoon()) || (_viewType == ViewType::Later && task->isLater())) {
-        return true;
+        if (!task->deviceCalendarUuid.has_value()) {
+            // Exclude tasks synced to device calendar from Soon/Later view
+            return true;
+        }
     }
 
     return false;
