@@ -38,7 +38,9 @@ set(PLAIN_QML_FILES
     EditTask.qml
     ErrorPopup.qml
     Menu.qml
-    MenuItem.qml)
+    MenuItem.qml
+    SidePanel.qml
+    About.qml)
 
 qt_add_qml_module(
   pointless_gui

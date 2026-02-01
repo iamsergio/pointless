@@ -58,6 +58,7 @@ class GuiController : public QObject
     Q_PROPERTY(bool isLoggingIn READ isLoggingIn NOTIFY isLoggingInChanged)
     Q_PROPERTY(ErrorController *errorController READ errorController CONSTANT)
     Q_PROPERTY(bool isOfflineMode READ isOfflineMode NOTIFY isOfflineModeChanged)
+    Q_PROPERTY(bool aboutIsVisible READ aboutIsVisible WRITE setAboutIsVisible NOTIFY aboutIsVisibleChanged)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
@@ -128,6 +129,9 @@ public:
 
     [[nodiscard]] bool isOfflineMode() const;
 
+    [[nodiscard]] bool aboutIsVisible() const;
+    void setAboutIsVisible(bool visible);
+
     [[nodiscard]] DataController *dataController() const;
     [[nodiscard]] ErrorController *errorController() const;
 
@@ -144,6 +148,7 @@ public:
     Q_INVOKABLE void moveTaskToNextMonday(const QString &taskUuid);
     Q_INVOKABLE void moveTaskToEvening(const QString &taskUuid);
     Q_INVOKABLE void deleteTask(const QString &taskUuid);
+    Q_INVOKABLE void cleanup();
 
     static GuiController *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
@@ -162,6 +167,7 @@ Q_SIGNALS:
     void isRefreshingChanged();
     void isLoggingInChanged();
     void isOfflineModeChanged();
+    void aboutIsVisibleChanged();
 
 private:
     explicit GuiController(QObject *parent = nullptr);
@@ -177,6 +183,7 @@ private:
     bool _isRefreshing = false;
     bool _isLoggingIn = false;
     bool _isOfflineMode = false;
+    bool _aboutIsVisible = false;
     DataController *const _dataController;
     ErrorController *const _errorController;
     mutable TaskFilterModel *_taskFilterModel = nullptr;

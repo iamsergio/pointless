@@ -187,6 +187,19 @@ bool GuiController::isOfflineMode() const
     return _isOfflineMode;
 }
 
+bool GuiController::aboutIsVisible() const
+{
+    return _aboutIsVisible;
+}
+
+void GuiController::setAboutIsVisible(bool visible)
+{
+    if (_aboutIsVisible == visible)
+        return;
+    _aboutIsVisible = visible;
+    Q_EMIT aboutIsVisibleChanged();
+}
+
 TaskFilterModel *GuiController::taskFilterModel() const
 {
     if (_taskFilterModel == nullptr) {
@@ -686,6 +699,10 @@ void GuiController::moveTaskToNextMonday(const QString &taskUuid)
     const QDate nextMonday = Gui::DateUtils::nextMonday(Gui::Clock::today());
     task->dueDate = Gui::DateUtils::qdateToTimepoint(nextMonday);
     taskModel()->updateTask(*task);
+}
+
+void GuiController::cleanup()
+{
 }
 
 void GuiController::deleteTask(const QString &taskUuid)

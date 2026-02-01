@@ -65,6 +65,13 @@ QC.ApplicationWindow {
                 }
             }
 
+            About {
+                anchors.fill: parent
+                visible: GuiController.aboutIsVisible
+                onBackClicked: GuiController.aboutIsVisible = false
+                z: mainView.z + 1
+            }
+
             LoginScreen {
                 id: loginScreen
                 anchors.fill: parent
@@ -157,6 +164,22 @@ QC.ApplicationWindow {
                     right: parent.right
                     bottom: parent.bottom
                     bottomMargin: Style.fromPixel(GuiController.isMobile ? 32 : 16)
+                }
+
+                FontAwesomeButton {
+                    id: burgerButton
+                    fontAwesomeIcon: "\uf0c9"
+                    iconSize: Style.plusButtonSize
+                    iconColor: Style.plusButtonColor
+                    backgroundColor: "transparent"
+                    visible: !GuiController.isEditing
+                    anchors {
+                        left: parent.left
+                        bottom: parent.bottom
+                        leftMargin: Style.fromPixel(32)
+                    }
+                    z: 100
+                    onClicked: sidePanel.isOpen = true
                 }
 
                 FontAwesomeButton {
@@ -288,23 +311,6 @@ QC.ApplicationWindow {
                 }
             }
 
-            FontAwesomeButton {
-                id: debugButton
-                fontAwesomeIcon: "\uf121"
-                iconSize: Style.fromPixel(16)
-                iconColor: "red"
-                backgroundColor: "transparent"
-                anchors {
-                    left: parent.left
-                    bottom: parent.bottom
-                    leftMargin: Style.fromPixel(32)
-                    bottomMargin: Style.fromPixel(32)
-                }
-                visible: GuiController.isDebug
-                z: 100
-                onClicked: GuiController.dumpDebug()
-            }
-
             ErrorPopup {
                 id: errorPopup
                 anchors.fill: parent
@@ -313,6 +319,12 @@ QC.ApplicationWindow {
                 onOkClicked: {
                     GuiController.errorController.errorText = "";
                 }
+            }
+
+            SidePanel {
+                id: sidePanel
+                anchors.fill: parent
+                z: 500
             }
         }
     }

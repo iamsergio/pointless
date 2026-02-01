@@ -5,7 +5,10 @@
 - Add ErrorPopup
 - Add ofline mode
 - Make buttons react to touch
-
+- About
+  - Qt version
+  - Data rev, numTasks
+  - Last sync
 
 - Nice to haves:
   - Return views so we dont allocate
