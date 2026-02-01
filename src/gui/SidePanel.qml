@@ -107,7 +107,7 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        GuiController.cleanupOldData();
+                        GuiController.cleanupPageVisible = true;
                         root.isOpen = false;
                     }
                 }

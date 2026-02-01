@@ -60,6 +60,7 @@ class GuiController : public QObject
     Q_PROPERTY(bool isOfflineMode READ isOfflineMode NOTIFY isOfflineModeChanged)
     Q_PROPERTY(bool aboutIsVisible READ aboutIsVisible WRITE setAboutIsVisible NOTIFY aboutIsVisibleChanged)
     Q_PROPERTY(bool tagsPageVisible READ tagsPageVisible WRITE setTagsPageVisible NOTIFY tagsPageVisibleChanged)
+    Q_PROPERTY(bool cleanupPageVisible READ cleanupPageVisible WRITE setCleanupPageVisible NOTIFY cleanupPageVisibleChanged)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
@@ -137,6 +138,10 @@ public:
     [[nodiscard]] bool tagsPageVisible() const;
     void setTagsPageVisible(bool visible);
 
+    [[nodiscard]] bool cleanupPageVisible() const;
+    void setCleanupPageVisible(bool visible);
+    Q_INVOKABLE void deleteAllCalendarEvents();
+
     [[nodiscard]] DataController *dataController() const;
     [[nodiscard]] ErrorController *errorController() const;
 
@@ -179,6 +184,7 @@ Q_SIGNALS:
     void isOfflineModeChanged();
     void aboutIsVisibleChanged();
     void tagsPageVisibleChanged();
+    void cleanupPageVisibleChanged();
 
 private:
     explicit GuiController(QObject *parent = nullptr);
@@ -196,6 +202,7 @@ private:
     bool _isOfflineMode = false;
     bool _aboutIsVisible = false;
     bool _tagsPageVisible = false;
+    bool _cleanupPageVisible = false;
     DataController *const _dataController;
     ErrorController *const _errorController;
     mutable TaskFilterModel *_taskFilterModel = nullptr;

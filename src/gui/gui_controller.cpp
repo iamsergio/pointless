@@ -213,6 +213,24 @@ void GuiController::setTagsPageVisible(bool visible)
     Q_EMIT tagsPageVisibleChanged();
 }
 
+bool GuiController::cleanupPageVisible() const
+{
+    return _cleanupPageVisible;
+}
+
+void GuiController::setCleanupPageVisible(bool visible)
+{
+    if (_cleanupPageVisible == visible)
+        return;
+    _cleanupPageVisible = visible;
+    Q_EMIT cleanupPageVisibleChanged();
+}
+
+void GuiController::deleteAllCalendarEvents()
+{
+    _dataController->deleteCalendarTasks();
+}
+
 TaskFilterModel *GuiController::taskFilterModel() const
 {
     if (_taskFilterModel == nullptr) {

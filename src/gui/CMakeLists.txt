@@ -39,6 +39,7 @@ set(PLAIN_QML_FILES
     EditTaskPage.qml
     AboutPage.qml
     TagsPage.qml
+    CleanupPage.qml
     ErrorPopup.qml
     Menu.qml
     MenuItem.qml

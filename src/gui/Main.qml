@@ -79,6 +79,13 @@ QC.ApplicationWindow {
                 z: mainView.z + 1
             }
 
+            CleanupPage {
+                anchors.fill: parent
+                visible: GuiController.cleanupPageVisible
+                onBackClicked: GuiController.cleanupPageVisible = false
+                z: mainView.z + 1
+            }
+
             LoginScreen {
                 id: loginScreen
                 anchors.fill: parent
