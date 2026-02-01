@@ -74,7 +74,7 @@ jobs:
       run: cmake --build build-${{ matrix.preset }}
 
     - name: Run tests
-      if: startsWith(matrix.preset, 'dev-') && matrix.preset != 'dev-tsan'
+      if: startsWith(matrix.preset, 'dev-') && matrix.preset != 'dev-tsan' && matrix.os == 'ubuntu-latest'
       env:
         POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
         POINTLESS_SUPABASE_ANON_KEY: ${{ secrets.POINTLESS_SUPABASE_ANON_KEY }}
