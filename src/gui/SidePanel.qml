@@ -15,10 +15,12 @@ Item {
         id: overlay
         anchors.fill: parent
         color: "#80000000"
-        opacity: isOpen ? 1.0 : 0.0
+        opacity: root.isOpen ? 1.0 : 0.0
 
         Behavior on opacity {
-            NumberAnimation { duration: 200 }
+            NumberAnimation {
+                duration: 200
+            }
         }
 
         MouseArea {
@@ -35,7 +37,10 @@ Item {
         x: root.isOpen ? 0 : -width
 
         Behavior on x {
-            NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+            NumberAnimation {
+                duration: 200
+                easing.type: Easing.OutCubic
+            }
         }
 
         ColumnLayout {
@@ -80,8 +85,8 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        GuiController.aboutIsVisible = true
-                        root.isOpen = false
+                        GuiController.aboutIsVisible = true;
+                        root.isOpen = false;
                     }
                 }
             }
@@ -102,8 +107,8 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        GuiController.cleanup()
-                        root.isOpen = false
+                        GuiController.cleanup();
+                        root.isOpen = false;
                     }
                 }
             }
@@ -124,8 +129,8 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        GuiController.currentViewType = GuiController.Tags
-                        root.isOpen = false
+                        GuiController.currentViewType = GuiController.Tags;
+                        root.isOpen = false;
                     }
                 }
             }
@@ -147,8 +152,8 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        GuiController.cleanup()
-                        root.isOpen = false
+                        GuiController.cleanup();
+                        root.isOpen = false;
                     }
                 }
             }
@@ -170,8 +175,8 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        GuiController.dumpDebug()
-                        root.isOpen = false
+                        GuiController.dumpDebug();
+                        root.isOpen = false;
                     }
                 }
             }
