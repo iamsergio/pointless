@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        preset: [dev, dev-asan, dev-tsan]
+        preset: [dev, rel, dev-asan, dev-tsan]
         os: [ubuntu-latest]
         include:
           - preset: dev-asan
