@@ -47,6 +47,32 @@ jobs:
         sudo apt-get install -y clang-20
         sudo apt-get remove --purge clang-18
 
+    - name: Install Qt/GUI dependencies
+      run: |
+        sudo apt-get install -y \
+          build-essential \
+          libgl1-mesa-dev \
+          libgstreamer-gl1.0-0 \
+          libpulse-dev \
+          libxcb-glx0 \
+          libxcb-icccm4 \
+          libxcb-image0 \
+          libxcb-keysyms1 \
+          libxcb-randr0 \
+          libxcb-render-util0 \
+          libxcb-render0 \
+          libxcb-shape0 \
+          libxcb-shm0 \
+          libxcb-sync1 \
+          libxcb-util1 \
+          libxcb-xfixes0 \
+          libxcb-xinerama0 \
+          libxcb1 \
+          libxkbcommon-dev \
+          libxkbcommon-x11-0 \
+          libxcb-xkb-dev \
+          libxcb-cursor0
+
     - name: Set clang-20 as default clang/clang++
       run: |
         sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-20 100
