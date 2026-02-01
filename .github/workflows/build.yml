@@ -60,7 +60,6 @@ jobs:
         clang++ --version
 
     - name: Checkout CI tools
-      if: matrix.preset == 'dev-asan' || matrix.preset == 'dev-tsan'
       uses: actions/checkout@v4
       with:
         repository: KDABLabs/ci-release-tools
