@@ -8,10 +8,22 @@ import pointless 1.0
 
 Page {
     id: root
+    pageTitle: "About"
 
     ColumnLayout {
+        id: column
         anchors.centerIn: parent
         spacing: Style.fromPixel(12)
+
+        property int numTasks: 0
+        property int localRevision: 0
+
+        onVisibleChanged: {
+            if (visible) {
+                numTasks = GuiController.numTasks();
+                localRevision = GuiController.localRevision();
+            }
+        }
 
         Text {
             text: "Pointless"
@@ -25,6 +37,27 @@ Page {
             text: "A simple to-do manager"
             color: Style.taskSecondaryTextColor
             font.pixelSize: Style.fromPixel(16)
+            Layout.alignment: Qt.AlignHCenter
+        }
+
+        Text {
+            text: "Qt version: " + GuiController.qtVersion()
+            color: Style.taskSecondaryTextColor
+            font.pixelSize: Style.fromPixel(14)
+            Layout.alignment: Qt.AlignHCenter
+        }
+
+        Text {
+            text: "Local revision: " + column.localRevision
+            color: Style.taskSecondaryTextColor
+            font.pixelSize: Style.fromPixel(14)
+            Layout.alignment: Qt.AlignHCenter
+        }
+
+        Text {
+            text: "Number of tasks: " + column.numTasks
+            color: Style.taskSecondaryTextColor
+            font.pixelSize: Style.fromPixel(14)
             Layout.alignment: Qt.AlignHCenter
         }
     }

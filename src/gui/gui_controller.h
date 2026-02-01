@@ -140,6 +140,10 @@ public:
     [[nodiscard]] DataController *dataController() const;
     [[nodiscard]] ErrorController *errorController() const;
 
+    [[nodiscard]] Q_INVOKABLE QString qtVersion() const;
+    [[nodiscard]] Q_INVOKABLE int localRevision() const;
+    [[nodiscard]] Q_INVOKABLE int numTasks() const;
+
     Q_INVOKABLE void dumpTaskDebug(const QString &taskUuid) const;
     Q_INVOKABLE void dumpDebug() const;
     Q_INVOKABLE void onBackClicked();

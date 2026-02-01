@@ -519,6 +519,21 @@ bool GuiController::isVerbose()
     return is;
 }
 
+QString GuiController::qtVersion() const
+{
+    return QString::fromLatin1(qVersion());
+}
+
+int GuiController::localRevision() const
+{
+    return _dataController->localData().data().revision();
+}
+
+int GuiController::numTasks() const
+{
+    return static_cast<int>(_dataController->localData().taskCount());
+}
+
 void GuiController::dumpTaskDebug(const QString &taskUuid) const
 {
     const auto *task = _dataController->taskModel()->taskForUuid(taskUuid);
