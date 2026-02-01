@@ -38,6 +38,8 @@ QVariant TagModel::data(const QModelIndex &index, int role) const
         return QString::fromStdString(tag.name);
     case IsBuiltinRole:
         return tag.isBuiltin();
+    case TaskCountRole:
+        return dataController()->taskCountForTag(QString::fromStdString(tag.name));
     }
 
     return {};
@@ -48,6 +50,7 @@ QHash<int, QByteArray> TagModel::roleNames() const
     QHash<int, QByteArray> roles;
     roles[NameRole] = "name";
     roles[IsBuiltinRole] = "isBuiltin";
+    roles[TaskCountRole] = "taskCount";
     return roles;
 }
 

@@ -152,6 +152,13 @@ QC.ApplicationWindow {
                         Layout.fillHeight: true
                         visible: GuiController.currentViewType === GuiController.Later
                     }
+
+                    TagsView {
+                        id: tagsView
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        visible: GuiController.currentViewType === GuiController.Tags
+                    }
                 }
             }
 

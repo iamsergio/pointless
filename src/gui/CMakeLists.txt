@@ -40,6 +40,7 @@ set(PLAIN_QML_FILES
     Menu.qml
     MenuItem.qml
     SidePanel.qml
+    TagsView.qml
     About.qml)
 
 qt_add_qml_module(

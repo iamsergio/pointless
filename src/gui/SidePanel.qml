@@ -124,7 +124,7 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        GuiController.cleanup()
+                        GuiController.currentViewType = GuiController.Tags
                         root.isOpen = false
                     }
                 }

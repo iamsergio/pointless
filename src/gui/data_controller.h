@@ -53,6 +53,8 @@ public:
 
     [[nodiscard]] TaskModel *taskModel() const;
     [[nodiscard]] TagModel *tagModel() const;
+    [[nodiscard]] Q_INVOKABLE int taskCountForTag(const QString &tagName) const;
+    void scheduleSave();
 
 #ifdef POINTLESS_ENABLE_TESTS
     std::expected<pointless::core::Data, TraceableError> refreshBlocking();

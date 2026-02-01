@@ -701,6 +701,14 @@ void GuiController::moveTaskToNextMonday(const QString &taskUuid)
     taskModel()->updateTask(*task);
 }
 
+void GuiController::removeTag(const QString &tagName)
+{
+    _dataController->localData().removeTag(tagName.toStdString());
+    _dataController->localData().data().needsLocalSave = true;
+    _dataController->scheduleSave();
+    _dataController->tagModel()->reload();
+}
+
 void GuiController::cleanup()
 {
 }

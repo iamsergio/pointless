@@ -26,7 +26,8 @@ class TagModel : public QAbstractListModel
 public:
     enum Roles : std::uint16_t {
         NameRole = Qt::UserRole + 1,
-        IsBuiltinRole
+        IsBuiltinRole,
+        TaskCountRole
     };
 
     explicit TagModel(QObject *parent = nullptr);

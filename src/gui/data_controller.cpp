@@ -588,3 +588,19 @@ TagModel *DataController::tagModel() const
 {
     return _tagModel;
 }
+
+int DataController::taskCountForTag(const QString &tagName) const
+{
+    const std::string name = tagName.toStdString();
+    int count = 0;
+    for (size_t i = 0; i < _localData.taskCount(); ++i) {
+        if (_localData.taskAt(i).containsTag(name))
+            ++count;
+    }
+    return count;
+}
+
+void DataController::scheduleSave()
+{
+    _saveToDiskTimer.start();
+}
