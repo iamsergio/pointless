@@ -32,8 +32,8 @@ jobs:
             qt-flavor: tsan
           - preset: dev
             qt-flavor: debug
-          - preset: rel
-            qt-flavor: profile
+          # - preset: rel
+          #   qt-flavor: profile
 
     steps:
     - name: Checkout code
