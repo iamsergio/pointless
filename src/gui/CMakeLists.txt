@@ -35,13 +35,15 @@ set(PLAIN_QML_FILES
     CheckBox.qml
     Calendar.qml
     LineEdit.qml
-    EditTask.qml
+    Page.qml
+    EditTaskPage.qml
+    AboutPage.qml
+    TagsPage.qml
     ErrorPopup.qml
     Menu.qml
     MenuItem.qml
     SidePanel.qml
-    TagsView.qml
-    About.qml)
+    TagsView.qml)
 
 qt_add_qml_module(
   pointless_gui

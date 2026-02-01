@@ -18,6 +18,9 @@ cmake --build build-dev
 # Run tests
 ctest --test-dir build-dev --output-on-failure --verbose
 
+# Run qmllint
+ninja all_qmllint
+
 # Other presets: rel, dev-asan, dev-tsan, ios-dev, ios-release, clang-tidy
 ```
 

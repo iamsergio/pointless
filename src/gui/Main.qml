@@ -50,7 +50,7 @@ QC.ApplicationWindow {
                 }
             }
 
-            EditTask {
+            EditTaskPage {
                 id: editTaskView
                 anchors.fill: parent
                 visible: GuiController.isEditing
@@ -65,10 +65,17 @@ QC.ApplicationWindow {
                 }
             }
 
-            About {
+            AboutPage {
                 anchors.fill: parent
                 visible: GuiController.aboutIsVisible
                 onBackClicked: GuiController.aboutIsVisible = false
+                z: mainView.z + 1
+            }
+
+            TagsPage {
+                anchors.fill: parent
+                visible: GuiController.tagsPageVisible
+                onBackClicked: GuiController.tagsPageVisible = false
                 z: mainView.z + 1
             }
 
@@ -153,12 +160,6 @@ QC.ApplicationWindow {
                         visible: GuiController.currentViewType === GuiController.Later
                     }
 
-                    TagsView {
-                        id: tagsView
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        visible: GuiController.currentViewType === GuiController.Tags
-                    }
                 }
             }
 

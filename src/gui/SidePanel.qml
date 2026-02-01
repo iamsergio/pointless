@@ -129,7 +129,7 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        GuiController.currentViewType = GuiController.Tags;
+                        GuiController.tagsPageVisible = true;
                         root.isOpen = false;
                     }
                 }

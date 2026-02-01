@@ -200,6 +200,19 @@ void GuiController::setAboutIsVisible(bool visible)
     Q_EMIT aboutIsVisibleChanged();
 }
 
+bool GuiController::tagsPageVisible() const
+{
+    return _tagsPageVisible;
+}
+
+void GuiController::setTagsPageVisible(bool visible)
+{
+    if (_tagsPageVisible == visible)
+        return;
+    _tagsPageVisible = visible;
+    Q_EMIT tagsPageVisibleChanged();
+}
+
 TaskFilterModel *GuiController::taskFilterModel() const
 {
     if (_taskFilterModel == nullptr) {

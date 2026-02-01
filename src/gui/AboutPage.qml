@@ -6,25 +6,8 @@ import QtQuick.Layouts
 
 import pointless 1.0
 
-Rectangle {
+Page {
     id: root
-    color: Style.background
-
-    signal backClicked()
-
-    FontAwesomeButton {
-        fontAwesomeIcon: "\uf053"
-        iconSize: Style.fromPixel(18)
-        iconColor: Style.iconColor
-        backgroundColor: "transparent"
-        anchors {
-            top: parent.top
-            left: parent.left
-            topMargin: Style.fromPixel(16)
-            leftMargin: Style.fromPixel(16)
-        }
-        onClicked: root.backClicked()
-    }
 
     ColumnLayout {
         anchors.centerIn: parent

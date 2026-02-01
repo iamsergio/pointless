@@ -7,64 +7,33 @@ import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import pointless 1.0
 
-Rectangle {
+Page {
     id: root
-    color: Style.background
     objectName: "editTask"
+    pageTitle: "Edit Task"
+    rightButtonIcon: "\uf00c"
+    rightButtonObjectName: "saveButton"
 
-    signal backClicked
     signal saveClicked(string title, string tag, bool evening)
 
     property string selectedTag: ""
     property bool isEvening: false
 
+    onVisibleChanged: {
+        if (visible) {
+            titleInput.text = GuiController.titleInEditor;
+            titleInput.forceActiveFocus();
+            root.selectedTag = GuiController.tagInEditor;
+            root.isEvening = GuiController.isEveningInEditor;
+        }
+    }
+
+    onRightButtonClicked: root.saveClicked(titleInput.text, root.selectedTag, root.isEvening)
+
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: Style.fromPixel(16)
         spacing: Style.fromPixel(20)
 
-        onVisibleChanged: {
-            if (visible) {
-                titleInput.text = GuiController.titleInEditor;
-                titleInput.forceActiveFocus();
-                root.selectedTag = GuiController.tagInEditor;
-                root.isEvening = GuiController.isEveningInEditor;
-            }
-        }
-
-        // Header
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: Style.fromPixel(10)
-
-            FontAwesomeButton {
-                id: backButton
-                fontAwesomeIcon: "\uf060" // Arrow left
-                backgroundColor: "transparent"
-                iconColor: "white"
-                onClicked: root.backClicked()
-            }
-
-            Text {
-                text: "Edit Task"
-                color: "white"
-                font.pixelSize: Style.fromPixel(18)
-                font.bold: true
-                Layout.fillWidth: true
-                horizontalAlignment: Text.AlignHCenter
-            }
-
-            FontAwesomeButton {
-                id: saveButton
-                objectName: "saveButton"
-                fontAwesomeIcon: "\uf00c" // Check
-                backgroundColor: "transparent"
-                iconColor: "white"
-                onClicked: root.saveClicked(titleInput.text, root.selectedTag, root.isEvening)
-            }
-        }
-
-        // Title Section
         ColumnLayout {
             Layout.fillWidth: true
             spacing: Style.fromPixel(5)
@@ -87,7 +56,6 @@ Rectangle {
             }
         }
 
-        // Tag Section
         ColumnLayout {
             Layout.fillWidth: true
             spacing: Style.fromPixel(5)
@@ -128,7 +96,6 @@ Rectangle {
             }
         }
 
-        // Evening Section
         RowLayout {
             Layout.fillWidth: true
             spacing: Style.fromPixel(5)
@@ -154,7 +121,6 @@ Rectangle {
             }
         }
 
-        // Date Section
         ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
