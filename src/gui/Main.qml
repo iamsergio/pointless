@@ -43,13 +43,6 @@ QC.ApplicationWindow {
             anchors.fill: parent
             anchors.topMargin: parent.SafeArea.margins.top
 
-            Keys.onPressed: function (event) {
-                if (GuiController.isEditing) {
-                    console.warn("Unexpected key press while editing. Ignoring.");
-                    return;
-                }
-            }
-
             EditTaskPage {
                 id: editTaskView
                 anchors.fill: parent
