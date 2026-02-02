@@ -9,6 +9,7 @@
 #include "tagfiltermodel.h"
 #include "error_controller.h"
 
+
 #include <QDate>
 #include <QObject>
 #include <QQmlEngine>
@@ -61,6 +62,8 @@ class GuiController : public QObject
     Q_PROPERTY(bool aboutIsVisible READ aboutIsVisible WRITE setAboutIsVisible NOTIFY aboutIsVisibleChanged)
     Q_PROPERTY(bool tagsPageVisible READ tagsPageVisible WRITE setTagsPageVisible NOTIFY tagsPageVisibleChanged)
     Q_PROPERTY(bool cleanupPageVisible READ cleanupPageVisible WRITE setCleanupPageVisible NOTIFY cleanupPageVisibleChanged)
+    Q_PROPERTY(bool calendarsPageVisible READ calendarsPageVisible WRITE setCalendarsPageVisible NOTIFY calendarsPageVisibleChanged)
+    Q_PROPERTY(QAbstractListModel *calendarsModel READ calendarsModel CONSTANT)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
@@ -140,6 +143,12 @@ public:
 
     [[nodiscard]] bool cleanupPageVisible() const;
     void setCleanupPageVisible(bool visible);
+
+    [[nodiscard]] bool calendarsPageVisible() const;
+    void setCalendarsPageVisible(bool visible);
+
+    [[nodiscard]] QAbstractListModel *calendarsModel() const;
+
     Q_INVOKABLE void deleteAllCalendarEvents();
 
     [[nodiscard]] DataController *dataController() const;
@@ -185,6 +194,7 @@ Q_SIGNALS:
     void aboutIsVisibleChanged();
     void tagsPageVisibleChanged();
     void cleanupPageVisibleChanged();
+    void calendarsPageVisibleChanged();
 
 private:
     explicit GuiController(QObject *parent = nullptr);
@@ -203,6 +213,8 @@ private:
     bool _aboutIsVisible = false;
     bool _tagsPageVisible = false;
     bool _cleanupPageVisible = false;
+    bool _calendarsPageVisible = false;
+    mutable QAbstractListModel *_calendarsModel = nullptr;
     DataController *const _dataController;
     ErrorController *const _errorController;
     mutable TaskFilterModel *_taskFilterModel = nullptr;

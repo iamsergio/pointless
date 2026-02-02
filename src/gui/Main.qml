@@ -86,6 +86,13 @@ QC.ApplicationWindow {
                 z: mainView.z + 1
             }
 
+            CalendarsPage {
+                anchors.fill: parent
+                visible: GuiController.calendarsPageVisible
+                onBackClicked: GuiController.calendarsPageVisible = false
+                z: mainView.z + 1
+            }
+
             LoginScreen {
                 id: loginScreen
                 anchors.fill: parent

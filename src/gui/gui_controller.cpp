@@ -2,6 +2,9 @@
 // SPDX-License-Identifier: MIT
 
 #include "gui_controller.h"
+#ifdef Q_OS_APPLE
+#include "calendarsmodel.h"
+#endif
 #include "taskfiltermodel.h"
 #include "taskmodel.h"
 #include "tagmodel.h"
@@ -224,6 +227,34 @@ void GuiController::setCleanupPageVisible(bool visible)
         return;
     _cleanupPageVisible = visible;
     Q_EMIT cleanupPageVisibleChanged();
+}
+
+bool GuiController::calendarsPageVisible() const
+{
+    return _calendarsPageVisible;
+}
+
+void GuiController::setCalendarsPageVisible(bool visible)
+{
+    if (_calendarsPageVisible == visible)
+        return;
+    _calendarsPageVisible = visible;
+#ifdef Q_OS_APPLE
+    if (visible) {
+        auto *model = static_cast<CalendarsModel *>(calendarsModel());
+        model->reload();
+    }
+#endif
+    Q_EMIT calendarsPageVisibleChanged();
+}
+
+QAbstractListModel *GuiController::calendarsModel() const
+{
+#ifdef Q_OS_APPLE
+    if (_calendarsModel == nullptr)
+        _calendarsModel = new CalendarsModel(const_cast<GuiController *>(this));
+#endif
+    return _calendarsModel;
 }
 
 void GuiController::deleteAllCalendarEvents()

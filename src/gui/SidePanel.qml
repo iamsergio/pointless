@@ -152,6 +152,7 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
+                        GuiController.calendarsPageVisible = true;
                         root.isOpen = false;
                     }
                 }

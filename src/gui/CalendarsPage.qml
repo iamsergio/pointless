@@ -1,0 +1,61 @@
+// SPDX-FileCopyrightText: 2025 Sergio Martins
+// SPDX-License-Identifier: MIT
+
+import QtQuick
+import QtQuick.Layouts
+
+import pointless 1.0
+
+Page {
+    id: root
+    pageTitle: "Calendars"
+
+    ListView {
+        id: listView
+        anchors.fill: parent
+        model: GuiController.calendarsModel
+        spacing: Style.fromPixel(2)
+
+        delegate: Item {
+            id: delegateRoot
+            required property string calendarId
+            required property string title
+            required property string color
+            required property bool enabled
+
+            width: listView.width
+            implicitHeight: Style.fromPixel(44)
+
+            RowLayout {
+                anchors {
+                    fill: parent
+                    leftMargin: Style.fromPixel(8)
+                    rightMargin: Style.fromPixel(8)
+                }
+                spacing: Style.fromPixel(8)
+
+                Rectangle {
+                    width: Style.fromPixel(12)
+                    height: Style.fromPixel(12)
+                    radius: width / 2
+                    color: delegateRoot.color
+                }
+
+                Text {
+                    Layout.fillWidth: true
+                    text: delegateRoot.title
+                    color: Style.taskTextColor
+                    font.pixelSize: Style.fromPixel(16)
+                    elide: Text.ElideRight
+                }
+
+                CheckBox {
+                    checked: delegateRoot.enabled
+                    onToggled: {
+                        GuiController.calendarsModel.setEnabled(delegateRoot.calendarId, checked)
+                    }
+                }
+            }
+        }
+    }
+}

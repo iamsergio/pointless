@@ -39,6 +39,7 @@ set(PLAIN_QML_FILES
     EditTaskPage.qml
     AboutPage.qml
     TagsPage.qml
+    CalendarsPage.qml
     CleanupPage.qml
     ErrorPopup.qml
     Menu.qml
@@ -89,6 +90,10 @@ qt_add_qml_module(
   ${CMAKE_BINARY_DIR}/pointless
   # NO_PLUGIN
 )
+
+if(APPLE)
+  target_sources(pointless_gui PRIVATE calendarsmodel.cpp calendarsmodel.h)
+endif()
 
 target_link_libraries(pointless_gui PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Qt6::QuickControls2 Qt6::Concurrent pointless_core)
 target_link_libraries(pointless_gui PRIVATE pointless_guiplugin)
