@@ -128,10 +128,9 @@ elseif(APPLE) # macOS
   set_target_properties(
     pointless
     PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER ${BUNDLE_IDENTIFIER}
-                MACOSX_BUNDLE_IDENTIFIER ${BUNDLE_IDENTIFIER}
-                MACOSX_BUNDLE TRUE
-                MACOSX_BUNDLE_INFO_PLIST "${CMAKE_BINARY_DIR}/Info.plist"
-              )
+               MACOSX_BUNDLE_IDENTIFIER ${BUNDLE_IDENTIFIER}
+               MACOSX_BUNDLE TRUE
+               MACOSX_BUNDLE_INFO_PLIST "${CMAKE_BINARY_DIR}/Info.plist")
 endif()
 
 if(POINTLESS_ENABLE_TESTS)

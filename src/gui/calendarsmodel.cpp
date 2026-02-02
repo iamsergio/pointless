@@ -85,7 +85,7 @@ void CalendarsModel::setEnabled(const QString &calendarId, bool enabled)
         if (QString::fromStdString(_entries[i].calendar.id) == calendarId) {
             _entries[i].enabled = enabled;
             const QModelIndex idx = index(static_cast<int>(i));
-            Q_EMIT dataChanged(idx, idx, {EnabledRole});
+            Q_EMIT dataChanged(idx, idx, { EnabledRole });
             break;
         }
     }
@@ -105,7 +105,7 @@ void CalendarsModel::reload()
     _entries.reserve(calendars.size());
     for (auto &cal : calendars) {
         bool enabled = !disabledIds.contains(QString::fromStdString(cal.id));
-        _entries.push_back({std::move(cal), enabled});
+        _entries.push_back({ std::move(cal), enabled });
     }
 
     P_LOG_INFO("numCalendars = {}", static_cast<int>(_entries.size()));
