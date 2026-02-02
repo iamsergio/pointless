@@ -482,6 +482,10 @@ void GuiController::saveTask(QString title, const QString &tag, bool isEvening) 
             extractedTag = lastToken.mid(1);
             tokens.removeLast();
             processedTitle = tokens.join(' ');
+        } else if (_dataController->containsTag(lastToken)) {
+            extractedTag = lastToken;
+            tokens.removeLast();
+            processedTitle = tokens.join(' ');
         }
     }
 
@@ -771,6 +775,23 @@ void GuiController::moveTaskToEvening(const QString &taskUuid)
     if (task->addTag(core::BUILTIN_TAG_EVENING)) {
         taskModel()->updateTask(*task);
     }
+}
+
+void GuiController::setTaskImportant(const QString &taskUuid, bool important)
+{
+    auto *task = _dataController->taskModel()->taskForUuid(taskUuid);
+    if (task == nullptr) {
+        P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
+        return;
+    }
+
+    if (task->isImportant == important) {
+        return;
+    }
+
+    core::Task copy = *task;
+    copy.isImportant = important;
+    taskModel()->updateTask(copy);
 }
 
 void GuiController::moveTaskToNextMonday(const QString &taskUuid)

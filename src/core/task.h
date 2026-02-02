@@ -26,6 +26,7 @@ public:
     [[nodiscard]] bool isDueIn(std::chrono::days days) const;
     [[nodiscard]] bool isDueTomorrow() const;
     [[nodiscard]] bool isDueThisWeek() const;
+    [[nodiscard]] bool isOverdue() const;
     [[nodiscard]] bool shouldBeCleanedUp() const;
 
     void removeBuiltinTags();

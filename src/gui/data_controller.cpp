@@ -616,6 +616,11 @@ int DataController::taskCountForTag(const QString &tagName) const
     return count;
 }
 
+bool DataController::containsTag(const QString &tagName) const
+{
+    return _localData.data().containsTag(tagName.toStdString());
+}
+
 void DataController::scheduleSave()
 {
     _saveToDiskTimer.start();

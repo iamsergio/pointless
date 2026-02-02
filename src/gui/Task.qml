@@ -38,6 +38,9 @@ Rectangle {
         onClicked: {
             root.clicked();
         }
+        onPressAndHold: {
+            GuiController.setTaskImportant(root.taskUuid, !root.taskIsImportant);
+        }
 
         RowLayout {
             anchors.fill: parent

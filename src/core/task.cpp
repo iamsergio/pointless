@@ -44,7 +44,7 @@ bool Task::isLater() const
 
 bool Task::isCurrent() const
 {
-    return containsTag(BUILTIN_TAG_CURRENT) || isDueThisWeek();
+    return containsTag(BUILTIN_TAG_CURRENT) || isDueThisWeek() || isOverdue();
 }
 
 bool Task::isEvening() const
@@ -86,6 +86,15 @@ bool Task::isDueThisWeek() const
         return false;
     }
     return DateUtils::isThisWeek(*dueDate);
+}
+
+bool Task::isOverdue() const
+{
+    if (!dueDate || isDone) {
+        return false;
+    }
+
+    return *dueDate < Clock::now();
 }
 
 bool Task::shouldBeCleanedUp() const
