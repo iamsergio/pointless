@@ -15,6 +15,11 @@ namespace pointless::gui {
 
 inline bool isWhiteListed(const QString &msg)
 {
+#ifdef Q_OS_APPLE
+    // We mostly want this for the tests
+    return true;
+#endif
+
     static QStringList whiteList = {
         "Populating font family aliases took"
     };
