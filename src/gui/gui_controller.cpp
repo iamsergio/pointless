@@ -392,6 +392,15 @@ bool GuiController::isIOS()
 #endif
 }
 
+bool GuiController::isMacOS()
+{
+#ifdef Q_OS_MACOS
+    return true;
+#else
+    return false;
+#endif
+}
+
 QString GuiController::uuidBeingEdited() const
 {
     return _uuidBeingEdited;

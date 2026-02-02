@@ -138,7 +138,7 @@ Item {
             Item {
                 Layout.fillWidth: true
                 implicitHeight: Style.fromPixel(40)
-                visible: GuiController.isMobile
+                visible: GuiController.isMobile || GuiController.isMacOS
 
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
