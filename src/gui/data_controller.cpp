@@ -261,6 +261,21 @@ bool DataController::addTask(const pointless::core::Task &task)
     return false;
 }
 
+bool DataController::removeTag(const QString &tagName)
+{
+    if (taskCountForTag(tagName) > 0) {
+        P_LOG_WARNING("Cannot delete tag '{}' with associated tasks", tagName.toStdString());
+        return false;
+    }
+
+    if (_localData.removeTag(tagName.toStdString())) {
+        _saveToDiskTimer.start();
+        _tagModel->reload();
+        return true;
+    }
+    return false;
+}
+
 void DataController::cleanupOldData()
 {
     if (_localData.cleanupOldData() > 0) {
