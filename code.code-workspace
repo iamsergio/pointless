@@ -37,7 +37,7 @@
     "search.exclude": {
       "**/3rdparty": true
     },
-    "qt-qml.qmlls.customExePath": "/pub_data/installed/Qt/6.10.0/gcc_64/bin/qmlls",
+    "qt-qml.qmlls.customExePath": "/pub_data/installed/Qt/6.10.2/gcc_64/bin/qmlls",
     "qt-qml.qmlls.verboseOutput": true,
     "qt-qml.qmlls.additionalImportPaths": [
       "/pub_data/sources/pointless_cpp/build-dev/src/gui/"
@@ -75,7 +75,7 @@
           "command script import /pub_data/installed/Qt/Tools/QtCreator/share/qtcreator/debugger/lldbbridge.py"
         ],
         "sourceMap": {
-          "/home/qt/work/qt": "/pub_data/installed/Qt/6.10.0/Src"
+          "/home/qt/work/qt": "/pub_data/installed/Qt/6.10.2/Src"
         }
       },
       {
