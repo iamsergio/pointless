@@ -21,6 +21,9 @@ public:
     AppleCalendarProvider &operator=(AppleCalendarProvider &&) = delete;
 
     [[nodiscard]] std::vector<Calendar> getCalendars() const override;
+    [[nodiscard]] std::vector<CalendarEvent> getEvents(
+        const DateRange &range,
+        const std::vector<std::string> &calendarIds) const override;
 
 private:
     struct Private;

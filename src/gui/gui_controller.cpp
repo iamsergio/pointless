@@ -4,6 +4,7 @@
 #include "gui_controller.h"
 #ifdef Q_OS_APPLE
 #include "calendarsmodel.h"
+#include "core/apple_calendar_provider.h"
 #endif
 #include "taskfiltermodel.h"
 #include "taskmodel.h"
@@ -21,6 +22,8 @@
 #include "core/context.h"
 #include "core/data_provider.h"
 #include "core/tag.h"
+#include "core/date_utils.h"
+#include "core/Clock.h"
 
 #include <QTimer>
 #include <QHash>
@@ -260,6 +263,80 @@ QAbstractListModel *GuiController::calendarsModel() const
 void GuiController::deleteAllCalendarEvents()
 {
     _dataController->deleteCalendarTasks();
+}
+
+void GuiController::fetchCalendarEvents()
+{
+#ifdef Q_OS_APPLE
+    auto *model = static_cast<CalendarsModel *>(calendarsModel());
+    if (model == nullptr) {
+        P_LOG_WARNING("No calendars model available");
+        return;
+    }
+
+    std::vector<std::string> enabledCalendarIds;
+    for (int i = 0; i < model->rowCount(); ++i) {
+        QModelIndex idx = model->index(i);
+        bool enabled = model->data(idx, CalendarsModel::EnabledRole).toBool();
+        if (enabled) {
+            QString calId = model->data(idx, CalendarsModel::IdRole).toString();
+            enabledCalendarIds.push_back(calId.toStdString());
+        }
+    }
+
+    if (enabledCalendarIds.empty()) {
+        P_LOG_WARNING("No enabled calendars to fetch events from");
+        return;
+    }
+
+    core::DateRange range;
+    range.start = core::Clock::now();
+    range.end = range.start + std::chrono::hours(24 * 365);
+
+    core::AppleCalendarProvider provider;
+    auto events = provider.getEvents(range, enabledCalendarIds);
+
+    P_LOG_INFO("Fetched {} calendar events", static_cast<int>(events.size()));
+
+    const auto allTasks = _dataController->localData().data().getAllTasks();
+
+    int addedCount = 0;
+    for (const auto &event : events) {
+        bool alreadyImported = false;
+        for (const auto &task : allTasks) {
+            if (task.uuidInDeviceCalendar.has_value() &&
+                *task.uuidInDeviceCalendar == event.eventId) {
+                alreadyImported = true;
+                break;
+            }
+        }
+
+        if (alreadyImported) {
+            continue;
+        }
+
+        core::Task task;
+        task.uuid = QUuid::createUuid().toString(QUuid::WithoutBraces).toStdString();
+        task.title = event.title;
+        task.dueDate = event.startDate;
+        task.uuidInDeviceCalendar = event.eventId;
+        task.deviceCalendarUuid = event.calendarId;
+        task.deviceCalendarName = event.calendarName;
+
+        if (core::DateUtils::isThisWeek(event.startDate)) {
+            task.tags.emplace_back(core::BUILTIN_TAG_CURRENT);
+        } else if (core::DateUtils::isNext7Days(event.startDate)) {
+            task.tags.emplace_back(core::BUILTIN_TAG_SOON);
+        }
+
+        taskModel()->addTask(task);
+        addedCount++;
+    }
+
+    P_LOG_INFO("Added {} new tasks from calendar events", addedCount);
+#else
+    P_LOG_WARNING("Calendar event fetching is only available on Apple platforms");
+#endif
 }
 
 TaskFilterModel *GuiController::taskFilterModel() const

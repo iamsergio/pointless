@@ -152,6 +152,7 @@ public:
     [[nodiscard]] QAbstractListModel *calendarsModel() const;
 
     Q_INVOKABLE void deleteAllCalendarEvents();
+    Q_INVOKABLE void fetchCalendarEvents();
 
     [[nodiscard]] DataController *dataController() const;
     [[nodiscard]] ErrorController *errorController() const;

@@ -12,7 +12,10 @@ Page {
 
     ListView {
         id: listView
-        anchors.fill: parent
+        anchors {
+            fill: parent
+            bottomMargin: Style.fromPixel(60)
+        }
         model: GuiController.calendarsModel
         spacing: Style.fromPixel(2)
 
@@ -56,6 +59,31 @@ Page {
                     }
                 }
             }
+        }
+    }
+
+    Rectangle {
+        id: fetchButton
+        anchors {
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
+            margins: Style.fromPixel(8)
+        }
+        height: Style.fromPixel(44)
+        color: Style.buttonColor
+        radius: Style.fromPixel(8)
+
+        Text {
+            anchors.centerIn: parent
+            text: "Fetch Calendar Events"
+            color: Style.buttonTextColor
+            font.pixelSize: Style.fromPixel(16)
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: GuiController.fetchCalendarEvents()
         }
     }
 }

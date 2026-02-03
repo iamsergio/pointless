@@ -108,4 +108,82 @@ std::vector<Calendar> AppleCalendarProvider::getCalendars() const
     return calendars;
 }
 
+std::vector<CalendarEvent> AppleCalendarProvider::getEvents(
+    const DateRange &range,
+    const std::vector<std::string> &calendarIds) const
+{
+    std::vector<CalendarEvent> events;
+
+    if (calendarIds.empty()) {
+        return events;
+    }
+
+    EKAuthorizationStatus status = [EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent];
+    bool hasAccess = false;
+    if (@available(macOS 14.0, iOS 17.0, *)) {
+        hasAccess = (status == EKAuthorizationStatusFullAccess);
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        hasAccess = (status == EKAuthorizationStatusAuthorized);
+#pragma clang diagnostic pop
+    }
+
+    if (!hasAccess) {
+        std::cerr << "No calendar access for fetching events.\n";
+        return events;
+    }
+
+    NSDate *startDate = [NSDate dateWithTimeIntervalSince1970:
+        std::chrono::duration<double>(range.start.time_since_epoch()).count()];
+    NSDate *endDate = [NSDate dateWithTimeIntervalSince1970:
+        std::chrono::duration<double>(range.end.time_since_epoch()).count()];
+
+    NSArray<EKCalendar*>* allCalendars = [_d->eventStore calendarsForEntityType:EKEntityTypeEvent];
+    NSMutableArray<EKCalendar*>* selectedCalendars = [NSMutableArray array];
+
+    for (EKCalendar* ekCalendar in allCalendars) {
+        std::string calId = [ekCalendar.calendarIdentifier UTF8String];
+        for (const auto &requestedId : calendarIds) {
+            if (calId == requestedId) {
+                [selectedCalendars addObject:ekCalendar];
+                break;
+            }
+        }
+    }
+
+    if (selectedCalendars.count == 0) {
+        return events;
+    }
+
+    NSPredicate *predicate = [_d->eventStore predicateForEventsWithStartDate:startDate
+                                                                      endDate:endDate
+                                                                    calendars:selectedCalendars];
+
+    NSArray<EKEvent*>* ekEvents = [_d->eventStore eventsMatchingPredicate:predicate];
+
+    for (EKEvent* ekEvent in ekEvents) {
+        CalendarEvent event;
+        event.eventId = [ekEvent.eventIdentifier UTF8String];
+        event.calendarId = [ekEvent.calendar.calendarIdentifier UTF8String];
+        event.calendarName = [ekEvent.calendar.title UTF8String];
+        event.title = [ekEvent.title UTF8String];
+        event.isAllDay = ekEvent.allDay;
+
+        NSTimeInterval startInterval = [ekEvent.startDate timeIntervalSince1970];
+        event.startDate = std::chrono::system_clock::time_point(
+            std::chrono::duration_cast<std::chrono::system_clock::duration>(
+                std::chrono::duration<double>(startInterval)));
+
+        NSTimeInterval endInterval = [ekEvent.endDate timeIntervalSince1970];
+        event.endDate = std::chrono::system_clock::time_point(
+            std::chrono::duration_cast<std::chrono::system_clock::duration>(
+                std::chrono::duration<double>(endInterval)));
+
+        events.push_back(event);
+    }
+
+    return events;
+}
+
 } // namespace pointless::core
