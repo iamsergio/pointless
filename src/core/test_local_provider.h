@@ -21,6 +21,14 @@ public:
     std::expected<std::string, TraceableError> pullData() override;
     std::expected<void, TraceableError> pushData(const std::string &data) override;
 
+    [[nodiscard]] std::string accessToken() const override;
+    [[nodiscard]] std::string refreshToken() const override;
+    [[nodiscard]] std::string userId() const override;
+    void setAccessToken(const std::string &token) override;
+    void setRefreshToken(const std::string &token) override;
+    void setUserId(const std::string &userId) override;
+    bool refreshAccessToken() override;
+
 private:
     std::string _filePath;
 };

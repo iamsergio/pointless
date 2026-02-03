@@ -59,3 +59,35 @@ std::expected<void, TraceableError> TestLocalDataProvider::pushData(const std::s
     file << data;
     return {};
 }
+
+std::string TestLocalDataProvider::accessToken() const
+{
+    return {};
+}
+
+std::string TestLocalDataProvider::refreshToken() const
+{
+    return {};
+}
+
+std::string TestLocalDataProvider::userId() const
+{
+    return {};
+}
+
+void TestLocalDataProvider::setAccessToken(const std::string & /*token*/)
+{
+}
+
+void TestLocalDataProvider::setRefreshToken(const std::string & /*token*/)
+{
+}
+
+void TestLocalDataProvider::setUserId(const std::string & /*userId*/)
+{
+}
+
+bool TestLocalDataProvider::refreshAccessToken()
+{
+    return true;
+}

@@ -50,6 +50,14 @@ DataController::DataController(QObject *parent)
     _tokenCheckTimer.setInterval(std::chrono::minutes(5));
     _tokenCheckTimer.setSingleShot(false);
     connect(&_tokenCheckTimer, &QTimer::timeout, this, [this] {
+        if (!isAuthenticated()) {
+            return;
+        }
+
+        if (_dataProvider) {
+            _dataProvider->refreshAccessToken();
+        }
+
         const auto currentAccess = accessToken();
         const auto currentRefresh = refreshToken();
         bool changed = false;

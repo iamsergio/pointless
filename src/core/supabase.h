@@ -31,6 +31,7 @@ public:
     void setAccessToken(const std::string &token) override;
     void setUserId(const std::string &userId) override;
     void setRefreshToken(const std::string &token) override;
+    bool refreshAccessToken() override;
 
     std::expected<void, TraceableError> pushData(const std::string &data) override;
     std::expected<std::string, TraceableError> pullData() override;
@@ -50,7 +51,6 @@ private:
     std::string _defaultPassword;
 
     std::expected<std::string, TraceableError> retrieveRawData();
-    bool refreshAccessToken();
 
     static std::vector<uint8_t> compress(const std::string &data);
     static std::string decompress(const std::vector<uint8_t> &compressed_data);
