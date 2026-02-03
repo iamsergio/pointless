@@ -9,16 +9,20 @@ Pointless is a Qt6/QML cross-platform to-do manager written in C++23 with option
 ## Build Commands
 
 ```bash
-# Configure (debug)
+
+#use uname to find out if you're on Linux os macOS. To see if you're on an iOS terminal
+# env var USE_CURRENT_TARGET which will have 'pointless-ios' value in that case.
+
+# Configure (use dev preset on linux/macos, ios-debug on iOS)
 cmake --preset=dev
 
-# Build
+# Build (use build-ios-dev/ on iOS instead)
 cmake --build build-dev
 
-# Run tests
+# Linux only: Run tests
 ctest --test-dir build-dev --output-on-failure --verbose
 
-# Run qmllint
+# Linux only: Run qmllint
 ninja all_qmllint
 
 # Other presets: rel, dev-asan, dev-tsan, ios-dev, ios-release, clang-tidy
