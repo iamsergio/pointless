@@ -25,6 +25,7 @@ Rectangle {
     required property bool taskIsLater
     required property bool taskIsCurrent
     required property bool taskIsDueTomorrow
+    property bool showTags: true
 
     height: Style.taskHeight
     color: taskIsImportant ? Style.taskImportantBackground : (taskIsEvening ? Style.taskEveningBackground : Style.taskBackground)
@@ -95,6 +96,8 @@ Rectangle {
 
             Tag {
                 tagName: root.taskTagName
+                isInteractive: false
+                visible: root.showTags
                 Layout.alignment: Qt.AlignVCenter
                 onClicked: {
                     GuiController.currentTag = tagName;

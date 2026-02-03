@@ -12,6 +12,8 @@ ListView {
     spacing: Style.taskSpacing
     cacheBuffer: 1000
 
+    property bool showTags: true
+
     TaskFilterModel {
         id: taskFilterModel
         viewType: GuiController.currentViewType
@@ -56,5 +58,6 @@ ListView {
         taskIsLater: isLater
         taskIsCurrent: isCurrent
         taskIsDueTomorrow: isDueTomorrow
+        showTags: root.showTags
     }
 }

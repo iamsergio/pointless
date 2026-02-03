@@ -11,5 +11,6 @@ Page {
 
     TaskView {
         anchors.fill: parent
+        showTags: false
     }
 }

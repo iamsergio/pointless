@@ -34,6 +34,9 @@ ListView {
 
             Tag {
                 tagName: delegateRoot.name
+                onClicked: {
+                    GuiController.currentTag = tagName;
+                }
             }
 
             Text {
