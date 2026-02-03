@@ -45,7 +45,8 @@ set(PLAIN_QML_FILES
     Menu.qml
     MenuItem.qml
     SidePanel.qml
-    TagsView.qml)
+    TagsView.qml
+    TasksByTagPage.qml)
 
 qt_add_qml_module(
   pointless_gui
@@ -82,6 +83,8 @@ qt_add_qml_module(
   weekdaymodel.h
   calendarmodel.cpp
   calendarmodel.h
+  calendarsmodel.cpp
+  calendarsmodel.h
   RESOURCES
   fonts/FontAwesome7Brands-Regular-400.otf
   fonts/FontAwesome7Free-Regular-400.otf
@@ -90,10 +93,6 @@ qt_add_qml_module(
   ${CMAKE_BINARY_DIR}/pointless
   # NO_PLUGIN
 )
-
-if(APPLE)
-  target_sources(pointless_gui PRIVATE calendarsmodel.cpp calendarsmodel.h)
-endif()
 
 target_link_libraries(pointless_gui PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Qt6::QuickControls2 Qt6::Concurrent pointless_core)
 target_link_libraries(pointless_gui PRIVATE pointless_guiplugin)

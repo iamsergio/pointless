@@ -55,6 +55,21 @@ void TaskFilterModel::setViewType(ViewType type)
     emit viewTypeChanged();
 }
 
+QString TaskFilterModel::tagName() const
+{
+    return _tagName;
+}
+
+void TaskFilterModel::setTagName(const QString &tagName)
+{
+    if (_tagName == tagName)
+        return;
+    beginFilterChange();
+    _tagName = tagName;
+    endFilterChange();
+    Q_EMIT tagNameChanged();
+}
+
 bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
     Q_UNUSED(source_parent)
@@ -69,6 +84,10 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
     if (task == nullptr) {
         P_LOG_CRITICAL("Task is null at row {}", source_row);
         return true;
+    }
+
+    if (!_tagName.isEmpty()) {
+        return task->containsTag(_tagName.toStdString());
     }
 
     if ((task->isDone && !task->needsSyncToServer) || task->isGoal) {

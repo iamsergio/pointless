@@ -15,6 +15,7 @@ ListView {
     TaskFilterModel {
         id: taskFilterModel
         viewType: GuiController.currentViewType
+        tagName: GuiController.currentTag
     }
 
     model: taskFilterModel

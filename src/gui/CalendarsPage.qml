@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 
@@ -38,8 +40,6 @@ Page {
                 spacing: Style.fromPixel(8)
 
                 Rectangle {
-                    width: Style.fromPixel(12)
-                    height: Style.fromPixel(12)
                     radius: width / 2
                     color: delegateRoot.color
                 }
@@ -55,7 +55,7 @@ Page {
                 CheckBox {
                     checked: delegateRoot.enabled
                     onToggled: {
-                        GuiController.calendarsModel.setEnabled(delegateRoot.calendarId, checked)
+                        GuiController.calendarsModel.setEnabled(delegateRoot.calendarId, checked);
                     }
                 }
             }

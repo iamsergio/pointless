@@ -3,10 +3,6 @@
 
 #pragma once
 
-#include <QtGlobal>
-
-#ifdef Q_OS_APPLE
-
 #include "core/calendar_provider.h"
 
 #include <QAbstractListModel>
@@ -20,7 +16,6 @@ class CalendarsModel : public QAbstractListModel
     Q_OBJECT
     QML_ELEMENT
     Q_PROPERTY(int count READ count NOTIFY countChanged)
-
 public:
     enum Roles : std::uint16_t {
         IdRole = Qt::UserRole + 1,
@@ -42,6 +37,8 @@ public:
 
     void reload();
 
+    void setProvider(pointless::core::CalendarProvider *provider);
+
 Q_SIGNALS:
     void countChanged();
 
@@ -52,7 +49,6 @@ private:
         bool enabled = true;
     };
 
+    pointless::core::CalendarProvider *_provider = nullptr;
     std::vector<CalendarEntry> _entries;
 };
-
-#endif

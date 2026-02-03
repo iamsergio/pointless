@@ -15,6 +15,7 @@ class TaskFilterModel : public QSortFilterProxyModel
     QML_ELEMENT
     Q_PROPERTY(TaskFilterModel::ViewType viewType READ viewType WRITE setViewType NOTIFY viewTypeChanged)
     Q_PROPERTY(QDate dateFilter READ dateFilter WRITE setDateFilter NOTIFY dateFilterChanged)
+    Q_PROPERTY(QString tagName READ tagName WRITE setTagName NOTIFY tagNameChanged)
     Q_PROPERTY(int count READ count NOTIFY countChanged)
     Q_PROPERTY(bool isEmpty READ isEmpty NOTIFY emptyChanged)
 public:
@@ -37,6 +38,10 @@ public:
     void setViewType(ViewType type);
     Q_SIGNAL void viewTypeChanged();
 
+    [[nodiscard]] QString tagName() const;
+    void setTagName(const QString &tagName);
+    Q_SIGNAL void tagNameChanged();
+
     [[nodiscard]] QDate dateFilter() const;
     void setDateFilter(QDate date);
     Q_SIGNAL void dateFilterChanged();
@@ -55,6 +60,7 @@ private:
     void evaluateEmpty();
 
     ViewType _viewType = ViewType::Week;
+    QString _tagName;
     QDate _dateFilter;
     int _previousRowCount = 0;
 };

@@ -9,6 +9,7 @@
 #include "tagfiltermodel.h"
 #include "error_controller.h"
 
+#include "core/calendar_provider.h"
 
 #include <QDate>
 #include <QObject>
@@ -16,9 +17,11 @@
 #include <QtQml/qqmlregistration.h>
 #include <QTimer>
 
+#include <memory>
+
 class DataController;
 class ErrorController;
-
+class CalendarsModel;
 
 class GuiController : public QObject
 {
@@ -63,8 +66,9 @@ class GuiController : public QObject
     Q_PROPERTY(bool aboutIsVisible READ aboutIsVisible WRITE setAboutIsVisible NOTIFY aboutIsVisibleChanged)
     Q_PROPERTY(bool tagsPageVisible READ tagsPageVisible WRITE setTagsPageVisible NOTIFY tagsPageVisibleChanged)
     Q_PROPERTY(bool cleanupPageVisible READ cleanupPageVisible WRITE setCleanupPageVisible NOTIFY cleanupPageVisibleChanged)
+    Q_PROPERTY(QString currentTag READ currentTag WRITE setCurrentTag NOTIFY currentTagChanged)
     Q_PROPERTY(bool calendarsPageVisible READ calendarsPageVisible WRITE setCalendarsPageVisible NOTIFY calendarsPageVisibleChanged)
-    Q_PROPERTY(QAbstractListModel *calendarsModel READ calendarsModel CONSTANT)
+    Q_PROPERTY(CalendarsModel *calendarsModel READ calendarsModel CONSTANT)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
@@ -149,7 +153,10 @@ public:
     [[nodiscard]] bool calendarsPageVisible() const;
     void setCalendarsPageVisible(bool visible);
 
-    [[nodiscard]] QAbstractListModel *calendarsModel() const;
+    [[nodiscard]] QString currentTag() const;
+    void setCurrentTag(const QString &tag);
+
+    [[nodiscard]] CalendarsModel *calendarsModel() const;
 
     Q_INVOKABLE void deleteAllCalendarEvents();
     Q_INVOKABLE void fetchCalendarEvents();
@@ -199,6 +206,7 @@ Q_SIGNALS:
     void tagsPageVisibleChanged();
     void cleanupPageVisibleChanged();
     void calendarsPageVisibleChanged();
+    void currentTagChanged();
 
 private:
     explicit GuiController(QObject *parent = nullptr);
@@ -218,7 +226,9 @@ private:
     bool _tagsPageVisible = false;
     bool _cleanupPageVisible = false;
     bool _calendarsPageVisible = false;
-    mutable QAbstractListModel *_calendarsModel = nullptr;
+    QString _currentTag;
+    std::unique_ptr<pointless::core::CalendarProvider> _calendarProvider;
+    mutable CalendarsModel *_calendarsModel = nullptr;
     DataController *const _dataController;
     ErrorController *const _errorController;
     mutable TaskFilterModel *_taskFilterModel = nullptr;

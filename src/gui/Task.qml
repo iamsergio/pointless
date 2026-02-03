@@ -96,6 +96,9 @@ Rectangle {
             Tag {
                 tagName: root.taskTagName
                 Layout.alignment: Qt.AlignVCenter
+                onClicked: {
+                    GuiController.currentTag = tagName;
+                }
             }
 
             FontAwesomeButton {

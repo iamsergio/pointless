@@ -4,6 +4,7 @@
 #pragma once
 
 #include <chrono>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -50,5 +51,7 @@ public:
         const DateRange &range,
         const std::vector<std::string> &calendarIds) const = 0;
 };
+
+std::unique_ptr<CalendarProvider> createCalendarProvider();
 
 } // namespace pointless::core

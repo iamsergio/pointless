@@ -3,9 +3,6 @@
 
 #include "calendarsmodel.h"
 
-#ifdef Q_OS_APPLE
-
-#include "core/apple_calendar_provider.h"
 #include "core/logger.h"
 
 #include <QByteArray>
@@ -95,8 +92,7 @@ void CalendarsModel::reload()
 {
     beginResetModel();
 
-    pointless::core::AppleCalendarProvider provider;
-    auto calendars = provider.getCalendars();
+    auto calendars = _provider->getCalendars();
 
     QSettings settings;
     const QStringList disabledIds = settings.value(s_disabledCalendarIdsKey).toStringList();
@@ -114,4 +110,10 @@ void CalendarsModel::reload()
     Q_EMIT countChanged();
 }
 
-#endif
+void CalendarsModel::setProvider(pointless::core::CalendarProvider *provider)
+{
+    Q_ASSERT(provider);
+    Q_ASSERT(!_provider);
+    _provider = provider;
+    reload();
+}

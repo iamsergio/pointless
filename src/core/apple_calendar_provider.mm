@@ -186,4 +186,9 @@ std::vector<CalendarEvent> AppleCalendarProvider::getEvents(
     return events;
 }
 
+std::unique_ptr<CalendarProvider> createCalendarProvider()
+{
+    return std::make_unique<AppleCalendarProvider>();
+}
+
 } // namespace pointless::core

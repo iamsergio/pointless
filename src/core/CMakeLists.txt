@@ -51,6 +51,8 @@ if(APPLE)
   find_library(COREGRAPHICS_LIB CoreGraphics REQUIRED)
   target_link_libraries(pointless_core PRIVATE ${EVENTKIT_LIB} ${COREGRAPHICS_LIB})
   target_sources(pointless_core PRIVATE apple_calendar_provider.mm)
+else()
+  target_sources(pointless_core PRIVATE linux_calendar_provider.cpp linux_calendar_provider.h)
 endif()
 
 if(APPLE AND NOT IOS)

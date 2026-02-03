@@ -2,10 +2,8 @@
 // SPDX-License-Identifier: MIT
 
 #include "gui_controller.h"
-#ifdef Q_OS_APPLE
 #include "calendarsmodel.h"
-#include "core/apple_calendar_provider.h"
-#endif
+#include "core/calendar_provider.h"
 #include "taskfiltermodel.h"
 #include "taskmodel.h"
 #include "tagmodel.h"
@@ -70,6 +68,29 @@ public:
                     gc->setTaskMenuUuid({});
                     return true;
                 }
+
+                if (!gc->currentTag().isEmpty()) {
+                    gc->setCurrentTag({});
+                    return true;
+                }
+                if (gc->calendarsPageVisible()) {
+                    gc->setCalendarsPageVisible(false);
+                    return true;
+                }
+                if (gc->cleanupPageVisible()) {
+                    gc->setCleanupPageVisible(false);
+                    return true;
+                }
+
+                if (gc->tagsPageVisible()) {
+                    gc->setTagsPageVisible(false);
+                    return true;
+                }
+
+                if (gc->aboutIsVisible()) {
+                    gc->setAboutIsVisible(false);
+                    return true;
+                }
             }
 
             if (keyEvent->key() == Qt::Key_N) {
@@ -87,6 +108,7 @@ public:
 
 GuiController::GuiController(QObject *parent)
     : QObject(parent)
+    , _calendarProvider(pointless::core::createCalendarProvider())
     , _dataController(new DataController(this))
     , _errorController(new ErrorController(this))
 {
@@ -242,21 +264,31 @@ void GuiController::setCalendarsPageVisible(bool visible)
     if (_calendarsPageVisible == visible)
         return;
     _calendarsPageVisible = visible;
-#ifdef Q_OS_APPLE
     if (visible) {
-        auto *model = static_cast<CalendarsModel *>(calendarsModel());
-        model->reload();
+        calendarsModel()->reload();
     }
-#endif
     Q_EMIT calendarsPageVisibleChanged();
 }
 
-QAbstractListModel *GuiController::calendarsModel() const
+QString GuiController::currentTag() const
 {
-#ifdef Q_OS_APPLE
-    if (_calendarsModel == nullptr)
+    return _currentTag;
+}
+
+void GuiController::setCurrentTag(const QString &tag)
+{
+    if (_currentTag == tag)
+        return;
+    _currentTag = tag;
+    Q_EMIT currentTagChanged();
+}
+
+CalendarsModel *GuiController::calendarsModel() const
+{
+    if (_calendarsModel == nullptr) {
         _calendarsModel = new CalendarsModel(const_cast<GuiController *>(this));
-#endif
+        _calendarsModel->setProvider(_calendarProvider.get());
+    }
     return _calendarsModel;
 }
 
@@ -267,8 +299,7 @@ void GuiController::deleteAllCalendarEvents()
 
 void GuiController::fetchCalendarEvents()
 {
-#ifdef Q_OS_APPLE
-    auto *model = static_cast<CalendarsModel *>(calendarsModel());
+    auto *model = calendarsModel();
     if (model == nullptr) {
         P_LOG_WARNING("No calendars model available");
         return;
@@ -293,8 +324,7 @@ void GuiController::fetchCalendarEvents()
     range.start = core::Clock::now();
     range.end = range.start + std::chrono::hours(24 * 365);
 
-    core::AppleCalendarProvider provider;
-    auto events = provider.getEvents(range, enabledCalendarIds);
+    auto events = _calendarProvider->getEvents(range, enabledCalendarIds);
 
     P_LOG_INFO("Fetched {} calendar events", static_cast<int>(events.size()));
 
@@ -304,8 +334,7 @@ void GuiController::fetchCalendarEvents()
     for (const auto &event : events) {
         bool alreadyImported = false;
         for (const auto &task : allTasks) {
-            if (task.uuidInDeviceCalendar.has_value() &&
-                *task.uuidInDeviceCalendar == event.eventId) {
+            if (task.uuidInDeviceCalendar.has_value() && *task.uuidInDeviceCalendar == event.eventId) {
                 alreadyImported = true;
                 break;
             }
@@ -334,9 +363,6 @@ void GuiController::fetchCalendarEvents()
     }
 
     P_LOG_INFO("Added {} new tasks from calendar events", addedCount);
-#else
-    P_LOG_WARNING("Calendar event fetching is only available on Apple platforms");
-#endif
 }
 
 TaskFilterModel *GuiController::taskFilterModel() const
@@ -427,6 +453,7 @@ void GuiController::setCurrentViewType(ViewType viewType)
         return;
     }
 
+    setCurrentTag({});
     _currentViewType = viewType;
     emit currentViewTypeChanged();
 }

@@ -67,9 +67,7 @@
         "type": "lldb",
         "request": "launch",
         "program": "${command:cmake.launchTargetPath}",
-        "args": [
-          "--no-restore-auth"
-        ],
+        "args": [],
         "cwd": "${command:cmake.buildDirectory}",
         "initCommands": [
           "command script import /pub_data/installed/Qt/Tools/QtCreator/share/qtcreator/debugger/lldbbridge.py"
@@ -83,9 +81,7 @@
         "type": "cppdbg",
         "request": "launch",
         "program": "${command:cmake.launchTargetPath}",
-        "args": [
-          "--gtest_filter=DataControllerTest.SetTaskDone"
-        ],
+        "args": [],
         "stopAtEntry": false,
         "cwd": "${command:cmake.buildDirectory}",
         "environment": [],

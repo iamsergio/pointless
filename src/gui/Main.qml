@@ -72,6 +72,13 @@ QC.ApplicationWindow {
                 z: mainView.z + 1
             }
 
+            TasksByTagPage {
+                anchors.fill: parent
+                visible: GuiController.currentTag.length > 0
+                onBackClicked: GuiController.currentTag = ""
+                z: mainView.z + 1
+            }
+
             CleanupPage {
                 anchors.fill: parent
                 visible: GuiController.cleanupPageVisible

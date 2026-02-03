@@ -22,6 +22,10 @@ ListView {
         height: Style.fromPixel(40)
         color: "transparent"
 
+        TapHandler {
+            onTapped: GuiController.currentTag = delegateRoot.name
+        }
+
         RowLayout {
             anchors.fill: parent
             anchors.leftMargin: Style.fromPixel(4)

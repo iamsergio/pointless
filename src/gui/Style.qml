@@ -57,4 +57,8 @@ Item {
 
     // menu:
     readonly property int menuHeight: fromPixel(35)
+
+    // buttons:
+    readonly property color buttonColor: "#0ea5e9"
+    readonly property color buttonTextColor: "#000000"
 }
