@@ -86,12 +86,12 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
         return true;
     }
 
-    if (!_tagName.isEmpty()) {
-        return task->containsTag(_tagName.toStdString());
-    }
-
     if ((task->isDone && !task->needsSyncToServer) || task->isGoal) {
         return false;
+    }
+
+    if (!_tagName.isEmpty()) {
+        return task->containsTag(_tagName.toStdString());
     }
 
     if (_viewType == ViewType::Week && !_dateFilter.isValid()) {
