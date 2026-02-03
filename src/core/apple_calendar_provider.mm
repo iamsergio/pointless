@@ -109,8 +109,8 @@ std::vector<Calendar> AppleCalendarProvider::getCalendars() const
 }
 
 std::vector<CalendarEvent> AppleCalendarProvider::getEvents(
-    const DateRange &range,
-    const std::vector<std::string> &calendarIds) const
+    const DateRange& range,
+    const std::vector<std::string>& calendarIds) const
 {
     std::vector<CalendarEvent> events;
 
@@ -134,17 +134,17 @@ std::vector<CalendarEvent> AppleCalendarProvider::getEvents(
         return events;
     }
 
-    NSDate *startDate = [NSDate dateWithTimeIntervalSince1970:
-        std::chrono::duration<double>(range.start.time_since_epoch()).count()];
-    NSDate *endDate = [NSDate dateWithTimeIntervalSince1970:
-        std::chrono::duration<double>(range.end.time_since_epoch()).count()];
+    NSDate* startDate = [NSDate dateWithTimeIntervalSince1970:
+            std::chrono::duration<double>(range.start.time_since_epoch()).count()];
+    NSDate* endDate = [NSDate dateWithTimeIntervalSince1970:
+            std::chrono::duration<double>(range.end.time_since_epoch()).count()];
 
     NSArray<EKCalendar*>* allCalendars = [_d->eventStore calendarsForEntityType:EKEntityTypeEvent];
     NSMutableArray<EKCalendar*>* selectedCalendars = [NSMutableArray array];
 
     for (EKCalendar* ekCalendar in allCalendars) {
         std::string calId = [ekCalendar.calendarIdentifier UTF8String];
-        for (const auto &requestedId : calendarIds) {
+        for (const auto& requestedId : calendarIds) {
             if (calId == requestedId) {
                 [selectedCalendars addObject:ekCalendar];
                 break;
@@ -156,9 +156,9 @@ std::vector<CalendarEvent> AppleCalendarProvider::getEvents(
         return events;
     }
 
-    NSPredicate *predicate = [_d->eventStore predicateForEventsWithStartDate:startDate
-                                                                      endDate:endDate
-                                                                    calendars:selectedCalendars];
+    NSPredicate* predicate = [_d->eventStore predicateForEventsWithStartDate:startDate
+                                                                     endDate:endDate
+                                                                   calendars:selectedCalendars];
 
     NSArray<EKEvent*>* ekEvents = [_d->eventStore eventsMatchingPredicate:predicate];
 
