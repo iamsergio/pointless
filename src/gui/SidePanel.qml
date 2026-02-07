@@ -161,6 +161,29 @@ Item {
             Item {
                 Layout.fillWidth: true
                 implicitHeight: Style.fromPixel(40)
+                visible: GuiController.isAuthenticated
+
+                Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    text: "Logout"
+                    color: Style.taskTextColor
+                    font.pixelSize: Style.fromPixel(16)
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        GuiController.logout();
+                        root.isOpen = false;
+                    }
+                }
+            }
+
+            Item {
+                Layout.fillWidth: true
+                implicitHeight: Style.fromPixel(40)
                 visible: GuiController.isDebug
 
                 Text {

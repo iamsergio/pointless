@@ -15,6 +15,16 @@
 #endif
 
 namespace pointless {
+
+inline std::string trim(const std::string &str)
+{
+    const auto start = str.find_first_not_of(" \t\n\r");
+    if (start == std::string::npos)
+        return "";
+    const auto end = str.find_last_not_of(" \t\n\r");
+    return str.substr(start, end - start + 1);
+}
+
 inline std::string getenv_or_empty(const char *name)
 {
     if (const char *v = std::getenv(name))

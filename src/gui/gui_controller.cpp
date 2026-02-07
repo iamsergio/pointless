@@ -476,7 +476,7 @@ QString GuiController::defaultLoginUsername() const
 void GuiController::login(const QString &email, const QString &password)
 {
     _errorController->setLoginError({});
-    _dataController->login(email.toStdString(), password.toStdString());
+    _dataController->login(email.trimmed().toStdString(), password.trimmed().toStdString());
 }
 
 void GuiController::logout()

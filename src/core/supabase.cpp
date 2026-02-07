@@ -68,6 +68,7 @@ bool SupabaseProvider::login(const std::string &email, const std::string &passwo
     if (response.status_code != kHttpOk) {
         P_LOG_ERROR("Login failed: HTTP={} url={}", response.status_code, auth_url);
         P_LOG_ERROR("Response: text={} cpr::ErrorCode={} error.msg={}", response.text, static_cast<int>(response.error.code), response.error.message);
+        P_LOG_ERROR("ANON_KEY={} email={}", _anonKey, email);
 #ifdef POINTLESS_DEVELOPER_MODE
         P_LOG_ERROR("Request body: {}", body);
 #endif
@@ -139,9 +140,9 @@ std::pair<std::string, std::string> SupabaseProvider::defaultLoginPassword() con
 #ifdef POINTLESS_USERNAME
     const std::string username = POINTLESS_USERNAME;
 #else
-    const std::string username = pointless::getenv_or_empty("POINTLESS_USERNAME");
+    const std::string username = pointless::trim(pointless::getenv_or_empty("POINTLESS_USERNAME"));
 #endif
-    const std::string password = pointless::getenv_or_empty("POINTLESS_PASSWORD");
+    const std::string password = pointless::trim(pointless::getenv_or_empty("POINTLESS_PASSWORD"));
 
     return { username, password };
 }
