@@ -9,7 +9,9 @@ import pointless 1.0
 Rectangle {
     id: root
     color: Style.background
+    visible: pageId.length > 0 && GuiController.currentPage === pageId
 
+    property string pageId: ""
     signal backClicked()
     property string pageTitle: ""
     property string rightButtonIcon: ""

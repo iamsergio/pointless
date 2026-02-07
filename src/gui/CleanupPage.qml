@@ -8,6 +8,7 @@ import pointless 1.0
 
 Page {
     id: root
+    pageId: "cleanup"
     pageTitle: "Cleanup"
 
     ColumnLayout {

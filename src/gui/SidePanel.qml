@@ -85,7 +85,7 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        GuiController.aboutIsVisible = true;
+                        GuiController.currentPage = "about";
                         root.isOpen = false;
                     }
                 }
@@ -107,7 +107,7 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        GuiController.cleanupPageVisible = true;
+                        GuiController.currentPage = "cleanup";
                         root.isOpen = false;
                     }
                 }
@@ -129,7 +129,7 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        GuiController.tagsPageVisible = true;
+                        GuiController.currentPage = "tags";
                         root.isOpen = false;
                     }
                 }
@@ -152,7 +152,7 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        GuiController.calendarsPageVisible = true;
+                        GuiController.currentPage = "calendars";
                         root.isOpen = false;
                     }
                 }

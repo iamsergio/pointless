@@ -73,22 +73,9 @@ public:
                     gc->setCurrentTag({});
                     return true;
                 }
-                if (gc->calendarsPageVisible()) {
-                    gc->setCalendarsPageVisible(false);
-                    return true;
-                }
-                if (gc->cleanupPageVisible()) {
-                    gc->setCleanupPageVisible(false);
-                    return true;
-                }
 
-                if (gc->tagsPageVisible()) {
-                    gc->setTagsPageVisible(false);
-                    return true;
-                }
-
-                if (gc->aboutIsVisible()) {
-                    gc->setAboutIsVisible(false);
+                if (!gc->currentPage().isEmpty()) {
+                    gc->setCurrentPage({});
                     return true;
                 }
             }
@@ -215,59 +202,20 @@ bool GuiController::isOfflineMode() const
     return _isOfflineMode;
 }
 
-bool GuiController::aboutIsVisible() const
+QString GuiController::currentPage() const
 {
-    return _aboutIsVisible;
+    return _currentPage;
 }
 
-void GuiController::setAboutIsVisible(bool visible)
+void GuiController::setCurrentPage(const QString &page)
 {
-    if (_aboutIsVisible == visible)
+    if (_currentPage == page)
         return;
-    _aboutIsVisible = visible;
-    Q_EMIT aboutIsVisibleChanged();
-}
-
-bool GuiController::tagsPageVisible() const
-{
-    return _tagsPageVisible;
-}
-
-void GuiController::setTagsPageVisible(bool visible)
-{
-    if (_tagsPageVisible == visible)
-        return;
-    _tagsPageVisible = visible;
-    Q_EMIT tagsPageVisibleChanged();
-}
-
-bool GuiController::cleanupPageVisible() const
-{
-    return _cleanupPageVisible;
-}
-
-void GuiController::setCleanupPageVisible(bool visible)
-{
-    if (_cleanupPageVisible == visible)
-        return;
-    _cleanupPageVisible = visible;
-    Q_EMIT cleanupPageVisibleChanged();
-}
-
-bool GuiController::calendarsPageVisible() const
-{
-    return _calendarsPageVisible;
-}
-
-void GuiController::setCalendarsPageVisible(bool visible)
-{
-    if (_calendarsPageVisible == visible)
-        return;
-    _calendarsPageVisible = visible;
-    if (visible) {
+    _currentPage = page;
+    if (page == QLatin1String("calendars")) {
         calendarsModel()->reload();
     }
-    Q_EMIT calendarsPageVisibleChanged();
+    Q_EMIT currentPageChanged();
 }
 
 QString GuiController::currentTag() const
@@ -297,6 +245,25 @@ void GuiController::deleteAllCalendarEvents()
     _dataController->deleteCalendarTasks();
 }
 
+std::vector<std::string> GuiController::enabledCalendarIds() const
+{
+    auto *model = calendarsModel();
+    if (model == nullptr) {
+        return {};
+    }
+
+    std::vector<std::string> result;
+    for (int i = 0; i < model->rowCount(); ++i) {
+        QModelIndex idx = model->index(i);
+        bool enabled = model->data(idx, CalendarsModel::EnabledRole).toBool();
+        if (enabled) {
+            QString calId = model->data(idx, CalendarsModel::IdRole).toString();
+            result.push_back(calId.toStdString());
+        }
+    }
+    return result;
+}
+
 void GuiController::fetchCalendarEvents()
 {
     auto *model = calendarsModel();
@@ -305,18 +272,10 @@ void GuiController::fetchCalendarEvents()
         return;
     }
 
-    std::vector<std::string> enabledCalendarIds;
-    for (int i = 0; i < model->rowCount(); ++i) {
-        QModelIndex idx = model->index(i);
-        bool enabled = model->data(idx, CalendarsModel::EnabledRole).toBool();
-        if (enabled) {
-            QString calId = model->data(idx, CalendarsModel::IdRole).toString();
-            enabledCalendarIds.push_back(calId.toStdString());
-        }
-    }
+    const std::vector<std::string> calendarIds = enabledCalendarIds();
 
-    if (enabledCalendarIds.empty()) {
-        P_LOG_WARNING("No enabled calendars to fetch events from");
+    if (calendarIds.empty()) {
+        P_LOG_INFO("No enabled calendars to fetch events from");
         return;
     }
 
@@ -324,7 +283,7 @@ void GuiController::fetchCalendarEvents()
     range.start = core::Clock::now();
     range.end = range.start + std::chrono::hours(24 * 365);
 
-    auto events = _calendarProvider->getEvents(range, enabledCalendarIds);
+    auto events = _calendarProvider->getEvents(range, calendarIds);
 
     P_LOG_INFO("Fetched {} calendar events", static_cast<int>(events.size()));
 
@@ -351,12 +310,6 @@ void GuiController::fetchCalendarEvents()
         task.uuidInDeviceCalendar = event.eventId;
         task.deviceCalendarUuid = event.calendarId;
         task.deviceCalendarName = event.calendarName;
-
-        if (core::DateUtils::isThisWeek(event.startDate)) {
-            task.tags.emplace_back(core::BUILTIN_TAG_CURRENT);
-        } else if (core::DateUtils::isNext7Days(event.startDate)) {
-            task.tags.emplace_back(core::BUILTIN_TAG_SOON);
-        }
 
         taskModel()->addTask(task);
         addedCount++;
@@ -784,14 +737,14 @@ void GuiController::clearTaskBeingEdited()
     setUuidBeingEdited({});
 }
 
-void GuiController::setTaskBeingEdited(const QString &uuid, QDate date)
+void GuiController::setTaskBeingEdited(const QString &uuid, QDate date, const QString &tag)
 {
     setUuidBeingEdited(uuid);
 
     if (uuid.isEmpty()) {
         setDateInEditor(date);
         _titleInEditor.clear();
-        _tagInEditor.clear();
+        _tagInEditor = tag;
         _isEveningInEditor = false;
     } else {
         const auto *task = taskModel()->taskForUuid(uuid);

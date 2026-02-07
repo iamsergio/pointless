@@ -101,6 +101,7 @@ Rectangle {
                 Layout.alignment: Qt.AlignVCenter
                 onClicked: {
                     GuiController.currentTag = tagName;
+                    GuiController.currentPage = "tasksByTag";
                 }
             }
 

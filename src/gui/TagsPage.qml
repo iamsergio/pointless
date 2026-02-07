@@ -7,6 +7,7 @@ import pointless 1.0
 
 Page {
     id: root
+    pageId: "tags"
     pageTitle: "Tags"
 
     TagsView {

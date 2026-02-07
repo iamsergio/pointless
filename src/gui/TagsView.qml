@@ -23,7 +23,10 @@ ListView {
         color: "transparent"
 
         TapHandler {
-            onTapped: GuiController.currentTag = delegateRoot.name
+            onTapped: {
+                GuiController.currentTag = delegateRoot.name;
+                GuiController.currentPage = "tasksByTag";
+            }
         }
 
         RowLayout {
@@ -36,6 +39,7 @@ ListView {
                 tagName: delegateRoot.name
                 onClicked: {
                     GuiController.currentTag = tagName;
+                    GuiController.currentPage = "tasksByTag";
                 }
             }
 

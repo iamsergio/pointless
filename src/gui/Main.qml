@@ -47,7 +47,7 @@ QC.ApplicationWindow {
                 id: editTaskView
                 anchors.fill: parent
                 visible: GuiController.isEditing
-                z: mainView.z + 1
+                z: mainView.z + 2
 
                 onBackClicked: {
                     GuiController.onBackClicked();
@@ -60,36 +60,34 @@ QC.ApplicationWindow {
 
             AboutPage {
                 anchors.fill: parent
-                visible: GuiController.aboutIsVisible
-                onBackClicked: GuiController.aboutIsVisible = false
+                onBackClicked: GuiController.currentPage = ""
                 z: mainView.z + 1
             }
 
             TagsPage {
                 anchors.fill: parent
-                visible: GuiController.tagsPageVisible
-                onBackClicked: GuiController.tagsPageVisible = false
+                onBackClicked: GuiController.currentPage = ""
                 z: mainView.z + 1
             }
 
             TasksByTagPage {
                 anchors.fill: parent
-                visible: GuiController.currentTag.length > 0
-                onBackClicked: GuiController.currentTag = ""
+                onBackClicked: {
+                    GuiController.currentPage = "";
+                    GuiController.currentTag = "";
+                }
                 z: mainView.z + 1
             }
 
             CleanupPage {
                 anchors.fill: parent
-                visible: GuiController.cleanupPageVisible
-                onBackClicked: GuiController.cleanupPageVisible = false
+                onBackClicked: GuiController.currentPage = ""
                 z: mainView.z + 1
             }
 
             CalendarsPage {
                 anchors.fill: parent
-                visible: GuiController.calendarsPageVisible
-                onBackClicked: GuiController.calendarsPageVisible = false
+                onBackClicked: GuiController.currentPage = ""
                 z: mainView.z + 1
             }
 
@@ -173,7 +171,6 @@ QC.ApplicationWindow {
                         Layout.fillHeight: true
                         visible: GuiController.currentViewType === GuiController.Later
                     }
-
                 }
             }
 

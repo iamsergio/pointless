@@ -63,11 +63,8 @@ class GuiController : public QObject
     Q_PROPERTY(bool isLoggingIn READ isLoggingIn NOTIFY isLoggingInChanged)
     Q_PROPERTY(ErrorController *errorController READ errorController CONSTANT)
     Q_PROPERTY(bool isOfflineMode READ isOfflineMode NOTIFY isOfflineModeChanged)
-    Q_PROPERTY(bool aboutIsVisible READ aboutIsVisible WRITE setAboutIsVisible NOTIFY aboutIsVisibleChanged)
-    Q_PROPERTY(bool tagsPageVisible READ tagsPageVisible WRITE setTagsPageVisible NOTIFY tagsPageVisibleChanged)
-    Q_PROPERTY(bool cleanupPageVisible READ cleanupPageVisible WRITE setCleanupPageVisible NOTIFY cleanupPageVisibleChanged)
+    Q_PROPERTY(QString currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
     Q_PROPERTY(QString currentTag READ currentTag WRITE setCurrentTag NOTIFY currentTagChanged)
-    Q_PROPERTY(bool calendarsPageVisible READ calendarsPageVisible WRITE setCalendarsPageVisible NOTIFY calendarsPageVisibleChanged)
     Q_PROPERTY(CalendarsModel *calendarsModel READ calendarsModel CONSTANT)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
@@ -141,17 +138,8 @@ public:
 
     [[nodiscard]] bool isOfflineMode() const;
 
-    [[nodiscard]] bool aboutIsVisible() const;
-    void setAboutIsVisible(bool visible);
-
-    [[nodiscard]] bool tagsPageVisible() const;
-    void setTagsPageVisible(bool visible);
-
-    [[nodiscard]] bool cleanupPageVisible() const;
-    void setCleanupPageVisible(bool visible);
-
-    [[nodiscard]] bool calendarsPageVisible() const;
-    void setCalendarsPageVisible(bool visible);
+    [[nodiscard]] QString currentPage() const;
+    void setCurrentPage(const QString &page);
 
     [[nodiscard]] QString currentTag() const;
     void setCurrentTag(const QString &tag);
@@ -172,7 +160,7 @@ public:
     Q_INVOKABLE void dumpDebug() const;
     Q_INVOKABLE void onBackClicked();
 
-    Q_INVOKABLE void setTaskBeingEdited(const QString &uuid, QDate date);
+    Q_INVOKABLE void setTaskBeingEdited(const QString &uuid, QDate date, const QString &tag = {});
     Q_INVOKABLE void clearTaskBeingEdited();
     Q_INVOKABLE void moveTaskToCurrent(const QString &taskUuid);
     Q_INVOKABLE void moveTaskToSoon(const QString &taskUuid);
@@ -202,14 +190,12 @@ Q_SIGNALS:
     void isRefreshingChanged();
     void isLoggingInChanged();
     void isOfflineModeChanged();
-    void aboutIsVisibleChanged();
-    void tagsPageVisibleChanged();
-    void cleanupPageVisibleChanged();
-    void calendarsPageVisibleChanged();
+    void currentPageChanged();
     void currentTagChanged();
 
 private:
     explicit GuiController(QObject *parent = nullptr);
+    std::vector<std::string> enabledCalendarIds() const;
     ViewType _currentViewType = ViewType::Week;
     bool _isEditing = false;
     QString _uuidBeingEdited;
@@ -222,10 +208,7 @@ private:
     bool _isRefreshing = false;
     bool _isLoggingIn = false;
     bool _isOfflineMode = false;
-    bool _aboutIsVisible = false;
-    bool _tagsPageVisible = false;
-    bool _cleanupPageVisible = false;
-    bool _calendarsPageVisible = false;
+    QString _currentPage;
     QString _currentTag;
     std::unique_ptr<pointless::core::CalendarProvider> _calendarProvider;
     mutable CalendarsModel *_calendarsModel = nullptr;

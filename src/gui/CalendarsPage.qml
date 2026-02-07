@@ -10,6 +10,7 @@ import pointless 1.0
 
 Page {
     id: root
+    pageId: "calendars"
     pageTitle: "Calendars"
 
     ListView {
