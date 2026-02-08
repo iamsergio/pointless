@@ -27,7 +27,7 @@ Page {
             required property string calendarId
             required property string title
             required property string color
-            required property bool enabled
+            required property bool isEnabled
 
             width: listView.width
             implicitHeight: Style.fromPixel(44)
@@ -54,7 +54,7 @@ Page {
                 }
 
                 CheckBox {
-                    checked: delegateRoot.enabled
+                    checked: delegateRoot.isEnabled
                     onToggled: {
                         GuiController.calendarsModel.setEnabled(delegateRoot.calendarId, checked);
                     }

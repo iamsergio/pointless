@@ -43,7 +43,7 @@ QVariant CalendarsModel::data(const QModelIndex &index, int role) const
         return QString::fromStdString(entry.calendar.color);
     case WriteableRole:
         return entry.calendar.writeable;
-    case EnabledRole:
+    case IsEnabledRole:
         return entry.enabled;
     }
 
@@ -57,7 +57,7 @@ QHash<int, QByteArray> CalendarsModel::roleNames() const
     roles[TitleRole] = "title";
     roles[ColorRole] = "color";
     roles[WriteableRole] = "writeable";
-    roles[EnabledRole] = "enabled";
+    roles[IsEnabledRole] = "isEnabled";
     return roles;
 }
 
@@ -82,7 +82,7 @@ void CalendarsModel::setEnabled(const QString &calendarId, bool enabled)
         if (QString::fromStdString(_entries[i].calendar.id) == calendarId) {
             _entries[i].enabled = enabled;
             const QModelIndex idx = index(static_cast<int>(i));
-            Q_EMIT dataChanged(idx, idx, { EnabledRole });
+            Q_EMIT dataChanged(idx, idx, { IsEnabledRole });
             break;
         }
     }

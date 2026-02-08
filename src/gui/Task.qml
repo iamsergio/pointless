@@ -83,6 +83,7 @@ Rectangle {
                 RowLayout {
                     spacing: Style.fromPixel(8)
                     visible: shouldShowCalendar || shouldShowDueDate || shouldShowAllTags
+                    Layout.preferredHeight: (calendarText.visible || dateText.visible || allTagsText.visible) ? implicitHeight : 0
 
                     readonly property bool shouldShowCalendar: root.taskIsFromCalendar && root.taskCalendarName !== ""
                     readonly property bool shouldShowDueDate: (root.taskHasDueDate && GuiController.currentViewType !== GuiController.Week) || root.taskHasDueDateTime
@@ -101,12 +102,12 @@ Rectangle {
                         text: root.taskHasDueDate ? root.taskDueDate : ""
                         font.pixelSize: Style.fromPixel(11)
                         color: Style.taskSecondaryTextColor
-                        visible: parent.shouldShowDueDate
+                        visible: parent.shouldShowDueDate && root.taskHasDueDate
                     }
 
                     Text {
                         id: allTagsText
-                        visible: parent.shouldShowAllTags
+                        visible: parent.shouldShowAllTags && text !== ""
                         text: root.allTagsExceptCurrent(root.taskAllTags)
                         font.pixelSize: Style.fromPixel(11)
                         color: Style.taskSecondaryTextColor

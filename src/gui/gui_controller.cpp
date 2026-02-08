@@ -262,7 +262,7 @@ std::vector<std::string> GuiController::enabledCalendarIds() const
     std::vector<std::string> result;
     for (int i = 0; i < model->rowCount(); ++i) {
         QModelIndex idx = model->index(i);
-        bool enabled = model->data(idx, CalendarsModel::EnabledRole).toBool();
+        bool enabled = model->data(idx, CalendarsModel::IsEnabledRole).toBool();
         if (enabled) {
             QString calId = model->data(idx, CalendarsModel::IdRole).toString();
             result.push_back(calId.toStdString());
