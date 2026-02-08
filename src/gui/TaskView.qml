@@ -37,7 +37,7 @@ ListView {
         required property bool isEvening
         required property var dueDate
         required property string tagName
-        required property string hasDueDate
+        required property bool hasDueDate
         required property bool isFromCalendar
         required property string calendarName
         required property bool isSoon
