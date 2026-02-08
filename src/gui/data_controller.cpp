@@ -639,6 +639,20 @@ int DataController::taskCountForTag(const QString &tagName) const
     return count;
 }
 
+int DataController::visibleTaskCountForTag(const QString &tagName) const
+{
+    const std::string name = tagName.toStdString();
+    int count = 0;
+    for (size_t i = 0; i < _localData.taskCount(); ++i) {
+        const auto &task = _localData.taskAt(i);
+        if ((task.isDone && !task.needsSyncToServer) || task.isGoal)
+            continue;
+        if (task.containsTag(name))
+            ++count;
+    }
+    return count;
+}
+
 bool DataController::containsTag(const QString &tagName) const
 {
     return _localData.data().containsTag(tagName.toStdString());

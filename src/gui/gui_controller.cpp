@@ -86,6 +86,13 @@ public:
                     return true;
                 }
             }
+
+            if (keyEvent->key() == Qt::Key_T) {
+                if (!gc->isEditing()) {
+                    gc->setCurrentPage("tags");
+                    return true;
+                }
+            }
         }
         return false;
     }

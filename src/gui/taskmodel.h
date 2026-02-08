@@ -39,7 +39,8 @@ public:
         IsLaterRole,
         IsCurrentRole,
         IsDueTomorrowRole,
-        HasDueDateTimeRole
+        HasDueDateTimeRole,
+        AllTagsRole
     };
 
     explicit TaskModel(QObject *parent = nullptr);

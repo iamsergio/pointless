@@ -20,6 +20,7 @@ Rectangle {
     required property string taskTagName
     required property bool taskIsFromCalendar
     required property string taskCalendarName
+    required property string taskAllTags
 
     required property bool taskIsSoon
     required property bool taskIsLater
@@ -32,6 +33,16 @@ Rectangle {
     radius: 10
 
     signal clicked
+
+    function allTagsExceptCurrent(allTags) {
+        var tagsArray = allTags.split(",").map(function (tag) {
+            return tag.trim();
+        });
+        var filteredTags = tagsArray.filter(function (tag) {
+            return tag !== root.taskTagName;
+        });
+        return filteredTags.join(", ");
+    }
 
     MouseArea {
         anchors.fill: parent
@@ -71,10 +82,11 @@ Rectangle {
 
                 RowLayout {
                     spacing: Style.fromPixel(8)
-                    visible: shouldShowCalendar || shouldShowDueDate
+                    visible: shouldShowCalendar || shouldShowDueDate || shouldShowAllTags
 
                     readonly property bool shouldShowCalendar: root.taskIsFromCalendar && root.taskCalendarName !== ""
                     readonly property bool shouldShowDueDate: (root.taskHasDueDate && GuiController.currentViewType !== GuiController.Week) || root.taskHasDueDateTime
+                    readonly property bool shouldShowAllTags: GuiController.currentPage === "tasksByTag" && root.taskAllTags !== ""
 
                     Text {
                         id: calendarText
@@ -90,6 +102,14 @@ Rectangle {
                         font.pixelSize: Style.fromPixel(11)
                         color: Style.taskSecondaryTextColor
                         visible: parent.shouldShowDueDate
+                    }
+
+                    Text {
+                        id: allTagsText
+                        visible: parent.shouldShowAllTags
+                        text: root.allTagsExceptCurrent(root.taskAllTags)
+                        font.pixelSize: Style.fromPixel(11)
+                        color: Style.taskSecondaryTextColor
                     }
                 }
             }

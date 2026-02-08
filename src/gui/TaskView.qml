@@ -4,6 +4,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick 2.15
+import QtQuick.Controls as QC
 
 import pointless 1.0
 
@@ -13,6 +14,9 @@ ListView {
     clip: true
     spacing: Style.taskSpacing
     cacheBuffer: 1000
+    QC.ScrollBar.vertical: QC.ScrollBar {
+        visible: !GuiController.isMobile
+    }
 
     property bool showTags: true
 
@@ -41,6 +45,7 @@ ListView {
         required property bool isCurrent
         required property bool isDueTomorrow
         required property bool hasDueDateTime
+        required property string allTags
 
         objectName: "task_" + index
 
@@ -54,6 +59,7 @@ ListView {
         taskTagName: tagName
         taskIsFromCalendar: isFromCalendar
         taskCalendarName: calendarName
+        taskAllTags: allTags
         taskHasDueDate: hasDueDate
         taskHasDueDateTime: hasDueDateTime
         taskIsSoon: isSoon

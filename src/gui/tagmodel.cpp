@@ -39,7 +39,7 @@ QVariant TagModel::data(const QModelIndex &index, int role) const
     case IsBuiltinRole:
         return tag.isBuiltin();
     case TaskCountRole:
-        return dataController()->taskCountForTag(QString::fromStdString(tag.name));
+        return dataController()->visibleTaskCountForTag(QString::fromStdString(tag.name));
     }
 
     return {};

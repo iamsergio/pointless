@@ -4,6 +4,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick 2.15
+import QtQuick.Controls as QC
 import QtQuick.Layouts 1.15
 
 import pointless 1.0
@@ -37,6 +38,9 @@ Item {
             bottom: parent.bottom
         }
         clip: true
+        QC.ScrollBar.vertical: QC.ScrollBar {
+            visible: !GuiController.isMobile
+        }
         spacing: Style.fromPixel(15)
         model: weekdayFilterModel
         delegate: ColumnLayout {
@@ -115,6 +119,7 @@ Item {
                     required property bool isCurrent
                     required property bool isDueTomorrow
                     required property bool hasDueDateTime
+                    required property string allTags
 
                     objectName: "task_" + column.index + "_" + index
 
@@ -131,6 +136,7 @@ Item {
                     taskTagName: tagName
                     taskIsFromCalendar: isFromCalendar
                     taskCalendarName: calendarName
+                    taskAllTags: allTags
                     taskIsSoon: isSoon
                     taskIsLater: isLater
                     taskIsCurrent: isCurrent

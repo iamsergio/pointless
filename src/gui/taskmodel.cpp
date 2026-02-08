@@ -4,9 +4,11 @@
 #include "taskmodel.h"
 #include "data_controller.h"
 #include "qt_logger.h"
+#include "core/tag.h"
 
 #include <QDateTime>
 #include <QString>
+#include <QStringList>
 
 using namespace pointless;
 
@@ -90,6 +92,15 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
             return dt.time() != QTime(0, 0);
         }
         return false;
+    case AllTagsRole: {
+        QStringList tagList;
+        for (const auto &tag : task.tags) {
+            if (tag != core::BUILTIN_TAG_EVENING) {
+                tagList.append(QString::fromStdString(tag).toLower());
+            }
+        }
+        return tagList.join(QStringLiteral(", "));
+    }
     default:
         return {};
     }
@@ -117,6 +128,7 @@ QHash<int, QByteArray> TaskModel::roleNames() const
     roles[IsCurrentRole] = "isCurrent";
     roles[IsDueTomorrowRole] = "isDueTomorrow";
     roles[HasDueDateTimeRole] = "hasDueDateTime";
+    roles[AllTagsRole] = "allTags";
     return roles;
 }
 
