@@ -14,7 +14,7 @@
 #include <QStringList>
 #include <QVariant>
 
-static const QString s_disabledCalendarIdsKey = QStringLiteral("disabledCalendarIds");
+static const QString s_disabledCalendarIdsKey = QStringLiteral("disabledCalendarIds"); // NOLINT
 
 CalendarsModel::CalendarsModel(QObject *parent)
     : QAbstractListModel(parent)
