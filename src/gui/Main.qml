@@ -201,6 +201,20 @@ QC.ApplicationWindow {
                     onClicked: sidePanel.isOpen = true
                 }
 
+                ToggleButton {
+                    id: eveningToggle
+                    visible: !GuiController.isEditing && GuiController.showEveningToggle
+                    toggled: !GuiController.hideEvening
+                    anchors {
+                        left: burgerButton.right
+                        bottom: parent.bottom
+                        leftMargin: Style.fromPixel(16)
+                        bottomMargin: Style.fromPixel(4)
+                    }
+                    z: 100
+                    onToggledChanged: GuiController.hideEvening = !toggled
+                }
+
                 FontAwesomeButton {
                     id: addTaskButton
                     fontAwesomeIcon: "\uf055"

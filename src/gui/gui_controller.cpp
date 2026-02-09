@@ -31,6 +31,7 @@
 #include <QtGlobal>
 #include <QUuid>
 #include <QDateTime>
+#include <QTime>
 #include <QKeyEvent>
 #include <QStandardPaths>
 #include <QSettings>
@@ -153,6 +154,10 @@ GuiController::GuiController(QObject *parent)
     });
 
     QTimer::singleShot(0, this, &GuiController::refresh);
+
+    _eveningToggleTimer.setInterval(30 * 60 * 1000);
+    connect(&_eveningToggleTimer, &QTimer::timeout, this, &GuiController::showEveningToggleChanged);
+    _eveningToggleTimer.start();
 }
 
 GuiController::~GuiController()
@@ -943,4 +948,23 @@ bool GuiController::moveToEveningVisible() const
 {
     const auto *task = _dataController->taskModel()->taskForUuid(_taskMenuUuid);
     return task != nullptr && !task->isEvening() && task->isCurrent();
+}
+
+bool GuiController::hideEvening() const
+{
+    return _hideEvening;
+}
+
+void GuiController::setHideEvening(bool hide)
+{
+    if (_hideEvening == hide)
+        return;
+    _hideEvening = hide;
+    Q_EMIT hideEveningChanged();
+}
+
+bool GuiController::showEveningToggle() const
+{
+    const int hour = QTime::currentTime().hour();
+    return hour >= 5 && hour < 16;
 }

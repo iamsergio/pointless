@@ -31,6 +31,10 @@ TaskFilterModel::TaskFilterModel(QObject *parent)
     connect(this, &QSortFilterProxyModel::layoutChanged, this, &TaskFilterModel::countChanged);
 
     connect(this, &TaskFilterModel::countChanged, this, &TaskFilterModel::evaluateEmpty);
+
+    connect(GuiController::instance(), &GuiController::hideEveningChanged, this, [this] {
+        setHideEvening(GuiController::instance()->hideEvening());
+    });
 }
 
 int TaskFilterModel::count() const
@@ -90,7 +94,7 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
         return false;
     }
 
-    if (_hideEvening && task->isEvening) {
+    if (_hideEvening && task->isEvening()) {
         return false;
     }
 

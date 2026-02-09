@@ -17,7 +17,7 @@ Item {
         id: background
         anchors.fill: parent
         radius: height / 2
-        color: root.toggled ? "#22c55e" : "#6b7280"
+        color: root.toggled ? Style.buttonColor : "#6b7280"
 
         Behavior on color {
             ColorAnimation {

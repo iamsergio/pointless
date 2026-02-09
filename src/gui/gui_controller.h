@@ -66,6 +66,8 @@ class GuiController : public QObject
     Q_PROPERTY(QString currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
     Q_PROPERTY(QString currentTag READ currentTag WRITE setCurrentTag NOTIFY currentTagChanged)
     Q_PROPERTY(CalendarsModel *calendarsModel READ calendarsModel CONSTANT)
+    Q_PROPERTY(bool hideEvening READ hideEvening WRITE setHideEvening NOTIFY hideEveningChanged)
+    Q_PROPERTY(bool showEveningToggle READ showEveningToggle NOTIFY showEveningToggleChanged)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
@@ -146,6 +148,11 @@ public:
 
     [[nodiscard]] CalendarsModel *calendarsModel() const;
 
+    [[nodiscard]] bool hideEvening() const;
+    void setHideEvening(bool hide);
+
+    [[nodiscard]] bool showEveningToggle() const;
+
     Q_INVOKABLE void deleteAllCalendarEvents();
     Q_INVOKABLE void fetchCalendarEvents();
 
@@ -192,6 +199,8 @@ Q_SIGNALS:
     void isOfflineModeChanged();
     void currentPageChanged();
     void currentTagChanged();
+    void hideEveningChanged();
+    void showEveningToggleChanged();
 
 private:
     explicit GuiController(QObject *parent = nullptr);
@@ -216,4 +225,6 @@ private:
     ErrorController *const _errorController;
     mutable TaskFilterModel *_taskFilterModel = nullptr;
     mutable TagFilterModel *_tagFilterModel = nullptr;
+    bool _hideEvening = false;
+    QTimer _eveningToggleTimer;
 };
