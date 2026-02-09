@@ -18,6 +18,7 @@ class TaskFilterModel : public QSortFilterProxyModel
     Q_PROPERTY(QString tagName READ tagName WRITE setTagName NOTIFY tagNameChanged)
     Q_PROPERTY(int count READ count NOTIFY countChanged)
     Q_PROPERTY(bool isEmpty READ isEmpty NOTIFY emptyChanged)
+    Q_PROPERTY(bool hideEvening READ hideEvening WRITE setHideEvening NOTIFY hideEveningChanged)
 public:
     enum class ViewType : uint8_t {
         Week,
@@ -53,6 +54,10 @@ public:
     [[nodiscard]] bool isEmpty() const;
     Q_SIGNAL void emptyChanged();
 
+    [[nodiscard]] bool hideEvening() const;
+    void setHideEvening(bool hide);
+    Q_SIGNAL void hideEveningChanged();
+
     [[nodiscard]] bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
     [[nodiscard]] bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;
 
@@ -63,4 +68,5 @@ private:
     QString _tagName;
     QDate _dateFilter;
     int _previousRowCount = 0;
+    bool _hideEvening = false;
 };

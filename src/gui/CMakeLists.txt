@@ -46,7 +46,8 @@ set(PLAIN_QML_FILES
     MenuItem.qml
     SidePanel.qml
     TagsView.qml
-    TasksByTagPage.qml)
+    TasksByTagPage.qml
+    ToggleButton.qml)
 
 qt_add_qml_module(
   pointless_gui

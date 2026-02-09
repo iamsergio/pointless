@@ -90,6 +90,10 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
         return false;
     }
 
+    if (_hideEvening && task->isEvening) {
+        return false;
+    }
+
     if (!_tagName.isEmpty()) {
         return task->containsTag(_tagName.toStdString());
     }
@@ -185,4 +189,19 @@ void TaskFilterModel::evaluateEmpty()
 bool TaskFilterModel::isEmpty() const
 {
     return rowCount() == 0;
+}
+
+bool TaskFilterModel::hideEvening() const
+{
+    return _hideEvening;
+}
+
+void TaskFilterModel::setHideEvening(bool hide)
+{
+    if (_hideEvening == hide)
+        return;
+    beginFilterChange();
+    _hideEvening = hide;
+    endFilterChange();
+    Q_EMIT hideEveningChanged();
 }
