@@ -21,6 +21,7 @@ Rectangle {
     required property bool taskIsFromCalendar
     required property string taskCalendarName
     required property string taskAllTags
+    required property bool taskHasNotes
 
     required property bool taskIsSoon
     required property bool taskIsLater
@@ -124,6 +125,15 @@ Rectangle {
                     GuiController.currentTag = tagName;
                     GuiController.currentPage = "tasksByTag";
                 }
+            }
+
+            FontAwesomeButton {
+                id: notesButton
+                visible: root.taskHasNotes
+                fontAwesomeIcon: "\uf249"
+                iconColor: Style.iconColor
+                backgroundColor: "transparent"
+                onClicked: GuiController.openNotesEditor(root.taskUuid)
             }
 
             FontAwesomeButton {

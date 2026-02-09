@@ -42,6 +42,7 @@ set(PLAIN_QML_FILES
     CalendarsPage.qml
     CleanupPage.qml
     ErrorPopup.qml
+    NotesPopup.qml
     Menu.qml
     MenuItem.qml
     SidePanel.qml

@@ -68,6 +68,9 @@ class GuiController : public QObject
     Q_PROPERTY(CalendarsModel *calendarsModel READ calendarsModel CONSTANT)
     Q_PROPERTY(bool hideEvening READ hideEvening WRITE setHideEvening NOTIFY hideEveningChanged)
     Q_PROPERTY(bool showEveningToggle READ showEveningToggle NOTIFY showEveningToggleChanged)
+    Q_PROPERTY(bool isEditingNotes READ isEditingNotes NOTIFY isEditingNotesChanged)
+    Q_PROPERTY(QString notesText READ notesText NOTIFY notesTextChanged)
+    Q_PROPERTY(QString notesTaskTitle READ notesTaskTitle NOTIFY notesTaskTitleChanged)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
@@ -179,6 +182,13 @@ public:
     Q_INVOKABLE void deleteTask(const QString &taskUuid);
     Q_INVOKABLE void removeTag(const QString &tagName);
     Q_INVOKABLE void cleanupOldData();
+    Q_INVOKABLE void openNotesEditor(const QString &taskUuid);
+    Q_INVOKABLE void saveNotes(const QString &notes);
+    Q_INVOKABLE void closeNotesEditor();
+
+    [[nodiscard]] bool isEditingNotes() const;
+    [[nodiscard]] QString notesText() const;
+    [[nodiscard]] QString notesTaskTitle() const;
 
     static GuiController *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
@@ -201,6 +211,9 @@ Q_SIGNALS:
     void currentTagChanged();
     void hideEveningChanged();
     void showEveningToggleChanged();
+    void isEditingNotesChanged();
+    void notesTextChanged();
+    void notesTaskTitleChanged();
 
 private:
     explicit GuiController(QObject *parent = nullptr);
@@ -227,4 +240,8 @@ private:
     mutable TagFilterModel *_tagFilterModel = nullptr;
     bool _hideEvening = false;
     QTimer _eveningToggleTimer;
+    bool _isEditingNotes = false;
+    QString _notesUuid;
+    QString _notesText;
+    QString _notesTaskTitle;
 };

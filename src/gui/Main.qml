@@ -290,6 +290,14 @@ QC.ApplicationWindow {
                     }
                 }
                 MenuItem {
+                    id: editNotesMenuItem
+                    text: "Edit notes..."
+                    onTriggered: {
+                        GuiController.openNotesEditor(GuiController.taskMenuUuid);
+                        GuiController.setTaskMenuUuid("");
+                    }
+                }
+                MenuItem {
                     id: moveToCurrentMenuItem
                     text: "Move to Current"
                     visible: GuiController.moveToCurrentVisible
@@ -352,6 +360,13 @@ QC.ApplicationWindow {
                 onOkClicked: {
                     GuiController.errorController.errorText = "";
                 }
+            }
+
+            NotesPopup {
+                id: notesPopup
+                anchors.fill: parent
+                visible: GuiController.isEditingNotes
+                z: 450
             }
 
             SidePanel {

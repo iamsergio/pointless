@@ -509,7 +509,7 @@ void GuiController::setUuidBeingEdited(const QString &uuid)
 
 bool GuiController::isEditing() const
 {
-    return _isEditing;
+    return _isEditing || _isEditingNotes;
 }
 
 void GuiController::setIsEditing(bool isEditing)
@@ -885,6 +885,67 @@ void GuiController::removeTag(const QString &tagName)
 void GuiController::cleanupOldData()
 {
     _dataController->cleanupOldData();
+}
+
+void GuiController::openNotesEditor(const QString &taskUuid)
+{
+    auto *task = _dataController->taskModel()->taskForUuid(taskUuid);
+    if (task == nullptr) {
+        P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
+        return;
+    }
+
+    _notesUuid = taskUuid;
+    _notesText = task->description ? QString::fromStdString(*task->description) : QString();
+    _notesTaskTitle = QString::fromStdString(task->title);
+    _isEditingNotes = true;
+    Q_EMIT isEditingNotesChanged();
+    Q_EMIT notesTextChanged();
+    Q_EMIT notesTaskTitleChanged();
+}
+
+void GuiController::saveNotes(const QString &notes)
+{
+    auto *task = _dataController->taskModel()->taskForUuid(_notesUuid);
+    if (task == nullptr) {
+        P_LOG_ERROR("Invalid task UUID: {}", _notesUuid);
+        return;
+    }
+
+    core::Task copy = *task;
+    if (notes.isEmpty()) {
+        copy.description = std::nullopt;
+    } else {
+        copy.description = notes.toStdString();
+    }
+    taskModel()->updateTask(copy);
+    closeNotesEditor();
+}
+
+void GuiController::closeNotesEditor()
+{
+    _notesUuid.clear();
+    _notesText.clear();
+    _notesTaskTitle.clear();
+    _isEditingNotes = false;
+    Q_EMIT isEditingNotesChanged();
+    Q_EMIT notesTextChanged();
+    Q_EMIT notesTaskTitleChanged();
+}
+
+bool GuiController::isEditingNotes() const
+{
+    return _isEditingNotes;
+}
+
+QString GuiController::notesText() const
+{
+    return _notesText;
+}
+
+QString GuiController::notesTaskTitle() const
+{
+    return _notesTaskTitle;
 }
 
 void GuiController::deleteTask(const QString &taskUuid)

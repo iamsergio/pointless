@@ -101,6 +101,13 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         }
         return tagList.join(QStringLiteral(", "));
     }
+    case DescriptionRole:
+        if (task.description) {
+            return QString::fromStdString(*task.description);
+        }
+        return QString();
+    case HasNotesRole:
+        return task.description.has_value() && !task.description->empty();
     default:
         return {};
     }
@@ -128,7 +135,9 @@ QHash<int, QByteArray> TaskModel::roleNames() const
     roles[IsCurrentRole] = "isCurrent";
     roles[IsDueTomorrowRole] = "isDueTomorrow";
     roles[HasDueDateTimeRole] = "hasDueDateTime";
+    roles[DescriptionRole] = "description";
     roles[AllTagsRole] = "allTags";
+    roles[HasNotesRole] = "hasNotes";
     return roles;
 }
 
