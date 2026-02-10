@@ -183,6 +183,15 @@ void Task::mergeConflict(const Task &other)
         title = other.title;
     }
 
+    // Description: Most recent wins, but non-empty always beats empty
+    if (description.has_value() && other.description.has_value()) {
+        if (otherIsMoreRecent) {
+            description = other.description;
+        }
+    } else if (other.description.has_value()) {
+        description = other.description;
+    }
+
     // Tags: Union
     std::vector<std::string> newTags = tags;
     for (const auto &tag : other.tags) {
