@@ -32,8 +32,8 @@ TaskFilterModel::TaskFilterModel(QObject *parent)
 
     connect(this, &TaskFilterModel::countChanged, this, &TaskFilterModel::evaluateEmpty);
 
-    connect(GuiController::instance(), &GuiController::hideEveningChanged, this, [this] {
-        setHideEvening(GuiController::instance()->hideEvening());
+    connect(GuiController::instance(), &GuiController::showImmediateOnlyChanged, this, [this] {
+        setShowImmediateOnly(GuiController::instance()->showImmediateOnly());
     });
 }
 
@@ -94,7 +94,7 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
         return false;
     }
 
-    if (_hideEvening && task->isEvening()) {
+    if (_showImmediateOnly && task->isEvening()) {
         return false;
     }
 
@@ -195,17 +195,17 @@ bool TaskFilterModel::isEmpty() const
     return rowCount() == 0;
 }
 
-bool TaskFilterModel::hideEvening() const
+bool TaskFilterModel::showImmediateOnly() const
 {
-    return _hideEvening;
+    return _showImmediateOnly;
 }
 
-void TaskFilterModel::setHideEvening(bool hide)
+void TaskFilterModel::setShowImmediateOnly(bool show)
 {
-    if (_hideEvening == hide)
+    if (_showImmediateOnly == show)
         return;
     beginFilterChange();
-    _hideEvening = hide;
+    _showImmediateOnly = show;
     endFilterChange();
-    Q_EMIT hideEveningChanged();
+    Q_EMIT showImmediateOnlyChanged();
 }

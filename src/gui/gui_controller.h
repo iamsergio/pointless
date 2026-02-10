@@ -66,7 +66,7 @@ class GuiController : public QObject
     Q_PROPERTY(QString currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
     Q_PROPERTY(QString currentTag READ currentTag WRITE setCurrentTag NOTIFY currentTagChanged)
     Q_PROPERTY(CalendarsModel *calendarsModel READ calendarsModel CONSTANT)
-    Q_PROPERTY(bool hideEvening READ hideEvening WRITE setHideEvening NOTIFY hideEveningChanged)
+    Q_PROPERTY(bool showImmediateOnly READ showImmediateOnly WRITE setShowImmediateOnly NOTIFY showImmediateOnlyChanged)
     Q_PROPERTY(bool showEveningToggle READ showEveningToggle NOTIFY showEveningToggleChanged)
     Q_PROPERTY(bool isEditingNotes READ isEditingNotes NOTIFY isEditingNotesChanged)
     Q_PROPERTY(QString notesText READ notesText NOTIFY notesTextChanged)
@@ -151,8 +151,8 @@ public:
 
     [[nodiscard]] CalendarsModel *calendarsModel() const;
 
-    [[nodiscard]] bool hideEvening() const;
-    void setHideEvening(bool hide);
+    [[nodiscard]] bool showImmediateOnly() const;
+    void setShowImmediateOnly(bool show);
 
     [[nodiscard]] bool showEveningToggle() const;
 
@@ -209,7 +209,7 @@ Q_SIGNALS:
     void isOfflineModeChanged();
     void currentPageChanged();
     void currentTagChanged();
-    void hideEveningChanged();
+    void showImmediateOnlyChanged();
     void showEveningToggleChanged();
     void isEditingNotesChanged();
     void notesTextChanged();
@@ -238,7 +238,7 @@ private:
     ErrorController *const _errorController;
     mutable TaskFilterModel *_taskFilterModel = nullptr;
     mutable TagFilterModel *_tagFilterModel = nullptr;
-    bool _hideEvening = false;
+    bool _showImmediateOnly = false;
     QTimer _eveningToggleTimer;
     bool _isEditingNotes = false;
     QString _notesUuid;

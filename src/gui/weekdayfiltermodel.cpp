@@ -4,6 +4,7 @@
 #include "weekdayfiltermodel.h"
 #include "weekdaymodel.h"
 #include "taskfiltermodel.h"
+#include "gui_controller.h"
 #include "core/logger.h"
 #include "gui/Clock.h"
 
@@ -24,6 +25,11 @@ WeekdayFilterModel::WeekdayFilterModel(QObject *parent)
     connect(this, &QAbstractListModel::rowsRemoved, this, &WeekdayFilterModel::countChanged);
     connect(this, &QAbstractListModel::modelReset, this, &WeekdayFilterModel::countChanged);
     connect(this, &QAbstractListModel::layoutChanged, this, &WeekdayFilterModel::countChanged);
+
+    connect(GuiController::instance(), &GuiController::showImmediateOnlyChanged, this, [this] {
+        beginFilterChange();
+        endFilterChange();
+    });
 }
 
 QObject *WeekdayFilterModel::source() const
@@ -79,14 +85,18 @@ void WeekdayFilterModel::setSource(QObject *source)
 bool WeekdayFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
     QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
+
+    if (GuiController::instance()->showImmediateOnly()) {
+        const QDate rowDate = sourceModel()->data(index, WeekdayModel::DateRole).toDate();
+        return rowDate == Gui::Clock::today();
+    }
+
     QVariant data = sourceModel()->data(index, WeekdayModel::TasksRole);
     auto *model = data.value<TaskFilterModel *>();
     if (model == nullptr) {
         P_LOG_CRITICAL("TaskFilterModel is null at row {}", source_row);
         return false;
     }
-
-    // We only show empty days in the week view if they are in the future
 
     if (model->count() > 0) {
         return true;

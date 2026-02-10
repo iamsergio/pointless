@@ -94,6 +94,13 @@ public:
                     return true;
                 }
             }
+
+            if (keyEvent->key() == Qt::Key_R) {
+                if (!gc->isEditing()) {
+                    gc->refresh();
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -1011,17 +1018,17 @@ bool GuiController::moveToEveningVisible() const
     return task != nullptr && !task->isEvening() && task->isCurrent();
 }
 
-bool GuiController::hideEvening() const
+bool GuiController::showImmediateOnly() const
 {
-    return _hideEvening;
+    return _showImmediateOnly;
 }
 
-void GuiController::setHideEvening(bool hide)
+void GuiController::setShowImmediateOnly(bool show)
 {
-    if (_hideEvening == hide)
+    if (_showImmediateOnly == show)
         return;
-    _hideEvening = hide;
-    Q_EMIT hideEveningChanged();
+    _showImmediateOnly = show;
+    Q_EMIT showImmediateOnlyChanged();
 }
 
 bool GuiController::showEveningToggle() const

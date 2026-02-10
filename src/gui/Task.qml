@@ -59,7 +59,7 @@ Rectangle {
             anchors.fill: parent
             anchors.leftMargin: Style.fromPixel(10)
             anchors.rightMargin: Style.fromPixel(10)
-            spacing: Style.fromPixel(15)
+            spacing: Style.fromPixel(10)
 
             CheckBox {
                 checked: root.taskIsDone
@@ -79,6 +79,11 @@ Rectangle {
                     font.strikeout: root.taskIsDone
                     Layout.fillWidth: true
                     elide: Text.ElideRight
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: GuiController.taskModel.setTaskDone(root.taskUuid, !root.taskIsDone)
+                    }
                 }
 
                 RowLayout {
@@ -116,6 +121,15 @@ Rectangle {
                 }
             }
 
+            FontAwesomeButton {
+                id: notesButton
+                visible: root.taskHasNotes
+                fontAwesomeIcon: "\uf249"
+                iconColor: Style.iconColor
+                backgroundColor: "transparent"
+                onClicked: GuiController.openNotesEditor(root.taskUuid)
+            }
+
             Tag {
                 tagName: root.taskTagName
                 isInteractive: false
@@ -125,15 +139,6 @@ Rectangle {
                     GuiController.currentTag = tagName;
                     GuiController.currentPage = "tasksByTag";
                 }
-            }
-
-            FontAwesomeButton {
-                id: notesButton
-                visible: root.taskHasNotes
-                fontAwesomeIcon: "\uf249"
-                iconColor: Style.iconColor
-                backgroundColor: "transparent"
-                onClicked: GuiController.openNotesEditor(root.taskUuid)
             }
 
             FontAwesomeButton {
