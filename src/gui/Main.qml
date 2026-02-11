@@ -278,6 +278,7 @@ QC.ApplicationWindow {
                     right: parent.right
                     leftMargin: Style.fromPixel(7)
                     rightMargin: Style.fromPixel(7)
+                    bottomMargin: Style.fromPixel(7)
                 }
                 z: 300
 

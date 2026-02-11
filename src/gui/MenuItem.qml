@@ -8,10 +8,14 @@ import pointless 1.0
 Rectangle {
     id: root
     border.width: 0
-    border.color: "black"
-    color: "transparent"
+    color: mouseArea.containsPress ? Qt.lighter(Style.taskBackground, 1.4)
+         : mouseArea.containsMouse ? Qt.lighter(Style.taskBackground, 1.2)
+         : "transparent"
     height: Style.menuHeight
     Layout.fillWidth: true
+    Layout.leftMargin: Style.fromPixel(6)
+    Layout.rightMargin: Style.fromPixel(6)
+    radius: Style.fromPixel(6)
 
     signal triggered
 
@@ -20,11 +24,14 @@ Rectangle {
     Text {
         id: textItem
         font.pixelSize: Style.fromPixel(16)
+        color: Style.taskTextColor
         anchors.centerIn: parent
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
+        hoverEnabled: true
         onClicked: root.triggered()
     }
 }
