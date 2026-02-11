@@ -487,5 +487,6 @@ bool SupabaseProvider::isAuthenticated()
     }
 
     P_LOG_INFO("Token validation failed: HTTP {}. Clearing session.", response.status_code);
+    logout();
     return false;
 }
