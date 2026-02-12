@@ -93,7 +93,7 @@ Rectangle {
 
                     readonly property bool shouldShowCalendar: root.taskIsFromCalendar && root.taskCalendarName !== ""
                     readonly property bool shouldShowDueDate: (root.taskHasDueDate && GuiController.currentViewType !== GuiController.Week) || root.taskHasDueDateTime
-                    readonly property bool shouldShowAllTags: GuiController.currentPage === "tasksByTag" && root.taskAllTags !== ""
+                    readonly property bool shouldShowAllTags: GuiController.currentPage === "tasksByTag" && allTagsText.text !== ""
 
                     Text {
                         id: calendarText
