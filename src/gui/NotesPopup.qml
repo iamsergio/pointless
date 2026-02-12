@@ -15,8 +15,15 @@ Item {
 
         MouseArea {
             anchors.fill: parent
+
+            // qmllint disable incompatible-type
+            readonly property InputMethod inputMethod: Qt.inputMethod
             onClicked: {
-                GuiController.closeNotesEditor();
+                if (inputMethod.visible) {
+                    inputMethod.hide();
+                } else {
+                    GuiController.closeNotesEditor();
+                }
             }
         }
 
