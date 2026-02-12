@@ -163,7 +163,12 @@ GuiController::GuiController(QObject *parent)
     QTimer::singleShot(0, this, &GuiController::refresh);
 
     _eveningToggleTimer.setInterval(30 * 60 * 1000);
-    connect(&_eveningToggleTimer, &QTimer::timeout, this, &GuiController::showEveningToggleChanged);
+    connect(&_eveningToggleTimer, &QTimer::timeout, this, [this] {
+        if (!showEveningToggle()) {
+            setShowImmediateOnly(false);
+        }
+        Q_EMIT showEveningToggleChanged();
+    });
     _eveningToggleTimer.start();
 }
 
