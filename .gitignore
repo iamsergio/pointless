@@ -48,3 +48,4 @@ vcpkg_installed
 .qmlls.ini
 Testing/Temporary/LastTest.log
 Testing/Temporary/CTestCostData.txt
+.DS_Store
