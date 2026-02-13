@@ -2,9 +2,25 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>This app requires access to your calendar to display events.</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>This app requires access to your calendar to display events.</string>
+    <key>CFBundleExecutable</key>
+    <string>pointless</string>
+	<key>CFBundleDisplayName</key>
+    <string>Pointless</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.iamsergio.pointless</string>
+    <key>CFBundleName</key>
+    <string>Pointless</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>@POINTLESS_VERSION@</string>
+    <key>CFBundleVersion</key>
+    <string>@POINTLESS_VERSION@.@POINTLESS_APPLE_BUILD_NUMBER@</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>10.15</string>
+    <key>NSCalendarsFullAccessUsageDescription</key>
+    <string>This app requires access to your calendar to display events.</string>
+    <key>NSCalendarsUsageDescription</key>
+    <string>This app requires access to your calendar to display events.</string>
 </dict>
 </plist>
