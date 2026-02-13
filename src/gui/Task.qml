@@ -79,11 +79,6 @@ Rectangle {
                     font.strikeout: root.taskIsDone
                     Layout.fillWidth: true
                     elide: Text.ElideRight
-
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: GuiController.taskModel.setTaskDone(root.taskUuid, !root.taskIsDone)
-                    }
                 }
 
                 RowLayout {
@@ -141,13 +136,13 @@ Rectangle {
                 }
             }
 
-            FontAwesomeButton {
-                id: optionsButton
-                fontAwesomeIcon: "ellipsis-vertical"
-                iconColor: Style.iconColor
-                backgroundColor: "transparent"
-                onClicked: GuiController.setTaskMenuUuid(root.taskUuid)
-            }
+            // FontAwesomeButton {
+            //     id: optionsButton
+            //     fontAwesomeIcon: "ellipsis-vertical"
+            //     iconColor: Style.iconColor
+            //     backgroundColor: "transparent"
+            //     onClicked: GuiController.setTaskMenuUuid(root.taskUuid)
+            // }
         }
     }
 }
