@@ -43,7 +43,7 @@ class GuiController : public QObject
     Q_PROPERTY(bool isIOS READ isIOS CONSTANT)
     Q_PROPERTY(bool isVerbose READ isVerbose CONSTANT)
     Q_PROPERTY(bool isMacOS READ isMacOS CONSTANT)
-    Q_PROPERTY(bool isEditing READ isEditing NOTIFY isEditingChanged)
+    Q_PROPERTY(bool isEditingTask READ isEditingTask NOTIFY isEditingTaskChanged)
     Q_PROPERTY(QString uuidBeingEdited READ uuidBeingEdited NOTIFY uuidBeingEditedChanged)
     Q_PROPERTY(QString titleInEditor READ titleInEditor NOTIFY titleInEditorChanged)
     Q_PROPERTY(QString tagInEditor READ tagInEditor NOTIFY tagInEditorChanged)
@@ -71,6 +71,7 @@ class GuiController : public QObject
     Q_PROPERTY(bool isEditingNotes READ isEditingNotes NOTIFY isEditingNotesChanged)
     Q_PROPERTY(QString notesText READ notesText NOTIFY notesTextChanged)
     Q_PROPERTY(QString notesTaskTitle READ notesTaskTitle NOTIFY notesTaskTitleChanged)
+    Q_PROPERTY(bool newTagPopupVisible READ newTagPopupVisible WRITE setNewTagPopupVisible NOTIFY newTagPopupVisibleChanged)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
@@ -114,8 +115,9 @@ public:
     [[nodiscard]] static bool isIOS();
     [[nodiscard]] static bool isVerbose();
     [[nodiscard]] static bool isMacOS();
-    [[nodiscard]] bool isEditing() const;
-    void setIsEditing(bool isEditing);
+    [[nodiscard]] bool isEditingTask() const;
+    [[nodiscard]] bool isEditingSomething() const;
+    void setIsEditingTask(bool isEditing);
     [[nodiscard]] QString uuidBeingEdited() const;
     void setUuidBeingEdited(const QString &uuid);
     [[nodiscard]] QString titleInEditor() const;
@@ -180,6 +182,7 @@ public:
     Q_INVOKABLE void moveTaskToEvening(const QString &taskUuid);
     Q_INVOKABLE void setTaskImportant(const QString &taskUuid, bool important);
     Q_INVOKABLE void deleteTask(const QString &taskUuid);
+    Q_INVOKABLE bool addTag(const QString &tagName);
     Q_INVOKABLE void removeTag(const QString &tagName);
     Q_INVOKABLE void cleanupOldData();
     Q_INVOKABLE void openNotesEditor(const QString &taskUuid);
@@ -190,6 +193,9 @@ public:
     [[nodiscard]] QString notesText() const;
     [[nodiscard]] QString notesTaskTitle() const;
 
+    [[nodiscard]] bool newTagPopupVisible() const;
+    void setNewTagPopupVisible(bool visible);
+
     static GuiController *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
 Q_SIGNALS:
@@ -199,7 +205,7 @@ Q_SIGNALS:
     void isEveningInEditorChanged();
     void navigatorStartDateChanged();
     void navigatorEndDateChanged();
-    void isEditingChanged();
+    void isEditingTaskChanged();
     void uuidBeingEditedChanged();
     void dateInEditorChanged();
     void isAuthenticatedChanged();
@@ -214,12 +220,13 @@ Q_SIGNALS:
     void isEditingNotesChanged();
     void notesTextChanged();
     void notesTaskTitleChanged();
+    void newTagPopupVisibleChanged();
 
 private:
     explicit GuiController(QObject *parent = nullptr);
     std::vector<std::string> enabledCalendarIds() const;
     ViewType _currentViewType = ViewType::Week;
-    bool _isEditing = false;
+    bool _isEditingTask = false;
     QString _uuidBeingEdited;
     QString _titleInEditor;
     QString _tagInEditor;
@@ -244,4 +251,5 @@ private:
     QString _notesUuid;
     QString _notesText;
     QString _notesTaskTitle;
+    bool _newTagPopupVisible = false;
 };

@@ -269,6 +269,19 @@ bool DataController::addTask(const pointless::core::Task &task)
     return false;
 }
 
+bool DataController::addTag(const QString &tagName)
+{
+    if (containsTag(tagName))
+        return false;
+
+    pointless::core::Tag tag;
+    tag.name = tagName.toStdString();
+    _localData.data().addTag(tag);
+    _saveToDiskTimer.start();
+    _tagModel->reload();
+    return true;
+}
+
 bool DataController::removeTag(const QString &tagName)
 {
     if (taskCountForTag(tagName) > 0) {

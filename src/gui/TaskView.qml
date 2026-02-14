@@ -69,5 +69,9 @@ ListView {
         taskIsCurrent: isCurrent
         taskIsDueTomorrow: isDueTomorrow
         showTags: root.showTags
+
+        onClicked: {
+            GuiController.setTaskMenuUuid(uuid);
+        }
     }
 }

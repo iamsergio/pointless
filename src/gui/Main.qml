@@ -23,8 +23,8 @@ QC.ApplicationWindow {
 
     Connections {
         target: GuiController
-        function onIsEditingChanged() {
-            if (!GuiController.isEditing) {
+        function onIsEditingTaskChanged() {
+            if (!GuiController.isEditingTask) {
                 withinSafeArea.forceActiveFocus();
             }
         }
@@ -46,7 +46,7 @@ QC.ApplicationWindow {
             EditTaskPage {
                 id: editTaskView
                 anchors.fill: parent
-                visible: GuiController.isEditing
+                visible: GuiController.isEditingTask
                 z: mainView.z + 2
 
                 onBackClicked: {
@@ -191,7 +191,7 @@ QC.ApplicationWindow {
                     iconSize: Style.plusButtonSize
                     iconColor: Style.plusButtonColor
                     backgroundColor: "transparent"
-                    visible: !GuiController.isEditing
+                    visible: !GuiController.isEditingTask
                     anchors {
                         left: parent.left
                         bottom: parent.bottom
@@ -203,7 +203,7 @@ QC.ApplicationWindow {
 
                 ToggleButton {
                     id: eveningToggle
-                    visible: !GuiController.isEditing && GuiController.showEveningToggle && GuiController.currentViewType === GuiController.Week
+                    visible: !GuiController.isEditingTask && GuiController.showEveningToggle && GuiController.currentViewType === GuiController.Week
                     toggled: !GuiController.showImmediateOnly
                     anchors {
                         left: burgerButton.right
@@ -221,7 +221,7 @@ QC.ApplicationWindow {
                     iconSize: Style.plusButtonSize
                     iconColor: Style.plusButtonColor
                     backgroundColor: "transparent"
-                    visible: !GuiController.isEditing
+                    visible: !GuiController.isEditingTask
                     anchors {
                         right: parent.right
                         bottom: parent.bottom
@@ -239,7 +239,7 @@ QC.ApplicationWindow {
                     iconSize: Style.plusButtonSize
                     iconColor: Style.plusButtonColor
                     backgroundColor: "transparent"
-                    visible: !GuiController.isEditing && !GuiController.isOfflineMode
+                    visible: !GuiController.isEditingTask && !GuiController.isOfflineMode
                     enabled: !GuiController.isRefreshing
                     anchors {
                         right: addTaskButton.left
@@ -280,7 +280,7 @@ QC.ApplicationWindow {
                     rightMargin: Style.fromPixel(7)
                     bottomMargin: Style.fromPixel(7)
                 }
-                z: 300
+                z: mainView.z + 5
 
                 MenuItem {
                     id: editMenuItem

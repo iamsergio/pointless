@@ -37,6 +37,7 @@ set(PLAIN_QML_FILES
     LineEdit.qml
     Page.qml
     EditTaskPage.qml
+    AddTagPopup.qml
     AboutPage.qml
     TagsPage.qml
     CalendarsPage.qml

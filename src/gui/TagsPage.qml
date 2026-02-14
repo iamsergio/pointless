@@ -9,8 +9,15 @@ Page {
     id: root
     pageId: "tags"
     pageTitle: "Tags"
+    rightButtonIcon: "\uf067"
+    onRightButtonClicked: addTagPopup.open()
 
     TagsView {
+        anchors.fill: parent
+    }
+
+    AddTagPopup {
+        id: addTagPopup
         anchors.fill: parent
     }
 }

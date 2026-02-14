@@ -60,8 +60,10 @@ public:
             auto *keyEvent = static_cast<QKeyEvent *>(event); // NOLINT
             auto *gc = GuiController::instance();
             if (keyEvent->key() == Qt::Key_Escape) {
-                if (gc->isEditing()) {
-                    gc->setIsEditing(false);
+                if (gc->isEditingSomething()) {
+                    gc->setIsEditingTask(false);
+                    gc->closeNotesEditor();
+                    gc->setNewTagPopupVisible(false);
                     return true;
                 }
 
@@ -82,21 +84,21 @@ public:
             }
 
             if (keyEvent->key() == Qt::Key_N) {
-                if (!gc->isEditing()) {
+                if (!gc->isEditingSomething()) {
                     gc->setTaskBeingEdited({}, {});
                     return true;
                 }
             }
 
             if (keyEvent->key() == Qt::Key_T) {
-                if (!gc->isEditing()) {
+                if (!gc->isEditingSomething()) {
                     gc->setCurrentPage("tags");
                     return true;
                 }
             }
 
             if (keyEvent->key() == Qt::Key_R) {
-                if (!gc->isEditing()) {
+                if (!gc->isEditingSomething()) {
                     gc->refresh();
                     return true;
                 }
@@ -519,19 +521,24 @@ void GuiController::setUuidBeingEdited(const QString &uuid)
     emit uuidBeingEditedChanged();
 }
 
-bool GuiController::isEditing() const
+bool GuiController::isEditingTask() const
 {
-    return _isEditing || _isEditingNotes;
+    return _isEditingTask;
 }
 
-void GuiController::setIsEditing(bool isEditing)
+bool GuiController::isEditingSomething() const
 {
-    if (_isEditing == isEditing) {
+    return _isEditingTask || _isEditingNotes || _newTagPopupVisible;
+}
+
+void GuiController::setIsEditingTask(bool isEditing)
+{
+    if (_isEditingTask == isEditing) {
         return;
     }
 
-    _isEditing = isEditing;
-    emit isEditingChanged();
+    _isEditingTask = isEditing;
+    emit isEditingTaskChanged();
 }
 
 QString GuiController::titleInEditor() const
@@ -756,7 +763,7 @@ void GuiController::onBackClicked()
 
 void GuiController::clearTaskBeingEdited()
 {
-    setIsEditing(false);
+    setIsEditingTask(false);
     setDateInEditor({});
     setUuidBeingEdited({});
 }
@@ -788,7 +795,7 @@ void GuiController::setTaskBeingEdited(const QString &uuid, QDate date, const QS
     emit titleInEditorChanged();
     emit tagInEditorChanged();
     emit isEveningInEditorChanged();
-    setIsEditing(true);
+    setIsEditingTask(true);
 }
 
 void GuiController::moveTaskToCurrent(const QString &taskUuid)
@@ -889,6 +896,11 @@ void GuiController::moveTaskToNextMonday(const QString &taskUuid)
     taskModel()->updateTask(*task);
 }
 
+bool GuiController::addTag(const QString &tagName)
+{
+    return _dataController->addTag(tagName);
+}
+
 void GuiController::removeTag(const QString &tagName)
 {
     _dataController->removeTag(tagName);
@@ -958,6 +970,21 @@ QString GuiController::notesText() const
 QString GuiController::notesTaskTitle() const
 {
     return _notesTaskTitle;
+}
+
+bool GuiController::newTagPopupVisible() const
+{
+    return _newTagPopupVisible;
+}
+
+void GuiController::setNewTagPopupVisible(bool visible)
+{
+    if (_newTagPopupVisible == visible)
+        return;
+
+    _newTagPopupVisible = visible;
+    Q_EMIT newTagPopupVisibleChanged();
+    Q_EMIT isEditingTaskChanged();
 }
 
 void GuiController::deleteTask(const QString &taskUuid)
