@@ -84,12 +84,12 @@ CalDavClient::CalDavClient(CalDavConfig config)
 std::string CalDavClient::propfind(const std::string &url, const std::string &body, int depth) const
 {
     cpr::Session session;
-    session.SetUrl(cpr::Url{url});
-    session.SetHeader(cpr::Header{
-        {"Content-Type", "application/xml; charset=utf-8"},
-        {"Depth", std::to_string(depth)}});
-    session.SetBody(cpr::Body{body});
-    session.SetAuth(cpr::Authentication{m_config.username, m_config.password, cpr::AuthMode::BASIC});
+    session.SetUrl(cpr::Url { url });
+    session.SetHeader(cpr::Header {
+        { "Content-Type", "application/xml; charset=utf-8" },
+        { "Depth", std::to_string(depth) } });
+    session.SetBody(cpr::Body { body });
+    session.SetAuth(cpr::Authentication { m_config.username, m_config.password, cpr::AuthMode::BASIC });
 
     curl_easy_setopt(session.GetCurlHolder()->handle, CURLOPT_CUSTOMREQUEST, "PROPFIND");
     auto response = session.Post();
@@ -105,12 +105,12 @@ std::string CalDavClient::propfind(const std::string &url, const std::string &bo
 std::string CalDavClient::report(const std::string &url, const std::string &body) const
 {
     cpr::Session session;
-    session.SetUrl(cpr::Url{url});
-    session.SetHeader(cpr::Header{
-        {"Content-Type", "application/xml; charset=utf-8"},
-        {"Depth", "1"}});
-    session.SetBody(cpr::Body{body});
-    session.SetAuth(cpr::Authentication{m_config.username, m_config.password, cpr::AuthMode::BASIC});
+    session.SetUrl(cpr::Url { url });
+    session.SetHeader(cpr::Header {
+        { "Content-Type", "application/xml; charset=utf-8" },
+        { "Depth", "1" } });
+    session.SetBody(cpr::Body { body });
+    session.SetAuth(cpr::Authentication { m_config.username, m_config.password, cpr::AuthMode::BASIC });
 
     curl_easy_setopt(session.GetCurlHolder()->handle, CURLOPT_CUSTOMREQUEST, "REPORT");
     auto response = session.Post();
@@ -280,7 +280,8 @@ std::vector<CalendarEvent> CalDavClient::fetchEvents(
       </c:comp-filter>
     </c:comp-filter>
   </c:filter>
-</c:calendar-query>)", timeRange);
+</c:calendar-query>)",
+                                   timeRange);
 
     auto xml = report(calendarUrl, body);
     if (xml.empty())

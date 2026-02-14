@@ -54,10 +54,7 @@ if(APPLE)
 else()
   find_package(pugixml CONFIG REQUIRED)
   find_package(LibIcal CONFIG REQUIRED)
-  target_sources(pointless_core PRIVATE
-    linux_calendar_provider.cpp linux_calendar_provider.h
-    caldav_client.cpp caldav_client.h
-    ical_parser.cpp ical_parser.h)
+  target_sources(pointless_core PRIVATE linux_calendar_provider.cpp linux_calendar_provider.h caldav_client.cpp caldav_client.h ical_parser.cpp ical_parser.h)
   target_link_libraries(pointless_core PRIVATE pugixml::pugixml ical)
 endif()
 

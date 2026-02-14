@@ -28,6 +28,7 @@ path = [
     "src/mac/pointless.entitlements",
     "src/ios/ExportOptions-TestFlight.plist.in",
     ".qmllint.ini",
+    "version.txt"
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2025 Sergio Martins"

@@ -31,24 +31,24 @@ fi
 security unlock
 
 echo "Running macdeployqt ..."
-macdeployqt "$BUILD_DIR/bin/pointless.app" -qmldir=${SCRIPT_DIR}/..
+macdeployqt "$BUILD_DIR/bin/pointless.app" -qmldir="${SCRIPT_DIR}"/..
 
 echo "Signing frameworks..."
-find $BUILD_DIR/bin/pointless.app/Contents/Frameworks -name "*.dylib" -or -name "*.framework" -exec codesign --force --verify --verbose \
-	--sign ${APPLE_DEV_ID_APPLICATION} --options runtime --timestamp {} \;
+find "$BUILD_DIR"/bin/pointless.app/Contents/Frameworks \( -name "*.dylib" -o -name "*.framework" \) -exec codesign --force --verify --verbose \
+	--sign "${APPLE_DEV_ID_APPLICATION}" --options runtime --timestamp {} \;
 
 echo "Signing plugins..."
-find $BUILD_DIR/bin/pointless.app/Contents/PlugIns -name "*.dylib" -exec codesign --force --verify --verbose \
-	--sign ${APPLE_DEV_ID_APPLICATION} --options runtime --timestamp {} \;
+find "$BUILD_DIR"/bin/pointless.app/Contents/PlugIns -name "*.dylib" -exec codesign --force --verify --verbose \
+	--sign "${APPLE_DEV_ID_APPLICATION}" --options runtime --timestamp {} \;
 
 echo "Signing inner binary..."
 codesign --force --timestamp --options runtime \
-	--entitlements ${SCRIPT_DIR}/../src/mac/pointless.entitlements \
-	--sign ${APPLE_DEV_ID_APPLICATION} \
+	--entitlements "${SCRIPT_DIR}"/../src/mac/pointless.entitlements \
+	--sign "${APPLE_DEV_ID_APPLICATION}" \
 	"$BUILD_DIR/bin/pointless.app/Contents/MacOS/pointless"
 
 echo "Signing app bundle..."
-codesign --force --timestamp --options runtime --sign ${APPLE_DEV_ID_APPLICATION} --entitlements ${SCRIPT_DIR}/../src/mac/pointless.entitlements "$BUILD_DIR/bin/pointless.app"
+codesign --force --timestamp --options runtime --sign "${APPLE_DEV_ID_APPLICATION}" --entitlements "${SCRIPT_DIR}"/../src/mac/pointless.entitlements "$BUILD_DIR/bin/pointless.app"
 if ! codesign --verify --deep --verbose "$BUILD_DIR/bin/pointless.app"; then
 	echo "Error: Code signing verification failed"
 	exit 1

@@ -46,12 +46,14 @@ TEST(CalDavXmlTest, CalendarHomeSetParsing)
                     return node;
                 for (auto c : node.children()) {
                     auto r = search(c, n);
-                    if (r) return r;
+                    if (r)
+                        return r;
                 }
                 return {};
             };
             found = search(child, name);
-            if (found) return found;
+            if (found)
+                return found;
         }
         return {};
     };
@@ -117,7 +119,8 @@ TEST(CalDavXmlTest, CalendarListParsing)
             return parent;
         for (auto child : parent.children()) {
             auto found = findByLocal(child, name);
-            if (found) return found;
+            if (found)
+                return found;
         }
         return {};
     };
@@ -164,8 +167,7 @@ TEST(CalDavXmlTest, CalendarListParsing)
         auto supComp = findChildByLocal(prop, "supported-calendar-component-set");
         if (supComp) {
             for (auto comp : supComp.children()) {
-                if (localName(comp.name()) == "comp" &&
-                    std::string(comp.attribute("name").as_string()) == "VEVENT") {
+                if (localName(comp.name()) == "comp" && std::string(comp.attribute("name").as_string()) == "VEVENT") {
                     veventCalendarCount++;
                     break;
                 }
@@ -214,7 +216,8 @@ END:VCALENDAR</cal:calendar-data>
             return parent;
         for (auto child : parent.children()) {
             auto found = findByLocal(child, name);
-            if (found) return found;
+            if (found)
+                return found;
         }
         return {};
     };
