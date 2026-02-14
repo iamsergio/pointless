@@ -41,13 +41,14 @@ pugi::xml_node findChildByLocalName(pugi::xml_node parent, const std::string &na
 
 pugi::xml_node findDescendantByLocalName(pugi::xml_node parent, const std::string &name)
 {
-    if (localName(parent.name()) == name)
-        return parent;
-
-    for (auto child : parent.children()) {
-        auto found = findDescendantByLocalName(child, name);
-        if (found)
-            return found;
+    std::vector<pugi::xml_node> stack = { parent };
+    while (!stack.empty()) {
+        auto node = stack.back();
+        stack.pop_back();
+        if (localName(node.name()) == name)
+            return node;
+        for (auto child : node.children())
+            stack.push_back(child);
     }
     return {};
 }
@@ -57,13 +58,14 @@ std::string formatTimeRange(const DateRange &range)
     auto formatTime = [](std::chrono::system_clock::time_point tp) -> std::string {
         time_t t = std::chrono::system_clock::to_time_t(tp);
         std::tm tm = {};
-        gmtime_r(&t, &tm);
+        if (!gmtime_r(&t, &tm))
+            return {};
         return std::format("{:04}{:02}{:02}T{:02}{:02}{:02}Z",
                            tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
                            tm.tm_hour, tm.tm_min, tm.tm_sec);
     };
 
-    return std::format("start=\"{}\" end=\"{}\"", formatTime(range.start), formatTime(range.end));
+    return std::format(R"(start="{}" end="{}")", formatTime(range.start), formatTime(range.end));
 }
 
 std::string normalizeColor(const std::string &color)

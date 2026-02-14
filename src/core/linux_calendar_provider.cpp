@@ -9,8 +9,6 @@
 namespace pointless::core {
 
 LinuxCalendarProvider::~LinuxCalendarProvider() = default;
-LinuxCalendarProvider::LinuxCalendarProvider(LinuxCalendarProvider &&) noexcept = default;
-LinuxCalendarProvider &LinuxCalendarProvider::operator=(LinuxCalendarProvider &&) noexcept = default;
 
 LinuxCalendarProvider::LinuxCalendarProvider()
 {
