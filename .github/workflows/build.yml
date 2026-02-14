@@ -122,7 +122,11 @@ jobs:
         QT_QPA_PLATFORM: offscreen
       run: |
         if [ -n "${{ github.event.inputs.test_name }}" ]; then
-          build-${{ matrix.preset }}/bin/${{ github.event.inputs.test_name }}
+          args=""
+          if [ "${{ github.event.inputs.test_name }}" = "test_gui" ]; then
+            args="--local"
+          fi
+          build-${{ matrix.preset }}/bin/${{ github.event.inputs.test_name }} $args
         else
           ctest --output-on-failure --verbose --test-dir build-${{ matrix.preset }}
         fi
