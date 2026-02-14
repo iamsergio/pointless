@@ -52,7 +52,13 @@ if(APPLE)
   target_link_libraries(pointless_core PRIVATE ${EVENTKIT_LIB} ${COREGRAPHICS_LIB})
   target_sources(pointless_core PRIVATE apple_calendar_provider.mm)
 else()
-  target_sources(pointless_core PRIVATE linux_calendar_provider.cpp linux_calendar_provider.h)
+  find_package(pugixml CONFIG REQUIRED)
+  find_package(LibIcal CONFIG REQUIRED)
+  target_sources(pointless_core PRIVATE
+    linux_calendar_provider.cpp linux_calendar_provider.h
+    caldav_client.cpp caldav_client.h
+    ical_parser.cpp ical_parser.h)
+  target_link_libraries(pointless_core PRIVATE pugixml::pugixml ical)
 endif()
 
 if(APPLE AND NOT IOS)
@@ -110,6 +116,18 @@ if(POINTLESS_ENABLE_TESTS)
   target_link_libraries(test_data PRIVATE pointless_core GTest::gtest_main)
   target_include_directories(test_data PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
   add_test(NAME test_data COMMAND test_data)
+
+  if(NOT APPLE)
+    add_executable(test_caldav tests/test_caldav.cpp)
+    target_link_libraries(test_caldav PRIVATE pointless_core GTest::gtest_main)
+    target_include_directories(test_caldav PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+    add_test(NAME test_caldav COMMAND test_caldav)
+
+    add_executable(test_ical_parser tests/test_ical_parser.cpp)
+    target_link_libraries(test_ical_parser PRIVATE pointless_core GTest::gtest_main)
+    target_include_directories(test_ical_parser PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+    add_test(NAME test_ical_parser COMMAND test_ical_parser)
+  endif()
 endif()
 
 if(NOT IOS)
