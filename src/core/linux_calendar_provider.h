@@ -16,6 +16,11 @@ class LinuxCalendarProvider : public CalendarProvider
 {
 public:
     LinuxCalendarProvider();
+    ~LinuxCalendarProvider() override;
+    LinuxCalendarProvider(const LinuxCalendarProvider &) = delete;
+    LinuxCalendarProvider &operator=(const LinuxCalendarProvider &) = delete;
+    LinuxCalendarProvider(LinuxCalendarProvider &&) noexcept;
+    LinuxCalendarProvider &operator=(LinuxCalendarProvider &&) noexcept;
 
     [[nodiscard]] std::vector<Calendar> getCalendars() const override;
     [[nodiscard]] std::vector<CalendarEvent> getEvents(

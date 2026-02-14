@@ -8,6 +8,10 @@
 
 namespace pointless::core {
 
+LinuxCalendarProvider::~LinuxCalendarProvider() = default;
+LinuxCalendarProvider::LinuxCalendarProvider(LinuxCalendarProvider &&) noexcept = default;
+LinuxCalendarProvider &LinuxCalendarProvider::operator=(LinuxCalendarProvider &&) noexcept = default;
+
 LinuxCalendarProvider::LinuxCalendarProvider()
 {
     auto url = pointless::getenv_or_empty("POINTLESS_CALDAV_URL");

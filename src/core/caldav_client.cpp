@@ -142,7 +142,7 @@ std::string CalDavClient::discoverCalendarHomeSet() const
         return m_config.serverUrl;
     }
 
-    auto homeSetNode = findDescendantByLocalName(doc, "calendar-home-set");
+    auto homeSetNode = findDescendantByLocalName(doc.root(), "calendar-home-set");
     if (!homeSetNode) {
         P_LOG_DEBUG("No calendar-home-set found, using server URL directly");
         return m_config.serverUrl;
@@ -193,7 +193,7 @@ std::vector<Calendar> CalDavClient::fetchCalendars(const std::string &homeSetUrl
 
     std::vector<Calendar> calendars;
 
-    auto multistatus = findDescendantByLocalName(doc, "multistatus");
+    auto multistatus = findDescendantByLocalName(doc.root(), "multistatus");
     if (!multistatus)
         return {};
 
@@ -294,7 +294,7 @@ std::vector<CalendarEvent> CalDavClient::fetchEvents(
 
     std::vector<CalendarEvent> events;
 
-    auto multistatus = findDescendantByLocalName(doc, "multistatus");
+    auto multistatus = findDescendantByLocalName(doc.root(), "multistatus");
     if (!multistatus)
         return {};
 
