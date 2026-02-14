@@ -64,6 +64,7 @@ public:
                     gc->setIsEditingTask(false);
                     gc->closeNotesEditor();
                     gc->setNewTagPopupVisible(false);
+                    gc->setCurrentPage({});
                     return true;
                 }
 
@@ -100,6 +101,13 @@ public:
             if (keyEvent->key() == Qt::Key_R) {
                 if (!gc->isEditingSomething()) {
                     gc->refresh();
+                    return true;
+                }
+            }
+
+            if (keyEvent->key() == Qt::Key_S) {
+                if (!gc->isEditingSomething()) {
+                    gc->setCurrentPage("search");
                     return true;
                 }
             }
@@ -528,7 +536,7 @@ bool GuiController::isEditingTask() const
 
 bool GuiController::isEditingSomething() const
 {
-    return _isEditingTask || _isEditingNotes || _newTagPopupVisible;
+    return _isEditingTask || _isEditingNotes || _newTagPopupVisible || _currentPage == "search";
 }
 
 void GuiController::setIsEditingTask(bool isEditing)

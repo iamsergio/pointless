@@ -76,6 +76,28 @@ Item {
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
+                    text: "Search"
+                    color: Style.taskTextColor
+                    font.pixelSize: Style.fromPixel(16)
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        GuiController.currentPage = "search";
+                        root.isOpen = false;
+                    }
+                }
+            }
+
+            Item {
+                Layout.fillWidth: true
+                implicitHeight: Style.fromPixel(40)
+
+                Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
                     text: "About"
                     color: Style.taskTextColor
                     font.pixelSize: Style.fromPixel(16)

@@ -94,6 +94,11 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
         return false;
     }
 
+    if (!_searchText.isEmpty()) {
+        const QString taskTitle = QString::fromStdString(task->title);
+        return taskTitle.contains(_searchText, Qt::CaseInsensitive);
+    }
+
     if (_showImmediateOnly && task->isEvening()) {
         return false;
     }
@@ -208,4 +213,19 @@ void TaskFilterModel::setShowImmediateOnly(bool show)
     _showImmediateOnly = show;
     endFilterChange();
     Q_EMIT showImmediateOnlyChanged();
+}
+
+QString TaskFilterModel::searchText() const
+{
+    return _searchText;
+}
+
+void TaskFilterModel::setSearchText(const QString &text)
+{
+    if (_searchText == text)
+        return;
+    beginFilterChange();
+    _searchText = text;
+    endFilterChange();
+    Q_EMIT searchTextChanged();
 }

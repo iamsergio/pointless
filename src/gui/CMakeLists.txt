@@ -49,6 +49,7 @@ set(PLAIN_QML_FILES
     SidePanel.qml
     TagsView.qml
     TasksByTagPage.qml
+    SearchPage.qml
     ToggleButton.qml)
 
 qt_add_qml_module(

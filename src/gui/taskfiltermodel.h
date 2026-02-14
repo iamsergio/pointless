@@ -19,6 +19,7 @@ class TaskFilterModel : public QSortFilterProxyModel
     Q_PROPERTY(int count READ count NOTIFY countChanged)
     Q_PROPERTY(bool isEmpty READ isEmpty NOTIFY emptyChanged)
     Q_PROPERTY(bool showImmediateOnly READ showImmediateOnly WRITE setShowImmediateOnly NOTIFY showImmediateOnlyChanged)
+    Q_PROPERTY(QString searchText READ searchText WRITE setSearchText NOTIFY searchTextChanged)
 public:
     enum class ViewType : uint8_t {
         Week,
@@ -58,6 +59,10 @@ public:
     void setShowImmediateOnly(bool show);
     Q_SIGNAL void showImmediateOnlyChanged();
 
+    [[nodiscard]] QString searchText() const;
+    void setSearchText(const QString &text);
+    Q_SIGNAL void searchTextChanged();
+
     [[nodiscard]] bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
     [[nodiscard]] bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;
 
@@ -69,4 +74,5 @@ private:
     QDate _dateFilter;
     int _previousRowCount = 0;
     bool _showImmediateOnly = false;
+    QString _searchText;
 };

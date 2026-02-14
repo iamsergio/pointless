@@ -91,6 +91,12 @@ QC.ApplicationWindow {
                 z: mainView.z + 1
             }
 
+            SearchPage {
+                anchors.fill: parent
+                onBackClicked: GuiController.currentPage = ""
+                z: mainView.z + 1
+            }
+
             LoginScreen {
                 id: loginScreen
                 anchors.fill: parent
