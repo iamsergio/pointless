@@ -52,74 +52,16 @@ Page {
                     selectByMouse: true
                     verticalAlignment: Text.AlignVCenter
                     focus: root.visible
-
-                    onTextChanged: {
-                        taskFilterModel.searchText = text;
-                    }
                 }
             }
         }
 
-        TaskFilterModel {
-            id: taskFilterModel
-        }
-
-        ListView {
+        TaskView {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            clip: true
-            spacing: Style.taskSpacing
-            cacheBuffer: 1000
-            QC.ScrollBar.vertical: QC.ScrollBar {
-                visible: !GuiController.isMobile
-            }
-
-            model: taskFilterModel
-
-            delegate: Task {
-                required property int index
-                required property string uuid
-                required property string title
-                required property bool isDone
-                required property bool isImportant
-                required property bool isEvening
-                required property var dueDate
-                required property string tagName
-                required property bool hasDueDate
-                required property bool isFromCalendar
-                required property string calendarName
-                required property bool isSoon
-                required property bool isLater
-                required property bool isCurrent
-                required property bool isDueTomorrow
-                required property bool hasDueDateTime
-                required property string allTags
-                required property bool hasNotes
-
-                width: ListView.view.width
-                taskUuid: uuid
-                taskTitle: title
-                taskIsDone: isDone
-                taskIsImportant: isImportant
-                taskIsEvening: isEvening
-                taskDueDate: dueDate
-                taskTagName: tagName
-                taskIsFromCalendar: isFromCalendar
-                taskCalendarName: calendarName
-                taskAllTags: allTags
-                taskHasNotes: hasNotes
-                taskHasDueDate: hasDueDate
-                taskHasDueDateTime: hasDueDateTime
-                taskIsSoon: isSoon
-                taskIsLater: isLater
-                taskIsCurrent: isCurrent
-                taskIsDueTomorrow: isDueTomorrow
-                showTags: true
-
-                onClicked: {
-                    GuiController.setTaskMenuUuid(uuid);
-                }
-            }
+            searchText: searchInput.text
+            showsTagsInSecondLine: true
+            showsDate: true
         }
     }
 }

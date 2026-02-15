@@ -143,6 +143,7 @@ Item {
                     taskIsLater: isLater
                     taskIsCurrent: isCurrent
                     taskIsDueTomorrow: isDueTomorrow
+                    showsDate: false
 
                     onClicked: {
                         GuiController.setTaskMenuUuid(uuid);

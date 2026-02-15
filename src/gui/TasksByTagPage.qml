@@ -12,11 +12,12 @@ Page {
     rightButtonIcon: "\uf055"
 
     onRightButtonClicked: {
-        GuiController.setTaskBeingEdited("", new Date(NaN), GuiController.currentTag)
+        GuiController.setTaskBeingEdited("", new Date(NaN), GuiController.currentTag);
     }
 
     TaskView {
         anchors.fill: parent
         showTags: false
+        showsTagsInSecondLine: true
     }
 }

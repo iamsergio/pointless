@@ -19,11 +19,15 @@ ListView {
     }
 
     property bool showTags: true
+    property bool showsTagsInSecondLine: false
+    property bool showsDate: true
+    property string searchText: ""
 
     TaskFilterModel {
         id: taskFilterModel
         viewType: GuiController.currentViewType
         tagName: GuiController.currentTag
+        searchText: root.searchText
     }
 
     model: taskFilterModel
@@ -69,6 +73,8 @@ ListView {
         taskIsCurrent: isCurrent
         taskIsDueTomorrow: isDueTomorrow
         showTags: root.showTags
+        showsTagsInSecondLine: root.showsTagsInSecondLine
+        showsDate: root.showsDate
 
         onClicked: {
             GuiController.setTaskMenuUuid(uuid);

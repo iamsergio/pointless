@@ -28,6 +28,8 @@ Rectangle {
     required property bool taskIsCurrent
     required property bool taskIsDueTomorrow
     property bool showTags: true
+    property bool showsTagsInSecondLine: false
+    property bool showsDate: true
 
     height: Style.taskHeight
     color: taskIsImportant ? Style.taskImportantBackground : (taskIsEvening ? Style.taskEveningBackground : Style.taskBackground)
@@ -83,12 +85,12 @@ Rectangle {
 
                 RowLayout {
                     spacing: Style.fromPixel(8)
-                    visible: shouldShowCalendar || shouldShowDueDate || shouldShowAllTags
+                    visible: shouldShowCalendar || shouldShowDueDate || showsTagsInSecondLine
                     Layout.preferredHeight: (calendarText.visible || dateText.visible || allTagsText.visible) ? implicitHeight : 0
 
                     readonly property bool shouldShowCalendar: root.taskIsFromCalendar && root.taskCalendarName !== ""
-                    readonly property bool shouldShowDueDate: (root.taskHasDueDate && GuiController.currentViewType !== GuiController.Week) || root.taskHasDueDateTime
-                    readonly property bool shouldShowAllTags: GuiController.currentPage === "tasksByTag" && allTagsText.text !== ""
+                    readonly property bool shouldShowDueDate: (root.taskHasDueDate && root.showsDate) || root.taskHasDueDateTime
+                    readonly property bool showsTagsInSecondLine: root.showsTagsInSecondLine && allTagsText.text !== ""
 
                     Text {
                         id: calendarText
@@ -108,7 +110,7 @@ Rectangle {
 
                     Text {
                         id: allTagsText
-                        visible: parent.shouldShowAllTags && text !== ""
+                        visible: parent.showsTagsInSecondLine && text !== ""
                         text: root.allTagsExceptCurrent(root.taskAllTags)
                         font.pixelSize: Style.fromPixel(11)
                         color: Style.taskSecondaryTextColor
