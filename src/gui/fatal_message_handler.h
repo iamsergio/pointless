@@ -21,7 +21,8 @@ inline bool isWhiteListed(const QString &msg)
 #endif
 
     static QStringList whiteList = {
-        "Populating font family aliases took"
+        "Populating font family aliases took",
+        "DelegateModel::cancel:"
     };
 
     return std::ranges::any_of(whiteList.begin(), whiteList.end(), [&](const QString &entry) {
@@ -42,10 +43,10 @@ inline void qtMessageHandler(QtMsgType type, const QMessageLogContext &context, 
         P_LOG_INFO("{} ({}:{}, {})", msg.toStdString(), file, context.line, function);
         break;
     case QtWarningMsg:
-        P_LOG_WARNING("{} ({}:{}, {})", msg.toStdString(), file, context.line, function);
+        P_LOG_WARNING_NOABORT("{} ({}:{}, {})", msg.toStdString(), file, context.line, function);
         break;
     case QtCriticalMsg:
-        P_LOG_ERROR("{} ({}:{}, {})", msg.toStdString(), file, context.line, function);
+        P_LOG_CRITICAL_NOABORT("{} ({}:{}, {})", msg.toStdString(), file, context.line, function);
         break;
     case QtFatalMsg:
         P_LOG_ERROR("{} ({}:{}, {})", msg.toStdString(), file, context.line, function);

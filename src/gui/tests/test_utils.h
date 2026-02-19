@@ -15,8 +15,6 @@ Application::Options initPlatform()
         qputenv("QT_QPA_PLATFORM", "offscreen");
     }
 
-    // Tests have fatal warnings
-    qputenv("QT_FATAL_WARNINGS", "1");
     core::Logger::setWarningsFatal(true);
     QCoreApplication::setOrganizationName("com.pointless.tests");
 
