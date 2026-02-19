@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-set(VCPKG_OVERLAY_TRIPLETS "${CMAKE_CURRENT_SOURCE_DIR}/triplets")
+set(VCPKG_OVERLAY_TRIPLETS "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/vcpkg/custom_triplets/")
 include(cmake/ios-utils.cmake)
 
 if(POINTLESS_IOS_BUILD)
