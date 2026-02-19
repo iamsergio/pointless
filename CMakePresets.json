@@ -62,11 +62,12 @@
       }
     },
     {
-      "name": "clang",
-      "hidden": true,
-      "environment": {
-        "CXX": "clang++",
-        "CC": "clang"
+      "name": "dev-ubsan",
+      "inherits": "dev",
+      "description": "dev-ubsan",
+      "cacheVariables": {
+        "POINTLESS_ENABLE_UBSAN": "ON",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-ubsan"
       }
     },
     {
@@ -79,6 +80,14 @@
         "POINTLESS_ENABLE_TSAN": "ON",
         "VCPKG_TARGET_ARCHITECTURE": "x64",
         "VCPKG_TARGET_TRIPLET": "x64-linux-tsan"
+      }
+    },
+    {
+      "name": "clang",
+      "hidden": true,
+      "environment": {
+        "CXX": "clang++",
+        "CC": "clang"
       }
     },
     {

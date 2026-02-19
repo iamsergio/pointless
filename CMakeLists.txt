@@ -114,8 +114,14 @@ set(QT_QML_GENERATE_QMLLS_INI TRUE)
 
 if(POINTLESS_ENABLE_ASAN)
   message(STATUS "Building with Address Sanitizer")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined -fno-omit-frame-pointer")
-  set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fsanitize=address,undefined")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+  set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fsanitize=address")
+endif()
+
+if(POINTLESS_ENABLE_UBSAN)
+  message(STATUS "Building with Undefined Behavior Sanitizer")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined -fno-omit-frame-pointer")
+  set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fsanitize=undefined")
 endif()
 
 if(POINTLESS_ENABLE_TSAN)
