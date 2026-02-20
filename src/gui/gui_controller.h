@@ -15,6 +15,7 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <QtQml/qqmlregistration.h>
+#include <QFutureWatcher>
 #include <QTimer>
 
 #include <memory>
@@ -66,6 +67,7 @@ class GuiController : public QObject
     Q_PROPERTY(QString currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
     Q_PROPERTY(QString currentTag READ currentTag WRITE setCurrentTag NOTIFY currentTagChanged)
     Q_PROPERTY(CalendarsModel *calendarsModel READ calendarsModel CONSTANT)
+    Q_PROPERTY(bool isFetchingCalendarEvents READ isFetchingCalendarEvents NOTIFY isFetchingCalendarEventsChanged)
     Q_PROPERTY(bool showImmediateOnly READ showImmediateOnly WRITE setShowImmediateOnly NOTIFY showImmediateOnlyChanged)
     Q_PROPERTY(bool showEveningToggle READ showEveningToggle NOTIFY showEveningToggleChanged)
     Q_PROPERTY(bool isEditingNotes READ isEditingNotes NOTIFY isEditingNotesChanged)
@@ -152,6 +154,7 @@ public:
     void setCurrentTag(const QString &tag);
 
     [[nodiscard]] CalendarsModel *calendarsModel() const;
+    [[nodiscard]] bool isFetchingCalendarEvents() const;
 
     [[nodiscard]] bool showImmediateOnly() const;
     void setShowImmediateOnly(bool show);
@@ -221,6 +224,7 @@ Q_SIGNALS:
     void notesTextChanged();
     void notesTaskTitleChanged();
     void newTagPopupVisibleChanged();
+    void isFetchingCalendarEventsChanged();
 
 private:
     explicit GuiController(QObject *parent = nullptr);
@@ -252,4 +256,6 @@ private:
     QString _notesText;
     QString _notesTaskTitle;
     bool _newTagPopupVisible = false;
+    bool _isFetchingCalendarEvents = false;
+    QFutureWatcher<std::vector<pointless::core::CalendarEvent>> *_calendarFetchWatcher = nullptr;
 };

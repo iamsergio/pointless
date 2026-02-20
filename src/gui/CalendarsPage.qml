@@ -72,18 +72,42 @@ Page {
             margins: Style.fromPixel(8)
         }
         height: Style.fromPixel(44)
-        color: Style.buttonColor
+        color: GuiController.isFetchingCalendarEvents ? Qt.darker(Style.buttonColor, 1.3) : Style.buttonColor
         radius: Style.fromPixel(8)
 
-        Text {
+        Row {
             anchors.centerIn: parent
-            text: "Fetch Calendar Events"
-            color: Style.buttonTextColor
-            font.pixelSize: Style.fromPixel(16)
+            spacing: Style.fromPixel(8)
+
+            FontAwesomeButton {
+                fontAwesomeIcon: "\uf021"
+                iconSize: Style.fromPixel(16)
+                iconColor: Style.buttonTextColor
+                backgroundColor: "transparent"
+                visible: GuiController.isFetchingCalendarEvents
+                enabled: false
+                anchors.verticalCenter: parent.verticalCenter
+
+                RotationAnimation on rotation {
+                    from: 0
+                    to: 360
+                    duration: 1000
+                    loops: Animation.Infinite
+                    running: GuiController.isFetchingCalendarEvents
+                }
+            }
+
+            Text {
+                text: GuiController.isFetchingCalendarEvents ? "Fetching..." : "Fetch Calendar Events"
+                color: Style.buttonTextColor
+                font.pixelSize: Style.fromPixel(16)
+                anchors.verticalCenter: parent.verticalCenter
+            }
         }
 
         MouseArea {
             anchors.fill: parent
+            enabled: !GuiController.isFetchingCalendarEvents
             onClicked: GuiController.fetchCalendarEvents()
         }
     }

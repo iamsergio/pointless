@@ -36,6 +36,8 @@
 #include <QStandardPaths>
 #include <QSettings>
 
+#include <QtConcurrent/QtConcurrent>
+
 #include <cstdlib>
 #include <string>
 #include <utility>
@@ -180,6 +182,46 @@ GuiController::GuiController(QObject *parent)
         Q_EMIT showEveningToggleChanged();
     });
     _eveningToggleTimer.start();
+
+    _calendarFetchWatcher = new QFutureWatcher<std::vector<pointless::core::CalendarEvent>>(this);
+    connect(_calendarFetchWatcher, &QFutureWatcher<std::vector<pointless::core::CalendarEvent>>::finished, this, [this] {
+        auto events = _calendarFetchWatcher->result();
+
+        P_LOG_INFO("Fetched {} calendar events", static_cast<int>(events.size()));
+
+        const auto allTasks = _dataController->localData().data().getAllTasks();
+
+        int addedCount = 0;
+        for (const auto &event : events) {
+            bool alreadyImported = false;
+            for (const auto &task : allTasks) {
+                if (task.uuidInDeviceCalendar.has_value() && *task.uuidInDeviceCalendar == event.eventId) {
+                    alreadyImported = true;
+                    break;
+                }
+            }
+
+            if (alreadyImported) {
+                continue;
+            }
+
+            core::Task task;
+            task.uuid = QUuid::createUuid().toString(QUuid::WithoutBraces).toStdString();
+            task.title = event.title;
+            task.dueDate = event.startDate;
+            task.uuidInDeviceCalendar = event.eventId;
+            task.deviceCalendarUuid = event.calendarId;
+            task.deviceCalendarName = event.calendarName;
+
+            taskModel()->addTask(task);
+            addedCount++;
+        }
+
+        P_LOG_INFO("Added {} new tasks from calendar events", addedCount);
+
+        _isFetchingCalendarEvents = false;
+        Q_EMIT isFetchingCalendarEventsChanged();
+    });
 }
 
 GuiController::~GuiController()
@@ -300,6 +342,11 @@ std::vector<std::string> GuiController::enabledCalendarIds() const
 
 void GuiController::fetchCalendarEvents()
 {
+    if (_isFetchingCalendarEvents) {
+        P_LOG_INFO("Calendar fetch already in progress");
+        return;
+    }
+
     auto *model = calendarsModel();
     if (model == nullptr) {
         P_LOG_WARNING("No calendars model available");
@@ -317,39 +364,20 @@ void GuiController::fetchCalendarEvents()
     range.start = core::Clock::now();
     range.end = range.start + std::chrono::hours(24 * 365);
 
-    auto events = _calendarProvider->getEvents(range, calendarIds);
+    _isFetchingCalendarEvents = true;
+    Q_EMIT isFetchingCalendarEventsChanged();
 
-    P_LOG_INFO("Fetched {} calendar events", static_cast<int>(events.size()));
+    auto *provider = _calendarProvider.get();
+    QFuture<std::vector<core::CalendarEvent>> future = QtConcurrent::run([provider, range, calendarIds]() {
+        return provider->getEvents(range, calendarIds);
+    });
 
-    const auto allTasks = _dataController->localData().data().getAllTasks();
+    _calendarFetchWatcher->setFuture(future);
+}
 
-    int addedCount = 0;
-    for (const auto &event : events) {
-        bool alreadyImported = false;
-        for (const auto &task : allTasks) {
-            if (task.uuidInDeviceCalendar.has_value() && *task.uuidInDeviceCalendar == event.eventId) {
-                alreadyImported = true;
-                break;
-            }
-        }
-
-        if (alreadyImported) {
-            continue;
-        }
-
-        core::Task task;
-        task.uuid = QUuid::createUuid().toString(QUuid::WithoutBraces).toStdString();
-        task.title = event.title;
-        task.dueDate = event.startDate;
-        task.uuidInDeviceCalendar = event.eventId;
-        task.deviceCalendarUuid = event.calendarId;
-        task.deviceCalendarName = event.calendarName;
-
-        taskModel()->addTask(task);
-        addedCount++;
-    }
-
-    P_LOG_INFO("Added {} new tasks from calendar events", addedCount);
+bool GuiController::isFetchingCalendarEvents() const
+{
+    return _isFetchingCalendarEvents;
 }
 
 TaskFilterModel *GuiController::taskFilterModel() const
