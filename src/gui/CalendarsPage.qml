@@ -12,6 +12,7 @@ Page {
     id: root
     pageId: "calendars"
     pageTitle: "Calendars"
+    onVisibleChanged: { if (!visible) GuiController.clearFetchCalendarStatusText() }
 
     ListView {
         id: listView
@@ -61,6 +62,21 @@ Page {
                 }
             }
         }
+    }
+
+    Text {
+        id: statusText
+        anchors {
+            bottom: fetchButton.top
+            left: parent.left
+            right: parent.right
+            margins: Style.fromPixel(8)
+        }
+        text: GuiController.fetchCalendarStatusText
+        color: Style.taskTextColor
+        font.pixelSize: Style.fromPixel(14)
+        horizontalAlignment: Text.AlignHCenter
+        visible: GuiController.fetchCalendarStatusText !== ""
     }
 
     Rectangle {

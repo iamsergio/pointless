@@ -185,39 +185,48 @@ GuiController::GuiController(QObject *parent)
 
     _calendarFetchWatcher = new QFutureWatcher<std::vector<pointless::core::CalendarEvent>>(this);
     connect(_calendarFetchWatcher, &QFutureWatcher<std::vector<pointless::core::CalendarEvent>>::finished, this, [this] {
-        auto events = _calendarFetchWatcher->result();
+        try {
+            auto events = _calendarFetchWatcher->result();
 
-        P_LOG_INFO("Fetched {} calendar events", static_cast<int>(events.size()));
+            P_LOG_INFO("Fetched {} calendar events", static_cast<int>(events.size()));
 
-        const auto allTasks = _dataController->localData().data().getAllTasks();
+            const auto allTasks = _dataController->localData().data().getAllTasks();
 
-        int addedCount = 0;
-        for (const auto &event : events) {
-            bool alreadyImported = false;
-            for (const auto &task : allTasks) {
-                if (task.uuidInDeviceCalendar.has_value() && *task.uuidInDeviceCalendar == event.eventId) {
-                    alreadyImported = true;
-                    break;
+            int addedCount = 0;
+            for (const auto &event : events) {
+                bool alreadyImported = false;
+                for (const auto &task : allTasks) {
+                    if (task.uuidInDeviceCalendar.has_value() && *task.uuidInDeviceCalendar == event.eventId) {
+                        alreadyImported = true;
+                        break;
+                    }
                 }
+
+                if (alreadyImported) {
+                    continue;
+                }
+
+                core::Task task;
+                task.uuid = QUuid::createUuid().toString(QUuid::WithoutBraces).toStdString();
+                task.title = event.title;
+                task.dueDate = event.startDate;
+                task.uuidInDeviceCalendar = event.eventId;
+                task.deviceCalendarUuid = event.calendarId;
+                task.deviceCalendarName = event.calendarName;
+
+                taskModel()->addTask(task);
+                addedCount++;
             }
 
-            if (alreadyImported) {
-                continue;
-            }
+            P_LOG_INFO("Added {} new tasks from calendar events", addedCount);
 
-            core::Task task;
-            task.uuid = QUuid::createUuid().toString(QUuid::WithoutBraces).toStdString();
-            task.title = event.title;
-            task.dueDate = event.startDate;
-            task.uuidInDeviceCalendar = event.eventId;
-            task.deviceCalendarUuid = event.calendarId;
-            task.deviceCalendarName = event.calendarName;
-
-            taskModel()->addTask(task);
-            addedCount++;
+            _fetchCalendarStatusText = QStringLiteral("Fetched %1 events, added %2").arg(events.size()).arg(addedCount);
+            Q_EMIT fetchCalendarStatusTextChanged();
+        } catch (const std::exception &e) {
+            P_LOG_ERROR("Failed to fetch calendar events: {}", e.what());
+            _fetchCalendarStatusText = QStringLiteral("Error fetching calendar events");
+            Q_EMIT fetchCalendarStatusTextChanged();
         }
-
-        P_LOG_INFO("Added {} new tasks from calendar events", addedCount);
 
         _isFetchingCalendarEvents = false;
         Q_EMIT isFetchingCalendarEventsChanged();
@@ -378,6 +387,19 @@ void GuiController::fetchCalendarEvents()
 bool GuiController::isFetchingCalendarEvents() const
 {
     return _isFetchingCalendarEvents;
+}
+
+QString GuiController::fetchCalendarStatusText() const
+{
+    return _fetchCalendarStatusText;
+}
+
+void GuiController::clearFetchCalendarStatusText()
+{
+    if (_fetchCalendarStatusText.isEmpty())
+        return;
+    _fetchCalendarStatusText.clear();
+    Q_EMIT fetchCalendarStatusTextChanged();
 }
 
 TaskFilterModel *GuiController::taskFilterModel() const
