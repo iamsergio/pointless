@@ -34,9 +34,7 @@ inline QQuickItem *getListViewItemAtIndex(const spix::ItemPath &listViewPath, in
 inline QVariant getItemProperty(QObject *obj, const char *propertyName)
 {
     QVariant result;
-    QMetaObject::invokeMethod(obj, [obj, propertyName, &result]() {
-        result = obj->property(propertyName);
-    }, Qt::BlockingQueuedConnection);
+    QMetaObject::invokeMethod(obj, [obj, propertyName, &result]() { result = obj->property(propertyName); }, Qt::BlockingQueuedConnection);
     return result;
 }
 
