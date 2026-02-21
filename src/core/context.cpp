@@ -16,10 +16,11 @@ namespace {
 std::optional<Context> s_currentContext; // NOLINT // clazy:exclude=non-pod-global-static
 }
 
-Context::Context(IDataProvider::Type providerType, std::string localFilePath, unsigned int startupOptions)
+Context::Context(IDataProvider::Type providerType, std::string localFilePath, unsigned int startupOptions, bool readOnly)
     : _dataProviderType(providerType)
     , _localFilePath(std::move(localFilePath))
     , _startupOptions(startupOptions)
+    , _readOnly(readOnly)
 {
     if (!_localFilePath.empty()) {
         auto parentPath = std::filesystem::path(_localFilePath).parent_path();

@@ -50,6 +50,11 @@ std::expected<pointless::core::Data, std::string> LocalData::loadDataFromFile(co
 
 std::expected<void, std::string> LocalData::save() const
 {
+    if (Context::self().readOnly()) {
+        P_LOG_INFO("Skipping save, context is read-only");
+        return {};
+    }
+
     P_LOG_INFO("Saving data to disk, numTasks={}, revision={}", _data.taskCount(), _data.revision());
 
     const auto filename = getDataFilePath();

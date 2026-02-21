@@ -185,7 +185,6 @@ protected:
         mouseClick("mainWindow/editTask/saveButton");
         wait(std::chrono::milliseconds(200));
         auto &localData = GuiController::instance()->dataController()->localData();
-        localData.data().needsLocalSave = false; // prevent changing test data
         EXPECT_EQ(getStringProperty("mainWindow/editTask", "visible"), "false");
         EXPECT_TRUE(localData.taskForTitle("foo") != nullptr);
 
@@ -248,7 +247,7 @@ void initDataProvider(IDataProvider::Type providerType)
     Gui::Clock::setTestNow(QDateTime(QDate(2025, 12, 1), QTime(16, 0)));
 
     if (providerType == IDataProvider::Type::TestsLocal) {
-        core::Context::setContext({ IDataProvider::Type::TestsLocal, testDataPath });
+        core::Context::setContext({ IDataProvider::Type::TestsLocal, testDataPath, static_cast<unsigned int>(core::Context::StartupOption::RestoreAuth), true });
     } else if (providerType == IDataProvider::Type::TestSupabase) {
         core::Context::setContext(core::Context::defaultContextForSupabaseTesting());
         auto provider = IDataProvider::createProvider();

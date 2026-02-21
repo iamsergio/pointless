@@ -40,7 +40,12 @@ struct Context
         return (_startupOptions & static_cast<unsigned int>(StartupOption::RestoreAuth)) != 0U;
     }
 
-    Context(IDataProvider::Type providerType, std::string localFilePath, unsigned int startupOptions = static_cast<unsigned int>(StartupOption::RestoreAuth));
+    [[nodiscard]] bool readOnly() const
+    {
+        return _readOnly;
+    }
+
+    Context(IDataProvider::Type providerType, std::string localFilePath, unsigned int startupOptions = static_cast<unsigned int>(StartupOption::RestoreAuth), bool readOnly = false);
     Context(const Context &) = default;
     Context(Context &&) = delete;
     Context &operator=(Context &&) = delete;
@@ -56,6 +61,7 @@ private:
     IDataProvider::Type _dataProviderType;
     std::string _localFilePath;
     unsigned int _startupOptions;
+    bool _readOnly = false;
     static std::optional<std::string> _clientDataDir;
 };
 
