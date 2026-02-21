@@ -25,6 +25,8 @@ using namespace pointless;
 static int g_argc;
 static char **g_argv;
 
+#define DEBUG_SLEEP wait(std::chrono::seconds(36000));
+
 const std::string testDataPath = std::string(POINTLESS_SOURCE_DIR) + "/src/gui/tests/test_data.json";
 
 class MyTest : public pointless::TestServer
@@ -46,7 +48,7 @@ protected:
             }
         } appQuitter;
 
-        P_LOG_INFO("Starting test!!");
+        P_LOG_INFO("Starting test. On secondary thread.");
 
         auto weekActive = getStringProperty("mainWindow/weekViewButton", "isActive");
         EXPECT_EQ(weekActive, "true");
@@ -100,9 +102,6 @@ protected:
                                             "FRIDAY, 5",
                                             "SATURDAY, 6",
                                             "SUNDAY, 7" };
-        const auto indexesContainingTasks = { 0, 2, 4, 6 };
-
-
 
         int index = 0;
         for (const auto &expectedText : expectedWeekDaysText) {
@@ -113,11 +112,13 @@ protected:
             auto listViewItem = SpixUtils::getListViewItemAtIndex(spix::ItemPath("mainWindow/weekdayListView"), index);
 
             ASSERT_NE(listViewItem, nullptr) << "Expected list view item at index " << index << listViewItem;
-            auto prettyDate = listViewItem->property("prettyDate").toString();
+            auto prettyDate = SpixUtils::getItemProperty(listViewItem, "prettyDate").toString();
             EXPECT_EQ(prettyDate, expectedText);
 
             ++index;
         }
+
+        // DEBUG_SLEEP
 
         // Test task counts within each day
         const auto expectedTaskCounts = { 5, 0, 1, 0, 1, 0, 1 };
@@ -128,9 +129,12 @@ protected:
             auto listViewItem = SpixUtils::getListViewItemAtIndex(spix::ItemPath("mainWindow/weekdayListView"), index);
             ASSERT_NE(listViewItem, nullptr);
 
-            auto model = listViewItem->property("tasks").value<QObject *>();
-            ASSERT_NE(model, nullptr);
-            auto taskCount = model->property("count").toInt();
+            int taskCount = -1;
+            QMetaObject::invokeMethod(listViewItem, [listViewItem, &taskCount]() {
+                auto model = listViewItem->property("tasks").value<QObject *>();
+                if (model)
+                    taskCount = model->property("count").toInt(); }, Qt::BlockingQueuedConnection);
+            ASSERT_NE(taskCount, -1);
             EXPECT_EQ(taskCount, expectedCount);
 
             ++index;
