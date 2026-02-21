@@ -1,7 +1,7 @@
 {
     "name": "pointless-cpp",
     "version": "1.0.0",
-    "builtin-baseline": "d964be6cd822de344ef3de4eb983b70210c4f044",
+    "builtin-baseline": "5bc3a07440d08549832055eaddc3979eeeaad51b",
     "dependencies": [
         "spdlog",
         "glaze",
