@@ -360,7 +360,7 @@ std::vector<CalendarEvent> CalDavClient::fetchEvents(
         if (icalData.empty())
             continue;
 
-        auto parsed = parseICalEvents(icalData);
+        auto parsed = parseICalEvents(icalData, range);
         for (auto &ev : parsed) {
             CalendarEvent ce;
             ce.eventId = ev.uid;

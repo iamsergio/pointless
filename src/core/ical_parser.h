@@ -3,7 +3,10 @@
 
 #pragma once
 
+#include "calendar_provider.h"
+
 #include <chrono>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -18,6 +21,7 @@ struct ICalEvent
     bool isAllDay = false;
 };
 
-std::vector<ICalEvent> parseICalEvents(const std::string &icalData);
+std::vector<ICalEvent> parseICalEvents(const std::string &icalData,
+                                       const std::optional<DateRange> &range = std::nullopt);
 
 } // namespace pointless::core

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "ical_parser.h"
+#include "calendar_provider.h"
 
 #include <gtest/gtest.h>
 
@@ -365,4 +366,63 @@ END:VCALENDAR)";
     ASSERT_EQ(events.size(), 1);
     expectUTC(events[0].dtstart, 2025, 12, 25, 7, 30, 15);
     expectUTC(events[0].dtend, 2025, 12, 25, 9, 45, 45);
+}
+
+TEST(ICalParserTest, RecurringWeeklyEvent)
+{
+    const std::string ical = R"(BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:weekly-1
+SUMMARY:Weekly Standup
+DTSTART:20250106T090000Z
+DTEND:20250106T093000Z
+RRULE:FREQ=WEEKLY;BYDAY=MO
+END:VEVENT
+END:VCALENDAR)";
+
+    auto makeTP = [](int year, int month, int day) {
+        std::tm tm = {};
+        tm.tm_year = year - 1900;
+        tm.tm_mon = month - 1;
+        tm.tm_mday = day;
+        return std::chrono::system_clock::from_time_t(timegm(&tm));
+    };
+
+    DateRange range;
+    range.start = makeTP(2025, 2, 3);
+    range.end = makeTP(2025, 2, 17);
+
+    auto events = parseICalEvents(ical, range);
+    ASSERT_EQ(events.size(), 2);
+
+    EXPECT_EQ(events[0].uid, "weekly-1_20250203T090000Z");
+    EXPECT_EQ(events[0].summary, "Weekly Standup");
+    EXPECT_FALSE(events[0].isAllDay);
+    expectUTC(events[0].dtstart, 2025, 2, 3, 9, 0, 0);
+    expectUTC(events[0].dtend, 2025, 2, 3, 9, 30, 0);
+
+    EXPECT_EQ(events[1].uid, "weekly-1_20250210T090000Z");
+    EXPECT_EQ(events[1].summary, "Weekly Standup");
+    expectUTC(events[1].dtstart, 2025, 2, 10, 9, 0, 0);
+    expectUTC(events[1].dtend, 2025, 2, 10, 9, 30, 0);
+}
+
+TEST(ICalParserTest, RecurringEventWithoutRangeReturnsOriginal)
+{
+    const std::string ical = R"(BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:weekly-2
+SUMMARY:Recurring No Range
+DTSTART:20250106T090000Z
+DTEND:20250106T093000Z
+RRULE:FREQ=WEEKLY;BYDAY=MO
+END:VEVENT
+END:VCALENDAR)";
+
+    auto events = parseICalEvents(ical);
+    ASSERT_EQ(events.size(), 1);
+    EXPECT_EQ(events[0].uid, "weekly-2");
+    expectUTC(events[0].dtstart, 2025, 1, 6, 9, 0, 0);
 }
