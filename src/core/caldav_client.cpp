@@ -5,7 +5,6 @@
 #include "ical_parser.h"
 #include "logger.h"
 
-#include <cpr/cpr.h>
 #include <curl/curl.h>
 #include <pugixml.hpp>
 
@@ -83,50 +82,108 @@ CalDavClient::CalDavClient(CalDavConfig config)
     ensureTrailingSlash(m_config.serverUrl);
 }
 
-std::string CalDavClient::propfind(const std::string &url, const std::string &body, int depth) const
+namespace {
+size_t writeCallback(char *ptr, size_t size, size_t nmemb, void *userdata)
 {
-    cpr::Session session;
-    session.SetUrl(cpr::Url { url });
-    session.SetHeader(cpr::Header {
-        { "Content-Type", "application/xml; charset=utf-8" },
-        { "Depth", std::to_string(depth) } });
-    session.SetBody(cpr::Body { body });
-    session.SetAuth(cpr::Authentication { m_config.username, m_config.password, cpr::AuthMode::BASIC });
+    auto *response = static_cast<std::string *>(userdata);
+    response->append(ptr, size * nmemb);
+    return size * nmemb;
+}
+} // namespace
 
-    curl_easy_setopt(session.GetCurlHolder()->handle, CURLOPT_CUSTOMREQUEST, "PROPFIND");
-    auto response = session.Post();
+std::string CalDavClient::resolveUrl(const std::string &baseUrl, const std::string &href)
+{
+    if (href.starts_with("http://") || href.starts_with("https://"))
+        return href;
 
-    if (response.status_code < 200 || response.status_code >= 400) {
-        P_LOG_WARNING("PROPFIND {} failed with status {}", url, response.status_code);
+    auto schemeEnd = baseUrl.find("://");
+    if (schemeEnd == std::string::npos)
+        return href;
+    auto hostEnd = baseUrl.find('/', schemeEnd + 3);
+    return baseUrl.substr(0, hostEnd) + href;
+}
+
+std::string CalDavClient::performRequest(const std::string &method, const std::string &url, const std::string &body, int depth) const
+{
+    CURL *curl = curl_easy_init();
+    if (!curl)
+        return {};
+
+    std::string responseBody;
+    long statusCode = 0;
+
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, method.c_str());
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, static_cast<long>(body.size()));
+    curl_easy_setopt(curl, CURLOPT_USERNAME, m_config.username.c_str());
+    curl_easy_setopt(curl, CURLOPT_PASSWORD, m_config.password.c_str());
+    curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &responseBody);
+
+    struct curl_slist *headers = nullptr;
+    headers = curl_slist_append(headers, "Content-Type: application/xml; charset=utf-8");
+    auto depthHeader = std::format("Depth: {}", depth);
+    headers = curl_slist_append(headers, depthHeader.c_str());
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+    CURLcode res = curl_easy_perform(curl);
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &statusCode);
+    curl_slist_free_all(headers);
+    curl_easy_cleanup(curl);
+
+    if (res != CURLE_OK) {
+        P_LOG_WARNING("{} {} curl error: {}", method, url, curl_easy_strerror(res));
         return {};
     }
 
-    return response.text;
-}
-
-std::string CalDavClient::report(const std::string &url, const std::string &body) const
-{
-    cpr::Session session;
-    session.SetUrl(cpr::Url { url });
-    session.SetHeader(cpr::Header {
-        { "Content-Type", "application/xml; charset=utf-8" },
-        { "Depth", "1" } });
-    session.SetBody(cpr::Body { body });
-    session.SetAuth(cpr::Authentication { m_config.username, m_config.password, cpr::AuthMode::BASIC });
-
-    curl_easy_setopt(session.GetCurlHolder()->handle, CURLOPT_CUSTOMREQUEST, "REPORT");
-    auto response = session.Post();
-
-    if (response.status_code < 200 || response.status_code >= 400) {
-        P_LOG_WARNING("REPORT {} failed with status {}", url, response.status_code);
+    if (statusCode < 200 || statusCode >= 400) {
+        P_LOG_WARNING("{} {} failed with status {}", method, url, statusCode);
         return {};
     }
 
-    return response.text;
+    return responseBody;
 }
 
-std::string CalDavClient::discoverCalendarHomeSet() const
+std::string CalDavClient::discoverPrincipal() const
 {
+    std::string body = R"(<?xml version="1.0" encoding="utf-8" ?>
+<d:propfind xmlns:d="DAV:">
+  <d:prop>
+    <d:current-user-principal />
+  </d:prop>
+</d:propfind>)";
+
+    auto xml = performRequest("PROPFIND", m_config.serverUrl, body, 0);
+    if (xml.empty())
+        return m_config.serverUrl;
+
+    pugi::xml_document doc;
+    if (!doc.load_string(xml.c_str())) {
+        P_LOG_WARNING("Failed to parse current-user-principal response");
+        return m_config.serverUrl;
+    }
+
+    auto principalNode = findDescendantByLocalName(doc.root(), "current-user-principal");
+    if (!principalNode)
+        return m_config.serverUrl;
+
+    auto hrefNode = findChildByLocalName(principalNode, "href");
+    if (!hrefNode)
+        return m_config.serverUrl;
+
+    std::string href = hrefNode.child_value();
+    if (href.empty())
+        return m_config.serverUrl;
+
+    return resolveUrl(m_config.serverUrl, href);
+}
+
+std::expected<std::string, std::string> CalDavClient::discoverCalendarHomeSet() const
+{
+    auto principalUrl = discoverPrincipal();
+
     std::string body = R"(<?xml version="1.0" encoding="utf-8" ?>
 <d:propfind xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav">
   <d:prop>
@@ -134,15 +191,13 @@ std::string CalDavClient::discoverCalendarHomeSet() const
   </d:prop>
 </d:propfind>)";
 
-    auto xml = propfind(m_config.serverUrl, body, 0);
+    auto xml = performRequest("PROPFIND", principalUrl, body, 0);
     if (xml.empty())
-        return m_config.serverUrl;
+        return std::unexpected("CalDAV discovery failed: PROPFIND to " + principalUrl + " returned no response");
 
     pugi::xml_document doc;
-    if (!doc.load_string(xml.c_str())) {
-        P_LOG_WARNING("Failed to parse calendar-home-set response");
-        return m_config.serverUrl;
-    }
+    if (!doc.load_string(xml.c_str()))
+        return std::unexpected("CalDAV discovery failed: could not parse calendar-home-set response from " + principalUrl);
 
     auto homeSetNode = findDescendantByLocalName(doc.root(), "calendar-home-set");
     if (!homeSetNode) {
@@ -160,15 +215,7 @@ std::string CalDavClient::discoverCalendarHomeSet() const
     if (href.empty())
         return m_config.serverUrl;
 
-    if (href.starts_with("http://") || href.starts_with("https://"))
-        return href;
-
-    auto schemeEnd = m_config.serverUrl.find("://");
-    if (schemeEnd == std::string::npos)
-        return href;
-    auto hostEnd = m_config.serverUrl.find('/', schemeEnd + 3);
-    std::string host = m_config.serverUrl.substr(0, hostEnd);
-    return host + href;
+    return resolveUrl(m_config.serverUrl, href);
 }
 
 std::vector<Calendar> CalDavClient::fetchCalendars(const std::string &homeSetUrl) const
@@ -183,7 +230,7 @@ std::vector<Calendar> CalDavClient::fetchCalendars(const std::string &homeSetUrl
   </d:prop>
 </d:propfind>)";
 
-    auto xml = propfind(homeSetUrl, body, 1);
+    auto xml = performRequest("PROPFIND", homeSetUrl, body, 1);
     if (xml.empty())
         return {};
 
@@ -285,7 +332,7 @@ std::vector<CalendarEvent> CalDavClient::fetchEvents(
 </c:calendar-query>)",
                                    timeRange);
 
-    auto xml = report(calendarUrl, body);
+    auto xml = performRequest("REPORT", calendarUrl, body, 1);
     if (xml.empty())
         return {};
 

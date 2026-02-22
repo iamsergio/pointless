@@ -27,7 +27,13 @@ LinuxCalendarProvider::LinuxCalendarProvider()
     config.password = std::move(password);
 
     m_client = std::make_unique<CalDavClient>(std::move(config));
-    m_homeSetUrl = m_client->discoverCalendarHomeSet();
+    auto homeSet = m_client->discoverCalendarHomeSet();
+    if (!homeSet) {
+        P_LOG_WARNING("{}", homeSet.error());
+        m_client.reset();
+        return;
+    }
+    m_homeSetUrl = std::move(*homeSet);
     P_LOG_INFO("CalDAV calendar home set: {}", m_homeSetUrl);
 }
 
@@ -63,18 +69,7 @@ std::vector<CalendarEvent> LinuxCalendarProvider::getEvents(
         if (!requested)
             continue;
 
-        std::string calendarUrl;
-        if (cal.id.starts_with("http://") || cal.id.starts_with("https://")) {
-            calendarUrl = cal.id;
-        } else {
-            auto schemeEnd = m_homeSetUrl.find("://");
-            if (schemeEnd != std::string::npos) {
-                auto hostEnd = m_homeSetUrl.find('/', schemeEnd + 3);
-                calendarUrl = m_homeSetUrl.substr(0, hostEnd) + cal.id;
-            } else {
-                calendarUrl = cal.id;
-            }
-        }
+        std::string calendarUrl = CalDavClient::resolveUrl(m_homeSetUrl, cal.id);
 
         auto events = m_client->fetchEvents(calendarUrl, cal.id, cal.title, range);
         allEvents.insert(allEvents.end(),

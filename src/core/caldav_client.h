@@ -5,6 +5,7 @@
 
 #include "calendar_provider.h"
 
+#include <expected>
 #include <string>
 #include <vector>
 
@@ -22,7 +23,7 @@ class CalDavClient
 public:
     explicit CalDavClient(CalDavConfig config);
 
-    [[nodiscard]] std::string discoverCalendarHomeSet() const;
+    [[nodiscard]] std::expected<std::string, std::string> discoverCalendarHomeSet() const;
     [[nodiscard]] std::vector<Calendar> fetchCalendars(const std::string &homeSetUrl) const;
     [[nodiscard]] std::vector<CalendarEvent> fetchEvents(
         const std::string &calendarUrl,
@@ -30,9 +31,11 @@ public:
         const std::string &calendarName,
         const DateRange &range) const;
 
+    [[nodiscard]] static std::string resolveUrl(const std::string &baseUrl, const std::string &href);
+
 private:
-    [[nodiscard]] std::string propfind(const std::string &url, const std::string &body, int depth) const;
-    [[nodiscard]] std::string report(const std::string &url, const std::string &body) const;
+    [[nodiscard]] std::string discoverPrincipal() const;
+    [[nodiscard]] std::string performRequest(const std::string &method, const std::string &url, const std::string &body, int depth) const;
     CalDavConfig m_config;
 };
 
