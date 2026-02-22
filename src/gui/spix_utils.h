@@ -16,18 +16,14 @@ namespace SpixUtils {
 inline QQuickItem *getItemAtPath(const spix::ItemPath &path)
 {
     QQuickItem *result = nullptr;
-    QMetaObject::invokeMethod(qApp, [&path, &result]() {
-        result = spix::qt::GetQQuickItemAtPath(path);
-    }, Qt::BlockingQueuedConnection);
+    QMetaObject::invokeMethod(qApp, [&path, &result]() { result = spix::qt::GetQQuickItemAtPath(path); }, Qt::BlockingQueuedConnection);
     return result;
 }
 
 inline QQuickWindow *getWindowAtPath(const spix::ItemPath &path)
 {
     QQuickWindow *result = nullptr;
-    QMetaObject::invokeMethod(qApp, [&path, &result]() {
-        result = spix::qt::GetQQuickWindowAtPath(path);
-    }, Qt::BlockingQueuedConnection);
+    QMetaObject::invokeMethod(qApp, [&path, &result]() { result = spix::qt::GetQQuickWindowAtPath(path); }, Qt::BlockingQueuedConnection);
     return result;
 }
 
