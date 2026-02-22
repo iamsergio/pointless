@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 
         std::string jsonData = *jsonDataResult;
 
-        glz::json_t json {};
+        glz::generic json {};
         auto error = glz::read_json(json, jsonData);
         if (error) {
             P_LOG_ERROR("Failed to parse JSON: {}", glz::format_error(error, jsonData));

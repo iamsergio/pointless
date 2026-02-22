@@ -332,7 +332,6 @@ std::expected<Data, std::string> Data::fromJson(const std::string &json_str)
         .error_on_unknown_keys = true,
         // .error_on_missing_keys = true,
         .skip_null_members = false,
-        .error_on_const_read = true,
     }>(manager._data, json_str);
     if (result != glz::error_code::none) {
         return std::unexpected("Failed to parse JSON: " + std::string(glz::format_error(result, json_str)));

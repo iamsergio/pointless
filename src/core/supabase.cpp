@@ -75,7 +75,7 @@ bool SupabaseProvider::login(const std::string &email, const std::string &passwo
         return false;
     }
 
-    auto json_result = glz::read_json<glz::json_t>(response.text);
+    auto json_result = glz::read_json<glz::generic>(response.text);
     if (!json_result.has_value()) {
         P_LOG_ERROR("Failed to parse login response JSON");
         return false;
@@ -251,7 +251,7 @@ std::expected<std::string, TraceableError> SupabaseProvider::retrieveRawData()
         return TraceableError::create("HTTP request failed with status: " + std::to_string(response.status_code));
     }
 
-    auto json_result = glz::read_json<glz::json_t>(response.text);
+    auto json_result = glz::read_json<glz::generic>(response.text);
     if (!json_result.has_value()) {
         return TraceableError::create("Failed to parse JSON response");
     }
@@ -427,7 +427,7 @@ bool SupabaseProvider::refreshAccessToken()
         return false;
     }
 
-    auto json_result = glz::read_json<glz::json_t>(response.text);
+    auto json_result = glz::read_json<glz::generic>(response.text);
     if (!json_result.has_value()) {
         P_LOG_ERROR("Failed to parse token refresh response JSON");
         return false;
