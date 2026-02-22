@@ -85,10 +85,10 @@ protected:
 
         spix::ItemPath path("mainWindow/weekView");
 
-        auto window = spix::qt::GetQQuickWindowAtPath(path);
+        auto window = SpixUtils::getWindowAtPath(path);
         ASSERT_NE(window, nullptr);
 
-        auto item = spix::qt::GetQQuickItemAtPath(path);
+        auto item = SpixUtils::getItemAtPath(path);
         ASSERT_NE(item, nullptr);
 
         EXPECT_EQ(getStringProperty("mainWindow/weekView", "weekdayModelCount"), "7");
