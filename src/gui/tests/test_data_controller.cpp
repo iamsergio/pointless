@@ -299,7 +299,7 @@ TEST(DataControllerTest, TimerSavesToDisk)
     remoteData.addTask(task);
     remoteData.setRevision(1);
 
-    initData(controller, {}, remoteData);
+    initData(controller, remoteData, remoteData);
 
     auto syncResult = controller.refreshBlocking();
     ASSERT_TRUE(syncResult.has_value());
