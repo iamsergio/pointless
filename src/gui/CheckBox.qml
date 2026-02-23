@@ -8,9 +8,10 @@ import pointless 1.0
 
 QQC.CheckBox {
     id: root
+    property bool smallVariant: false
     indicator: Rectangle {
-        implicitWidth: Style.fromPixel(17)
-        implicitHeight: Style.fromPixel(17)
+        implicitWidth: root.smallVariant ? Style.fromPixel(12) : Style.fromPixel(17)
+        implicitHeight: root.smallVariant ? Style.fromPixel(12) : Style.fromPixel(17)
         x: root.leftPadding
         y: root.height / 2 - height / 2
         radius: width / 2
@@ -19,8 +20,8 @@ QQC.CheckBox {
         border.width: Style.fromPixel(1)
 
         Rectangle {
-            width: Style.fromPixel(9)
-            height: Style.fromPixel(9)
+            width: root.smallVariant ? Style.fromPixel(6) : Style.fromPixel(9)
+            height: root.smallVariant ? Style.fromPixel(6) : Style.fromPixel(9)
             anchors.centerIn: parent
             radius: width / 2
             color: Style.textColor2

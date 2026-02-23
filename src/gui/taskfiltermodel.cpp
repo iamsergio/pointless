@@ -4,6 +4,7 @@
 #include "taskfiltermodel.h"
 #include "gui_controller.h"
 #include "data_controller.h"
+#include "pomodoro_controller.h"
 #include "taskmodel.h"
 #include "date_utils.h"
 #include "Clock.h"
@@ -34,6 +35,10 @@ TaskFilterModel::TaskFilterModel(QObject *parent)
 
     connect(GuiController::instance(), &GuiController::showImmediateOnlyChanged, this, [this] {
         setShowImmediateOnly(GuiController::instance()->showImmediateOnly());
+    });
+
+    connect(GuiController::instance()->pomodoroController(), &PomodoroController::currentTaskUuidChanged, this, [this] {
+        invalidate();
     });
 }
 
@@ -142,6 +147,16 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
 
 bool TaskFilterModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const
 {
+    const QString pomodoroUuid = GuiController::instance()->pomodoroController()->currentTaskUuid();
+    if (!pomodoroUuid.isEmpty()) {
+        const QString leftUuid = sourceModel()->data(source_left, TaskModel::UuidRole).toString();
+        const QString rightUuid = sourceModel()->data(source_right, TaskModel::UuidRole).toString();
+        if (leftUuid == pomodoroUuid && rightUuid != pomodoroUuid)
+            return true;
+        if (rightUuid == pomodoroUuid && leftUuid != pomodoroUuid)
+            return false;
+    }
+
     const QString leftTagName = sourceModel()->data(source_left, TaskModel::TagNameRole).toString();
     const QString rightTagName = sourceModel()->data(source_right, TaskModel::TagNameRole).toString();
 

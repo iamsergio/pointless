@@ -31,9 +31,13 @@ Rectangle {
     property bool showsTagsInSecondLine: false
     property bool showsDate: true
 
-    height: Style.taskHeight
+    readonly property bool isPomodoroActive: GuiController.pomodoroController.currentTaskUuid === taskUuid
+
+    height: taskIsEvening ? Style.taskEveningHeight : Style.taskHeight
     color: taskIsImportant ? Style.taskImportantBackground : (taskIsEvening ? Style.taskEveningBackground : Style.taskBackground)
     radius: 10
+    border.width: isPomodoroActive ? Style.fromPixel(2) : 0
+    border.color: "red"
 
     signal clicked
 
@@ -61,10 +65,11 @@ Rectangle {
             anchors.fill: parent
             anchors.leftMargin: Style.fromPixel(10)
             anchors.rightMargin: Style.fromPixel(10)
-            spacing: Style.fromPixel(10)
+            spacing: root.taskIsEvening ? Style.fromPixel(5) : Style.fromPixel(10)
 
             CheckBox {
                 checked: root.taskIsDone
+                smallVariant: root.taskIsEvening
                 onClicked: {
                     GuiController.taskModel.setTaskDone(root.taskUuid, !root.taskIsDone);
                 }
@@ -76,7 +81,7 @@ Rectangle {
 
                 Text {
                     text: root.taskTitle
-                    font.pixelSize: Style.fromPixel(16)
+                    font.pixelSize: root.taskIsEvening ? Style.fromPixel(12) : Style.fromPixel(16)
                     color: root.taskIsDone ? Style.taskCompletedTextColor : "#ffffff"
                     font.strikeout: root.taskIsDone
                     Layout.fillWidth: true
@@ -85,7 +90,7 @@ Rectangle {
 
                 RowLayout {
                     spacing: Style.fromPixel(8)
-                    visible: shouldShowCalendar || shouldShowDueDate || showsTagsInSecondLine
+                    visible: (shouldShowCalendar || shouldShowDueDate || showsTagsInSecondLine) && !root.taskIsEvening
                     Layout.preferredHeight: (calendarText.visible || dateText.visible || allTagsText.visible) ? implicitHeight : 0
 
                     readonly property bool shouldShowCalendar: root.taskIsFromCalendar && root.taskCalendarName !== ""
@@ -127,10 +132,18 @@ Rectangle {
                 onClicked: GuiController.openNotesEditor(root.taskUuid)
             }
 
+            FontAwesomeButton {
+                visible: GuiController.pomodoroController.currentTaskUuid === root.taskUuid
+                fontAwesomeIcon: "\uf017"
+                iconColor: Style.iconColor
+                backgroundColor: "transparent"
+                onClicked: GuiController.pomodoroController.stop()
+            }
+
             Tag {
                 tagName: root.taskTagName
                 isInteractive: false
-                visible: root.showTags && tagName !== ""
+                visible: root.showTags && tagName !== "" && !root.taskIsEvening
                 Layout.alignment: Qt.AlignVCenter
                 onClicked: {
                     GuiController.currentTag = tagName;

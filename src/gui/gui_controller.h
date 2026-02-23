@@ -8,6 +8,7 @@
 #include "tagmodel.h"
 #include "tagfiltermodel.h"
 #include "error_controller.h"
+#include "pomodoro_controller.h"
 
 #include "core/calendar_provider.h"
 
@@ -75,6 +76,8 @@ class GuiController : public QObject
     Q_PROPERTY(QString notesText READ notesText NOTIFY notesTextChanged)
     Q_PROPERTY(QString notesTaskTitle READ notesTaskTitle NOTIFY notesTaskTitleChanged)
     Q_PROPERTY(bool newTagPopupVisible READ newTagPopupVisible WRITE setNewTagPopupVisible NOTIFY newTagPopupVisibleChanged)
+    Q_PROPERTY(PomodoroController *pomodoroController READ pomodoroController CONSTANT)
+    Q_PROPERTY(bool playPomodoroVisible READ playPomodoroVisible NOTIFY taskMenuUuidChanged)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
     [[nodiscard]] TaskModel *taskModel() const;
@@ -202,6 +205,9 @@ public:
     [[nodiscard]] bool newTagPopupVisible() const;
     void setNewTagPopupVisible(bool visible);
 
+    [[nodiscard]] PomodoroController *pomodoroController() const;
+    [[nodiscard]] bool playPomodoroVisible() const;
+
     static GuiController *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
 Q_SIGNALS:
@@ -260,6 +266,7 @@ private:
     QString _notesText;
     QString _notesTaskTitle;
     bool _newTagPopupVisible = false;
+    PomodoroController *const _pomodoroController;
     bool _isFetchingCalendarEvents = false;
     QString _fetchCalendarStatusText;
     QFutureWatcher<std::vector<pointless::core::CalendarEvent>> *_calendarFetchWatcher = nullptr;

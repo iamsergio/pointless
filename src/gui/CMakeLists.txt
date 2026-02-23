@@ -67,6 +67,8 @@ qt_add_qml_module(
   gui_controller.cpp
   data_controller.cpp
   error_controller.cpp
+  pomodoro_controller.cpp
+  pomodoro_controller.h
   date_utils.cpp
   local_settings.cpp
   utils.cpp

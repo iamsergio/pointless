@@ -305,6 +305,19 @@ QC.ApplicationWindow {
                     }
                 }
                 MenuItem {
+                    id: playPomodoroMenuItem
+                    visible: GuiController.playPomodoroVisible
+                    text: GuiController.pomodoroController.currentTaskUuid === GuiController.taskMenuUuid ? "Stop" : "Play"
+                    onTriggered: {
+                        if (GuiController.pomodoroController.currentTaskUuid === GuiController.taskMenuUuid) {
+                            GuiController.pomodoroController.stop();
+                        } else {
+                            GuiController.pomodoroController.play(GuiController.taskMenuUuid);
+                        }
+                        GuiController.setTaskMenuUuid("");
+                    }
+                }
+                MenuItem {
                     id: moveToCurrentMenuItem
                     text: "Move to Current"
                     visible: GuiController.moveToCurrentVisible

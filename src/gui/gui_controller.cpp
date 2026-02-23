@@ -125,6 +125,7 @@ GuiController::GuiController(QObject *parent)
     , _calendarProvider(pointless::core::createCalendarProvider())
     , _dataController(new DataController(this))
     , _errorController(new ErrorController(this))
+    , _pomodoroController(new PomodoroController(this))
 {
     P_LOG_DEBUG("");
     Q_ASSERT(s_instance == nullptr);
@@ -140,6 +141,13 @@ GuiController::GuiController(QObject *parent)
         qApp->installEventFilter(new EventFilter(this));
 
     connect(_dataController, &DataController::isAuthenticatedChanged, this, &GuiController::isAuthenticatedChanged);
+
+    connect(_pomodoroController, &PomodoroController::isRunningChanged, this, [this] {
+        if (_pomodoroController->isRunning())
+            setShowImmediateOnly(true);
+        else
+            setShowImmediateOnly(false);
+    });
 
     connect(_dataController, &DataController::refreshStarted, this, [this] {
         _isRefreshing = true;
@@ -1106,6 +1114,17 @@ bool GuiController::moveToEveningVisible() const
 {
     const auto *task = _dataController->taskModel()->taskForUuid(_taskMenuUuid);
     return task != nullptr && !task->isEvening() && task->isCurrent();
+}
+
+PomodoroController *GuiController::pomodoroController() const
+{
+    return _pomodoroController;
+}
+
+bool GuiController::playPomodoroVisible() const
+{
+    const auto *task = _dataController->taskModel()->taskForUuid(_taskMenuUuid);
+    return task != nullptr && task->isCurrent();
 }
 
 bool GuiController::showImmediateOnly() const

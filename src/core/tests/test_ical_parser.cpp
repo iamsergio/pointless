@@ -408,6 +408,95 @@ END:VCALENDAR)";
     expectUTC(events[1].dtend, 2025, 2, 10, 9, 30, 0);
 }
 
+TEST(ICalParserTest, RecurringEventExceptionOutsideRange)
+{
+    const std::string ical = R"(BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:weekly-exc-1
+SUMMARY:Weekly Standup
+DTSTART:20220103T090000Z
+DTEND:20220103T093000Z
+RRULE:FREQ=WEEKLY;BYDAY=MO
+END:VEVENT
+BEGIN:VEVENT
+UID:weekly-exc-1
+SUMMARY:Weekly Standup (rescheduled)
+RECURRENCE-ID:20220110T090000Z
+DTSTART:20220111T100000Z
+DTEND:20220111T103000Z
+END:VEVENT
+END:VCALENDAR)";
+
+    auto makeTP = [](int year, int month, int day) {
+        std::tm tm = {};
+        tm.tm_year = year - 1900;
+        tm.tm_mon = month - 1;
+        tm.tm_mday = day;
+        return std::chrono::system_clock::from_time_t(timegm(&tm));
+    };
+
+    DateRange range;
+    range.start = makeTP(2025, 2, 3);
+    range.end = makeTP(2025, 2, 17);
+
+    auto events = parseICalEvents(ical, range);
+
+    for (const auto &ev : events) {
+        EXPECT_GE(ev.dtstart, range.start)
+            << "Exception VEVENT from 2022 should have been filtered out: " << ev.summary;
+    }
+
+    ASSERT_EQ(events.size(), 2);
+    expectUTC(events[0].dtstart, 2025, 2, 3, 9, 0, 0);
+    expectUTC(events[1].dtstart, 2025, 2, 10, 9, 0, 0);
+}
+
+TEST(ICalParserTest, RecurringEventExceptionInsideRange)
+{
+    const std::string ical = R"(BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:weekly-exc-2
+SUMMARY:Weekly Standup
+DTSTART:20250106T090000Z
+DTEND:20250106T093000Z
+RRULE:FREQ=WEEKLY;BYDAY=MO
+END:VEVENT
+BEGIN:VEVENT
+UID:weekly-exc-2
+SUMMARY:Weekly Standup (moved to Tuesday)
+RECURRENCE-ID:20250210T090000Z
+DTSTART:20250211T100000Z
+DTEND:20250211T103000Z
+END:VEVENT
+END:VCALENDAR)";
+
+    auto makeTP = [](int year, int month, int day) {
+        std::tm tm = {};
+        tm.tm_year = year - 1900;
+        tm.tm_mon = month - 1;
+        tm.tm_mday = day;
+        return std::chrono::system_clock::from_time_t(timegm(&tm));
+    };
+
+    DateRange range;
+    range.start = makeTP(2025, 2, 3);
+    range.end = makeTP(2025, 2, 17);
+
+    auto events = parseICalEvents(ical, range);
+
+    bool foundException = false;
+    for (const auto &ev : events) {
+        if (ev.summary == "Weekly Standup (moved to Tuesday)") {
+            foundException = true;
+            expectUTC(ev.dtstart, 2025, 2, 11, 10, 0, 0);
+            expectUTC(ev.dtend, 2025, 2, 11, 10, 30, 0);
+        }
+    }
+    EXPECT_TRUE(foundException) << "Exception VEVENT inside range should be preserved";
+}
+
 TEST(ICalParserTest, RecurringEventWithoutRangeReturnsOriginal)
 {
     const std::string ical = R"(BEGIN:VCALENDAR
