@@ -143,10 +143,8 @@ GuiController::GuiController(QObject *parent)
     connect(_dataController, &DataController::isAuthenticatedChanged, this, &GuiController::isAuthenticatedChanged);
 
     connect(_pomodoroController, &PomodoroController::isRunningChanged, this, [this] {
-        if (_pomodoroController->isRunning())
-            setShowImmediateOnly(true);
-        else
-            setShowImmediateOnly(false);
+        setShowImmediateOnly(_pomodoroController->isRunning());
+        Q_EMIT showEveningToggleChanged();
     });
 
     connect(_dataController, &DataController::refreshStarted, this, [this] {
@@ -182,12 +180,13 @@ GuiController::GuiController(QObject *parent)
 
     QTimer::singleShot(0, this, &GuiController::refresh);
 
-    _eveningToggleTimer.setInterval(30 * 60 * 1000);
-    connect(&_eveningToggleTimer, &QTimer::timeout, this, [this] {
-        if (!showEveningToggle()) {
-            setShowImmediateOnly(false);
-        }
-        Q_EMIT showEveningToggleChanged();
+    const auto calcIsEvening = [] {
+        return isEveningForHour(QTime::currentTime().hour());
+    };
+    _isEvening = calcIsEvening();
+    _eveningToggleTimer.setInterval(std::chrono::minutes(5));
+    connect(&_eveningToggleTimer, &QTimer::timeout, this, [this, calcIsEvening] {
+        setIsEvening(calcIsEvening());
     });
     _eveningToggleTimer.start();
 
@@ -1142,6 +1141,27 @@ void GuiController::setShowImmediateOnly(bool show)
 
 bool GuiController::showEveningToggle() const
 {
-    const int hour = QTime::currentTime().hour();
-    return hour >= 5 && hour < 16;
+    return !isEvening() || _pomodoroController->isRunning();
+}
+
+bool GuiController::isEvening() const
+{
+    return _isEvening;
+}
+
+bool GuiController::isEveningForHour(int hour)
+{
+    return hour < 5 || hour >= 16;
+}
+
+void GuiController::setIsEvening(bool isEvening)
+{
+    if (_isEvening == isEvening)
+        return;
+    _isEvening = isEvening;
+
+    Q_EMIT isEveningChanged();
+    Q_EMIT showEveningToggleChanged();
+
+    setShowImmediateOnly(isEvening);
 }

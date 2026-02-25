@@ -37,8 +37,6 @@ inline void qtMessageHandler(QtMsgType type, const QMessageLogContext &context, 
 
     switch (type) {
     case QtDebugMsg:
-        P_LOG_DEBUG("{} ({}:{}, {})", msg.toStdString(), file, context.line, function);
-        break;
     case QtInfoMsg:
         P_LOG_INFO("{} ({}:{}, {})", msg.toStdString(), file, context.line, function);
         break;

@@ -20,6 +20,11 @@ bool PomodoroController::isRunning() const
     return _timer.isActive();
 }
 
+bool PomodoroController::isRunningThisTask(const pointless::core::Task &task) const
+{
+    return isRunning() && _currentTaskUuid == QString::fromStdString(task.uuid);
+}
+
 int PomodoroController::remainingSeconds() const
 {
     return _remainingSeconds;

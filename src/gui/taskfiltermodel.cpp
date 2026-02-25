@@ -37,7 +37,11 @@ TaskFilterModel::TaskFilterModel(QObject *parent)
         setShowImmediateOnly(GuiController::instance()->showImmediateOnly());
     });
 
-    connect(GuiController::instance()->pomodoroController(), &PomodoroController::currentTaskUuidChanged, this, [this] {
+    auto *pomodoroCtrl = GuiController::instance()->pomodoroController();
+    connect(pomodoroCtrl, &PomodoroController::currentTaskUuidChanged, this, [this] {
+        invalidate();
+    });
+    connect(pomodoroCtrl, &PomodoroController::isRunningChanged, this, [this] {
         invalidate();
     });
 }
@@ -92,11 +96,16 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
     const pointless::core::Task *task = taskModel->taskAt(source_row);
     if (task == nullptr) {
         P_LOG_CRITICAL("Task is null at row {}", source_row);
-        return true;
+        return false;
     }
 
     if ((task->isDone && !task->needsSyncToServer) || task->isGoal) {
         return false;
+    }
+
+    auto *pomodoroCtrl = GuiController::instance()->pomodoroController();
+    if (pomodoroCtrl->isRunning() && _showImmediateOnly) {
+        return pomodoroCtrl->isRunningThisTask(*task);
     }
 
     if (!_searchText.isEmpty()) {

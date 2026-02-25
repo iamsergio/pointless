@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "core/task.h"
+
 #include <QObject>
 #include <QString>
 #include <QTimer>
@@ -22,6 +24,7 @@ public:
 
     [[nodiscard]] QString currentTaskUuid() const;
     [[nodiscard]] bool isRunning() const;
+    [[nodiscard]] bool isRunningThisTask(const pointless::core::Task &task) const;
     [[nodiscard]] int remainingSeconds() const;
     [[nodiscard]] QString remainingTimeText() const;
 

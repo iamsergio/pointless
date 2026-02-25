@@ -72,6 +72,7 @@ class GuiController : public QObject
     Q_PROPERTY(QString fetchCalendarStatusText READ fetchCalendarStatusText NOTIFY fetchCalendarStatusTextChanged)
     Q_PROPERTY(bool showImmediateOnly READ showImmediateOnly WRITE setShowImmediateOnly NOTIFY showImmediateOnlyChanged)
     Q_PROPERTY(bool showEveningToggle READ showEveningToggle NOTIFY showEveningToggleChanged)
+    Q_PROPERTY(bool isEvening READ isEvening NOTIFY isEveningChanged)
     Q_PROPERTY(bool isEditingNotes READ isEditingNotes NOTIFY isEditingNotesChanged)
     Q_PROPERTY(QString notesText READ notesText NOTIFY notesTextChanged)
     Q_PROPERTY(QString notesTaskTitle READ notesTaskTitle NOTIFY notesTaskTitleChanged)
@@ -166,6 +167,8 @@ public:
     void setShowImmediateOnly(bool show);
 
     [[nodiscard]] bool showEveningToggle() const;
+    [[nodiscard]] bool isEvening() const;
+    [[nodiscard]] static bool isEveningForHour(int hour);
 
     Q_INVOKABLE void deleteAllCalendarEvents();
     Q_INVOKABLE void fetchCalendarEvents();
@@ -229,6 +232,7 @@ Q_SIGNALS:
     void currentTagChanged();
     void showImmediateOnlyChanged();
     void showEveningToggleChanged();
+    void isEveningChanged();
     void isEditingNotesChanged();
     void notesTextChanged();
     void notesTaskTitleChanged();
@@ -239,6 +243,7 @@ Q_SIGNALS:
 private:
     explicit GuiController(QObject *parent = nullptr);
     std::vector<std::string> enabledCalendarIds() const;
+    void setIsEvening(bool isEvening);
     ViewType _currentViewType = ViewType::Week;
     bool _isEditingTask = false;
     QString _uuidBeingEdited;
@@ -260,6 +265,7 @@ private:
     mutable TaskFilterModel *_taskFilterModel = nullptr;
     mutable TagFilterModel *_tagFilterModel = nullptr;
     bool _showImmediateOnly = false;
+    bool _isEvening = false;
     QTimer _eveningToggleTimer;
     bool _isEditingNotes = false;
     QString _notesUuid;

@@ -78,6 +78,16 @@ TEST(GuiControllerTest, MoveToNextMondayRemovesCurrentTag)
     delete guiController;
 }
 
+TEST(GuiControllerTest, IsEveningFalseAt13h)
+{
+    EXPECT_FALSE(GuiController::isEveningForHour(13));
+}
+
+TEST(GuiControllerTest, IsEveningTrueAt18h)
+{
+    EXPECT_TRUE(GuiController::isEveningForHour(18));
+}
+
 int main(int argc, char **argv)
 {
     g_argc = argc;

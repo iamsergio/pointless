@@ -210,7 +210,7 @@ QC.ApplicationWindow {
                 ToggleButton {
                     id: eveningToggle
                     visible: !GuiController.isEditingTask && GuiController.showEveningToggle && GuiController.currentViewType === GuiController.Week
-                    toggled: !GuiController.showImmediateOnly
+                    toggled: GuiController.showImmediateOnly
                     anchors {
                         left: burgerButton.right
                         bottom: parent.bottom
@@ -218,7 +218,7 @@ QC.ApplicationWindow {
                         bottomMargin: Style.fromPixel(4)
                     }
                     z: 100
-                    onToggledChanged: GuiController.showImmediateOnly = !toggled
+                    onToggledChanged: GuiController.showImmediateOnly = toggled
                 }
 
                 FontAwesomeButton {
