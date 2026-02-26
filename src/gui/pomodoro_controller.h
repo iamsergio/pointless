@@ -25,6 +25,7 @@ public:
     [[nodiscard]] QString currentTaskUuid() const;
     [[nodiscard]] bool isRunning() const;
     [[nodiscard]] bool isRunningThisTask(const pointless::core::Task &task) const;
+    [[nodiscard]] bool isRunningThisTask(const QString &taskUuid) const;
     [[nodiscard]] int remainingSeconds() const;
     [[nodiscard]] QString remainingTimeText() const;
 

@@ -22,7 +22,12 @@ bool PomodoroController::isRunning() const
 
 bool PomodoroController::isRunningThisTask(const pointless::core::Task &task) const
 {
-    return isRunning() && _currentTaskUuid == QString::fromStdString(task.uuid);
+    return isRunningThisTask(QString::fromStdString(task.uuid));
+}
+
+bool PomodoroController::isRunningThisTask(const QString &taskUuid) const
+{
+    return isRunning() && _currentTaskUuid == taskUuid;
 }
 
 int PomodoroController::remainingSeconds() const

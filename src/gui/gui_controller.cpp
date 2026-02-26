@@ -865,7 +865,7 @@ void GuiController::setTaskBeingEdited(const QString &uuid, QDate date, const QS
 
 void GuiController::stopPomodoroIfRunning(const QString &taskUuid)
 {
-    if (_pomodoroController->isRunning() && _pomodoroController->currentTaskUuid() == taskUuid) {
+    if (_pomodoroController->isRunningThisTask(taskUuid)) {
         _pomodoroController->stop();
     }
 }
