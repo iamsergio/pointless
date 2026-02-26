@@ -4,6 +4,7 @@
 #include "gui/data_controller.h"
 #include "gui/taskmodel.h"
 #include "gui/gui_controller.h"
+#include "gui/pomodoro_controller.h"
 #include "gui/tests/test_utils.h"
 #include "gui/local_settings.h"
 
@@ -74,6 +75,180 @@ TEST(GuiControllerTest, MoveToNextMondayRemovesCurrentTag)
     ASSERT_NE(updatedTask, nullptr);
     EXPECT_FALSE(updatedTask->containsTag(core::BUILTIN_TAG_CURRENT))
         << "moveTaskToNextMonday should remove the current tag";
+
+    delete guiController;
+}
+
+TEST(GuiControllerTest, PomodoroStopsWhenTaskMarkedDone)
+{
+    QGuiApplication _app(g_argc, g_argv);
+    core::Logger::initLogLevel();
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+
+    GuiController *guiController = GuiController::instance();
+    DataController *controller = guiController->dataController();
+
+    core::Data remoteData;
+    core::Task task;
+    task.uuid = "uuid-pomodoro-done-test";
+    task.title = "Pomodoro done test";
+    task.tags = { core::BUILTIN_TAG_CURRENT };
+    task.revision = 0;
+    remoteData.addTask(task);
+    remoteData.setRevision(1);
+
+    initData(*controller, {}, remoteData);
+    auto syncResult = controller->refreshBlocking();
+    ASSERT_TRUE(syncResult.has_value());
+
+    guiController->pomodoroController()->play("uuid-pomodoro-done-test");
+    ASSERT_TRUE(guiController->pomodoroController()->isRunning());
+    ASSERT_EQ(guiController->pomodoroController()->currentTaskUuid(), "uuid-pomodoro-done-test");
+
+    controller->taskModel()->setTaskDone("uuid-pomodoro-done-test", true);
+
+    EXPECT_FALSE(guiController->pomodoroController()->isRunning());
+    EXPECT_TRUE(guiController->pomodoroController()->currentTaskUuid().isEmpty());
+
+    delete guiController;
+}
+
+TEST(GuiControllerTest, PomodoroStopsWhenTaskMovedToSoon)
+{
+    QGuiApplication _app(g_argc, g_argv);
+    core::Logger::initLogLevel();
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+
+    GuiController *guiController = GuiController::instance();
+    DataController *controller = guiController->dataController();
+
+    core::Data remoteData;
+    core::Task task;
+    task.uuid = "uuid-pomodoro-soon-test";
+    task.title = "Pomodoro soon test";
+    task.tags = { core::BUILTIN_TAG_CURRENT };
+    task.revision = 0;
+    remoteData.addTask(task);
+    remoteData.setRevision(1);
+
+    initData(*controller, {}, remoteData);
+    auto syncResult = controller->refreshBlocking();
+    ASSERT_TRUE(syncResult.has_value());
+
+    guiController->pomodoroController()->play("uuid-pomodoro-soon-test");
+    ASSERT_TRUE(guiController->pomodoroController()->isRunning());
+
+    guiController->moveTaskToSoon("uuid-pomodoro-soon-test");
+
+    EXPECT_FALSE(guiController->pomodoroController()->isRunning());
+    EXPECT_TRUE(guiController->pomodoroController()->currentTaskUuid().isEmpty());
+
+    delete guiController;
+}
+
+TEST(GuiControllerTest, PomodoroStopsWhenTaskMovedToLater)
+{
+    QGuiApplication _app(g_argc, g_argv);
+    core::Logger::initLogLevel();
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+
+    GuiController *guiController = GuiController::instance();
+    DataController *controller = guiController->dataController();
+
+    core::Data remoteData;
+    core::Task task;
+    task.uuid = "uuid-pomodoro-later-test";
+    task.title = "Pomodoro later test";
+    task.tags = { core::BUILTIN_TAG_CURRENT };
+    task.revision = 0;
+    remoteData.addTask(task);
+    remoteData.setRevision(1);
+
+    initData(*controller, {}, remoteData);
+    auto syncResult = controller->refreshBlocking();
+    ASSERT_TRUE(syncResult.has_value());
+
+    guiController->pomodoroController()->play("uuid-pomodoro-later-test");
+    ASSERT_TRUE(guiController->pomodoroController()->isRunning());
+
+    guiController->moveTaskToLater("uuid-pomodoro-later-test");
+
+    EXPECT_FALSE(guiController->pomodoroController()->isRunning());
+    EXPECT_TRUE(guiController->pomodoroController()->currentTaskUuid().isEmpty());
+
+    delete guiController;
+}
+
+TEST(GuiControllerTest, PomodoroUnaffectedWhenDifferentTaskMarkedDone)
+{
+    QGuiApplication _app(g_argc, g_argv);
+    core::Logger::initLogLevel();
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+
+    GuiController *guiController = GuiController::instance();
+    DataController *controller = guiController->dataController();
+
+    core::Data remoteData;
+    core::Task taskA;
+    taskA.uuid = "uuid-pomodoro-other-a";
+    taskA.title = "Pomodoro task A";
+    taskA.tags = { core::BUILTIN_TAG_CURRENT };
+    taskA.revision = 0;
+    remoteData.addTask(taskA);
+
+    core::Task taskB;
+    taskB.uuid = "uuid-pomodoro-other-b";
+    taskB.title = "Pomodoro task B";
+    taskB.tags = { core::BUILTIN_TAG_CURRENT };
+    taskB.revision = 0;
+    remoteData.addTask(taskB);
+
+    remoteData.setRevision(1);
+
+    initData(*controller, {}, remoteData);
+    auto syncResult = controller->refreshBlocking();
+    ASSERT_TRUE(syncResult.has_value());
+
+    guiController->pomodoroController()->play("uuid-pomodoro-other-a");
+    ASSERT_TRUE(guiController->pomodoroController()->isRunning());
+
+    controller->taskModel()->setTaskDone("uuid-pomodoro-other-b", true);
+
+    EXPECT_TRUE(guiController->pomodoroController()->isRunning());
+    EXPECT_EQ(guiController->pomodoroController()->currentTaskUuid(), "uuid-pomodoro-other-a");
+
+    delete guiController;
+}
+
+TEST(GuiControllerTest, PomodoroStopsWhenTaskMovedToEvening)
+{
+    QGuiApplication _app(g_argc, g_argv);
+    core::Logger::initLogLevel();
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+
+    GuiController *guiController = GuiController::instance();
+    DataController *controller = guiController->dataController();
+
+    core::Data remoteData;
+    core::Task task;
+    task.uuid = "uuid-pomodoro-evening-test";
+    task.title = "Pomodoro evening test";
+    task.tags = { core::BUILTIN_TAG_CURRENT };
+    task.revision = 0;
+    remoteData.addTask(task);
+    remoteData.setRevision(1);
+
+    initData(*controller, {}, remoteData);
+    auto syncResult = controller->refreshBlocking();
+    ASSERT_TRUE(syncResult.has_value());
+
+    guiController->pomodoroController()->play("uuid-pomodoro-evening-test");
+    ASSERT_TRUE(guiController->pomodoroController()->isRunning());
+
+    guiController->moveTaskToEvening("uuid-pomodoro-evening-test");
+
+    EXPECT_FALSE(guiController->pomodoroController()->isRunning());
+    EXPECT_TRUE(guiController->pomodoroController()->currentTaskUuid().isEmpty());
 
     delete guiController;
 }
