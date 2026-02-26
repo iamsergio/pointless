@@ -863,6 +863,13 @@ void GuiController::setTaskBeingEdited(const QString &uuid, QDate date, const QS
     setIsEditingTask(true);
 }
 
+void GuiController::stopPomodoroIfRunning(const QString &taskUuid)
+{
+    if (_pomodoroController->isRunning() && _pomodoroController->currentTaskUuid() == taskUuid) {
+        _pomodoroController->stop();
+    }
+}
+
 void GuiController::moveTaskToCurrent(const QString &taskUuid)
 {
     auto *task = _dataController->taskModel()->taskForUuid(taskUuid);
@@ -882,6 +889,7 @@ void GuiController::moveTaskToSoon(const QString &taskUuid)
         P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
         return;
     }
+    stopPomodoroIfRunning(taskUuid);
     task->removeBuiltinTags();
     task->addTag(pointless::core::BUILTIN_TAG_SOON);
     task->dueDate = std::nullopt;
@@ -896,6 +904,7 @@ void GuiController::moveTaskToLater(const QString &taskUuid)
         return;
     }
 
+    stopPomodoroIfRunning(taskUuid);
     task->removeBuiltinTags();
     taskModel()->updateTask(*task);
 }
@@ -911,6 +920,7 @@ void GuiController::moveTaskToTomorrow(const QString &taskUuid)
     if (task->isDueTomorrow())
         return;
 
+    stopPomodoroIfRunning(taskUuid);
     task->removeBuiltinTags();
     const QDate tomorrow = Gui::Clock::today().addDays(1);
     task->dueDate = Gui::DateUtils::qdateToTimepoint(tomorrow);
@@ -925,6 +935,7 @@ void GuiController::moveTaskToEvening(const QString &taskUuid)
         return;
     }
 
+    stopPomodoroIfRunning(taskUuid);
     if (task->addTag(core::BUILTIN_TAG_EVENING)) {
         taskModel()->updateTask(*task);
     }
@@ -955,6 +966,7 @@ void GuiController::moveTaskToNextMonday(const QString &taskUuid)
         return;
     }
 
+    stopPomodoroIfRunning(taskUuid);
     task->removeBuiltinTags();
     const QDate nextMonday = Gui::DateUtils::nextMonday(Gui::Clock::today());
     task->dueDate = Gui::DateUtils::qdateToTimepoint(nextMonday);

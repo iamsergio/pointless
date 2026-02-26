@@ -242,6 +242,7 @@ Q_SIGNALS:
 
 private:
     explicit GuiController(QObject *parent = nullptr);
+    void stopPomodoroIfRunning(const QString &taskUuid);
     std::vector<std::string> enabledCalendarIds() const;
     void setIsEvening(bool isEvening);
     ViewType _currentViewType = ViewType::Week;

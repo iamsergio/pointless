@@ -4,6 +4,8 @@
 #include "taskmodel.h"
 #include "Clock.h"
 #include "data_controller.h"
+#include "gui_controller.h"
+#include "pomodoro_controller.h"
 #include "qt_logger.h"
 #include "core/tag.h"
 
@@ -231,6 +233,14 @@ void TaskModel::setTaskDone(const QString &taskUuid, bool isDone)
 
     core::Task updatedTask = *task;
     updatedTask.isDone = isDone;
+
+    if (isDone) {
+        auto *gc = GuiController::instance();
+        auto *pomodoro = gc->pomodoroController();
+        if (pomodoro->isRunning() && pomodoro->currentTaskUuid() == taskUuid) {
+            pomodoro->stop();
+        }
+    }
 
     dataController()->updateTask(updatedTask);
     emit dataChanged(index(idx), index(idx));
