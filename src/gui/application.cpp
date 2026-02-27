@@ -47,12 +47,17 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
     QCommandLineOption noRestoreAuthOption(QStringLiteral("no-restore-auth"), QStringLiteral("Do not restore authentication on startup"));
     parser.addOption(noRestoreAuthOption);
 
+    QCommandLineOption debugOption(QStringLiteral("debug"), QStringLiteral("Enable debug features"));
+    parser.addOption(debugOption);
+
 #ifdef POINTLESS_DEVELOPER_MODE
     QCommandLineOption loginOption(QStringLiteral("login"), QStringLiteral("Auto-login with default credentials"));
     parser.addOption(loginOption);
 #endif
 
     parser.process(*this);
+
+    GuiController::setDebugMode(parser.isSet(debugOption));
 
     core::Logger::initLogLevel();
 

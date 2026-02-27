@@ -45,6 +45,8 @@
 
 using namespace pointless;
 
+bool GuiController::_debugMode = false;
+
 namespace {
 GuiController *s_instance = nullptr; // NOLINT // clazy:exclude=non-pod-global-static
 
@@ -1164,6 +1166,16 @@ bool GuiController::isEvening() const
 bool GuiController::isEveningForHour(int hour)
 {
     return hour < 5 || hour >= 16;
+}
+
+bool GuiController::debugMode()
+{
+    return _debugMode;
+}
+
+void GuiController::setDebugMode(bool enabled)
+{
+    _debugMode = enabled;
 }
 
 void GuiController::setIsEvening(bool isEvening)

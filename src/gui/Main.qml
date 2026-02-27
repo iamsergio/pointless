@@ -370,6 +370,15 @@ QC.ApplicationWindow {
                         GuiController.setTaskMenuUuid("");
                     }
                 }
+                MenuItem {
+                    id: debugJsonMenuItem
+                    text: "Debug JSON"
+                    visible: GuiController.debugMode
+                    onTriggered: {
+                        GuiController.dumpTaskDebug(GuiController.taskMenuUuid);
+                        GuiController.setTaskMenuUuid("");
+                    }
+                }
             }
 
             ErrorPopup {
