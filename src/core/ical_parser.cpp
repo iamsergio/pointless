@@ -110,9 +110,9 @@ std::vector<ICalEvent> parseICalEvents(const std::string &icalData,
             icalrecur_iterator_free(iter);
         } else {
             if (range.has_value()) {
-                auto effectiveEnd = (dtendTp == std::chrono::system_clock::time_point{})
-                                        ? dtstartTp
-                                        : dtendTp;
+                auto effectiveEnd = (dtendTp == std::chrono::system_clock::time_point {})
+                    ? dtstartTp
+                    : dtendTp;
                 if (effectiveEnd <= range->start || dtstartTp >= range->end)
                     return;
             }
