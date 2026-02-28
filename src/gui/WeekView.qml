@@ -147,7 +147,6 @@ Item {
 
                     onClicked: {
                         GuiController.setTaskMenuUuid(uuid);
-                        GuiController.dumpTaskDebug(uuid);
                     }
                 }
             }
