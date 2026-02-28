@@ -209,6 +209,22 @@ int LocalData::deleteCalendarTasks()
     return static_cast<int>(uuidsToRemove.size());
 }
 
+int LocalData::deduplicateCalendarTasks()
+{
+    auto uuidsToRemove = _data.findDuplicateCalendarTaskUuids();
+
+    for (const auto &uuid : uuidsToRemove) {
+        removeTask(uuid);
+    }
+
+    if (!uuidsToRemove.empty()) {
+        _data.needsLocalSave = true;
+    }
+
+    P_LOG_INFO("Deduplicated {} calendar tasks", uuidsToRemove.size());
+    return static_cast<int>(uuidsToRemove.size());
+}
+
 bool LocalData::addTask(Task task)
 {
     P_LOG_DEBUG("addTask '{}' LocalData={}", task.uuid, static_cast<void *>(this));

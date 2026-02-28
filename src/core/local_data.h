@@ -66,6 +66,7 @@ public:
     bool removeTag(const std::string &tagName);
     int cleanupOldData();
     int deleteCalendarTasks();
+    int deduplicateCalendarTasks();
 
     void clearServerSyncBits();
 

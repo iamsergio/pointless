@@ -229,6 +229,8 @@ GuiController::GuiController(QObject *parent)
 
             P_LOG_INFO("Added {} new tasks from calendar events", addedCount);
 
+            _dataController->deduplicateCalendarTasks();
+
             _fetchCalendarStatusText = QStringLiteral("Fetched %1 events, added %2").arg(events.size()).arg(addedCount);
             Q_EMIT fetchCalendarStatusTextChanged();
         } catch (const std::exception &e) {

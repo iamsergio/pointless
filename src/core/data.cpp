@@ -5,6 +5,7 @@
 #include "logger.h"
 
 #include <algorithm>
+#include <map>
 
 namespace pointless::core {
 
@@ -424,6 +425,48 @@ std::string Data::debug_taskUids() const
         result += task.uuid + " ";
     }
     return result;
+}
+
+std::vector<std::string> Data::findDuplicateCalendarTaskUuids() const
+{
+    using Key = std::tuple<std::string, std::string, std::optional<std::chrono::system_clock::time_point>>;
+    std::map<Key, std::vector<size_t>> groups;
+
+    for (size_t i = 0; i < _data.tasks.size(); ++i) {
+        const auto &task = _data.tasks[i];
+        if (!task.uuidInDeviceCalendar.has_value() || !task.deviceCalendarName.has_value())
+            continue;
+
+        Key key { task.title, *task.deviceCalendarName, task.dueDate };
+        groups[key].push_back(i);
+    }
+
+    std::vector<std::string> duplicateUuids;
+    for (const auto &[key, indices] : groups) {
+        if (indices.size() < 2)
+            continue;
+
+        size_t bestIdx = indices[0];
+        auto bestTime = _data.tasks[bestIdx].modificationTimestamp.value_or(
+            std::chrono::system_clock::time_point::min());
+
+        for (size_t j = 1; j < indices.size(); ++j) {
+            auto time = _data.tasks[indices[j]].modificationTimestamp.value_or(
+                std::chrono::system_clock::time_point::min());
+            if (time > bestTime) {
+                bestTime = time;
+                bestIdx = indices[j];
+            }
+        }
+
+        for (size_t idx : indices) {
+            if (idx != bestIdx) {
+                duplicateUuids.push_back(_data.tasks[idx].uuid);
+            }
+        }
+    }
+
+    return duplicateUuids;
 }
 
 }

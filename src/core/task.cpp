@@ -134,7 +134,7 @@ void Task::dumpDebug() const
         P_LOG_ERROR("Failed to serialize task to JSON");
     } else {
         auto pretty = glz::prettify_json(json);
-        P_LOG_DEBUG("Task JSON: {}", pretty);
+        P_LOG_INFO("Task JSON: {}", pretty);
     }
 
     auto timeToString = [](std::chrono::system_clock::time_point tp) {
@@ -144,15 +144,15 @@ void Task::dumpDebug() const
         return ss.str();
     };
 
-    P_LOG_DEBUG("Creation: {}", timeToString(creationTimestamp));
+    P_LOG_INFO("Creation: {}", timeToString(creationTimestamp));
     if (modificationTimestamp)
-        P_LOG_DEBUG("Modification: {}", timeToString(*modificationTimestamp));
+        P_LOG_INFO("Modification: {}", timeToString(*modificationTimestamp));
     if (lastPomodoroDate)
-        P_LOG_DEBUG("Last Pomodoro: {}", timeToString(*lastPomodoroDate));
+        P_LOG_INFO("Last Pomodoro: {}", timeToString(*lastPomodoroDate));
     if (dueDate)
-        P_LOG_DEBUG("Due: {}", timeToString(*dueDate));
+        P_LOG_INFO("Due: {}", timeToString(*dueDate));
     if (completionDate)
-        P_LOG_DEBUG("Completion: {}", timeToString(*completionDate));
+        P_LOG_INFO("Completion: {}", timeToString(*completionDate));
 }
 
 

@@ -313,6 +313,14 @@ void DataController::deleteCalendarTasks()
     }
 }
 
+void DataController::deduplicateCalendarTasks()
+{
+    if (_localData.deduplicateCalendarTasks() > 0) {
+        _saveToDiskTimer.start();
+        _taskModel->reload();
+    }
+}
+
 std::expected<core::Data, TraceableError> DataController::pullRemoteData()
 {
     if (!_dataProvider->isAuthenticated()) {

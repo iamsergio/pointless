@@ -51,6 +51,7 @@ public:
     [[nodiscard]] Task *taskForUuid(const std::string &uuid);
     [[nodiscard]] const Task *taskForTitle(const std::string &title) const;
     [[nodiscard]] std::string debug_taskUids() const;
+    [[nodiscard]] std::vector<std::string> findDuplicateCalendarTaskUuids() const;
 
     // Tag management methods
     void addTag(const Tag &tag);

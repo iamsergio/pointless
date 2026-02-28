@@ -51,6 +51,7 @@ public:
     bool removeTag(const QString &tagName);
     void cleanupOldData();
     void deleteCalendarTasks();
+    void deduplicateCalendarTasks();
 
     pointless::core::LocalData &localData();
     LocalSettings &localSettings();
