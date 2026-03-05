@@ -22,6 +22,7 @@ Rectangle {
     required property string taskCalendarName
     required property string taskAllTags
     required property bool taskHasNotes
+    required property bool taskIsGoal
 
     required property bool taskIsSoon
     required property bool taskIsLater
@@ -69,11 +70,21 @@ Rectangle {
             spacing: root.useSmallMode ? Style.fromPixel(5) : Style.fromPixel(10)
 
             CheckBox {
+                visible: !root.taskIsGoal
                 checked: root.taskIsDone
                 smallVariant: root.useSmallMode
                 onClicked: {
                     GuiController.taskModel.setTaskDone(root.taskUuid, !root.taskIsDone);
                 }
+            }
+
+            FontAwesomeButton {
+                visible: root.taskIsGoal
+                fontAwesomeIcon: "\uf11e"
+                iconSize: root.useSmallMode ? Style.fromPixel(14) : Style.fromPixel(18)
+                iconColor: Style.iconColor
+                backgroundColor: "transparent"
+                enabled: false
             }
 
             ColumnLayout {

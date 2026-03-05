@@ -42,7 +42,8 @@ public:
         HasDueDateTimeRole,
         AllTagsRole,
         DescriptionRole,
-        HasNotesRole
+        HasNotesRole,
+        IsGoalRole
     };
 
     explicit TaskModel(QObject *parent = nullptr);

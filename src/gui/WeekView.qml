@@ -121,6 +121,7 @@ Item {
                     required property bool hasDueDateTime
                     required property string allTags
                     required property bool hasNotes
+                    required property bool isGoal
 
                     objectName: "task_" + column.index + "_" + index
 
@@ -139,6 +140,7 @@ Item {
                     taskCalendarName: calendarName
                     taskAllTags: allTags
                     taskHasNotes: hasNotes
+                    taskIsGoal: isGoal
                     taskIsSoon: isSoon
                     taskIsLater: isLater
                     taskIsCurrent: isCurrent

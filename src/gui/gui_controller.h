@@ -79,6 +79,7 @@ class GuiController : public QObject
     Q_PROPERTY(QString notesTaskTitle READ notesTaskTitle NOTIFY notesTaskTitleChanged)
     Q_PROPERTY(bool newTagPopupVisible READ newTagPopupVisible WRITE setNewTagPopupVisible NOTIFY newTagPopupVisibleChanged)
     Q_PROPERTY(PomodoroController *pomodoroController READ pomodoroController CONSTANT)
+    Q_PROPERTY(bool deleteTaskVisible READ deleteTaskVisible NOTIFY taskMenuUuidChanged)
     Q_PROPERTY(bool playPomodoroVisible READ playPomodoroVisible NOTIFY taskMenuUuidChanged)
     Q_PROPERTY(bool debugMode READ debugMode CONSTANT)
 public:
@@ -213,6 +214,7 @@ public:
     void setNewTagPopupVisible(bool visible);
 
     [[nodiscard]] PomodoroController *pomodoroController() const;
+    [[nodiscard]] bool deleteTaskVisible() const;
     [[nodiscard]] bool playPomodoroVisible() const;
 
     [[nodiscard]] static bool debugMode();

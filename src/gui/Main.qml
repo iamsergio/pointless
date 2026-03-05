@@ -389,6 +389,15 @@ QC.ApplicationWindow {
                     }
                 }
                 MenuItem {
+                    id: deleteTaskMenuItem
+                    text: "Delete"
+                    visible: GuiController.deleteTaskVisible
+                    onTriggered: {
+                        GuiController.deleteTask(GuiController.taskMenuUuid);
+                        GuiController.setTaskMenuUuid("");
+                    }
+                }
+                MenuItem {
                     id: debugJsonMenuItem
                     text: "Debug JSON"
                     visible: GuiController.debugMode

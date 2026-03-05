@@ -112,6 +112,8 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         return QString();
     case HasNotesRole:
         return task.description.has_value() && !task.description->empty();
+    case IsGoalRole:
+        return task.isGoal.value_or(false);
     default:
         return {};
     }
@@ -142,6 +144,7 @@ QHash<int, QByteArray> TaskModel::roleNames() const
     roles[DescriptionRole] = "description";
     roles[AllTagsRole] = "allTags";
     roles[HasNotesRole] = "hasNotes";
+    roles[IsGoalRole] = "isGoal";
     return roles;
 }
 
