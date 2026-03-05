@@ -50,6 +50,7 @@ class GuiController : public QObject
     Q_PROPERTY(QString titleInEditor READ titleInEditor NOTIFY titleInEditorChanged)
     Q_PROPERTY(QString tagInEditor READ tagInEditor NOTIFY tagInEditorChanged)
     Q_PROPERTY(bool isEveningInEditor READ isEveningInEditor NOTIFY isEveningInEditorChanged)
+    Q_PROPERTY(bool isGoalInEditor READ isGoalInEditor NOTIFY isGoalInEditorChanged)
     Q_PROPERTY(QDate dateInEditor READ dateInEditor NOTIFY dateInEditorChanged)
     Q_PROPERTY(QString windowTitle READ windowTitle NOTIFY isOfflineModeChanged)
     Q_PROPERTY(bool isAuthenticated READ isAuthenticated NOTIFY isAuthenticatedChanged)
@@ -91,6 +92,7 @@ public:
         Week,
         Soon,
         Later,
+        Goals,
         Tags
     };
     Q_ENUM(ViewType)
@@ -114,8 +116,8 @@ public:
     Q_INVOKABLE void navigatorGotoNextWeek();
     Q_INVOKABLE void navigatorGotoPreviousWeek();
     Q_INVOKABLE void refresh();
-    Q_INVOKABLE void saveTask(QString title, const QString &tag, bool isEvening);
-    Q_INVOKABLE void addNewTask(QString title, const QString &tag, bool isEvening);
+    Q_INVOKABLE void saveTask(QString title, const QString &tag, bool isEvening, bool isGoal);
+    Q_INVOKABLE void addNewTask(QString title, const QString &tag, bool isEvening, bool isGoal);
     [[nodiscard]] Q_INVOKABLE QString colorFromTag(const QString &tagName) const;
     [[nodiscard]] static bool isDebug();
     [[nodiscard]] static bool isMobile();
@@ -131,6 +133,7 @@ public:
     [[nodiscard]] QString titleInEditor() const;
     [[nodiscard]] QString tagInEditor() const;
     [[nodiscard]] bool isEveningInEditor() const;
+    [[nodiscard]] bool isGoalInEditor() const;
     [[nodiscard]] QDate dateInEditor() const;
     Q_INVOKABLE void setDateInEditor(QDate date);
 
@@ -222,6 +225,7 @@ Q_SIGNALS:
     void titleInEditorChanged();
     void tagInEditorChanged();
     void isEveningInEditorChanged();
+    void isGoalInEditorChanged();
     void navigatorStartDateChanged();
     void navigatorEndDateChanged();
     void isEditingTaskChanged();
@@ -255,6 +259,7 @@ private:
     QString _titleInEditor;
     QString _tagInEditor;
     bool _isEveningInEditor = false;
+    bool _isGoalInEditor = false;
     QDate _dateInEditor;
     QDate _navigatorStartDate;
     QString _taskMenuUuid;

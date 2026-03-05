@@ -625,7 +625,12 @@ bool GuiController::isEveningInEditor() const
     return _isEveningInEditor;
 }
 
-void GuiController::saveTask(QString title, const QString &tag, bool isEvening) // NOLINT
+bool GuiController::isGoalInEditor() const
+{
+    return _isGoalInEditor;
+}
+
+void GuiController::saveTask(QString title, const QString &tag, bool isEvening, bool isGoal) // NOLINT
 {
     auto guard = qScopeGuard([this] { clearTaskBeingEdited(); });
 
@@ -698,6 +703,8 @@ void GuiController::saveTask(QString title, const QString &tag, bool isEvening) 
 
     task->setTags(newTags);
 
+    task->isGoal = isGoal ? std::optional(true) : std::nullopt;
+
     if (_dateInEditor.isValid()) {
         task->dueDate = Gui::DateUtils::qdateToTimepoint(_dateInEditor);
     } else {
@@ -711,10 +718,10 @@ void GuiController::saveTask(QString title, const QString &tag, bool isEvening) 
     }
 }
 
-void GuiController::addNewTask(QString title, const QString &tag, bool isEvening)
+void GuiController::addNewTask(QString title, const QString &tag, bool isEvening, bool isGoal)
 {
     setUuidBeingEdited({});
-    saveTask(std::move(title), tag, isEvening);
+    saveTask(std::move(title), tag, isEvening, isGoal);
 }
 
 QString GuiController::colorFromTag(const QString &tagName) const
@@ -846,12 +853,14 @@ void GuiController::setTaskBeingEdited(const QString &uuid, QDate date, const QS
         _titleInEditor.clear();
         _tagInEditor = tag;
         _isEveningInEditor = false;
+        _isGoalInEditor = (_currentViewType == ViewType::Goals);
     } else {
         const auto *task = taskModel()->taskForUuid(uuid);
         if (task != nullptr) {
             _titleInEditor = QString::fromStdString(task->title);
             _tagInEditor = QString::fromStdString(task->tagName());
             _isEveningInEditor = task->containsTag("evening");
+            _isGoalInEditor = task->isGoal.value_or(false);
 
             if (task->dueDate) {
                 setDateInEditor(Gui::DateUtils::timepointToQDate(task->dueDate));
@@ -864,6 +873,7 @@ void GuiController::setTaskBeingEdited(const QString &uuid, QDate date, const QS
     emit titleInEditorChanged();
     emit tagInEditorChanged();
     emit isEveningInEditorChanged();
+    emit isGoalInEditorChanged();
     setIsEditingTask(true);
 }
 

@@ -24,7 +24,8 @@ public:
     enum class ViewType : uint8_t {
         Week,
         Soon,
-        Later
+        Later,
+        Goals
     };
     Q_ENUM(ViewType)
 

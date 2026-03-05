@@ -53,8 +53,8 @@ QC.ApplicationWindow {
                     GuiController.onBackClicked();
                 }
 
-                onSaveClicked: function (title, tag, evening) {
-                    GuiController.saveTask(title, tag, evening);
+                onSaveClicked: function (title, tag, evening, isGoal) {
+                    GuiController.saveTask(title, tag, evening, isGoal);
                 }
             }
 
@@ -143,6 +143,17 @@ QC.ApplicationWindow {
                             isActive: GuiController.currentViewType === GuiController.Later
                             onClicked: GuiController.currentViewType = GuiController.Later
                         }
+
+                        Item {
+                            Layout.fillWidth: true
+                        }
+
+                        ViewButton {
+                            id: goalsViewButton
+                            text: "Hacking"
+                            isActive: GuiController.currentViewType === GuiController.Goals
+                            onClicked: GuiController.currentViewType = GuiController.Goals
+                        }
                     }
 
                     WeekNavigator {
@@ -176,6 +187,13 @@ QC.ApplicationWindow {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         visible: GuiController.currentViewType === GuiController.Later
+                    }
+
+                    GoalsView {
+                        id: goalsView
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        visible: GuiController.currentViewType === GuiController.Goals
                     }
                 }
             }

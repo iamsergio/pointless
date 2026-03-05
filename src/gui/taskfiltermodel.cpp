@@ -99,8 +99,12 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
         return false;
     }
 
-    if ((task->isDone && !task->needsSyncToServer) || task->isGoal) {
+    if (task->isDone && !task->needsSyncToServer) {
         return false;
+    }
+
+    if (_viewType == ViewType::Goals) {
+        return task->isGoal.value_or(false);
     }
 
     auto *pomodoroCtrl = GuiController::instance()->pomodoroController();

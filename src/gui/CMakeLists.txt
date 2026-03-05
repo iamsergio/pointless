@@ -20,6 +20,10 @@ set(QML_SINGLETONS Style.qml)
 
 set_source_files_properties(${QML_SINGLETONS} PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 
+if(POINTLESS_DEVELOPER_MODE)
+  target_compile_definitions(pointless_gui PRIVATE QT_QML_DEBUG)
+endif()
+
 set(PLAIN_QML_FILES
     Main.qml
     WeekNavigator.qml
@@ -50,7 +54,8 @@ set(PLAIN_QML_FILES
     TagsView.qml
     TasksByTagPage.qml
     SearchPage.qml
-    ToggleButton.qml)
+    ToggleButton.qml
+    GoalsView.qml)
 
 qt_add_qml_module(
   pointless_gui

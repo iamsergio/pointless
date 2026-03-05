@@ -14,10 +14,11 @@ Page {
     rightButtonIcon: "\uf00c"
     rightButtonObjectName: "saveButton"
 
-    signal saveClicked(string title, string tag, bool evening)
+    signal saveClicked(string title, string tag, bool evening, bool isGoal)
 
     property string selectedTag: ""
     property bool isEvening: false
+    property bool isGoal: false
 
     onVisibleChanged: {
         if (visible) {
@@ -25,10 +26,11 @@ Page {
             titleInput.forceActiveFocus();
             root.selectedTag = GuiController.tagInEditor;
             root.isEvening = GuiController.isEveningInEditor;
+            root.isGoal = GuiController.isGoalInEditor;
         }
     }
 
-    onRightButtonClicked: root.saveClicked(titleInput.text, root.selectedTag, root.isEvening)
+    onRightButtonClicked: root.saveClicked(titleInput.text, root.selectedTag, root.isEvening, root.isGoal)
 
     ColumnLayout {
         anchors.fill: parent
@@ -51,7 +53,7 @@ Page {
                 focus: true
                 Layout.fillWidth: true
                 onTextEntered: function (text) {
-                    root.saveClicked(text, root.selectedTag, root.isEvening);
+                    root.saveClicked(text, root.selectedTag, root.isEvening, root.isGoal);
                 }
             }
         }
@@ -117,6 +119,26 @@ Page {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: eveningCheckBox.toggle()
+                }
+            }
+
+            CheckBox {
+                id: goalCheckBox
+                objectName: "goalCheckBox"
+                checked: root.isGoal
+                onCheckedChanged: root.isGoal = checked
+            }
+
+            Text {
+                text: "Goal"
+                color: Style.sectionTextColor
+                font.pixelSize: Style.fromPixel(14)
+                font.bold: true
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: goalCheckBox.toggle()
                 }
             }
         }
