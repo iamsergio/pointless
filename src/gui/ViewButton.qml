@@ -10,7 +10,7 @@ Button {
 
     property bool isActive: false
 
-    implicitWidth: Style.fromPixel(100)
+    implicitWidth: Style.fromPixel(80)
     implicitHeight: Style.fromPixel(32)
 
     contentItem: Text {

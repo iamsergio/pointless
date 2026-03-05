@@ -148,10 +148,14 @@ QC.ApplicationWindow {
                             Layout.fillWidth: true
                         }
 
-                        ViewButton {
+                        FontAwesomeButton {
                             id: goalsViewButton
-                            text: "Hacking"
-                            isActive: GuiController.currentViewType === GuiController.Goals
+                            fontAwesomeIcon: "\uf11e"
+                            iconSize: Style.fromPixel(16)
+                            iconColor: GuiController.currentViewType === GuiController.Goals ? "white" : Style.iconColor
+                            backgroundColor: GuiController.currentViewType === GuiController.Goals ? Style.buttonActive : Style.buttonBackground
+                            implicitWidth: Style.fromPixel(40)
+                            implicitHeight: Style.fromPixel(32)
                             onClicked: GuiController.currentViewType = GuiController.Goals
                         }
                     }
