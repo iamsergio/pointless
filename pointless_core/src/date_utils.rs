@@ -267,4 +267,33 @@ mod tests {
         assert!(!is_after_today(make_utc(2025, 6, 14, 8, 0, 0)));
         clock::reset();
     }
+
+    #[test]
+    fn test_is_this_week() {
+        // 2025-06-18 is a Wednesday, so Monday is 2025-06-16
+        clock::set_test_now(make_utc(2025, 6, 18, 12, 0, 0));
+        let monday = this_weeks_monday(clock::now());
+        let next_mon = next_monday(clock::now());
+        let sunday = monday + Duration::days(6);
+
+        assert!(is_this_week(monday));
+        assert!(is_this_week(sunday));
+        assert!(!is_this_week(next_mon));
+        clock::reset();
+    }
+
+    #[test]
+    fn test_is_next_7_days() {
+        clock::set_test_now(make_utc(2025, 6, 15, 12, 0, 0));
+        let now = clock::now();
+        let yesterday = now - Duration::hours(24);
+        let tomorrow = now + Duration::hours(24);
+        let in_7_days = now + Duration::hours(24 * 7);
+
+        assert!(is_next_7_days(now));
+        assert!(!is_next_7_days(yesterday));
+        assert!(is_next_7_days(tomorrow));
+        assert!(!is_next_7_days(in_7_days));
+        clock::reset();
+    }
 }

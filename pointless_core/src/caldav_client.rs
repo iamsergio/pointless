@@ -422,4 +422,161 @@ mod tests {
         assert_eq!(normalize_color("#FF0000"), "#FF0000");
         assert_eq!(normalize_color("red"), "red");
     }
+
+    #[test]
+    fn test_calendar_home_set_parsing() {
+        let xml = r#"<?xml version="1.0" encoding="utf-8" ?>
+<d:multistatus xmlns:d="DAV:" xmlns:cal="urn:ietf:params:xml:ns:caldav">
+  <d:response>
+    <d:href>/principals/user/</d:href>
+    <d:propstat>
+      <d:prop>
+        <cal:calendar-home-set>
+          <d:href>/calendars/user/</d:href>
+        </cal:calendar-home-set>
+      </d:prop>
+      <d:status>HTTP/1.1 200 OK</d:status>
+    </d:propstat>
+  </d:response>
+</d:multistatus>"#;
+
+        let doc = roxmltree::Document::parse(xml).unwrap();
+        let root = doc.root();
+
+        let home_set = find_descendant_by_local_name(&root, "calendar-home-set");
+        assert!(home_set.is_some());
+
+        let home_set = home_set.unwrap();
+        let href = find_child_by_local_name(&home_set, "href");
+        assert!(href.is_some());
+        assert_eq!(get_text_content(&href.unwrap()), "/calendars/user/");
+    }
+
+    #[test]
+    fn test_calendar_list_parsing() {
+        let xml = r#"<?xml version="1.0" encoding="utf-8" ?>
+<d:multistatus xmlns:d="DAV:" xmlns:cal="urn:ietf:params:xml:ns:caldav" xmlns:cs="http://apple.com/ns/ical/">
+  <d:response>
+    <d:href>/calendars/user/personal/</d:href>
+    <d:propstat>
+      <d:prop>
+        <d:displayname>Personal</d:displayname>
+        <d:resourcetype>
+          <d:collection />
+          <cal:calendar />
+        </d:resourcetype>
+        <cal:supported-calendar-component-set>
+          <cal:comp name="VEVENT" />
+        </cal:supported-calendar-component-set>
+        <cs:calendar-color>#FF5733FF</cs:calendar-color>
+      </d:prop>
+      <d:status>HTTP/1.1 200 OK</d:status>
+    </d:propstat>
+  </d:response>
+  <d:response>
+    <d:href>/calendars/user/tasks/</d:href>
+    <d:propstat>
+      <d:prop>
+        <d:displayname>Tasks</d:displayname>
+        <d:resourcetype>
+          <d:collection />
+          <cal:calendar />
+        </d:resourcetype>
+        <cal:supported-calendar-component-set>
+          <cal:comp name="VTODO" />
+        </cal:supported-calendar-component-set>
+      </d:prop>
+      <d:status>HTTP/1.1 200 OK</d:status>
+    </d:propstat>
+  </d:response>
+</d:multistatus>"#;
+
+        let doc = roxmltree::Document::parse(xml).unwrap();
+        let root = doc.root();
+        let multistatus = find_descendant_by_local_name(&root, "multistatus").unwrap();
+
+        let mut calendar_count = 0;
+        let mut vevent_calendar_count = 0;
+
+        for response in multistatus.children() {
+            if !response.is_element() || local_name(response.tag_name().name()) != "response" {
+                continue;
+            }
+
+            let Some(propstat) = find_descendant_by_local_name(&response, "propstat") else {
+                continue;
+            };
+
+            let Some(prop) = find_child_by_local_name(&propstat, "prop") else {
+                continue;
+            };
+
+            let Some(resourcetype) = find_child_by_local_name(&prop, "resourcetype") else {
+                continue;
+            };
+
+            let is_calendar = resourcetype.children().any(|child| {
+                child.is_element() && local_name(child.tag_name().name()) == "calendar"
+            });
+            if !is_calendar {
+                continue;
+            }
+            calendar_count += 1;
+
+            if let Some(sup_comp) =
+                find_child_by_local_name(&prop, "supported-calendar-component-set")
+            {
+                let supports_vevent = sup_comp.children().any(|comp| {
+                    comp.is_element()
+                        && local_name(comp.tag_name().name()) == "comp"
+                        && comp.attribute("name") == Some("VEVENT")
+                });
+                if supports_vevent {
+                    vevent_calendar_count += 1;
+                }
+            }
+        }
+
+        assert_eq!(calendar_count, 2);
+        assert_eq!(vevent_calendar_count, 1);
+    }
+
+    #[test]
+    fn test_calendar_data_extraction() {
+        let xml = r#"<?xml version="1.0" encoding="utf-8" ?>
+<d:multistatus xmlns:d="DAV:" xmlns:cal="urn:ietf:params:xml:ns:caldav">
+  <d:response>
+    <d:href>/calendars/user/personal/event1.ics</d:href>
+    <d:propstat>
+      <d:prop>
+        <d:getetag>"etag-123"</d:getetag>
+        <cal:calendar-data>BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:xml-ev-1
+SUMMARY:Extracted Event
+DTSTART:20250401T080000Z
+DTEND:20250401T090000Z
+END:VEVENT
+END:VCALENDAR</cal:calendar-data>
+      </d:prop>
+      <d:status>HTTP/1.1 200 OK</d:status>
+    </d:propstat>
+  </d:response>
+</d:multistatus>"#;
+
+        let doc = roxmltree::Document::parse(xml).unwrap();
+        let root = doc.root();
+
+        let cal_data = find_descendant_by_local_name(&root, "calendar-data");
+        assert!(cal_data.is_some());
+
+        let ical_data = get_text_content(&cal_data.unwrap());
+        assert!(!ical_data.is_empty());
+
+        let events = parse_ical_events(&ical_data, None);
+        assert_eq!(events.len(), 1);
+        assert_eq!(events[0].uid, "xml-ev-1");
+        assert_eq!(events[0].summary, "Extracted Event");
+    }
 }

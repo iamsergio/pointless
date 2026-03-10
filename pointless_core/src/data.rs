@@ -417,7 +417,7 @@ impl Data {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use chrono::{TimeZone, Utc};
+    use chrono::{DateTime, TimeZone, Utc};
 
     fn make_task(uuid: &str, title: &str) -> Task {
         Task::new(
@@ -666,5 +666,141 @@ mod tests {
         let s = data.debug_task_uids();
         assert!(s.contains("a"));
         assert!(s.contains("b"));
+    }
+
+    #[test]
+    fn test_find_duplicate_calendar_task_uuids_no_duplicates() {
+        let mut data = Data::new();
+
+        let mut t1 = make_task("uuid-1", "Meeting A");
+        t1.uuid_in_device_calendar = Some("cal-event-1".to_string());
+        t1.device_calendar_name = Some("Work".to_string());
+        data.add_task(t1);
+
+        let mut t2 = make_task("uuid-2", "Meeting B");
+        t2.uuid_in_device_calendar = Some("cal-event-2".to_string());
+        t2.device_calendar_name = Some("Work".to_string());
+        data.add_task(t2);
+
+        let dupes = data.find_duplicate_calendar_task_uuids();
+        assert!(dupes.is_empty());
+    }
+
+    #[test]
+    fn test_find_duplicate_calendar_task_uuids_returns_older_task() {
+        let mut data = Data::new();
+        let older = DateTime::from_timestamp_millis(1000).unwrap();
+        let newer = DateTime::from_timestamp_millis(2000).unwrap();
+        let event_date = DateTime::from_timestamp_millis(100 * 24 * 3600 * 1000).unwrap();
+
+        let mut t1 = make_task("uuid-1", "Meeting A");
+        t1.uuid_in_device_calendar = Some("ios-event-1".to_string());
+        t1.device_calendar_name = Some("Work".to_string());
+        t1.due_date = Some(event_date);
+        t1.modification_timestamp = Some(older);
+        data.add_task(t1);
+
+        let mut t2 = make_task("uuid-2", "Meeting A");
+        t2.uuid_in_device_calendar = Some("linux-event-1".to_string());
+        t2.device_calendar_name = Some("Work".to_string());
+        t2.due_date = Some(event_date);
+        t2.modification_timestamp = Some(newer);
+        data.add_task(t2);
+
+        let dupes = data.find_duplicate_calendar_task_uuids();
+        assert_eq!(dupes.len(), 1);
+        assert_eq!(dupes[0], "uuid-1");
+    }
+
+    #[test]
+    fn test_find_duplicate_calendar_task_uuids_missing_modification_timestamp() {
+        let mut data = Data::new();
+        let some_time = DateTime::from_timestamp_millis(5000).unwrap();
+        let event_date = DateTime::from_timestamp_millis(100 * 24 * 3600 * 1000).unwrap();
+
+        let mut t1 = make_task("uuid-1", "Meeting A");
+        t1.uuid_in_device_calendar = Some("ios-event-1".to_string());
+        t1.device_calendar_name = Some("Work".to_string());
+        t1.due_date = Some(event_date);
+        // no modification_timestamp
+        data.add_task(t1);
+
+        let mut t2 = make_task("uuid-2", "Meeting A");
+        t2.uuid_in_device_calendar = Some("linux-event-1".to_string());
+        t2.device_calendar_name = Some("Work".to_string());
+        t2.due_date = Some(event_date);
+        t2.modification_timestamp = Some(some_time);
+        data.add_task(t2);
+
+        let dupes = data.find_duplicate_calendar_task_uuids();
+        assert_eq!(dupes.len(), 1);
+        assert_eq!(dupes[0], "uuid-1");
+    }
+
+    #[test]
+    fn test_find_duplicate_calendar_task_uuids_three_duplicates() {
+        let mut data = Data::new();
+        let t1_time = DateTime::from_timestamp_millis(1000).unwrap();
+        let t2_time = DateTime::from_timestamp_millis(3000).unwrap();
+        let t3_time = DateTime::from_timestamp_millis(2000).unwrap();
+        let event_date = DateTime::from_timestamp_millis(100 * 24 * 3600 * 1000).unwrap();
+
+        let mut t1 = make_task("uuid-1", "Meeting A");
+        t1.uuid_in_device_calendar = Some("event-1".to_string());
+        t1.device_calendar_name = Some("Work".to_string());
+        t1.due_date = Some(event_date);
+        t1.modification_timestamp = Some(t1_time);
+        data.add_task(t1);
+
+        let mut t2 = make_task("uuid-2", "Meeting A");
+        t2.uuid_in_device_calendar = Some("event-2".to_string());
+        t2.device_calendar_name = Some("Work".to_string());
+        t2.due_date = Some(event_date);
+        t2.modification_timestamp = Some(t2_time);
+        data.add_task(t2);
+
+        let mut t3 = make_task("uuid-3", "Meeting A");
+        t3.uuid_in_device_calendar = Some("event-3".to_string());
+        t3.device_calendar_name = Some("Work".to_string());
+        t3.due_date = Some(event_date);
+        t3.modification_timestamp = Some(t3_time);
+        data.add_task(t3);
+
+        let dupes = data.find_duplicate_calendar_task_uuids();
+        assert_eq!(dupes.len(), 2);
+        assert!(dupes.contains(&"uuid-1".to_string()));
+        assert!(dupes.contains(&"uuid-3".to_string()));
+        assert!(!dupes.contains(&"uuid-2".to_string()));
+    }
+
+    #[test]
+    fn test_find_duplicate_calendar_task_uuids_recurring_events_not_deduplicated() {
+        let mut data = Data::new();
+        let monday = DateTime::from_timestamp_millis(100 * 24 * 3600 * 1000).unwrap();
+        let tuesday = DateTime::from_timestamp_millis(101 * 24 * 3600 * 1000).unwrap();
+
+        let mut t1 = make_task("uuid-1", "Standup");
+        t1.uuid_in_device_calendar = Some("event-1".to_string());
+        t1.device_calendar_name = Some("Work".to_string());
+        t1.due_date = Some(monday);
+        data.add_task(t1);
+
+        let mut t2 = make_task("uuid-2", "Standup");
+        t2.uuid_in_device_calendar = Some("event-2".to_string());
+        t2.device_calendar_name = Some("Work".to_string());
+        t2.due_date = Some(tuesday);
+        data.add_task(t2);
+
+        let dupes = data.find_duplicate_calendar_task_uuids();
+        assert!(dupes.is_empty());
+    }
+
+    #[test]
+    fn test_serialize_empty_deleted_lists() {
+        let data = Data::new();
+        let json = data.to_json().unwrap();
+        let data2 = Data::from_json(&json).unwrap();
+        assert!(data2.deleted_task_uuids().is_empty());
+        assert!(data2.deleted_tag_names().is_empty());
     }
 }

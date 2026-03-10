@@ -397,3 +397,21 @@ impl DataProvider for SupabaseProvider {
         true
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_login_logout() {
+        let username = std::env::var("POINTLESS_DEBUG_USERNAME")
+            .expect("POINTLESS_DEBUG_USERNAME env var not set");
+        let password = std::env::var("POINTLESS_DEBUG_PASSWORD")
+            .expect("POINTLESS_DEBUG_PASSWORD env var not set");
+
+        let mut supabase =
+            SupabaseProvider::create_default().expect("Failed to create SupabaseProvider");
+        assert!(supabase.login(&username, &password));
+        supabase.logout();
+    }
+}

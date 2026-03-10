@@ -520,4 +520,429 @@ END:VCALENDAR\r\n";
         assert_eq!(events.len(), 1);
         assert_eq!(events[0].summary, "A very long summary line");
     }
+
+    #[test]
+    fn test_multiple_events() {
+        let ical = "\
+BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+BEGIN:VEVENT\r\n\
+UID:ev-1\r\n\
+SUMMARY:First\r\n\
+DTSTART:20250201T090000Z\r\n\
+DTEND:20250201T100000Z\r\n\
+END:VEVENT\r\n\
+BEGIN:VEVENT\r\n\
+UID:ev-2\r\n\
+SUMMARY:Second\r\n\
+DTSTART:20250201T140000Z\r\n\
+DTEND:20250201T150000Z\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR\r\n";
+
+        let events = parse_ical_events(ical, None);
+        assert_eq!(events.len(), 2);
+        assert_eq!(events[0].uid, "ev-1");
+        assert_eq!(events[0].summary, "First");
+        assert_eq!(events[1].uid, "ev-2");
+        assert_eq!(events[1].summary, "Second");
+    }
+
+    #[test]
+    fn test_invalid_input() {
+        let events = parse_ical_events("not ical data", None);
+        assert!(events.is_empty());
+    }
+
+    #[test]
+    fn test_all_day_multi_day() {
+        let ical = "\
+BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+BEGIN:VEVENT\r\n\
+UID:multiday-1\r\n\
+SUMMARY:Conference\r\n\
+DTSTART;VALUE=DATE:20250610\r\n\
+DTEND;VALUE=DATE:20250613\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR\r\n";
+
+        let events = parse_ical_events(ical, None);
+        assert_eq!(events.len(), 1);
+        assert_eq!(events[0].uid, "multiday-1");
+        assert_eq!(events[0].summary, "Conference");
+        assert!(events[0].is_all_day);
+        assert_eq!(
+            events[0].dtstart,
+            Utc.with_ymd_and_hms(2025, 6, 10, 0, 0, 0).unwrap()
+        );
+        assert_eq!(
+            events[0].dtend,
+            Utc.with_ymd_and_hms(2025, 6, 13, 0, 0, 0).unwrap()
+        );
+    }
+
+    #[test]
+    fn test_missing_uid() {
+        let ical = "\
+BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+BEGIN:VEVENT\r\n\
+SUMMARY:No UID Event\r\n\
+DTSTART:20250501T080000Z\r\n\
+DTEND:20250501T090000Z\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR\r\n";
+
+        let events = parse_ical_events(ical, None);
+        assert_eq!(events.len(), 1);
+        assert!(events[0].uid.is_empty());
+        assert_eq!(events[0].summary, "No UID Event");
+    }
+
+    #[test]
+    fn test_missing_summary() {
+        let ical = "\
+BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+BEGIN:VEVENT\r\n\
+UID:no-summary-1\r\n\
+DTSTART:20250501T080000Z\r\n\
+DTEND:20250501T090000Z\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR\r\n";
+
+        let events = parse_ical_events(ical, None);
+        assert_eq!(events.len(), 1);
+        assert_eq!(events[0].uid, "no-summary-1");
+        assert!(events[0].summary.is_empty());
+    }
+
+    #[test]
+    fn test_missing_dtend() {
+        let ical = "\
+BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+BEGIN:VEVENT\r\n\
+UID:no-end-1\r\n\
+SUMMARY:Start Only\r\n\
+DTSTART:20250701T150000Z\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR\r\n";
+
+        let events = parse_ical_events(ical, None);
+        assert_eq!(events.len(), 1);
+        assert_eq!(events[0].uid, "no-end-1");
+        assert_eq!(
+            events[0].dtstart,
+            Utc.with_ymd_and_hms(2025, 7, 1, 15, 0, 0).unwrap()
+        );
+    }
+
+    #[test]
+    fn test_midnight_boundary() {
+        let ical = "\
+BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+BEGIN:VEVENT\r\n\
+UID:midnight-1\r\n\
+SUMMARY:Late Night\r\n\
+DTSTART:20250228T230000Z\r\n\
+DTEND:20250301T010000Z\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR\r\n";
+
+        let events = parse_ical_events(ical, None);
+        assert_eq!(events.len(), 1);
+        assert_eq!(
+            events[0].dtstart,
+            Utc.with_ymd_and_hms(2025, 2, 28, 23, 0, 0).unwrap()
+        );
+        assert_eq!(
+            events[0].dtend,
+            Utc.with_ymd_and_hms(2025, 3, 1, 1, 0, 0).unwrap()
+        );
+    }
+
+    #[test]
+    fn test_non_utc_timestamp() {
+        let ical = "\
+BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+BEGIN:VEVENT\r\n\
+UID:nonutc-1\r\n\
+SUMMARY:Floating Time\r\n\
+DTSTART:20250415T143000\r\n\
+DTEND:20250415T153000\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR\r\n";
+
+        let events = parse_ical_events(ical, None);
+        assert_eq!(events.len(), 1);
+        assert_eq!(events[0].uid, "nonutc-1");
+        assert!(!events[0].is_all_day);
+    }
+
+    #[test]
+    fn test_extra_properties() {
+        let ical = "\
+BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+PRODID:-//Test//Test//EN\r\n\
+CALSCALE:GREGORIAN\r\n\
+BEGIN:VEVENT\r\n\
+UID:extra-1\r\n\
+SUMMARY:With Extras\r\n\
+DESCRIPTION:A detailed description of the event\r\n\
+LOCATION:Conference Room A\r\n\
+DTSTART:20250520T100000Z\r\n\
+DTEND:20250520T113000Z\r\n\
+STATUS:CONFIRMED\r\n\
+ORGANIZER;CN=John:mailto:john@example.com\r\n\
+ATTENDEE;CN=Jane:mailto:jane@example.com\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR\r\n";
+
+        let events = parse_ical_events(ical, None);
+        assert_eq!(events.len(), 1);
+        assert_eq!(events[0].uid, "extra-1");
+        assert_eq!(events[0].summary, "With Extras");
+        assert_eq!(
+            events[0].dtstart,
+            Utc.with_ymd_and_hms(2025, 5, 20, 10, 0, 0).unwrap()
+        );
+        assert_eq!(
+            events[0].dtend,
+            Utc.with_ymd_and_hms(2025, 5, 20, 11, 30, 0).unwrap()
+        );
+    }
+
+    #[test]
+    fn test_crlf_line_endings() {
+        let ical = "BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+BEGIN:VEVENT\r\n\
+UID:crlf-1\r\n\
+SUMMARY:CRLF Event\r\n\
+DTSTART:20250801T060000Z\r\n\
+DTEND:20250801T070000Z\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR\r\n";
+
+        let events = parse_ical_events(ical, None);
+        assert_eq!(events.len(), 1);
+        assert_eq!(events[0].uid, "crlf-1");
+        assert_eq!(events[0].summary, "CRLF Event");
+        assert_eq!(
+            events[0].dtstart,
+            Utc.with_ymd_and_hms(2025, 8, 1, 6, 0, 0).unwrap()
+        );
+    }
+
+    #[test]
+    fn test_special_characters_in_summary() {
+        let ical = "\
+BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+BEGIN:VEVENT\r\n\
+UID:special-1\r\n\
+SUMMARY:Meeting: Q1 Review & Planning (2025)\r\n\
+DTSTART:20250310T140000Z\r\n\
+DTEND:20250310T160000Z\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR\r\n";
+
+        let events = parse_ical_events(ical, None);
+        assert_eq!(events.len(), 1);
+        assert_eq!(
+            events[0].summary,
+            "Meeting: Q1 Review & Planning (2025)"
+        );
+    }
+
+    #[test]
+    fn test_mixed_all_day_and_timed_events() {
+        let ical = "\
+BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+BEGIN:VEVENT\r\n\
+UID:mixed-1\r\n\
+SUMMARY:All Day\r\n\
+DTSTART;VALUE=DATE:20250901\r\n\
+DTEND;VALUE=DATE:20250902\r\n\
+END:VEVENT\r\n\
+BEGIN:VEVENT\r\n\
+UID:mixed-2\r\n\
+SUMMARY:Timed\r\n\
+DTSTART:20250901T100000Z\r\n\
+DTEND:20250901T110000Z\r\n\
+END:VEVENT\r\n\
+BEGIN:VEVENT\r\n\
+UID:mixed-3\r\n\
+SUMMARY:Another All Day\r\n\
+DTSTART;VALUE=DATE:20250902\r\n\
+DTEND;VALUE=DATE:20250903\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR\r\n";
+
+        let events = parse_ical_events(ical, None);
+        assert_eq!(events.len(), 3);
+
+        assert_eq!(events[0].uid, "mixed-1");
+        assert!(events[0].is_all_day);
+
+        assert_eq!(events[1].uid, "mixed-2");
+        assert!(!events[1].is_all_day);
+        assert_eq!(
+            events[1].dtstart,
+            Utc.with_ymd_and_hms(2025, 9, 1, 10, 0, 0).unwrap()
+        );
+
+        assert_eq!(events[2].uid, "mixed-3");
+        assert!(events[2].is_all_day);
+    }
+
+    #[test]
+    fn test_non_second_boundary_times() {
+        let ical = "\
+BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+BEGIN:VEVENT\r\n\
+UID:odd-time-1\r\n\
+SUMMARY:Odd Times\r\n\
+DTSTART:20251225T073015Z\r\n\
+DTEND:20251225T094545Z\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR\r\n";
+
+        let events = parse_ical_events(ical, None);
+        assert_eq!(events.len(), 1);
+        assert_eq!(
+            events[0].dtstart,
+            Utc.with_ymd_and_hms(2025, 12, 25, 7, 30, 15).unwrap()
+        );
+        assert_eq!(
+            events[0].dtend,
+            Utc.with_ymd_and_hms(2025, 12, 25, 9, 45, 45).unwrap()
+        );
+    }
+
+    #[test]
+    fn test_recurring_event_exception_outside_range() {
+        let ical = "\
+BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+BEGIN:VEVENT\r\n\
+UID:weekly-exc-1\r\n\
+SUMMARY:Weekly Standup\r\n\
+DTSTART:20220103T090000Z\r\n\
+DTEND:20220103T093000Z\r\n\
+RRULE:FREQ=WEEKLY;BYDAY=MO\r\n\
+END:VEVENT\r\n\
+BEGIN:VEVENT\r\n\
+UID:weekly-exc-1\r\n\
+SUMMARY:Weekly Standup (rescheduled)\r\n\
+RECURRENCE-ID:20220110T090000Z\r\n\
+DTSTART:20220111T100000Z\r\n\
+DTEND:20220111T103000Z\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR\r\n";
+
+        let range = DateRange {
+            start: Utc.with_ymd_and_hms(2025, 2, 3, 0, 0, 0).unwrap(),
+            end: Utc.with_ymd_and_hms(2025, 2, 17, 0, 0, 0).unwrap(),
+        };
+
+        let events = parse_ical_events(ical, Some(&range));
+
+        for ev in &events {
+            assert!(
+                ev.dtstart >= range.start,
+                "Exception VEVENT from 2022 should have been filtered out: {}",
+                ev.summary
+            );
+        }
+
+        assert_eq!(events.len(), 2);
+        assert_eq!(
+            events[0].dtstart,
+            Utc.with_ymd_and_hms(2025, 2, 3, 9, 0, 0).unwrap()
+        );
+        assert_eq!(
+            events[1].dtstart,
+            Utc.with_ymd_and_hms(2025, 2, 10, 9, 0, 0).unwrap()
+        );
+    }
+
+    #[test]
+    fn test_recurring_event_exception_inside_range() {
+        let ical = "\
+BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+BEGIN:VEVENT\r\n\
+UID:weekly-exc-2\r\n\
+SUMMARY:Weekly Standup\r\n\
+DTSTART:20250106T090000Z\r\n\
+DTEND:20250106T093000Z\r\n\
+RRULE:FREQ=WEEKLY;BYDAY=MO\r\n\
+END:VEVENT\r\n\
+BEGIN:VEVENT\r\n\
+UID:weekly-exc-2\r\n\
+SUMMARY:Weekly Standup (moved to Tuesday)\r\n\
+RECURRENCE-ID:20250210T090000Z\r\n\
+DTSTART:20250211T100000Z\r\n\
+DTEND:20250211T103000Z\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR\r\n";
+
+        let range = DateRange {
+            start: Utc.with_ymd_and_hms(2025, 2, 3, 0, 0, 0).unwrap(),
+            end: Utc.with_ymd_and_hms(2025, 2, 17, 0, 0, 0).unwrap(),
+        };
+
+        let events = parse_ical_events(ical, Some(&range));
+
+        let found_exception = events.iter().any(|ev| {
+            if ev.summary == "Weekly Standup (moved to Tuesday)" {
+                assert_eq!(
+                    ev.dtstart,
+                    Utc.with_ymd_and_hms(2025, 2, 11, 10, 0, 0).unwrap()
+                );
+                assert_eq!(
+                    ev.dtend,
+                    Utc.with_ymd_and_hms(2025, 2, 11, 10, 30, 0).unwrap()
+                );
+                true
+            } else {
+                false
+            }
+        });
+        assert!(
+            found_exception,
+            "Exception VEVENT inside range should be preserved"
+        );
+    }
+
+    #[test]
+    fn test_recurring_event_without_range_returns_original() {
+        let ical = "\
+BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+BEGIN:VEVENT\r\n\
+UID:weekly-2\r\n\
+SUMMARY:Recurring No Range\r\n\
+DTSTART:20250106T090000Z\r\n\
+DTEND:20250106T093000Z\r\n\
+RRULE:FREQ=WEEKLY;BYDAY=MO\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR\r\n";
+
+        let events = parse_ical_events(ical, None);
+        assert_eq!(events.len(), 1);
+        assert_eq!(events[0].uid, "weekly-2");
+        assert_eq!(
+            events[0].dtstart,
+            Utc.with_ymd_and_hms(2025, 1, 6, 9, 0, 0).unwrap()
+        );
+    }
 }

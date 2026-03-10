@@ -247,23 +247,30 @@ mod tests {
     use crate::data_provider::DataProviderType;
     use chrono::{TimeZone, Utc};
     use std::fs;
+    use std::sync::{LazyLock, Mutex, MutexGuard};
 
-    fn setup_context(path: &str) {
+    static CONTEXT_MUTEX: LazyLock<Mutex<()>> = LazyLock::new(|| Mutex::new(()));
+
+    fn setup_context(path: &str) -> MutexGuard<'static, ()> {
+        let guard = CONTEXT_MUTEX.lock().unwrap();
         Context::set_context(Context::new(
             DataProviderType::TestsLocal,
             path.to_string(),
             0,
             false,
         ));
+        guard
     }
 
-    fn setup_readonly_context(path: &str) {
+    fn setup_readonly_context(path: &str) -> MutexGuard<'static, ()> {
+        let guard = CONTEXT_MUTEX.lock().unwrap();
         Context::set_context(Context::new(
             DataProviderType::TestsLocal,
             path.to_string(),
             0,
             true,
         ));
+        guard
     }
 
     fn make_task(uuid: &str, title: &str) -> Task {
@@ -387,7 +394,7 @@ mod tests {
         let path = dir.join("test_roundtrip.json");
         let path_str = path.to_string_lossy().to_string();
 
-        setup_context(&path_str);
+        let _guard = setup_context(&path_str);
 
         let mut ld = LocalData::new();
         ld.add_task(make_task("u1", "Task 1"));
@@ -421,7 +428,7 @@ mod tests {
         let path_str = path.to_string_lossy().to_string();
         let _ = fs::remove_file(&path);
 
-        setup_readonly_context(&path_str);
+        let _guard = setup_readonly_context(&path_str);
 
         let mut ld = LocalData::new();
         ld.add_task(make_task("u1", "Task 1"));
@@ -437,7 +444,7 @@ mod tests {
         let path = dir.join("test_set_data_and_save.json");
         let path_str = path.to_string_lossy().to_string();
 
-        setup_context(&path_str);
+        let _guard = setup_context(&path_str);
 
         let mut ld = LocalData::new();
         let mut data = Data::new();
@@ -460,6 +467,30 @@ mod tests {
         assert!(!t.needs_sync_to_server);
         assert!(!ld.data().needs_upload.get());
         assert!(!ld.data().needs_local_save.get());
+    }
+
+    #[test]
+    fn test_load_from_env_var() {
+        let dir = std::env::temp_dir().join("pointless_test_env");
+        let _ = fs::create_dir_all(&dir);
+        let dest = dir.join("pointless.json");
+
+        let source = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .unwrap()
+            .join("src/core/tests/test.json");
+        fs::copy(&source, &dest).expect("Failed to copy test.json");
+
+        let path_str = dest.to_string_lossy().to_string();
+        let _guard = setup_context(&path_str);
+
+        let mut ld = LocalData::new();
+        ld.load_data_from_file().unwrap();
+
+        assert_eq!(ld.data().tag_count(), 3);
+        assert!(ld.data().task_count() > 0);
+
+        let _ = fs::remove_dir_all(&dir);
     }
 
     #[test]

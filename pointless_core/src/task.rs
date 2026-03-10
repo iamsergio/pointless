@@ -525,4 +525,279 @@ mod tests {
         assert!(json.contains("\"dueDate\":null"));
         assert!(json.contains("\"modificationTimestamp\":null"));
     }
+
+    #[test]
+    fn test_is_due_this_week() {
+        // January 12, 2026 is a Monday
+        let monday = make_utc(2026, 1, 12, 0, 0, 0);
+        let saturday = make_utc(2026, 1, 17, 0, 0, 0);
+        let sunday = make_utc(2026, 1, 18, 0, 0, 0);
+        let next_monday = make_utc(2026, 1, 19, 0, 0, 0);
+
+        clock::set_test_now(monday);
+        let mut task = Task::default();
+
+        assert!(!task.is_due_this_week());
+
+        task.due_date = Some(monday + Duration::hours(72));
+        assert!(task.is_due_this_week());
+
+        task.due_date = Some(sunday);
+        assert!(task.is_due_this_week());
+
+        task.due_date = Some(next_monday);
+        assert!(!task.is_due_this_week());
+
+        task.due_date = Some(monday - Duration::hours(24));
+        assert!(!task.is_due_this_week());
+
+        // From Saturday perspective
+        clock::set_test_now(saturday);
+        task.due_date = None;
+        assert!(!task.is_due_this_week());
+
+        task.due_date = Some(saturday + Duration::hours(12));
+        assert!(task.is_due_this_week());
+
+        task.due_date = Some(saturday + Duration::days(1));
+        assert!(task.is_due_this_week());
+
+        task.due_date = Some(saturday + Duration::days(2));
+        assert!(!task.is_due_this_week());
+
+        task.due_date = Some(sunday);
+        assert!(task.is_due_this_week());
+
+        task.due_date = Some(next_monday);
+        assert!(!task.is_due_this_week());
+
+        task.due_date = Some(saturday - Duration::hours(48));
+        assert!(task.is_due_this_week());
+
+        // From Sunday perspective
+        clock::set_test_now(sunday);
+        task.due_date = None;
+        assert!(!task.is_due_this_week());
+
+        task.due_date = Some(sunday + Duration::hours(12));
+        assert!(task.is_due_this_week());
+
+        task.due_date = Some(next_monday);
+        assert!(!task.is_due_this_week());
+
+        task.due_date = Some(next_monday + Duration::days(1));
+        assert!(!task.is_due_this_week());
+
+        task.due_date = Some(monday);
+        assert!(task.is_due_this_week());
+
+        clock::reset();
+    }
+
+    #[test]
+    fn test_due_date_preserved_on_serialize_deserialize() {
+        let mut task = Task::new(
+            "uuid-dd".to_string(),
+            make_utc(2025, 6, 15, 12, 0, 0),
+            "Due date test".to_string(),
+        );
+        let due = make_utc(2025, 6, 20, 12, 0, 0);
+        task.due_date = Some(due);
+
+        let json = serde_json::to_string(&task).unwrap();
+        assert!(json.contains("\"dueDate\""));
+
+        let deserialized: Task = serde_json::from_str(&json).unwrap();
+        assert!(deserialized.due_date.is_some());
+        let diff = (due - deserialized.due_date.unwrap()).num_seconds().abs();
+        assert!(diff < 2);
+    }
+
+    #[test]
+    fn test_calendar_properties_serialize_deserialize() {
+        let mut task = Task::default();
+        task.uuid_in_device_calendar = Some("calendar-uuid-abc".to_string());
+        task.device_calendar_uuid = Some("device-calendar-xyz".to_string());
+        task.device_calendar_name = Some("Work Calendar".to_string());
+
+        let json = serde_json::to_string(&task).unwrap();
+        assert!(json.contains("\"uuidInDeviceCalendar\":\"calendar-uuid-abc\""));
+        assert!(json.contains("\"deviceCalendarUuid\":\"device-calendar-xyz\""));
+        assert!(json.contains("\"deviceCalendarName\":\"Work Calendar\""));
+
+        let deserialized: Task = serde_json::from_str(&json).unwrap();
+        assert_eq!(
+            deserialized.uuid_in_device_calendar.as_deref(),
+            Some("calendar-uuid-abc")
+        );
+        assert_eq!(
+            deserialized.device_calendar_uuid.as_deref(),
+            Some("device-calendar-xyz")
+        );
+        assert_eq!(
+            deserialized.device_calendar_name.as_deref(),
+            Some("Work Calendar")
+        );
+    }
+
+    #[test]
+    fn test_merge_conflict_due_date_both_have_due_date_more_recent_wins() {
+        let now = make_utc(2025, 6, 15, 12, 0, 0);
+        let one_hour_ago = now - Duration::hours(1);
+        let two_hours_ago = now - Duration::hours(2);
+
+        let mut task1 = Task::default();
+        task1.due_date = Some(now + Duration::days(5));
+        task1.modification_timestamp = Some(two_hours_ago);
+        let mut task2 = Task::default();
+        task2.due_date = Some(now + Duration::days(10));
+        task2.modification_timestamp = Some(one_hour_ago);
+
+        task1.merge_conflict(&task2);
+        assert_eq!(task1.due_date, Some(now + Duration::days(10)));
+
+        // Reverse: task with more recent modification keeps its own
+        let mut task3 = Task::default();
+        task3.due_date = Some(now + Duration::days(5));
+        task3.modification_timestamp = Some(one_hour_ago);
+        let mut task4 = Task::default();
+        task4.due_date = Some(now + Duration::days(10));
+        task4.modification_timestamp = Some(two_hours_ago);
+
+        task3.merge_conflict(&task4);
+        assert_eq!(task3.due_date, Some(now + Duration::days(5)));
+    }
+
+    #[test]
+    fn test_merge_conflict_due_date_only_other_has_due_date() {
+        let now = make_utc(2025, 6, 15, 12, 0, 0);
+
+        let mut task1 = Task::default();
+        task1.due_date = None;
+        let mut task2 = Task::default();
+        task2.due_date = Some(now + Duration::days(7));
+
+        task1.merge_conflict(&task2);
+        assert!(task1.due_date.is_some());
+        assert_eq!(task1.due_date, Some(now + Duration::days(7)));
+    }
+
+    #[test]
+    fn test_merge_conflict_due_date_only_this_has_due_date() {
+        let now = make_utc(2025, 6, 15, 12, 0, 0);
+
+        let mut task1 = Task::default();
+        task1.due_date = Some(now + Duration::days(7));
+        let task2 = Task::default();
+
+        task1.merge_conflict(&task2);
+        assert!(task1.due_date.is_some());
+        assert_eq!(task1.due_date, Some(now + Duration::days(7)));
+    }
+
+    #[test]
+    fn test_merge_conflict_title_more_recent_wins() {
+        let now = make_utc(2025, 6, 15, 12, 0, 0);
+        let one_hour_ago = now - Duration::hours(1);
+        let two_hours_ago = now - Duration::hours(2);
+
+        let mut task1 = Task::default();
+        task1.title = "Old Title".to_string();
+        task1.modification_timestamp = Some(two_hours_ago);
+        let mut task2 = Task::default();
+        task2.title = "New Title".to_string();
+        task2.modification_timestamp = Some(one_hour_ago);
+
+        task1.merge_conflict(&task2);
+        assert_eq!(task1.title, "New Title");
+
+        // Reverse
+        let mut task3 = Task::default();
+        task3.title = "Newer Title".to_string();
+        task3.modification_timestamp = Some(one_hour_ago);
+        let mut task4 = Task::default();
+        task4.title = "Older Title".to_string();
+        task4.modification_timestamp = Some(two_hours_ago);
+
+        task3.merge_conflict(&task4);
+        assert_eq!(task3.title, "Newer Title");
+    }
+
+    #[test]
+    fn test_merge_conflict_title_same_title_no_change() {
+        let now = make_utc(2025, 6, 15, 12, 0, 0);
+
+        let mut task1 = Task::default();
+        task1.title = "Same Title".to_string();
+        task1.modification_timestamp = Some(now - Duration::hours(2));
+        let mut task2 = Task::default();
+        task2.title = "Same Title".to_string();
+        task2.modification_timestamp = Some(now - Duration::hours(1));
+
+        task1.merge_conflict(&task2);
+        assert_eq!(task1.title, "Same Title");
+    }
+
+    #[test]
+    fn test_merge_conflict_tags_no_duplicates() {
+        let mut task1 = Task::default();
+        task1.tags = vec!["tag1".to_string(), "tag2".to_string()];
+        let mut task2 = Task::default();
+        task2.tags = vec!["tag1".to_string(), "tag2".to_string()];
+
+        task1.merge_conflict(&task2);
+        assert_eq!(task1.tags.len(), 2);
+    }
+
+    #[test]
+    fn test_merge_conflict_current_wins_over_soon_both_on_this() {
+        let mut task1 = Task::default();
+        task1.tags = vec!["current".to_string(), "soon".to_string()];
+        let task2 = Task::default();
+
+        task1.merge_conflict(&task2);
+        assert!(task1.contains_tag("current"));
+        assert!(!task1.contains_tag("soon"));
+    }
+
+    #[test]
+    fn test_merge_conflict_current_wins_over_soon_both_on_other() {
+        let mut task1 = Task::default();
+        let mut task2 = Task::default();
+        task2.tags = vec!["current".to_string(), "soon".to_string()];
+
+        task1.merge_conflict(&task2);
+        assert!(task1.contains_tag("current"));
+        assert!(!task1.contains_tag("soon"));
+    }
+
+    #[test]
+    fn test_is_due_tomorrow() {
+        // January 17, 2026
+        let now = make_utc(2026, 1, 17, 0, 0, 0);
+        clock::set_test_now(now);
+
+        let mut task = Task::default();
+
+        // No due date
+        assert!(!task.is_due_tomorrow());
+
+        // Due today
+        task.due_date = Some(now);
+        assert!(!task.is_due_tomorrow());
+
+        // Due tomorrow
+        task.due_date = Some(now + Duration::days(1));
+        assert!(task.is_due_tomorrow());
+
+        // Due day after tomorrow
+        task.due_date = Some(now + Duration::days(2));
+        assert!(!task.is_due_tomorrow());
+
+        // Due yesterday
+        task.due_date = Some(now - Duration::days(1));
+        assert!(!task.is_due_tomorrow());
+
+        clock::reset();
+    }
 }
