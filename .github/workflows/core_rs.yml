@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: 2025 Sergio Martins
+# SPDX-License-Identifier: MIT
+
+name: pointless_core Rust Tests
+
+on:
+  push:
+    paths:
+      - 'slint/pointless_core/**'
+      - '.github/workflows/core_rs.yml'
+  pull_request:
+    paths:
+      - 'slint/pointless_core/**'
+      - '.github/workflows/core_rs.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: slint/pointless_core
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: slint/pointless_core
+
+      - name: Build
+        run: cargo build
+
+      - name: Test
+        run: cargo test --verbose
