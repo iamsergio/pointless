@@ -577,12 +577,13 @@ void GuiController::login(const QString &email, const QString &password)
     _dataController->login(email.trimmed().toStdString(), password.trimmed().toStdString());
 }
 
-void GuiController::reinitCalendarProvider(const std::string &caldavPassword)
+void GuiController::reinitCalendarProvider(const std::string &caldavUrl, const std::string &caldavUsername, const std::string &caldavPassword)
 {
-    _calendarProvider = pointless::core::createCalendarProvider(caldavPassword);
+    _calendarProvider = pointless::core::createCalendarProvider(caldavUrl, caldavUsername, caldavPassword);
     if (_calendarsModel != nullptr)
         _calendarsModel->setProvider(_calendarProvider.get());
-    P_LOG_INFO("Recreated calendar provider with pass-store caldav password");
+    Q_EMIT calendarProviderConfiguredChanged();
+    P_LOG_INFO("Recreated calendar provider with pass-store caldav credentials");
 }
 
 QVariantMap GuiController::parsePassStoreOutput(const QString &output)
@@ -591,6 +592,8 @@ QVariantMap GuiController::parsePassStoreOutput(const QString &output)
     static const QRegularExpression userRegex(R"(^user:(\S+))", QRegularExpression::MultilineOption);
     static const QRegularExpression passRegex(R"(^pass:(\S+))", QRegularExpression::MultilineOption);
     static const QRegularExpression caldavPassRegex(R"(^caldav-pass:(\S+))", QRegularExpression::MultilineOption);
+    static const QRegularExpression caldavUrlRegex(R"(^caldav-url:(\S+))", QRegularExpression::MultilineOption);
+    static const QRegularExpression caldavUserRegex(R"(^caldav-user:(\S+))", QRegularExpression::MultilineOption);
 
     const auto userMatch = userRegex.match(output);
     if (userMatch.hasMatch())
@@ -603,6 +606,14 @@ QVariantMap GuiController::parsePassStoreOutput(const QString &output)
     const auto caldavPassMatch = caldavPassRegex.match(output);
     if (caldavPassMatch.hasMatch())
         result["caldav-pass"] = caldavPassMatch.captured(1);
+
+    const auto caldavUrlMatch = caldavUrlRegex.match(output);
+    if (caldavUrlMatch.hasMatch())
+        result["caldav-url"] = caldavUrlMatch.captured(1);
+
+    const auto caldavUserMatch = caldavUserRegex.match(output);
+    if (caldavUserMatch.hasMatch())
+        result["caldav-user"] = caldavUserMatch.captured(1);
 
     return result;
 }
@@ -623,8 +634,11 @@ void GuiController::fetchPassStoreCredentials()
         const QString output = QString::fromUtf8(process->readAllStandardOutput());
         QVariantMap result = parsePassStoreOutput(output);
 
-        if (result.contains("caldav-pass"))
-            reinitCalendarProvider(result["caldav-pass"].toString().toStdString());
+        if (result.contains("caldav-pass") || result.contains("caldav-url"))
+            reinitCalendarProvider(
+                result["caldav-url"].toString().toStdString(),
+                result["caldav-user"].toString().toStdString(),
+                result["caldav-pass"].toString().toStdString());
 
         Q_EMIT passStoreCredentialsFetched(result);
     });
@@ -1248,6 +1262,11 @@ bool GuiController::isEvening() const
 bool GuiController::isEveningForHour(int hour)
 {
     return hour < 5 || hour >= 16;
+}
+
+bool GuiController::calendarProviderConfigured() const
+{
+    return _calendarProvider && _calendarProvider->isConfigured();
 }
 
 bool GuiController::debugMode()

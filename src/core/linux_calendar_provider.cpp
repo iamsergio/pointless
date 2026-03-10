@@ -10,10 +10,13 @@ namespace pointless::core {
 
 LinuxCalendarProvider::~LinuxCalendarProvider() = default;
 
-LinuxCalendarProvider::LinuxCalendarProvider(const std::string &caldavPassword)
+LinuxCalendarProvider::LinuxCalendarProvider(
+    const std::string &caldavUrl,
+    const std::string &caldavUsername,
+    const std::string &caldavPassword)
 {
-    auto url = pointless::getenv_or_empty("POINTLESS_CALDAV_URL");
-    auto username = pointless::getenv_or_empty("POINTLESS_CALDAV_USERNAME");
+    auto url = caldavUrl.empty() ? pointless::getenv_or_empty("POINTLESS_CALDAV_URL") : caldavUrl;
+    auto username = caldavUsername.empty() ? pointless::getenv_or_empty("POINTLESS_CALDAV_USERNAME") : caldavUsername;
     auto password = caldavPassword.empty() ? pointless::getenv_or_empty("POINTLESS_CALDAV_PASSWORD") : caldavPassword;
 
     if (url.empty()) {
@@ -35,6 +38,11 @@ LinuxCalendarProvider::LinuxCalendarProvider(const std::string &caldavPassword)
     }
     m_homeSetUrl = std::move(*homeSet);
     P_LOG_INFO("CalDAV calendar home set: {}", m_homeSetUrl);
+}
+
+bool LinuxCalendarProvider::isConfigured() const
+{
+    return m_client != nullptr;
 }
 
 std::vector<Calendar> LinuxCalendarProvider::getCalendars() const
@@ -80,9 +88,12 @@ std::vector<CalendarEvent> LinuxCalendarProvider::getEvents(
     return allEvents;
 }
 
-std::unique_ptr<CalendarProvider> createCalendarProvider(const std::string &caldavPassword)
+std::unique_ptr<CalendarProvider> createCalendarProvider(
+    const std::string &caldavUrl,
+    const std::string &caldavUsername,
+    const std::string &caldavPassword)
 {
-    return std::make_unique<LinuxCalendarProvider>(caldavPassword);
+    return std::make_unique<LinuxCalendarProvider>(caldavUrl, caldavUsername, caldavPassword);
 }
 
 } // namespace pointless::core

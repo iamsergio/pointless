@@ -22,6 +22,11 @@ AppleCalendarProvider::AppleCalendarProvider()
 
 AppleCalendarProvider::~AppleCalendarProvider() = default;
 
+bool AppleCalendarProvider::isConfigured() const
+{
+    return true;
+}
+
 std::vector<Calendar> AppleCalendarProvider::getCalendars() const
 {
     std::vector<Calendar> calendars;
@@ -186,7 +191,10 @@ std::vector<CalendarEvent> AppleCalendarProvider::getEvents(
     return events;
 }
 
-std::unique_ptr<CalendarProvider> createCalendarProvider(const std::string & /*caldavPassword*/)
+std::unique_ptr<CalendarProvider> createCalendarProvider(
+    const std::string & /*caldavUrl*/,
+    const std::string & /*caldavUsername*/,
+    const std::string & /*caldavPassword*/)
 {
     return std::make_unique<AppleCalendarProvider>();
 }

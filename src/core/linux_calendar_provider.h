@@ -15,13 +15,17 @@ class CalDavClient;
 class LinuxCalendarProvider : public CalendarProvider
 {
 public:
-    explicit LinuxCalendarProvider(const std::string &caldavPassword = {});
+    explicit LinuxCalendarProvider(
+        const std::string &caldavUrl = {},
+        const std::string &caldavUsername = {},
+        const std::string &caldavPassword = {});
     ~LinuxCalendarProvider() override;
     LinuxCalendarProvider(const LinuxCalendarProvider &) = delete;
     LinuxCalendarProvider &operator=(const LinuxCalendarProvider &) = delete;
     LinuxCalendarProvider(LinuxCalendarProvider &&) noexcept = delete;
     LinuxCalendarProvider &operator=(LinuxCalendarProvider &&) noexcept = delete;
 
+    [[nodiscard]] bool isConfigured() const override;
     [[nodiscard]] std::vector<Calendar> getCalendars() const override;
     [[nodiscard]] std::vector<CalendarEvent> getEvents(
         const DateRange &range,

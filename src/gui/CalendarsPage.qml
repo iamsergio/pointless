@@ -67,7 +67,7 @@ Page {
     Text {
         id: statusText
         anchors {
-            bottom: fetchButton.top
+            bottom: buttonRow.top
             left: parent.left
             right: parent.right
             margins: Style.fromPixel(8)
@@ -79,8 +79,8 @@ Page {
         visible: GuiController.fetchCalendarStatusText !== ""
     }
 
-    Rectangle {
-        id: fetchButton
+    RowLayout {
+        id: buttonRow
         anchors {
             bottom: parent.bottom
             left: parent.left
@@ -88,43 +88,61 @@ Page {
             margins: Style.fromPixel(8)
         }
         height: Style.fromPixel(44)
-        color: GuiController.isFetchingCalendarEvents ? Qt.darker(Style.buttonColor, 1.3) : Style.buttonColor
-        radius: Style.fromPixel(8)
+        spacing: Style.fromPixel(8)
 
-        Row {
-            anchors.centerIn: parent
-            spacing: Style.fromPixel(8)
+        Rectangle {
+            id: fetchButton
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            color: GuiController.isFetchingCalendarEvents ? Qt.darker(Style.buttonColor, 1.3) : Style.buttonColor
+            radius: Style.fromPixel(8)
 
-            FontAwesomeButton {
-                fontAwesomeIcon: "\uf021"
-                iconSize: Style.fromPixel(16)
-                iconColor: Style.buttonTextColor
-                backgroundColor: "transparent"
-                visible: GuiController.isFetchingCalendarEvents
-                enabled: false
-                anchors.verticalCenter: parent.verticalCenter
+            Row {
+                anchors.centerIn: parent
+                spacing: Style.fromPixel(8)
 
-                RotationAnimation on rotation {
-                    from: 0
-                    to: 360
-                    duration: 1000
-                    loops: Animation.Infinite
-                    running: GuiController.isFetchingCalendarEvents
+                FontAwesomeButton {
+                    fontAwesomeIcon: "\uf021"
+                    iconSize: Style.fromPixel(16)
+                    iconColor: Style.buttonTextColor
+                    backgroundColor: "transparent"
+                    visible: GuiController.isFetchingCalendarEvents
+                    enabled: false
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    RotationAnimation on rotation {
+                        from: 0
+                        to: 360
+                        duration: 1000
+                        loops: Animation.Infinite
+                        running: GuiController.isFetchingCalendarEvents
+                    }
+                }
+
+                Text {
+                    text: GuiController.isFetchingCalendarEvents ? "Fetching..." : "Fetch Calendar Events"
+                    color: Style.buttonTextColor
+                    font.pixelSize: Style.fromPixel(16)
+                    anchors.verticalCenter: parent.verticalCenter
                 }
             }
 
-            Text {
-                text: GuiController.isFetchingCalendarEvents ? "Fetching..." : "Fetch Calendar Events"
-                color: Style.buttonTextColor
-                font.pixelSize: Style.fromPixel(16)
-                anchors.verticalCenter: parent.verticalCenter
+            MouseArea {
+                anchors.fill: parent
+                enabled: !GuiController.isFetchingCalendarEvents
+                onClicked: GuiController.fetchCalendarEvents()
             }
         }
 
-        MouseArea {
-            anchors.fill: parent
-            enabled: !GuiController.isFetchingCalendarEvents
-            onClicked: GuiController.fetchCalendarEvents()
+        FontAwesomeButton {
+            fontAwesomeIcon: "\uf084"
+            iconSize: Style.fromPixel(18)
+            iconColor: Style.buttonTextColor
+            backgroundColor: Style.buttonColor
+            Layout.fillHeight: true
+            Layout.preferredWidth: Style.fromPixel(44)
+            visible: !GuiController.isMobile && !GuiController.isMacOS && !GuiController.calendarProviderConfigured
+            onClicked: GuiController.fetchPassStoreCredentials()
         }
     }
 }

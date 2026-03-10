@@ -263,6 +263,19 @@ TEST(GuiControllerTest, IsEveningTrueAt18h)
     EXPECT_TRUE(GuiController::isEveningForHour(18));
 }
 
+TEST(GuiControllerTest, CalendarProviderConfiguredWithoutEnvVars)
+{
+    QGuiApplication _app(g_argc, g_argv);
+    core::Logger::initLogLevel();
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+
+    GuiController *guiController = GuiController::instance();
+
+    EXPECT_EQ(guiController->calendarProviderConfigured(), std::getenv("POINTLESS_CALDAV_URL") != nullptr);
+
+    delete guiController;
+}
+
 TEST(GuiControllerTest, ParsePassStoreBasic)
 {
     const auto result = GuiController::parsePassStoreOutput("user:foo\npass:bar");
@@ -277,6 +290,8 @@ TEST(GuiControllerTest, ParsePassStoreWithCaldavPass)
     EXPECT_EQ(result["user"].toString(), "foo");
     EXPECT_EQ(result["pass"].toString(), "bar");
     EXPECT_EQ(result["caldav-pass"].toString(), "baz");
+    EXPECT_FALSE(result.contains("caldav-url"));
+    EXPECT_FALSE(result.contains("caldav-user"));
 }
 
 TEST(GuiControllerTest, ParsePassStoreCaldavBeforePass)
@@ -293,6 +308,26 @@ TEST(GuiControllerTest, ParsePassStorePartialOutput)
     EXPECT_EQ(result["user"].toString(), "foo");
     EXPECT_FALSE(result.contains("pass"));
     EXPECT_FALSE(result.contains("caldav-pass"));
+}
+
+TEST(GuiControllerTest, ParsePassStoreWithCaldavUrlAndUser)
+{
+    const auto result = GuiController::parsePassStoreOutput(
+        "user:foo\npass:bar\ncaldav-pass:baz\ncaldav-url:https://dav.example.com\ncaldav-user:davuser");
+    EXPECT_EQ(result["user"].toString(), "foo");
+    EXPECT_EQ(result["pass"].toString(), "bar");
+    EXPECT_EQ(result["caldav-pass"].toString(), "baz");
+    EXPECT_EQ(result["caldav-url"].toString(), "https://dav.example.com");
+    EXPECT_EQ(result["caldav-user"].toString(), "davuser");
+}
+
+TEST(GuiControllerTest, ParsePassStoreCaldavUrlOnly)
+{
+    const auto result = GuiController::parsePassStoreOutput(
+        "user:foo\npass:bar\ncaldav-url:https://dav.example.com");
+    EXPECT_EQ(result["caldav-url"].toString(), "https://dav.example.com");
+    EXPECT_FALSE(result.contains("caldav-pass"));
+    EXPECT_FALSE(result.contains("caldav-user"));
 }
 
 TEST(GuiControllerTest, ParsePassStoreEmptyOutput)

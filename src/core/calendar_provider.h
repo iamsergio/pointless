@@ -46,12 +46,16 @@ public:
     CalendarProvider &operator=(const CalendarProvider &) = delete;
     CalendarProvider &operator=(CalendarProvider &&) = delete;
 
+    [[nodiscard]] virtual bool isConfigured() const = 0;
     [[nodiscard]] virtual std::vector<Calendar> getCalendars() const = 0;
     [[nodiscard]] virtual std::vector<CalendarEvent> getEvents(
         const DateRange &range,
         const std::vector<std::string> &calendarIds) const = 0;
 };
 
-std::unique_ptr<CalendarProvider> createCalendarProvider(const std::string &caldavPassword = {});
+std::unique_ptr<CalendarProvider> createCalendarProvider(
+    const std::string &caldavUrl = {},
+    const std::string &caldavUsername = {},
+    const std::string &caldavPassword = {});
 
 } // namespace pointless::core

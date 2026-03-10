@@ -82,6 +82,7 @@ class GuiController : public QObject
     Q_PROPERTY(PomodoroController *pomodoroController READ pomodoroController CONSTANT)
     Q_PROPERTY(bool deleteTaskVisible READ deleteTaskVisible NOTIFY taskMenuUuidChanged)
     Q_PROPERTY(bool playPomodoroVisible READ playPomodoroVisible NOTIFY taskMenuUuidChanged)
+    Q_PROPERTY(bool calendarProviderConfigured READ calendarProviderConfigured NOTIFY calendarProviderConfiguredChanged)
     Q_PROPERTY(bool debugMode READ debugMode CONSTANT)
 public:
     [[nodiscard]] TaskFilterModel *taskFilterModel() const;
@@ -220,6 +221,7 @@ public:
     [[nodiscard]] bool deleteTaskVisible() const;
     [[nodiscard]] bool playPomodoroVisible() const;
 
+    [[nodiscard]] bool calendarProviderConfigured() const;
     [[nodiscard]] static bool debugMode();
     static void setDebugMode(bool enabled);
 
@@ -252,11 +254,12 @@ Q_SIGNALS:
     void newTagPopupVisibleChanged();
     void isFetchingCalendarEventsChanged();
     void fetchCalendarStatusTextChanged();
+    void calendarProviderConfiguredChanged();
     void passStoreCredentialsFetched(const QVariantMap &credentials);
 
 private:
     explicit GuiController(QObject *parent = nullptr);
-    void reinitCalendarProvider(const std::string &caldavPassword);
+    void reinitCalendarProvider(const std::string &caldavUrl, const std::string &caldavUsername, const std::string &caldavPassword);
     void stopPomodoroIfRunning(const QString &taskUuid);
     std::vector<std::string> enabledCalendarIds() const;
     void setIsEvening(bool isEvening);

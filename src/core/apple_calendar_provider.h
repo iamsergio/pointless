@@ -20,6 +20,7 @@ public:
     AppleCalendarProvider &operator=(const AppleCalendarProvider &) = delete;
     AppleCalendarProvider &operator=(AppleCalendarProvider &&) = delete;
 
+    [[nodiscard]] bool isConfigured() const override;
     [[nodiscard]] std::vector<Calendar> getCalendars() const override;
     [[nodiscard]] std::vector<CalendarEvent> getEvents(
         const DateRange &range,
