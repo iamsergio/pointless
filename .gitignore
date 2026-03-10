@@ -49,3 +49,4 @@ vcpkg_installed
 Testing/Temporary/LastTest.log
 Testing/Temporary/CTestCostData.txt
 .DS_Store
+pointless_core/target/
