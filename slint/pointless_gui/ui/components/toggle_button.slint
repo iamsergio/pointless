@@ -1,0 +1,36 @@
+import { Style } from "../style.slint";
+
+export component ToggleButton {
+    in-out property <bool> toggled: false;
+    callback toggled-changed;
+
+    width: 75px;
+    height: 42px;
+
+    TouchArea {
+        clicked => {
+            root.toggled = !root.toggled;
+            root.toggled-changed();
+        }
+    }
+
+    Rectangle {
+        width: 100%;
+        height: 100%;
+        border-radius: self.height / 2;
+        background: root.toggled ? Style.button-color : #6b7280;
+
+        animate background { duration: 150ms; }
+
+        Rectangle {
+            width: parent.height - 9px;
+            height: self.width;
+            border-radius: self.width / 2;
+            background: #ffffff;
+            x: root.toggled ? parent.width - self.width - 4px : 4px;
+            y: (parent.height - self.height) / 2;
+
+            animate x { duration: 150ms; easing: ease-in-out; }
+        }
+    }
+}

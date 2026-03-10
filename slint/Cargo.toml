@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "pointless_core",
+    "pointless_gui",
+]
+resolver = "2"

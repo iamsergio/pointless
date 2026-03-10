@@ -1,0 +1,21 @@
+import { Style } from "../style.slint";
+import { TaskItem, TaskData } from "task_item.slint";
+
+export component TaskList {
+    in property <[TaskData]> model;
+    callback toggle-done(string);
+
+    Flickable {
+        viewport-height: content.preferred-height;
+
+        content := VerticalLayout {
+            spacing: Style.task-spacing;
+            padding: 0px;
+
+            for t in root.model: TaskItem {
+                task: t;
+                toggle-done(uuid) => { root.toggle-done(uuid); }
+            }
+        }
+    }
+}

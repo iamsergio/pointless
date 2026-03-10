@@ -1,0 +1,33 @@
+import "../fonts/FontAwesome7-Solid-900.otf";
+import { Style } from "../style.slint";
+
+export component FontAwesomeButton {
+    in property <string> icon;
+    in property <length> icon-size: 24px;
+    in property <color> icon-color: #ffffff;
+    in property <color> background-color: Style.button-background;
+    callback clicked;
+
+    width: 60px;
+    height: 48px;
+
+    TouchArea {
+        clicked => { root.clicked(); }
+    }
+
+    Rectangle {
+        width: 100%;
+        height: 100%;
+        border-radius: 6px;
+        background: root.background-color;
+
+        Text {
+            text: root.icon;
+            font-family: "Font Awesome 7 Free";
+            font-size: root.icon-size;
+            color: root.icon-color;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+        }
+    }
+}

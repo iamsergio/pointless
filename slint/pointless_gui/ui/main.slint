@@ -1,0 +1,128 @@
+import { Style } from "style.slint";
+import { ViewButton } from "components/view_button.slint";
+import { FontAwesomeButton } from "components/font_awesome_button.slint";
+import { TaskList } from "components/task_list.slint";
+import { TaskData } from "components/task_item.slint";
+
+export { TaskData }
+
+export enum ViewType {
+    Week,
+    Soon,
+    Later,
+    Goals,
+}
+
+export component MainWindow inherits Window {
+    title: "Pointless";
+    width: 960px;
+    height: 960px;
+    background: Style.background;
+
+    in-out property <ViewType> current-view: ViewType.Week;
+    in property <[TaskData]> soon-tasks;
+    in property <[TaskData]> later-tasks;
+    in property <[TaskData]> goals-tasks;
+    callback toggle-done(string);
+
+    VerticalLayout {
+        padding: 30px;
+        spacing: 15px;
+
+        HorizontalLayout {
+            spacing: 15px;
+
+            ViewButton {
+                text: "Week";
+                is-active: root.current-view == ViewType.Week;
+                clicked => { root.current-view = ViewType.Week; }
+            }
+
+            ViewButton {
+                text: "Soon";
+                is-active: root.current-view == ViewType.Soon;
+                clicked => { root.current-view = ViewType.Soon; }
+            }
+
+            ViewButton {
+                text: "Later";
+                is-active: root.current-view == ViewType.Later;
+                clicked => { root.current-view = ViewType.Later; }
+            }
+
+            Rectangle { horizontal-stretch: 1; }
+
+            FontAwesomeButton {
+                icon: "\u{f11e}";
+                icon-size: 24px;
+                icon-color: root.current-view == ViewType.Goals ? #ffffff : Style.icon-color;
+                background-color: root.current-view == ViewType.Goals ? Style.button-active : Style.button-background;
+                width: 60px;
+                height: 48px;
+                clicked => { root.current-view = ViewType.Goals; }
+            }
+        }
+
+        Rectangle {
+            height: 1px;
+            background: Style.task-background;
+        }
+
+        if root.current-view == ViewType.Week: Rectangle {
+            vertical-stretch: 1;
+            background: transparent;
+        }
+
+        if root.current-view == ViewType.Soon: TaskList {
+            vertical-stretch: 1;
+            model: root.soon-tasks;
+            toggle-done(uuid) => { root.toggle-done(uuid); }
+        }
+
+        if root.current-view == ViewType.Later: TaskList {
+            vertical-stretch: 1;
+            model: root.later-tasks;
+            toggle-done(uuid) => { root.toggle-done(uuid); }
+        }
+
+        if root.current-view == ViewType.Goals: TaskList {
+            vertical-stretch: 1;
+            model: root.goals-tasks;
+            toggle-done(uuid) => { root.toggle-done(uuid); }
+        }
+
+        HorizontalLayout {
+            spacing: 24px;
+
+            FontAwesomeButton {
+                icon: "\u{f0c9}";
+                icon-size: Style.plus-button-size;
+                icon-color: Style.plus-button-color;
+                background-color: transparent;
+                width: Style.plus-button-size;
+                height: Style.plus-button-size;
+            }
+
+            Rectangle { horizontal-stretch: 1; }
+
+            FontAwesomeButton {
+                icon: "\u{f021}";
+                icon-size: Style.plus-button-size;
+                icon-color: Style.plus-button-color;
+                background-color: transparent;
+                width: Style.plus-button-size;
+                height: Style.plus-button-size;
+            }
+
+            FontAwesomeButton {
+                icon: "\u{f055}";
+                icon-size: Style.plus-button-size;
+                icon-color: Style.plus-button-color;
+                background-color: transparent;
+                width: Style.plus-button-size;
+                height: Style.plus-button-size;
+            }
+        }
+    }
+}
+

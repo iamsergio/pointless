@@ -1,0 +1,30 @@
+import { Style } from "../style.slint";
+
+export component ViewButton {
+    in property <string> text;
+    in-out property <bool> is-active: false;
+    callback clicked;
+
+    width: 120px;
+    height: 48px;
+
+    TouchArea {
+        clicked => { root.clicked(); }
+    }
+
+    Rectangle {
+        width: 100%;
+        height: 100%;
+        border-radius: 25px;
+        background: root.is-active ? Style.button-active : Style.button-background;
+
+        Text {
+            text: root.text;
+            font-size: 18px;
+            font-weight: root.is-active ? 700 : 400;
+            color: #ffffff;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+        }
+    }
+}

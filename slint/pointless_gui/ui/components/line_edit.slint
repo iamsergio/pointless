@@ -1,0 +1,32 @@
+import { Style } from "../style.slint";
+
+export component LineEdit {
+    in-out property <string> text <=> input.text;
+    in property <string> placeholder-text: "New Task Title";
+    callback text-entered(string);
+
+    height: 75px;
+
+    Rectangle {
+        width: 100%;
+        height: 100%;
+        border-radius: 6px;
+        background: Style.task-background;
+
+        input := TextInput {
+            x: 15px;
+            width: parent.width - 30px;
+            y: (parent.height - self.preferred-height) / 2;
+            color: #ffffff;
+            font-size: 21px;
+            placeholder-text: root.placeholder-text;
+
+            accepted => {
+                if (self.text != "") {
+                    root.text-entered(self.text);
+                    self.text = "";
+                }
+            }
+        }
+    }
+}
