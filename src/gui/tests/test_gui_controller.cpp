@@ -263,6 +263,44 @@ TEST(GuiControllerTest, IsEveningTrueAt18h)
     EXPECT_TRUE(GuiController::isEveningForHour(18));
 }
 
+TEST(GuiControllerTest, ParsePassStoreBasic)
+{
+    const auto result = GuiController::parsePassStoreOutput("user:foo\npass:bar");
+    EXPECT_EQ(result["user"].toString(), "foo");
+    EXPECT_EQ(result["pass"].toString(), "bar");
+    EXPECT_FALSE(result.contains("caldav-pass"));
+}
+
+TEST(GuiControllerTest, ParsePassStoreWithCaldavPass)
+{
+    const auto result = GuiController::parsePassStoreOutput("user:foo\npass:bar\ncaldav-pass:baz");
+    EXPECT_EQ(result["user"].toString(), "foo");
+    EXPECT_EQ(result["pass"].toString(), "bar");
+    EXPECT_EQ(result["caldav-pass"].toString(), "baz");
+}
+
+TEST(GuiControllerTest, ParsePassStoreCaldavBeforePass)
+{
+    const auto result = GuiController::parsePassStoreOutput("user:foo\ncaldav-pass:baz\npass:bar");
+    EXPECT_EQ(result["pass"].toString(), "bar");
+    EXPECT_EQ(result["caldav-pass"].toString(), "baz");
+    EXPECT_NE(result["pass"].toString(), result["caldav-pass"].toString());
+}
+
+TEST(GuiControllerTest, ParsePassStorePartialOutput)
+{
+    const auto result = GuiController::parsePassStoreOutput("user:foo");
+    EXPECT_EQ(result["user"].toString(), "foo");
+    EXPECT_FALSE(result.contains("pass"));
+    EXPECT_FALSE(result.contains("caldav-pass"));
+}
+
+TEST(GuiControllerTest, ParsePassStoreEmptyOutput)
+{
+    const auto result = GuiController::parsePassStoreOutput("");
+    EXPECT_TRUE(result.isEmpty());
+}
+
 int main(int argc, char **argv)
 {
     g_argc = argc;

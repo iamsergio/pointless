@@ -113,7 +113,6 @@ void CalendarsModel::reload()
 void CalendarsModel::setProvider(pointless::core::CalendarProvider *provider)
 {
     Q_ASSERT(provider);
-    Q_ASSERT(!_provider);
     _provider = provider;
     reload();
 }

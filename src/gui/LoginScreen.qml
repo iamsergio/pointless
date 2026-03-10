@@ -11,6 +11,16 @@ FocusScope {
 
     property bool passwordVisible: false
 
+    Connections {
+        target: GuiController
+        function onPassStoreCredentialsFetched(credentials) {
+            if (credentials.user)
+                emailInput.text = credentials.user;
+            if (credentials.pass)
+                passwordInput.text = credentials.pass;
+        }
+    }
+
     Rectangle {
         color: "#131c27"
         border.width: Style.fromPixel(1)
@@ -140,27 +150,45 @@ FocusScope {
                 }
             }
 
-            Button {
-                id: loginButton
-                text: "Login"
-                font.pixelSize: Style.fromPixel(20)
-                enabled: !GuiController.isLoggingIn
-                background: Rectangle {
-                    color: "#1884f7"
-                    radius: 12
-                }
-                contentItem: Text {
-                    color: "white"
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: Style.fromPixel(8)
+
+                Button {
+                    id: loginButton
                     text: "Login"
                     font.pixelSize: Style.fromPixel(20)
-                    font.bold: true
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
+                    enabled: !GuiController.isLoggingIn
+                    background: Rectangle {
+                        color: "#1884f7"
+                        radius: 12
+                    }
+                    contentItem: Text {
+                        color: "white"
+                        text: "Login"
+                        font.pixelSize: Style.fromPixel(20)
+                        font.bold: true
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    Layout.fillWidth: true
+                    implicitHeight: Style.fromPixel(56)
+                    onClicked: {
+                        GuiController.login(emailInput.text, passwordInput.text);
+                    }
                 }
-                Layout.fillWidth: true
-                implicitHeight: Style.fromPixel(56)
-                onClicked: {
-                    GuiController.login(emailInput.text, passwordInput.text);
+
+                FontAwesomeButton {
+                    fontAwesomeIcon: "\uf084"
+                    iconSize: Style.fromPixel(20)
+                    iconColor: "#8a97a8"
+                    backgroundColor: "#192233"
+                    visible: !GuiController.isMobile
+                    implicitWidth: Style.fromPixel(56)
+                    implicitHeight: Style.fromPixel(56)
+                    onClicked: {
+                        GuiController.fetchPassStoreCredentials();
+                    }
                 }
             }
 

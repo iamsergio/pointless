@@ -38,6 +38,9 @@
 
 #include <QtConcurrent/QtConcurrent>
 
+#include <QProcess>
+#include <QRegularExpression>
+
 #include <cstdlib>
 #include <string>
 #include <utility>
@@ -572,6 +575,67 @@ void GuiController::login(const QString &email, const QString &password)
 {
     _errorController->setLoginError({});
     _dataController->login(email.trimmed().toStdString(), password.trimmed().toStdString());
+}
+
+void GuiController::reinitCalendarProvider(const std::string &caldavPassword)
+{
+    _calendarProvider = pointless::core::createCalendarProvider(caldavPassword);
+    if (_calendarsModel != nullptr)
+        _calendarsModel->setProvider(_calendarProvider.get());
+    P_LOG_INFO("Recreated calendar provider with pass-store caldav password");
+}
+
+QVariantMap GuiController::parsePassStoreOutput(const QString &output)
+{
+    QVariantMap result;
+    static const QRegularExpression userRegex(R"(^user:(\S+))", QRegularExpression::MultilineOption);
+    static const QRegularExpression passRegex(R"(^pass:(\S+))", QRegularExpression::MultilineOption);
+    static const QRegularExpression caldavPassRegex(R"(^caldav-pass:(\S+))", QRegularExpression::MultilineOption);
+
+    const auto userMatch = userRegex.match(output);
+    if (userMatch.hasMatch())
+        result["user"] = userMatch.captured(1);
+
+    const auto passMatch = passRegex.match(output);
+    if (passMatch.hasMatch())
+        result["pass"] = passMatch.captured(1);
+
+    const auto caldavPassMatch = caldavPassRegex.match(output);
+    if (caldavPassMatch.hasMatch())
+        result["caldav-pass"] = caldavPassMatch.captured(1);
+
+    return result;
+}
+
+void GuiController::fetchPassStoreCredentials()
+{
+    auto *process = new QProcess(this);
+    connect(process, &QProcess::finished, this, [this, process](int exitCode, QProcess::ExitStatus /*exitStatus*/) {
+        process->deleteLater();
+
+        if (exitCode != 0) {
+            const QString err = QString::fromUtf8(process->readAllStandardError()).trimmed();
+            P_LOG_WARNING("pass command failed: {}", err.toStdString());
+            _errorController->setLoginError(QStringLiteral("pass error: %1").arg(err));
+            return;
+        }
+
+        const QString output = QString::fromUtf8(process->readAllStandardOutput());
+        QVariantMap result = parsePassStoreOutput(output);
+
+        if (result.contains("caldav-pass"))
+            reinitCalendarProvider(result["caldav-pass"].toString().toStdString());
+
+        Q_EMIT passStoreCredentialsFetched(result);
+    });
+
+    connect(process, &QProcess::errorOccurred, this, [this, process](QProcess::ProcessError error) {
+        process->deleteLater();
+        P_LOG_WARNING("pass process error: {}", static_cast<int>(error));
+        _errorController->setLoginError("Failed to run pass command");
+    });
+
+    process->start("pass", {"show", "pointless"});
 }
 
 void GuiController::logout()

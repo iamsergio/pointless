@@ -15,7 +15,7 @@ class CalDavClient;
 class LinuxCalendarProvider : public CalendarProvider
 {
 public:
-    LinuxCalendarProvider();
+    explicit LinuxCalendarProvider(const std::string &caldavPassword = {});
     ~LinuxCalendarProvider() override;
     LinuxCalendarProvider(const LinuxCalendarProvider &) = delete;
     LinuxCalendarProvider &operator=(const LinuxCalendarProvider &) = delete;

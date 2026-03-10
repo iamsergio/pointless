@@ -18,6 +18,7 @@
 #include <QtQml/qqmlregistration.h>
 #include <QFutureWatcher>
 #include <QTimer>
+#include <QVariantMap>
 
 #include <memory>
 
@@ -152,6 +153,7 @@ public:
 
     Q_INVOKABLE void setTaskMenuUuid(const QString &uuid);
     Q_INVOKABLE void login(const QString &email, const QString &password);
+    Q_INVOKABLE void fetchPassStoreCredentials();
     Q_INVOKABLE void logout();
     Q_INVOKABLE void enableOfflineMode();
 
@@ -174,6 +176,7 @@ public:
     [[nodiscard]] bool showEveningToggle() const;
     [[nodiscard]] bool isEvening() const;
     [[nodiscard]] static bool isEveningForHour(int hour);
+    [[nodiscard]] static QVariantMap parsePassStoreOutput(const QString &output);
 
     Q_INVOKABLE void deleteAllCalendarEvents();
     Q_INVOKABLE void fetchCalendarEvents();
@@ -249,9 +252,11 @@ Q_SIGNALS:
     void newTagPopupVisibleChanged();
     void isFetchingCalendarEventsChanged();
     void fetchCalendarStatusTextChanged();
+    void passStoreCredentialsFetched(const QVariantMap &credentials);
 
 private:
     explicit GuiController(QObject *parent = nullptr);
+    void reinitCalendarProvider(const std::string &caldavPassword);
     void stopPomodoroIfRunning(const QString &taskUuid);
     std::vector<std::string> enabledCalendarIds() const;
     void setIsEvening(bool isEvening);

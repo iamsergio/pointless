@@ -15,6 +15,7 @@ PRESET=rel
 cmake --preset=${PRESET}
 cmake --build build-${PRESET}
 cp build-${PRESET}/bin/pointless /pub_data/installation/bin
+cp build-${PRESET}/bin/pointless /pub_data/installation/bin/p
 
 echo
 echo "Deployed pointless to /pub_data/installation/bin"

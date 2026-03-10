@@ -186,7 +186,7 @@ std::vector<CalendarEvent> AppleCalendarProvider::getEvents(
     return events;
 }
 
-std::unique_ptr<CalendarProvider> createCalendarProvider()
+std::unique_ptr<CalendarProvider> createCalendarProvider(const std::string & /*caldavPassword*/)
 {
     return std::make_unique<AppleCalendarProvider>();
 }

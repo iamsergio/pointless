@@ -10,11 +10,11 @@ namespace pointless::core {
 
 LinuxCalendarProvider::~LinuxCalendarProvider() = default;
 
-LinuxCalendarProvider::LinuxCalendarProvider()
+LinuxCalendarProvider::LinuxCalendarProvider(const std::string &caldavPassword)
 {
     auto url = pointless::getenv_or_empty("POINTLESS_CALDAV_URL");
     auto username = pointless::getenv_or_empty("POINTLESS_CALDAV_USERNAME");
-    auto password = pointless::getenv_or_empty("POINTLESS_CALDAV_PASSWORD");
+    auto password = caldavPassword.empty() ? pointless::getenv_or_empty("POINTLESS_CALDAV_PASSWORD") : caldavPassword;
 
     if (url.empty()) {
         P_LOG_INFO("POINTLESS_CALDAV_URL not set, CalDAV integration disabled");
@@ -80,9 +80,9 @@ std::vector<CalendarEvent> LinuxCalendarProvider::getEvents(
     return allEvents;
 }
 
-std::unique_ptr<CalendarProvider> createCalendarProvider()
+std::unique_ptr<CalendarProvider> createCalendarProvider(const std::string &caldavPassword)
 {
-    return std::make_unique<LinuxCalendarProvider>();
+    return std::make_unique<LinuxCalendarProvider>(caldavPassword);
 }
 
 } // namespace pointless::core

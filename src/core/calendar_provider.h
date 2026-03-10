@@ -52,6 +52,6 @@ public:
         const std::vector<std::string> &calendarIds) const = 0;
 };
 
-std::unique_ptr<CalendarProvider> createCalendarProvider();
+std::unique_ptr<CalendarProvider> createCalendarProvider(const std::string &caldavPassword = {});
 
 } // namespace pointless::core
