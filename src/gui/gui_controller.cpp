@@ -38,8 +38,10 @@
 
 #include <QtConcurrent/QtConcurrent>
 
+#ifndef Q_OS_IOS
 #include <QProcess>
 #include <QRegularExpression>
+#endif
 
 #include <cstdlib>
 #include <string>
@@ -586,6 +588,7 @@ void GuiController::reinitCalendarProvider(const std::string &caldavUrl, const s
     P_LOG_INFO("Recreated calendar provider with pass-store caldav credentials");
 }
 
+#ifndef Q_OS_IOS
 QVariantMap GuiController::parsePassStoreOutput(const QString &output)
 {
     QVariantMap result;
@@ -651,6 +654,7 @@ void GuiController::fetchPassStoreCredentials()
 
     process->start("pass", { "show", "pointless" });
 }
+#endif
 
 void GuiController::logout()
 {

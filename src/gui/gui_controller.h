@@ -154,7 +154,9 @@ public:
 
     Q_INVOKABLE void setTaskMenuUuid(const QString &uuid);
     Q_INVOKABLE void login(const QString &email, const QString &password);
+#ifndef Q_OS_IOS
     Q_INVOKABLE void fetchPassStoreCredentials();
+#endif
     Q_INVOKABLE void logout();
     Q_INVOKABLE void enableOfflineMode();
 
@@ -177,7 +179,9 @@ public:
     [[nodiscard]] bool showEveningToggle() const;
     [[nodiscard]] bool isEvening() const;
     [[nodiscard]] static bool isEveningForHour(int hour);
+#ifndef Q_OS_IOS
     [[nodiscard]] static QVariantMap parsePassStoreOutput(const QString &output);
+#endif
 
     Q_INVOKABLE void deleteAllCalendarEvents();
     Q_INVOKABLE void fetchCalendarEvents();
