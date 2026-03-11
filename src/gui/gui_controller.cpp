@@ -649,7 +649,7 @@ void GuiController::fetchPassStoreCredentials()
         _errorController->setLoginError("Failed to run pass command");
     });
 
-    process->start("pass", {"show", "pointless"});
+    process->start("pass", { "show", "pointless" });
 }
 
 void GuiController::logout()
@@ -1251,7 +1251,7 @@ void GuiController::setShowImmediateOnly(bool show)
 
 bool GuiController::showEveningToggle() const
 {
-    return !isEvening() || _pomodoroController->isRunning();
+    return true;
 }
 
 bool GuiController::isEvening() const
