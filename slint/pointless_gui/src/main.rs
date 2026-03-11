@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: 2025 Sergio Martins
+// SPDX-License-Identifier: MIT
 slint::include_modules!();
 
 use std::rc::Rc;

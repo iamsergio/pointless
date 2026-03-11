@@ -28,7 +28,9 @@ path = [
     "src/mac/pointless.entitlements",
     "src/ios/ExportOptions-TestFlight.plist.in",
     ".qmllint.ini",
-    "version.txt"
+    "version.txt",
+    "slint/pointless_core/tests/fixtures/test.json",
+    "slint/pointless_core/tests/fixtures/test_null_values.json"
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2025 Sergio Martins"
@@ -39,7 +41,8 @@ SPDX-License-Identifier = "MIT"
 path = [
     "src/gui/fonts/FontAwesome7-Solid-900.otf",
     "src/gui/fonts/FontAwesome7Brands-Regular-400.otf",
-    "src/gui/fonts/FontAwesome7Free-Regular-400.otf"
+    "src/gui/fonts/FontAwesome7Free-Regular-400.otf",
+    "slint/pointless_gui/ui/fonts/FontAwesome7-Solid-900.otf"
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Fonticons, Inc."
