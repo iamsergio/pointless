@@ -51,8 +51,8 @@ fn parse_ical_datetime(value: &str) -> Option<(DateTime<Utc>, bool)> {
         return Some((ndt.and_utc(), false));
     }
 
-    let nd = NaiveDate::parse_from_str(value, "%Y%m%d").ok()?;
-    let ndt = nd.and_time(NaiveTime::from_hms_opt(0, 0, 0)?);
+    let naive_date = NaiveDate::parse_from_str(value, "%Y%m%d").ok()?;
+    let ndt = naive_date.and_time(NaiveTime::from_hms_opt(0, 0, 0)?);
     Some((ndt.and_utc(), true))
 }
 
