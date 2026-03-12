@@ -22,12 +22,27 @@ export struct WeekDayData {
     pretty-date: string,
     is-past: bool,
     has-tasks: bool,
+    date-string: string,
     tasks: [TaskData],
+}
+
+export struct TagDisplayData {
+    name: string,
+    color: color,
+}
+
+export struct CalendarDayData {
+    day-number: int,
+    is-current-month: bool,
+    is-today: bool,
+    is-selected: bool,
+    date-string: string,
 }
 
 export component TaskItem {
     in property <TaskData> task;
     callback toggle-done(string);
+    callback task-clicked(string);
 
     property <bool> use-small-mode: root.task.is-evening;
     property <length> icon-sz: root.use-small-mode ? 18px : 26px;
@@ -41,6 +56,10 @@ export component TaskItem {
         background: root.task.is-important
             ? Style.task-important-background
             : (root.task.is-evening ? Style.task-evening-background : Style.task-background);
+
+        TouchArea {
+            clicked => { root.task-clicked(root.task.uuid); }
+        }
 
         HorizontalLayout {
             padding-left: 10px;

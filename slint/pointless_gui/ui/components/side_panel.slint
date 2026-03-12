@@ -1,0 +1,113 @@
+// SPDX-FileCopyrightText: 2025 Sergio Martins
+// SPDX-License-Identifier: MIT
+import { Style } from "../style.slint";
+import { MenuItem } from "menu_item.slint";
+
+export component SidePanel {
+    in-out property <bool> is-open;
+    in property <bool> show-logout: false;
+    in property <bool> show-debug: false;
+    callback navigate(string);
+
+    if root.is-open: Rectangle {
+        width: 100%;
+        height: 100%;
+
+        Rectangle {
+            width: 100%;
+            height: 100%;
+            background: #00000080;
+
+            TouchArea {
+                clicked => { root.is-open = false; }
+            }
+        }
+
+        Rectangle {
+            x: 0px;
+            width: 250px;
+            height: 100%;
+            background: Style.background;
+
+            TouchArea {}
+
+            VerticalLayout {
+                padding: 20px;
+                spacing: 0px;
+
+                Text {
+                    text: "Pointless";
+                    font-size: 20px;
+                    font-weight: 700;
+                    color: #ffffff;
+                    height: 50px;
+                    vertical-alignment: center;
+                }
+
+                Rectangle {
+                    height: 1px;
+                    background: #ffffff20;
+                }
+
+                MenuItem {
+                    label: "Search";
+                    clicked => {
+                        root.is-open = false;
+                        root.navigate("search");
+                    }
+                }
+
+                MenuItem {
+                    label: "About";
+                    clicked => {
+                        root.is-open = false;
+                        root.navigate("about");
+                    }
+                }
+
+                MenuItem {
+                    label: "Cleanup";
+                    clicked => {
+                        root.is-open = false;
+                        root.navigate("cleanup");
+                    }
+                }
+
+                MenuItem {
+                    label: "Tags";
+                    clicked => {
+                        root.is-open = false;
+                        root.navigate("tags");
+                    }
+                }
+
+                MenuItem {
+                    label: "Calendars";
+                    clicked => {
+                        root.is-open = false;
+                        root.navigate("calendars");
+                    }
+                }
+
+                if root.show-logout: MenuItem {
+                    label: "Logout";
+                    clicked => {
+                        root.is-open = false;
+                        root.navigate("logout");
+                    }
+                }
+
+                if root.show-debug: MenuItem {
+                    label: "Debug";
+                    text-color: #ff4444;
+                    clicked => {
+                        root.is-open = false;
+                        root.navigate("debug");
+                    }
+                }
+
+                Rectangle { vertical-stretch: 1; }
+            }
+        }
+    }
+}

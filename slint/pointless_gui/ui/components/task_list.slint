@@ -6,6 +6,7 @@ import { TaskItem, TaskData } from "task_item.slint";
 export component TaskList {
     in property <[TaskData]> model;
     callback toggle-done(string);
+    callback task-clicked(string);
 
     Flickable {
         viewport-height: content.preferred-height;
@@ -17,6 +18,7 @@ export component TaskList {
             for t in root.model: TaskItem {
                 task: t;
                 toggle-done(uuid) => { root.toggle-done(uuid); }
+                task-clicked(uuid) => { root.task-clicked(uuid); }
             }
         }
     }

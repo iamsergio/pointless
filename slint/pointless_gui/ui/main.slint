@@ -4,11 +4,14 @@ import { Style } from "style.slint";
 import { ViewButton } from "components/view_button.slint";
 import { FontAwesomeButton } from "components/font_awesome_button.slint";
 import { TaskList } from "components/task_list.slint";
-import { TaskData, WeekDayData } from "components/task_item.slint";
+import { TaskData, WeekDayData, TagDisplayData, CalendarDayData } from "components/task_item.slint";
 import { WeekNavigator } from "components/week_navigator.slint";
 import { WeekView } from "components/week_view.slint";
+import { ContextMenu } from "components/context_menu.slint";
+import { EditTaskPage } from "components/edit_task_page.slint";
+import { SidePanel } from "components/side_panel.slint";
 
-export { TaskData, WeekDayData }
+export { TaskData, WeekDayData, TagDisplayData, CalendarDayData }
 
 export enum ViewType {
     Week,
@@ -29,12 +32,59 @@ export component MainWindow inherits Window {
     in property <[TaskData]> goals-tasks;
     in property <[WeekDayData]> week-days;
     in property <string> week-date-range-text;
+
+    // Context menu properties
+    in-out property <bool> context-menu-visible;
+    in-out property <string> ctx-task-uuid;
+    in property <bool> ctx-move-to-current-visible;
+    in property <bool> ctx-move-to-soon-visible;
+    in property <bool> ctx-move-to-later-visible;
+    in property <bool> ctx-move-to-tomorrow-visible;
+    in property <bool> ctx-move-to-evening-visible;
+    in property <bool> ctx-delete-visible;
+
+    // Edit task properties
+    in-out property <bool> edit-task-visible;
+    in-out property <string> edit-task-title;
+    in-out property <string> edit-task-tag;
+    in-out property <bool> edit-task-evening;
+    in-out property <bool> edit-task-is-goal;
+    in-out property <string> edit-task-notes;
+    in property <[TagDisplayData]> available-tags;
+    in property <string> calendar-month-label;
+    in property <[CalendarDayData]> calendar-days;
+
+    // Side panel properties
+    in-out property <string> current-page;
+
+    // Callbacks
     callback toggle-done(string);
     callback navigate-previous-week();
     callback navigate-next-week();
     callback navigate-today();
-    callback add-task-for-day(int);
+    callback add-task-for-day(string);
+    callback add-task-clicked();
+    callback task-clicked(string);
 
+    // Context menu callbacks
+    callback context-move-to-current(string);
+    callback context-move-to-soon(string);
+    callback context-move-to-later(string);
+    callback context-move-to-tomorrow(string);
+    callback context-move-to-next-monday(string);
+    callback context-move-to-evening(string);
+    callback context-delete(string);
+    callback context-edit(string);
+    callback context-edit-notes(string);
+
+    // Edit task callbacks
+    callback save-task(string, string, bool, bool, string);
+    callback edit-task-back();
+    callback calendar-previous-month();
+    callback calendar-next-month();
+    callback calendar-day-selected(string);
+
+    // Main content layer
     VerticalLayout {
         padding: 30px;
         spacing: 15px;
@@ -91,7 +141,8 @@ export component MainWindow inherits Window {
             WeekView {
                 days: root.week-days;
                 toggle-done(uuid) => { root.toggle-done(uuid); }
-                add-task-for-day(idx) => { root.add-task-for-day(idx); }
+                task-clicked(uuid) => { root.task-clicked(uuid); }
+                add-task-for-day(date-str) => { root.add-task-for-day(date-str); }
             }
         }
 
@@ -99,18 +150,21 @@ export component MainWindow inherits Window {
             vertical-stretch: 1;
             model: root.soon-tasks;
             toggle-done(uuid) => { root.toggle-done(uuid); }
+            task-clicked(uuid) => { root.task-clicked(uuid); }
         }
 
         if root.current-view == ViewType.Later: TaskList {
             vertical-stretch: 1;
             model: root.later-tasks;
             toggle-done(uuid) => { root.toggle-done(uuid); }
+            task-clicked(uuid) => { root.task-clicked(uuid); }
         }
 
         if root.current-view == ViewType.Goals: TaskList {
             vertical-stretch: 1;
             model: root.goals-tasks;
             toggle-done(uuid) => { root.toggle-done(uuid); }
+            task-clicked(uuid) => { root.task-clicked(uuid); }
         }
 
         HorizontalLayout {
@@ -123,6 +177,7 @@ export component MainWindow inherits Window {
                 background-color: transparent;
                 width: Style.plus-button-size;
                 height: Style.plus-button-size;
+                clicked => { side-panel.is-open = true; }
             }
 
             Rectangle { horizontal-stretch: 1; }
@@ -143,7 +198,99 @@ export component MainWindow inherits Window {
                 background-color: transparent;
                 width: Style.plus-button-size;
                 height: Style.plus-button-size;
+                clicked => { root.add-task-clicked(); }
             }
         }
+    }
+
+    // Placeholder page overlay (for side panel navigation targets)
+    if root.current-page != "": Rectangle {
+        width: 100%;
+        height: 100%;
+        background: Style.background;
+
+        VerticalLayout {
+            padding: 20px;
+            spacing: 15px;
+
+            HorizontalLayout {
+                height: 48px;
+
+                FontAwesomeButton {
+                    icon: "\u{f053}";
+                    icon-size: 20px;
+                    icon-color: Style.icon-color;
+                    background-color: transparent;
+                    width: 48px;
+                    height: 48px;
+                    clicked => { root.current-page = ""; }
+                }
+
+                Text {
+                    text: root.current-page;
+                    font-size: 20px;
+                    font-weight: 700;
+                    color: #ffffff;
+                    vertical-alignment: center;
+                    horizontal-stretch: 1;
+                }
+            }
+
+            Rectangle {
+                vertical-stretch: 1;
+                Text {
+                    text: "Coming soon...";
+                    font-size: 16px;
+                    color: Style.task-secondary-text-color;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+        }
+    }
+
+    // Edit task page overlay
+    EditTaskPage {
+        is-visible: root.edit-task-visible;
+        task-title <=> root.edit-task-title;
+        task-tag <=> root.edit-task-tag;
+        task-evening <=> root.edit-task-evening;
+        task-is-goal <=> root.edit-task-is-goal;
+        task-notes <=> root.edit-task-notes;
+        available-tags: root.available-tags;
+        calendar-month-label: root.calendar-month-label;
+        calendar-days: root.calendar-days;
+        back => { root.edit-task-back(); }
+        save(title, tag, evening, is-goal, notes) => { root.save-task(title, tag, evening, is-goal, notes); }
+        calendar-previous-month => { root.calendar-previous-month(); }
+        calendar-next-month => { root.calendar-next-month(); }
+        calendar-day-selected(ds) => { root.calendar-day-selected(ds); }
+    }
+
+    // Context menu overlay
+    ContextMenu {
+        is-visible: root.context-menu-visible;
+        task-uuid: root.ctx-task-uuid;
+        move-to-current-visible: root.ctx-move-to-current-visible;
+        move-to-soon-visible: root.ctx-move-to-soon-visible;
+        move-to-later-visible: root.ctx-move-to-later-visible;
+        move-to-tomorrow-visible: root.ctx-move-to-tomorrow-visible;
+        move-to-evening-visible: root.ctx-move-to-evening-visible;
+        delete-visible: root.ctx-delete-visible;
+        close => { root.context-menu-visible = false; }
+        edit(uuid) => { root.context-edit(uuid); }
+        edit-notes(uuid) => { root.context-edit-notes(uuid); }
+        move-to-current(uuid) => { root.context-move-to-current(uuid); }
+        move-to-soon(uuid) => { root.context-move-to-soon(uuid); }
+        move-to-later(uuid) => { root.context-move-to-later(uuid); }
+        move-to-tomorrow(uuid) => { root.context-move-to-tomorrow(uuid); }
+        move-to-next-monday(uuid) => { root.context-move-to-next-monday(uuid); }
+        move-to-evening(uuid) => { root.context-move-to-evening(uuid); }
+        delete(uuid) => { root.context-delete(uuid); }
+    }
+
+    // Side panel overlay (topmost)
+    side-panel := SidePanel {
+        navigate(page) => { root.current-page = page; }
     }
 }

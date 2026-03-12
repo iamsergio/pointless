@@ -1,0 +1,211 @@
+// SPDX-FileCopyrightText: 2025 Sergio Martins
+// SPDX-License-Identifier: MIT
+import { Style } from "../style.slint";
+import { FontAwesomeButton } from "font_awesome_button.slint";
+import { CalendarDayData } from "task_item.slint";
+
+export component Calendar {
+    in property <string> month-label;
+    in property <[CalendarDayData]> days;
+    callback previous-month();
+    callback next-month();
+    callback day-selected(string);
+
+    property <length> cell-size: 40px;
+
+    VerticalLayout {
+        spacing: 8px;
+
+        HorizontalLayout {
+            height: 40px;
+            spacing: 8px;
+
+            FontAwesomeButton {
+                icon: "\u{f053}";
+                icon-size: 16px;
+                icon-color: Style.icon-color;
+                background-color: transparent;
+                width: 40px;
+                height: 40px;
+                clicked => { root.previous-month(); }
+            }
+
+            Text {
+                text: root.month-label;
+                font-size: 16px;
+                font-weight: 700;
+                color: Style.calendar-text;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+                horizontal-stretch: 1;
+            }
+
+            FontAwesomeButton {
+                icon: "\u{f054}";
+                icon-size: 16px;
+                icon-color: Style.icon-color;
+                background-color: transparent;
+                width: 40px;
+                height: 40px;
+                clicked => { root.next-month(); }
+            }
+        }
+
+        HorizontalLayout {
+            height: 30px;
+            for label in ["M", "T", "W", "T", "F", "S", "S"]: Text {
+                text: label;
+                font-size: 12px;
+                color: Style.calendar-secondary-text;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+                width: root.cell-size;
+                horizontal-stretch: 1;
+            }
+        }
+
+        // Row 0
+        HorizontalLayout {
+            height: root.cell-size;
+            for idx in [0, 1, 2, 3, 4, 5, 6]: Rectangle {
+                horizontal-stretch: 1;
+                property <CalendarDayData> d: root.days[idx];
+                background: self.d.is-selected ? Style.calendar-highlight
+                    : (self.d.is-today ? #ffffff20 : transparent);
+                border-radius: root.cell-size / 2;
+
+                TouchArea {
+                    clicked => { root.day-selected(d.date-string); }
+                }
+
+                Text {
+                    text: d.day-number;
+                    font-size: 14px;
+                    color: d.is-current-month ? Style.calendar-text : Style.calendar-disabled-text;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+        }
+
+        // Row 1
+        HorizontalLayout {
+            height: root.cell-size;
+            for idx in [7, 8, 9, 10, 11, 12, 13]: Rectangle {
+                horizontal-stretch: 1;
+                property <CalendarDayData> d: root.days[idx];
+                background: self.d.is-selected ? Style.calendar-highlight
+                    : (self.d.is-today ? #ffffff20 : transparent);
+                border-radius: root.cell-size / 2;
+
+                TouchArea {
+                    clicked => { root.day-selected(d.date-string); }
+                }
+
+                Text {
+                    text: d.day-number;
+                    font-size: 14px;
+                    color: d.is-current-month ? Style.calendar-text : Style.calendar-disabled-text;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+        }
+
+        // Row 2
+        HorizontalLayout {
+            height: root.cell-size;
+            for idx in [14, 15, 16, 17, 18, 19, 20]: Rectangle {
+                horizontal-stretch: 1;
+                property <CalendarDayData> d: root.days[idx];
+                background: self.d.is-selected ? Style.calendar-highlight
+                    : (self.d.is-today ? #ffffff20 : transparent);
+                border-radius: root.cell-size / 2;
+
+                TouchArea {
+                    clicked => { root.day-selected(d.date-string); }
+                }
+
+                Text {
+                    text: d.day-number;
+                    font-size: 14px;
+                    color: d.is-current-month ? Style.calendar-text : Style.calendar-disabled-text;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+        }
+
+        // Row 3
+        HorizontalLayout {
+            height: root.cell-size;
+            for idx in [21, 22, 23, 24, 25, 26, 27]: Rectangle {
+                horizontal-stretch: 1;
+                property <CalendarDayData> d: root.days[idx];
+                background: self.d.is-selected ? Style.calendar-highlight
+                    : (self.d.is-today ? #ffffff20 : transparent);
+                border-radius: root.cell-size / 2;
+
+                TouchArea {
+                    clicked => { root.day-selected(d.date-string); }
+                }
+
+                Text {
+                    text: d.day-number;
+                    font-size: 14px;
+                    color: d.is-current-month ? Style.calendar-text : Style.calendar-disabled-text;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+        }
+
+        // Row 4
+        HorizontalLayout {
+            height: root.cell-size;
+            for idx in [28, 29, 30, 31, 32, 33, 34]: Rectangle {
+                horizontal-stretch: 1;
+                property <CalendarDayData> d: root.days[idx];
+                background: self.d.is-selected ? Style.calendar-highlight
+                    : (self.d.is-today ? #ffffff20 : transparent);
+                border-radius: root.cell-size / 2;
+
+                TouchArea {
+                    clicked => { root.day-selected(d.date-string); }
+                }
+
+                Text {
+                    text: d.day-number;
+                    font-size: 14px;
+                    color: d.is-current-month ? Style.calendar-text : Style.calendar-disabled-text;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+        }
+
+        // Row 5
+        HorizontalLayout {
+            height: root.cell-size;
+            for idx in [35, 36, 37, 38, 39, 40, 41]: Rectangle {
+                horizontal-stretch: 1;
+                property <CalendarDayData> d: root.days[idx];
+                background: self.d.is-selected ? Style.calendar-highlight
+                    : (self.d.is-today ? #ffffff20 : transparent);
+                border-radius: root.cell-size / 2;
+
+                TouchArea {
+                    clicked => { root.day-selected(d.date-string); }
+                }
+
+                Text {
+                    text: d.day-number;
+                    font-size: 14px;
+                    color: d.is-current-month ? Style.calendar-text : Style.calendar-disabled-text;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+        }
+    }
+}

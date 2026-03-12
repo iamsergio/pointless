@@ -1,0 +1,201 @@
+// SPDX-FileCopyrightText: 2025 Sergio Martins
+// SPDX-License-Identifier: MIT
+import { Style } from "../style.slint";
+import { FontAwesomeButton } from "font_awesome_button.slint";
+import { CheckBox } from "checkbox.slint";
+import { TagBadge } from "tag_badge.slint";
+import { Calendar } from "calendar.slint";
+import { TagDisplayData, CalendarDayData } from "task_item.slint";
+
+export component EditTaskPage {
+    in property <bool> is-visible;
+    in-out property <string> task-title;
+    in-out property <string> task-tag;
+    in-out property <bool> task-evening;
+    in-out property <bool> task-is-goal;
+    in-out property <string> task-notes;
+    in property <[TagDisplayData]> available-tags;
+    in property <string> calendar-month-label;
+    in property <[CalendarDayData]> calendar-days;
+
+    callback back();
+    callback save(string, string, bool, bool, string);
+    callback calendar-previous-month();
+    callback calendar-next-month();
+    callback calendar-day-selected(string);
+
+    if root.is-visible: Rectangle {
+        width: 100%;
+        height: 100%;
+        background: Style.background;
+
+        VerticalLayout {
+            padding: 20px;
+            spacing: 15px;
+
+            HorizontalLayout {
+                height: 48px;
+                spacing: 15px;
+
+                FontAwesomeButton {
+                    icon: "\u{f053}";
+                    icon-size: 20px;
+                    icon-color: Style.icon-color;
+                    background-color: transparent;
+                    width: 48px;
+                    height: 48px;
+                    clicked => { root.back(); }
+                }
+
+                Text {
+                    text: "Edit Task";
+                    font-size: 20px;
+                    font-weight: 700;
+                    color: #ffffff;
+                    vertical-alignment: center;
+                    horizontal-stretch: 1;
+                }
+
+                FontAwesomeButton {
+                    icon: "\u{f00c}";
+                    icon-size: 20px;
+                    icon-color: Style.button-color;
+                    background-color: transparent;
+                    width: 48px;
+                    height: 48px;
+                    clicked => {
+                        root.save(
+                            title-input.text,
+                            root.task-tag,
+                            root.task-evening,
+                            root.task-is-goal,
+                            notes-input.text
+                        );
+                    }
+                }
+            }
+
+            Text {
+                text: "Title";
+                font-size: 14px;
+                color: Style.task-secondary-text-color;
+            }
+
+            Rectangle {
+                height: 50px;
+                border-radius: 6px;
+                background: Style.task-background;
+
+                title-input := TextInput {
+                    x: 15px;
+                    width: parent.width - 30px;
+                    y: (parent.height - self.preferred-height) / 2;
+                    color: #ffffff;
+                    font-size: 18px;
+                    text: root.task-title;
+                }
+            }
+
+            Text {
+                text: "Tag";
+                font-size: 14px;
+                color: Style.task-secondary-text-color;
+            }
+
+            Flickable {
+                height: 40px;
+                viewport-width: tag-layout.preferred-width;
+
+                tag-layout := HorizontalLayout {
+                    spacing: 8px;
+
+                    TagBadge {
+                        name: "None";
+                        badge-color: #555555;
+                        is-selected: root.task-tag == "";
+                        clicked => { root.task-tag = ""; }
+                    }
+
+                    for tag in root.available-tags: TagBadge {
+                        name: tag.name;
+                        badge-color: tag.color;
+                        is-selected: root.task-tag == tag.name;
+                        clicked => { root.task-tag = tag.name; }
+                    }
+                }
+            }
+
+            HorizontalLayout {
+                height: 32px;
+                spacing: 20px;
+
+                HorizontalLayout {
+                    spacing: 8px;
+                    width: self.preferred-width;
+                    CheckBox {
+                        checked <=> root.task-evening;
+                    }
+                    Text {
+                        text: "Evening";
+                        font-size: 14px;
+                        color: Style.task-text-color;
+                        vertical-alignment: center;
+                    }
+                }
+
+                HorizontalLayout {
+                    spacing: 8px;
+                    width: self.preferred-width;
+                    CheckBox {
+                        checked <=> root.task-is-goal;
+                    }
+                    Text {
+                        text: "Goal";
+                        font-size: 14px;
+                        color: Style.task-text-color;
+                        vertical-alignment: center;
+                    }
+                }
+
+                Rectangle { horizontal-stretch: 1; }
+            }
+
+            Text {
+                text: "Notes";
+                font-size: 14px;
+                color: Style.task-secondary-text-color;
+            }
+
+            Rectangle {
+                height: 80px;
+                border-radius: 6px;
+                background: Style.task-background;
+
+                notes-input := TextInput {
+                    x: 15px;
+                    y: 10px;
+                    width: parent.width - 30px;
+                    height: parent.height - 20px;
+                    color: #ffffff;
+                    font-size: 14px;
+                    text: root.task-notes;
+                    wrap: word-wrap;
+                }
+            }
+
+            Text {
+                text: "Date";
+                font-size: 14px;
+                color: Style.task-secondary-text-color;
+            }
+
+            Calendar {
+                month-label: root.calendar-month-label;
+                days: root.calendar-days;
+                previous-month => { root.calendar-previous-month(); }
+                next-month => { root.calendar-next-month(); }
+                day-selected(ds) => { root.calendar-day-selected(ds); }
+            }
+        }
+    }
+}

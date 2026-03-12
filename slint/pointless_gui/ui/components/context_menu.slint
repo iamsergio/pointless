@@ -1,0 +1,95 @@
+// SPDX-FileCopyrightText: 2025 Sergio Martins
+// SPDX-License-Identifier: MIT
+import { Style } from "../style.slint";
+import { MenuItem } from "menu_item.slint";
+
+export component ContextMenu {
+    in property <bool> is-visible;
+    in property <string> task-uuid;
+    in property <bool> move-to-current-visible;
+    in property <bool> move-to-soon-visible;
+    in property <bool> move-to-later-visible;
+    in property <bool> move-to-tomorrow-visible;
+    in property <bool> move-to-evening-visible;
+    in property <bool> delete-visible;
+
+    callback close();
+    callback edit(string);
+    callback edit-notes(string);
+    callback move-to-current(string);
+    callback move-to-soon(string);
+    callback move-to-later(string);
+    callback move-to-tomorrow(string);
+    callback move-to-next-monday(string);
+    callback move-to-evening(string);
+    callback delete(string);
+
+    if root.is-visible: Rectangle {
+        width: 100%;
+        height: 100%;
+        background: #00000080;
+
+        TouchArea {
+            clicked => { root.close(); }
+        }
+
+        Rectangle {
+            y: parent.height - self.height;
+            width: 100%;
+            height: menu-content.preferred-height + 24px;
+            background: Style.task-background;
+            border-radius: 12px;
+
+            menu-content := VerticalLayout {
+                padding-top: 12px;
+                padding-bottom: 12px;
+
+                MenuItem {
+                    label: "Edit...";
+                    clicked => { root.edit(root.task-uuid); }
+                }
+
+                MenuItem {
+                    label: "Edit notes...";
+                    clicked => { root.edit-notes(root.task-uuid); }
+                }
+
+                if root.move-to-current-visible: MenuItem {
+                    label: "Move to Current";
+                    clicked => { root.move-to-current(root.task-uuid); }
+                }
+
+                if root.move-to-soon-visible: MenuItem {
+                    label: "Move to Soon";
+                    clicked => { root.move-to-soon(root.task-uuid); }
+                }
+
+                if root.move-to-later-visible: MenuItem {
+                    label: "Move to Later";
+                    clicked => { root.move-to-later(root.task-uuid); }
+                }
+
+                if root.move-to-tomorrow-visible: MenuItem {
+                    label: "Move to Tomorrow";
+                    clicked => { root.move-to-tomorrow(root.task-uuid); }
+                }
+
+                MenuItem {
+                    label: "Move to Next Monday";
+                    clicked => { root.move-to-next-monday(root.task-uuid); }
+                }
+
+                if root.move-to-evening-visible: MenuItem {
+                    label: "Move to Evening";
+                    clicked => { root.move-to-evening(root.task-uuid); }
+                }
+
+                if root.delete-visible: MenuItem {
+                    label: "Delete";
+                    text-color: #ff4444;
+                    clicked => { root.delete(root.task-uuid); }
+                }
+            }
+        }
+    }
+}

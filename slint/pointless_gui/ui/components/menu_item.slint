@@ -1,0 +1,40 @@
+// SPDX-FileCopyrightText: 2025 Sergio Martins
+// SPDX-License-Identifier: MIT
+import { Style } from "../style.slint";
+
+export component MenuItem {
+    in property <string> label;
+    in property <color> text-color: Style.task-text-color;
+    callback clicked;
+
+    height: Style.menu-height;
+
+    Rectangle {
+        width: 100%;
+        height: 100%;
+        background: touch.pressed ? #ffffff10 : (touch.has-hover ? #ffffff08 : transparent);
+
+        touch := TouchArea {
+            clicked => { root.clicked(); }
+        }
+
+        HorizontalLayout {
+            padding-left: 20px;
+            padding-right: 20px;
+
+            Text {
+                text: root.label;
+                font-size: 16px;
+                color: root.text-color;
+                vertical-alignment: center;
+            }
+        }
+    }
+
+    Rectangle {
+        y: parent.height - 1px;
+        height: 1px;
+        width: 100%;
+        background: #ffffff10;
+    }
+}

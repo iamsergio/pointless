@@ -7,7 +7,8 @@ import { FontAwesomeButton } from "font_awesome_button.slint";
 export component WeekView {
     in property <[WeekDayData]> days;
     callback toggle-done(string);
-    callback add-task-for-day(int);
+    callback task-clicked(string);
+    callback add-task-for-day(string);
 
     Flickable {
         viewport-height: content.preferred-height;
@@ -38,7 +39,7 @@ export component WeekView {
                         background-color: transparent;
                         width: 40px;
                         height: 40px;
-                        clicked => { root.add-task-for-day(idx); }
+                        clicked => { root.add-task-for-day(day.date-string); }
                     }
                 }
 
@@ -51,6 +52,7 @@ export component WeekView {
                 for t in day.tasks: TaskItem {
                     task: t;
                     toggle-done(uuid) => { root.toggle-done(uuid); }
+                    task-clicked(uuid) => { root.task-clicked(uuid); }
                 }
             }
         }
