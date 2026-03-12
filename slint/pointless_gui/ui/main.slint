@@ -4,9 +4,11 @@ import { Style } from "style.slint";
 import { ViewButton } from "components/view_button.slint";
 import { FontAwesomeButton } from "components/font_awesome_button.slint";
 import { TaskList } from "components/task_list.slint";
-import { TaskData } from "components/task_item.slint";
+import { TaskData, WeekDayData } from "components/task_item.slint";
+import { WeekNavigator } from "components/week_navigator.slint";
+import { WeekView } from "components/week_view.slint";
 
-export { TaskData }
+export { TaskData, WeekDayData }
 
 export enum ViewType {
     Week,
@@ -25,7 +27,13 @@ export component MainWindow inherits Window {
     in property <[TaskData]> soon-tasks;
     in property <[TaskData]> later-tasks;
     in property <[TaskData]> goals-tasks;
+    in property <[WeekDayData]> week-days;
+    in property <string> week-date-range-text;
     callback toggle-done(string);
+    callback navigate-previous-week();
+    callback navigate-next-week();
+    callback navigate-today();
+    callback add-task-for-day(int);
 
     VerticalLayout {
         padding: 30px;
@@ -70,9 +78,21 @@ export component MainWindow inherits Window {
             background: Style.task-background;
         }
 
-        if root.current-view == ViewType.Week: Rectangle {
+        if root.current-view == ViewType.Week: VerticalLayout {
             vertical-stretch: 1;
-            background: transparent;
+
+            WeekNavigator {
+                date-range-text: root.week-date-range-text;
+                navigate-previous => { root.navigate-previous-week(); }
+                navigate-next => { root.navigate-next-week(); }
+                navigate-today => { root.navigate-today(); }
+            }
+
+            WeekView {
+                days: root.week-days;
+                toggle-done(uuid) => { root.toggle-done(uuid); }
+                add-task-for-day(idx) => { root.add-task-for-day(idx); }
+            }
         }
 
         if root.current-view == ViewType.Soon: TaskList {

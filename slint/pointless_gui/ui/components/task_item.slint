@@ -18,6 +18,13 @@ export struct TaskData {
     is-goal: bool,
 }
 
+export struct WeekDayData {
+    pretty-date: string,
+    is-past: bool,
+    has-tasks: bool,
+    tasks: [TaskData],
+}
+
 export component TaskItem {
     in property <TaskData> task;
     callback toggle-done(string);

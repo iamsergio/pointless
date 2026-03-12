@@ -1,0 +1,52 @@
+// SPDX-FileCopyrightText: 2025 Sergio Martins
+// SPDX-License-Identifier: MIT
+import { Style } from "../style.slint";
+import { FontAwesomeButton } from "font_awesome_button.slint";
+
+export component WeekNavigator {
+    in property <string> date-range-text;
+    callback navigate-previous();
+    callback navigate-next();
+    callback navigate-today();
+
+    height: 60px;
+
+    HorizontalLayout {
+        alignment: center;
+        spacing: 15px;
+
+        FontAwesomeButton {
+            icon: "\u{f053}";
+            icon-size: 18px;
+            icon-color: Style.icon-color;
+            background-color: transparent;
+            width: 40px;
+            height: 40px;
+            clicked => { root.navigate-previous(); }
+        }
+
+        TouchArea {
+            width: date-text.preferred-width + 20px;
+            height: 40px;
+            clicked => { root.navigate-today(); }
+
+            date-text := Text {
+                text: root.date-range-text;
+                font-size: 18px;
+                color: Style.text-color2;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+            }
+        }
+
+        FontAwesomeButton {
+            icon: "\u{f054}";
+            icon-size: 18px;
+            icon-color: Style.icon-color;
+            background-color: transparent;
+            width: 40px;
+            height: 40px;
+            clicked => { root.navigate-next(); }
+        }
+    }
+}
