@@ -404,8 +404,8 @@ std::expected<void, TraceableError> DataController::refresh(bool isOfflineMode)
     }
 
     if (!isAuthenticated()) {
-        // not authed and not offline mode, nothing to do
         _isRefreshing = false;
+        Q_EMIT isAuthenticatedChanged();
         return {};
     }
 
