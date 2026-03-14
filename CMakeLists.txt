@@ -2,7 +2,9 @@
 #
 # SPDX-License-Identifier: MIT
 
-set(VCPKG_OVERLAY_TRIPLETS "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/vcpkg/custom_triplets/")
+if(NOT POINTLESS_YOCTO_BUILD)
+  set(VCPKG_OVERLAY_TRIPLETS "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/vcpkg/custom_triplets/")
+endif()
 include(cmake/ios-utils.cmake)
 
 if(POINTLESS_IOS_BUILD)
@@ -54,8 +56,10 @@ if(POINTLESS_IOS_BUILD)
       CACHE STRING "iOS targeted device family" FORCE)
 endif()
 
-if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-  set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/3rdparty/vcpkg/scripts/buildsystems/vcpkg.cmake)
+if(NOT POINTLESS_YOCTO_BUILD)
+  if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+    set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/3rdparty/vcpkg/scripts/buildsystems/vcpkg.cmake)
+  endif()
 endif()
 
 cmake_minimum_required(VERSION 3.21)
@@ -156,6 +160,11 @@ if(IOS)
   configure_file(${CMAKE_SOURCE_DIR}/src/ios/ExportOptions-TestFlight.plist.in ${CMAKE_BINARY_DIR}/ExportOptions-TestFlight.plist @ONLY)
 elseif(APPLE)
   configure_file(${CMAKE_SOURCE_DIR}/src/mac/Info.plist.in ${CMAKE_BINARY_DIR}/Info.plist @ONLY)
+endif()
+
+if(POINTLESS_YOCTO_BUILD)
+  add_subdirectory(3rdparty/cpr)
+  add_subdirectory(3rdparty/glaze)
 endif()
 
 if(POINTLESS_ENABLE_TESTS)

@@ -83,6 +83,14 @@
       }
     },
     {
+      "name": "yocto-rel",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "POINTLESS_YOCTO_BUILD": "ON"
+      }
+    },
+    {
       "name": "clang",
       "hidden": true,
       "environment": {
