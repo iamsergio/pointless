@@ -4,3 +4,9 @@
 [submodule "3rdparty/spix"]
 	path = 3rdparty/spix
 	url = https://github.com/faaxm/spix.git
+[submodule "3rdparty/glaze"]
+	path = 3rdparty/glaze
+	url = https://github.com/stephenberry/glaze.git
+[submodule "3rdparty/cpr"]
+	path = 3rdparty/cpr
+	url = https://github.com/libcpr/cpr.git
