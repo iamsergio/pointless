@@ -155,7 +155,7 @@ Rectangle {
             Tag {
                 tagName: root.taskTagName
                 isInteractive: false
-                visible: root.showTags && tagName !== "" && !root.useSmallVariant
+                visible: root.showTags && tagName !== ""
                 Layout.alignment: Qt.AlignVCenter
                 onClicked: {
                     GuiController.currentTag = tagName;
