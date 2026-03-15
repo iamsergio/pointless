@@ -18,7 +18,7 @@
 #include <QDate>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 9, 0)
-#define beginFilterChange() (void)0
+#define beginFilterChange() ( void )0
 #define endFilterChange() invalidateFilter()
 #endif
 

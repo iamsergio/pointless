@@ -7,7 +7,6 @@ if(NOT POINTLESS_YOCTO_BUILD)
   find_package(cpr CONFIG REQUIRED)
 endif()
 
-
 find_package(ZLIB REQUIRED)
 
 if(POINTLESS_ENABLE_TESTS)
@@ -59,10 +58,7 @@ else()
   find_package(pugixml CONFIG REQUIRED)
   find_package(LibIcal CONFIG REQUIRED)
   if(POINTLESS_YOCTO_BUILD AND CMAKE_SYSROOT)
-    set_property(TARGET ical PROPERTY INTERFACE_LINK_LIBRARIES
-        "${CMAKE_SYSROOT}/usr/lib/libicuuc.so"
-        "${CMAKE_SYSROOT}/usr/lib/libicui18n.so"
-    )
+    set_property(TARGET ical PROPERTY INTERFACE_LINK_LIBRARIES "${CMAKE_SYSROOT}/usr/lib/libicuuc.so" "${CMAKE_SYSROOT}/usr/lib/libicui18n.so")
     # libidn2 (pulled in by static libcurl) depends on libunistring
     target_link_libraries(pointless_core PRIVATE unistring)
   endif()

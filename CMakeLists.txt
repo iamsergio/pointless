@@ -170,8 +170,15 @@ if(POINTLESS_YOCTO_BUILD)
   list(APPEND CMAKE_MODULE_PATH "$ENV{SDKTARGETSYSROOT}/usr/lib/cmake/Qt6/platforms")
 
   # Force static libs and use system zlib from Yocto SDK
-  set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-  set(CURL_ZLIB OFF CACHE STRING "" FORCE)
+  set(BUILD_SHARED_LIBS
+      OFF
+      CACHE BOOL "" FORCE)
+  set(CURL_ZLIB
+      OFF
+      CACHE STRING "" FORCE)
+  set(CPR_USE_SYSTEM_CURL
+      ON
+      CACHE BOOL "" FORCE)
 
   add_subdirectory(3rdparty/cpr)
   add_subdirectory(3rdparty/glaze)
