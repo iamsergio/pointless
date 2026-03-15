@@ -63,6 +63,8 @@ else()
         "${CMAKE_SYSROOT}/usr/lib/libicuuc.so"
         "${CMAKE_SYSROOT}/usr/lib/libicui18n.so"
     )
+    # libidn2 (pulled in by static libcurl) depends on libunistring
+    target_link_libraries(pointless_core PRIVATE unistring)
   endif()
   target_sources(pointless_core PRIVATE linux_calendar_provider.cpp linux_calendar_provider.h caldav_client.cpp caldav_client.h ical_parser.cpp ical_parser.h)
   target_link_libraries(pointless_core PRIVATE pugixml::pugixml ical)
