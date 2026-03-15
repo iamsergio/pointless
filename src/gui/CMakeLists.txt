@@ -73,29 +73,17 @@ qt_add_qml_module(
   data_controller.cpp
   error_controller.cpp
   pomodoro_controller.cpp
-  pomodoro_controller.h
   date_utils.cpp
   local_settings.cpp
   utils.cpp
-  gui_controller.h
-  local_settings.h
-  utils.h
   taskmodel.cpp
-  taskmodel.h
   tagmodel.cpp
-  tagmodel.h
   taskfiltermodel.cpp
-  taskfiltermodel.h
   tagfiltermodel.cpp
-  tagfiltermodel.h
   weekdayfiltermodel.cpp
-  weekdayfiltermodel.h
   weekdaymodel.cpp
-  weekdaymodel.h
   calendarmodel.cpp
-  calendarmodel.h
   calendarsmodel.cpp
-  calendarsmodel.h
   RESOURCES
   fonts/FontAwesome7Brands-Regular-400.otf
   fonts/FontAwesome7Free-Regular-400.otf
