@@ -56,13 +56,21 @@ std::string Context::clientDataDir()
         return _clientDataDir.value();
     }
 
-    // fallback to environment variable
     const char *envVar = std::getenv("POINTLESS_CLIENT_DATA_DIR");
-    if (envVar == nullptr) {
-        pointless::abort("FATAL: POINTLESS_CLIENT_DATA_DIR environment variable is not set");
+    if (envVar != nullptr) {
+        return envVar;
     }
 
-    return envVar;
+    P_LOG_WARNING("POINTLESS_CLIENT_DATA_DIR environment variable is not set, falling back to home directory");
+
+    const char *home = std::getenv("HOME");
+    if (home == nullptr) {
+        pointless::abort("FATAL: Neither POINTLESS_CLIENT_DATA_DIR nor HOME environment variables are set");
+    }
+
+    std::string fallback = std::filesystem::path(home) / ".config" / "pointless";
+    std::filesystem::create_directories(fallback);
+    return fallback;
 }
 
 void Context::setClientDataDir(const std::string &dir)
