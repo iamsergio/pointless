@@ -85,6 +85,7 @@
     {
       "name": "yocto-rel",
       "inherits": "base",
+      "toolchainFile": "$penv{CMAKE_TOOLCHAIN_FILE}",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "POINTLESS_YOCTO_BUILD": "ON"

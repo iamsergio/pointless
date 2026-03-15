@@ -27,8 +27,12 @@ WeekdayFilterModel::WeekdayFilterModel(QObject *parent)
     connect(this, &QAbstractListModel::layoutChanged, this, &WeekdayFilterModel::countChanged);
 
     connect(GuiController::instance(), &GuiController::showImmediateOnlyChanged, this, [this] {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
         beginFilterChange();
         endFilterChange();
+#else
+        invalidateFilter();
+#endif
     });
 }
 
@@ -66,8 +70,12 @@ void WeekdayFilterModel::setSource(QObject *source)
             auto *taskModel = weekdayModel->data(idx, WeekdayModel::TasksRole).value<TaskFilterModel *>();
             if (taskModel != nullptr) {
                 connect(taskModel, &TaskFilterModel::emptyChanged, this, [this]() {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
                     beginFilterChange();
                     endFilterChange();
+#else
+                    invalidateFilter();
+#endif
                 });
             } else {
                 P_LOG_CRITICAL("TaskFilterModel is null at row {}", i);

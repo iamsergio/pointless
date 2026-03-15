@@ -2,8 +2,12 @@
 #
 # SPDX-License-Identifier: MIT
 
-find_package(glaze CONFIG REQUIRED)
-find_package(cpr CONFIG REQUIRED)
+if(NOT POINTLESS_YOCTO_BUILD)
+  find_package(glaze CONFIG REQUIRED)
+  find_package(cpr CONFIG REQUIRED)
+endif()
+
+
 find_package(ZLIB REQUIRED)
 
 if(POINTLESS_ENABLE_TESTS)
@@ -43,8 +47,8 @@ endif()
 
 target_link_libraries(
   pointless_core
-  PUBLIC glaze::glaze
-  PRIVATE spdlog::spdlog cpr::cpr ZLIB::ZLIB)
+  PUBLIC glaze::glaze spdlog::spdlog
+  PRIVATE cpr::cpr ZLIB::ZLIB)
 
 if(APPLE)
   find_library(EVENTKIT_LIB EventKit REQUIRED)
@@ -54,6 +58,12 @@ if(APPLE)
 else()
   find_package(pugixml CONFIG REQUIRED)
   find_package(LibIcal CONFIG REQUIRED)
+  if(POINTLESS_YOCTO_BUILD AND CMAKE_SYSROOT)
+    set_property(TARGET ical PROPERTY INTERFACE_LINK_LIBRARIES
+        "${CMAKE_SYSROOT}/usr/lib/libicuuc.so"
+        "${CMAKE_SYSROOT}/usr/lib/libicui18n.so"
+    )
+  endif()
   target_sources(pointless_core PRIVATE linux_calendar_provider.cpp linux_calendar_provider.h caldav_client.cpp caldav_client.h ical_parser.cpp ical_parser.h)
   target_link_libraries(pointless_core PRIVATE pugixml::pugixml ical)
 endif()

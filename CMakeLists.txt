@@ -163,6 +163,12 @@ elseif(APPLE)
 endif()
 
 if(POINTLESS_YOCTO_BUILD)
+  if(NOT DEFINED ENV{SDKTARGETSYSROOT})
+    message(FATAL_ERROR "SDKTARGETSYSROOT environment variable is not set")
+  endif()
+
+  list(APPEND CMAKE_MODULE_PATH "$ENV{SDKTARGETSYSROOT}/usr/lib/cmake/Qt6/platforms")
+
   add_subdirectory(3rdparty/cpr)
   add_subdirectory(3rdparty/glaze)
 endif()

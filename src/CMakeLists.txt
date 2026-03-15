@@ -5,4 +5,6 @@
 add_subdirectory(core)
 add_subdirectory(gui)
 
-find_package(cpr CONFIG REQUIRED)
+if(NOT POINTLESS_YOCTO_BUILD)
+  find_package(cpr CONFIG REQUIRED)
+endif()
