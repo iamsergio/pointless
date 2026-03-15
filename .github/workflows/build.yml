@@ -37,7 +37,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         submodules: recursive
 
@@ -86,7 +86,7 @@ jobs:
         clang++ --version
 
     - name: Checkout CI tools
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         repository: KDABLabs/ci-release-tools
         path: ci-release-tools
