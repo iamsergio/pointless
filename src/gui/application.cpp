@@ -3,6 +3,7 @@
 
 #include "application.h"
 #include "gui_controller.h"
+#include "data_controller.h"
 
 #include "gui/qt_logger.h"
 #include "core/context.h"
@@ -16,6 +17,7 @@
 #include <QStandardPaths>
 #include <QSettings>
 
+#include <chrono>
 #include <cstdlib>
 
 using namespace pointless;
@@ -55,6 +57,9 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
     parser.addOption(loginOption);
 #endif
 
+    QCommandLineOption benchmarkOption(QStringLiteral("benchmark"), QStringLiteral("Run benchmark after login"));
+    parser.addOption(benchmarkOption);
+
     parser.process(*this);
 
     GuiController::setDebugMode(parser.isSet(debugOption));
@@ -81,6 +86,42 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
 
     // Initialize the controllers and models before loading QML
     GuiController::instance();
+
+    if (parser.isSet(benchmarkOption)) {
+        auto *gc = GuiController::instance();
+        connect(gc->dataController(), &DataController::refreshFinished, gc, [gc](bool success, const QString &) {
+            if (!success || !gc->isAuthenticated())
+                return;
+
+            auto switchView = [gc](GuiController::ViewType gcView, TaskFilterModel::ViewType filterView, const char *viewName) {
+                gc->setCurrentViewType(gcView);
+                gc->taskFilterModel()->setViewType(filterView);
+                P_LOG_INFO("Benchmark [{}]: filtered={} tasks, total={}", viewName, gc->taskFilterModel()->rowCount(), gc->taskModel()->rowCount());
+            };
+
+            using GV = GuiController::ViewType;
+            using FV = TaskFilterModel::ViewType;
+
+            using namespace std::chrono_literals;
+            constexpr auto benchmarkInterval = 500ms;
+
+            auto *t1 = new QTimer(gc);
+            t1->setSingleShot(true);
+            auto *t2 = new QTimer(gc);
+            t2->setSingleShot(true);
+            auto *t3 = new QTimer(gc);
+            t3->setSingleShot(true);
+            auto *t4 = new QTimer(gc);
+            t4->setSingleShot(true);
+
+            connect(t1, &QTimer::timeout, gc, [switchView, t2] { switchView(GV::Soon, FV::Soon, "Soon"); t2->start(benchmarkInterval); });
+            connect(t2, &QTimer::timeout, gc, [switchView, t3] { switchView(GV::Later, FV::Later, "Later"); t3->start(benchmarkInterval); });
+            connect(t3, &QTimer::timeout, gc, [switchView, t4] { switchView(GV::Goals, FV::Goals, "Goals"); t4->start(benchmarkInterval); });
+            connect(t4, &QTimer::timeout, gc, [switchView] { switchView(GV::Week, FV::Week, "Week"); QCoreApplication::exit(0); });
+
+            t1->start(benchmarkInterval);
+        });
+    }
 
     QQuickStyle::setStyle(QStringLiteral("Fusion"));
 

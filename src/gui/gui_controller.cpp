@@ -23,6 +23,7 @@
 #include "core/date_utils.h"
 #include "core/Clock.h"
 
+#include <QGuiApplication>
 #include <QTimer>
 #include <QHash>
 #include <QObject>
@@ -565,6 +566,11 @@ bool GuiController::isMacOS()
 #else
     return false;
 #endif
+}
+
+bool GuiController::isEGLFS()
+{
+    return qApp->platformName() == QLatin1String("eglfs");
 }
 
 QString GuiController::uuidBeingEdited() const
