@@ -24,6 +24,10 @@ if(POINTLESS_DEVELOPER_MODE)
   target_compile_definitions(pointless_gui PRIVATE QT_QML_DEBUG)
 endif()
 
+if(POINTLESS_YOCTO_BUILD)
+  target_compile_definitions(pointless_gui PRIVATE POINTLESS_OS_YOCTO)
+endif()
+
 set(PLAIN_QML_FILES
     Main.qml
     WeekNavigator.qml

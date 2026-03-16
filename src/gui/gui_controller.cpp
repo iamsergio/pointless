@@ -549,6 +549,15 @@ bool GuiController::isIOS()
 #endif
 }
 
+bool GuiController::isYocto()
+{
+#ifdef POINTLESS_OS_YOCTO
+    return true;
+#else
+    return false;
+#endif
+}
+
 bool GuiController::isMacOS()
 {
 #ifdef Q_OS_MACOS

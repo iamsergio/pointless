@@ -13,7 +13,7 @@ Item {
     readonly property bool isMobile: GuiController.isMobile
 
     function fromPixel(px) {
-        if (root.isMobile)
+        if (root.isMobile || GuiController.isYocto)
             return px;
 
         return px * scaleFactor;

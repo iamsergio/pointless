@@ -46,6 +46,7 @@ class GuiController : public QObject
     Q_PROPERTY(bool isIOS READ isIOS CONSTANT)
     Q_PROPERTY(bool isVerbose READ isVerbose CONSTANT)
     Q_PROPERTY(bool isMacOS READ isMacOS CONSTANT)
+    Q_PROPERTY(bool isYocto READ isYocto CONSTANT)
     Q_PROPERTY(bool isEditingTask READ isEditingTask NOTIFY isEditingTaskChanged)
     Q_PROPERTY(QString uuidBeingEdited READ uuidBeingEdited NOTIFY uuidBeingEditedChanged)
     Q_PROPERTY(QString titleInEditor READ titleInEditor NOTIFY titleInEditorChanged)
@@ -128,6 +129,7 @@ public:
     [[nodiscard]] static bool isIOS();
     [[nodiscard]] static bool isVerbose();
     [[nodiscard]] static bool isMacOS();
+    [[nodiscard]] static bool isYocto();
     [[nodiscard]] bool isEditingTask() const;
     [[nodiscard]] bool isEditingSomething() const;
     void setIsEditingTask(bool isEditing);
