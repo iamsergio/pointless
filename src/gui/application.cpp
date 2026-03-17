@@ -14,6 +14,7 @@
 #include <QDebug>
 #include <QGuiApplication>
 #include <QQuickStyle>
+#include <QQuickWindow>
 #include <QStandardPaths>
 #include <QSettings>
 
@@ -59,6 +60,9 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
 
     QCommandLineOption benchmarkOption(QStringLiteral("benchmark"), QStringLiteral("Run benchmark after login"));
     parser.addOption(benchmarkOption);
+
+    QCommandLineOption benchmarkStartupOption(QStringLiteral("benchmark-startup"), QStringLiteral("Exit after first frame is rendered"));
+    parser.addOption(benchmarkStartupOption);
 
     parser.process(*this);
 
@@ -130,6 +134,16 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
     if (_engine.rootObjects().isEmpty()) {
         P_LOG_ERROR("No root objects loaded");
         std::exit(-1);
+    }
+
+    if (parser.isSet(benchmarkStartupOption)) {
+        auto *window = qobject_cast<QQuickWindow *>(_engine.rootObjects().first());
+        if (window) {
+            connect(window, &QQuickWindow::frameSwapped, this, [this] {
+                P_LOG_INFO("Benchmark startup: first frame rendered, exiting");
+                quit();
+            });
+        }
     }
 }
 
