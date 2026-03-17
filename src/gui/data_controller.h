@@ -63,6 +63,7 @@ public:
     [[nodiscard]] int visibleTaskCountForTag(const QString &tagName) const;
     [[nodiscard]] bool containsTag(const QString &tagName) const;
     void scheduleSave();
+    void waitForAsyncOperations();
 
 #ifdef POINTLESS_ENABLE_TESTS
     std::expected<pointless::core::Data, TraceableError> refreshBlocking();

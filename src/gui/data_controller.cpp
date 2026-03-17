@@ -693,3 +693,15 @@ void DataController::scheduleSave()
 {
     _saveToDiskTimer.start();
 }
+
+void DataController::waitForAsyncOperations()
+{
+    if (_isRefreshing) {
+        P_LOG_INFO("Waiting for refresh to finish...");
+        _refreshWatcher->waitForFinished();
+    }
+    if (_isLoggingIn) {
+        P_LOG_INFO("Waiting for login to finish...");
+        _loginWatcher->waitForFinished();
+    }
+}

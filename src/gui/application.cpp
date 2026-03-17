@@ -150,5 +150,6 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
 Application::~Application()
 {
     P_LOG_INFO("Application exiting");
+    GuiController::instance()->dataController()->waitForAsyncOperations();
     delete GuiController::instance();
 }
