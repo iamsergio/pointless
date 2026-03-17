@@ -297,6 +297,16 @@ bool DataController::removeTag(const QString &tagName)
     return false;
 }
 
+bool DataController::removeTask(const QString &taskUuid)
+{
+    if (_localData.removeTask(taskUuid.toStdString())) {
+        _saveToDiskTimer.start();
+        _taskModel->reload();
+        return true;
+    }
+    return false;
+}
+
 void DataController::cleanupOldData()
 {
     if (_localData.cleanupOldData() > 0) {

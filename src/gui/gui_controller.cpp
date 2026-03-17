@@ -1177,11 +1177,7 @@ void GuiController::setNewTagPopupVisible(bool visible)
 
 void GuiController::deleteTask(const QString &taskUuid)
 {
-    auto *task = _dataController->taskModel()->taskForUuid(taskUuid);
-    if (task == nullptr) {
-        P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
-        return;
-    }
+    _dataController->removeTask(taskUuid);
 }
 
 bool GuiController::taskMenuVisible() const
