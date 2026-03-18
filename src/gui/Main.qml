@@ -14,7 +14,7 @@ QC.ApplicationWindow {
     visible: true
     width: Style.fromPixel(640)
     height: Style.fromPixel(640)
-    visibility: GuiController.isMobile ? QC.ApplicationWindow.FullScreen : QC.ApplicationWindow.Windowed
+    visibility: (GuiController.isMobile || GuiController.isEGLFS) ? QC.ApplicationWindow.FullScreen : QC.ApplicationWindow.Windowed
     flags: Qt.Window | Qt.ExpandedClientAreaHint | Qt.NoTitleBarBackgroundHint
 
     title: GuiController.windowTitle

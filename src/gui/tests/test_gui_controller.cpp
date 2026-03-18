@@ -336,6 +336,106 @@ TEST(GuiControllerTest, ParsePassStoreEmptyOutput)
     EXPECT_TRUE(result.isEmpty());
 }
 
+TEST(GuiControllerTest, ParsePassStoreNumberedFields)
+{
+    const auto result = GuiController::parsePassStoreOutput(
+        "user:foo\npass:bar\n"
+        "caldav-url-2:https://server2.example.com/dav\n"
+        "caldav-user-2:user2\n"
+        "caldav-pass-2:pass2\n"
+        "caldav-url-3:https://server3.example.com/dav\n"
+        "caldav-user-3:user3\n"
+        "caldav-pass-3:pass3");
+    EXPECT_EQ(result["user"].toString(), "foo");
+    EXPECT_EQ(result["caldav-url-2"].toString(), "https://server2.example.com/dav");
+    EXPECT_EQ(result["caldav-user-2"].toString(), "user2");
+    EXPECT_EQ(result["caldav-pass-2"].toString(), "pass2");
+    EXPECT_EQ(result["caldav-url-3"].toString(), "https://server3.example.com/dav");
+    EXPECT_EQ(result["caldav-user-3"].toString(), "user3");
+    EXPECT_EQ(result["caldav-pass-3"].toString(), "pass3");
+    EXPECT_FALSE(result.contains("caldav-url"));
+}
+
+TEST(GuiControllerTest, ParsePassStoreMixedUnnumberedAndNumbered)
+{
+    const auto result = GuiController::parsePassStoreOutput(
+        "user:foo\npass:bar\n"
+        "caldav-url:https://server1.example.com/dav\n"
+        "caldav-user:user1\n"
+        "caldav-pass:pass1\n"
+        "caldav-url-2:https://server2.example.com/dav\n"
+        "caldav-user-2:user2\n"
+        "caldav-pass-2:pass2");
+    EXPECT_EQ(result["caldav-url"].toString(), "https://server1.example.com/dav");
+    EXPECT_EQ(result["caldav-user"].toString(), "user1");
+    EXPECT_EQ(result["caldav-pass"].toString(), "pass1");
+    EXPECT_EQ(result["caldav-url-2"].toString(), "https://server2.example.com/dav");
+    EXPECT_EQ(result["caldav-user-2"].toString(), "user2");
+    EXPECT_EQ(result["caldav-pass-2"].toString(), "pass2");
+}
+
+TEST(GuiControllerTest, ParsePassStoreNumberedGaps)
+{
+    const auto result = GuiController::parsePassStoreOutput(
+        "caldav-url-2:https://server2.example.com/dav\n"
+        "caldav-url-5:https://server5.example.com/dav");
+    EXPECT_EQ(result["caldav-url-2"].toString(), "https://server2.example.com/dav");
+    EXPECT_EQ(result["caldav-url-5"].toString(), "https://server5.example.com/dav");
+    EXPECT_FALSE(result.contains("caldav-url-3"));
+    EXPECT_FALSE(result.contains("caldav-url-4"));
+}
+
+TEST(GuiControllerTest, ParsePassStoreWithIcalUrl)
+{
+    const auto result = GuiController::parsePassStoreOutput(
+        "user:foo\npass:bar\nical-url:https://example.com/calendar.ics");
+    EXPECT_EQ(result["user"].toString(), "foo");
+    EXPECT_EQ(result["ical-url"].toString(), "https://example.com/calendar.ics");
+    EXPECT_FALSE(result.contains("ical-name"));
+}
+
+TEST(GuiControllerTest, ParsePassStoreWithIcalUrlAndName)
+{
+    const auto result = GuiController::parsePassStoreOutput(
+        "user:foo\npass:bar\nical-url:https://example.com/calendar.ics\nical-name:Work Events");
+    EXPECT_EQ(result["ical-url"].toString(), "https://example.com/calendar.ics");
+    EXPECT_EQ(result["ical-name"].toString(), "Work Events");
+}
+
+TEST(GuiControllerTest, ParsePassStoreNumberedIcalFields)
+{
+    const auto result = GuiController::parsePassStoreOutput(
+        "ical-url-2:https://example.com/holidays.ics\n"
+        "ical-name-2:Holidays\n"
+        "ical-url-3:https://other.com/birthdays.ics\n"
+        "ical-name-3:Birthdays");
+    EXPECT_EQ(result["ical-url-2"].toString(), "https://example.com/holidays.ics");
+    EXPECT_EQ(result["ical-name-2"].toString(), "Holidays");
+    EXPECT_EQ(result["ical-url-3"].toString(), "https://other.com/birthdays.ics");
+    EXPECT_EQ(result["ical-name-3"].toString(), "Birthdays");
+    EXPECT_FALSE(result.contains("ical-url"));
+}
+
+TEST(GuiControllerTest, ParsePassStoreMixedCaldavAndIcal)
+{
+    const auto result = GuiController::parsePassStoreOutput(
+        "user:foo\npass:bar\n"
+        "caldav-url:https://caldav.example.com\n"
+        "caldav-user:user1\n"
+        "caldav-pass:pass1\n"
+        "ical-url:https://example.com/calendar.ics\n"
+        "ical-name:Work Events\n"
+        "ical-url-2:https://other.com/holidays.ics\n"
+        "ical-name-2:Holidays");
+    EXPECT_EQ(result["caldav-url"].toString(), "https://caldav.example.com");
+    EXPECT_EQ(result["caldav-user"].toString(), "user1");
+    EXPECT_EQ(result["caldav-pass"].toString(), "pass1");
+    EXPECT_EQ(result["ical-url"].toString(), "https://example.com/calendar.ics");
+    EXPECT_EQ(result["ical-name"].toString(), "Work Events");
+    EXPECT_EQ(result["ical-url-2"].toString(), "https://other.com/holidays.ics");
+    EXPECT_EQ(result["ical-name-2"].toString(), "Holidays");
+}
+
 int main(int argc, char **argv)
 {
     g_argc = argc;

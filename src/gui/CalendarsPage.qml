@@ -23,12 +23,34 @@ Page {
         model: GuiController.calendarsModel
         spacing: Style.fromPixel(2)
 
+        section.property: "accountName"
+        section.delegate: Item {
+            required property string section
+            width: listView.width
+            implicitHeight: section !== "" ? Style.fromPixel(36) : 0
+            visible: section !== ""
+
+            Text {
+                anchors {
+                    left: parent.left
+                    leftMargin: Style.fromPixel(8)
+                    verticalCenter: parent.verticalCenter
+                }
+                text: parent.section
+                color: Style.taskTextColor
+                font.pixelSize: Style.fromPixel(14)
+                font.bold: true
+                opacity: 0.7
+            }
+        }
+
         delegate: Item {
             id: delegateRoot
             required property string calendarId
             required property string title
             required property string color
             required property bool isEnabled
+            required property string accountName
 
             width: listView.width
             implicitHeight: Style.fromPixel(44)

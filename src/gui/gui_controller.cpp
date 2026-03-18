@@ -594,13 +594,14 @@ void GuiController::login(const QString &email, const QString &password)
     _dataController->login(email.trimmed().toStdString(), password.trimmed().toStdString());
 }
 
-void GuiController::reinitCalendarProvider(const std::string &caldavUrl, const std::string &caldavUsername, const std::string &caldavPassword)
+void GuiController::reinitCalendarProvider(std::vector<pointless::core::CalDavAccountConfig> accounts,
+                                           std::vector<pointless::core::ICalUrlConfig> icalUrls)
 {
-    _calendarProvider = pointless::core::createCalendarProvider(caldavUrl, caldavUsername, caldavPassword);
+    _calendarProvider = pointless::core::createCalendarProvider(std::move(accounts), std::move(icalUrls));
     if (_calendarsModel != nullptr)
         _calendarsModel->setProvider(_calendarProvider.get());
     Q_EMIT calendarProviderConfiguredChanged();
-    P_LOG_INFO("Recreated calendar provider with pass-store caldav credentials");
+    P_LOG_INFO("Recreated calendar provider with pass-store credentials");
 }
 
 #ifndef Q_OS_IOS
@@ -633,6 +634,54 @@ QVariantMap GuiController::parsePassStoreOutput(const QString &output)
     if (caldavUserMatch.hasMatch())
         result["caldav-user"] = caldavUserMatch.captured(1);
 
+    static const QRegularExpression numberedUrlRegex(R"(^caldav-url-(\d+):(\S+))", QRegularExpression::MultilineOption);
+    static const QRegularExpression numberedUserRegex(R"(^caldav-user-(\d+):(\S+))", QRegularExpression::MultilineOption);
+    static const QRegularExpression numberedPassRegex(R"(^caldav-pass-(\d+):(\S+))", QRegularExpression::MultilineOption);
+
+    auto it = numberedUrlRegex.globalMatch(output);
+    while (it.hasNext()) {
+        const auto match = it.next();
+        result[QStringLiteral("caldav-url-%1").arg(match.captured(1))] = match.captured(2);
+    }
+
+    it = numberedUserRegex.globalMatch(output);
+    while (it.hasNext()) {
+        const auto match = it.next();
+        result[QStringLiteral("caldav-user-%1").arg(match.captured(1))] = match.captured(2);
+    }
+
+    it = numberedPassRegex.globalMatch(output);
+    while (it.hasNext()) {
+        const auto match = it.next();
+        result[QStringLiteral("caldav-pass-%1").arg(match.captured(1))] = match.captured(2);
+    }
+
+    static const QRegularExpression icalUrlRegex(R"(^ical-url:(\S+))", QRegularExpression::MultilineOption);
+    static const QRegularExpression icalNameRegex(R"(^ical-name:(.+)$)", QRegularExpression::MultilineOption);
+
+    const auto icalUrlMatch = icalUrlRegex.match(output);
+    if (icalUrlMatch.hasMatch())
+        result["ical-url"] = icalUrlMatch.captured(1);
+
+    const auto icalNameMatch = icalNameRegex.match(output);
+    if (icalNameMatch.hasMatch())
+        result["ical-name"] = icalNameMatch.captured(1).trimmed();
+
+    static const QRegularExpression numberedIcalUrlRegex(R"(^ical-url-(\d+):(\S+))", QRegularExpression::MultilineOption);
+    static const QRegularExpression numberedIcalNameRegex(R"(^ical-name-(\d+):(.+)$)", QRegularExpression::MultilineOption);
+
+    it = numberedIcalUrlRegex.globalMatch(output);
+    while (it.hasNext()) {
+        const auto match = it.next();
+        result[QStringLiteral("ical-url-%1").arg(match.captured(1))] = match.captured(2);
+    }
+
+    it = numberedIcalNameRegex.globalMatch(output);
+    while (it.hasNext()) {
+        const auto match = it.next();
+        result[QStringLiteral("ical-name-%1").arg(match.captured(1))] = match.captured(2).trimmed();
+    }
+
     return result;
 }
 
@@ -652,11 +701,53 @@ void GuiController::fetchPassStoreCredentials()
         const QString output = QString::fromUtf8(process->readAllStandardOutput());
         QVariantMap result = parsePassStoreOutput(output);
 
-        if (result.contains("caldav-pass") || result.contains("caldav-url"))
-            reinitCalendarProvider(
-                result["caldav-url"].toString().toStdString(),
-                result["caldav-user"].toString().toStdString(),
-                result["caldav-pass"].toString().toStdString());
+        std::vector<pointless::core::CalDavAccountConfig> accounts;
+
+        if (result.contains("caldav-url")) {
+            pointless::core::CalDavAccountConfig cfg;
+            cfg.name = result.value("caldav-user").toString().toStdString();
+            cfg.url = result["caldav-url"].toString().toStdString();
+            cfg.username = result.value("caldav-user").toString().toStdString();
+            cfg.password = result.value("caldav-pass").toString().toStdString();
+            accounts.push_back(std::move(cfg));
+        }
+
+        for (int i = 2; i <= 99; ++i) {
+            const QString urlKey = QStringLiteral("caldav-url-%1").arg(i);
+            if (!result.contains(urlKey))
+                continue;
+            pointless::core::CalDavAccountConfig cfg;
+            const QString userKey = QStringLiteral("caldav-user-%1").arg(i);
+            const QString passKey = QStringLiteral("caldav-pass-%1").arg(i);
+            cfg.name = result.value(userKey).toString().toStdString();
+            cfg.url = result[urlKey].toString().toStdString();
+            cfg.username = result.value(userKey).toString().toStdString();
+            cfg.password = result.value(passKey).toString().toStdString();
+            accounts.push_back(std::move(cfg));
+        }
+
+        std::vector<pointless::core::ICalUrlConfig> icalUrls;
+
+        if (result.contains("ical-url")) {
+            pointless::core::ICalUrlConfig cfg;
+            cfg.url = result["ical-url"].toString().toStdString();
+            cfg.name = result.value("ical-name").toString().toStdString();
+            icalUrls.push_back(std::move(cfg));
+        }
+
+        for (int i = 2; i <= 99; ++i) {
+            const QString urlKey = QStringLiteral("ical-url-%1").arg(i);
+            if (!result.contains(urlKey))
+                continue;
+            pointless::core::ICalUrlConfig cfg;
+            cfg.url = result[urlKey].toString().toStdString();
+            const QString nameKey = QStringLiteral("ical-name-%1").arg(i);
+            cfg.name = result.value(nameKey).toString().toStdString();
+            icalUrls.push_back(std::move(cfg));
+        }
+
+        if (!accounts.empty() || !icalUrls.empty())
+            reinitCalendarProvider(std::move(accounts), std::move(icalUrls));
 
         Q_EMIT passStoreCredentialsFetched(result);
     });

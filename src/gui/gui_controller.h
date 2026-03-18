@@ -267,7 +267,8 @@ Q_SIGNALS:
 
 private:
     explicit GuiController(QObject *parent = nullptr);
-    void reinitCalendarProvider(const std::string &caldavUrl, const std::string &caldavUsername, const std::string &caldavPassword);
+    void reinitCalendarProvider(std::vector<pointless::core::CalDavAccountConfig> accounts,
+                                std::vector<pointless::core::ICalUrlConfig> icalUrls = {});
     void stopPomodoroIfRunning(const QString &taskUuid);
     std::vector<std::string> enabledCalendarIds() const;
     void setIsEvening(bool isEvening);

@@ -45,6 +45,8 @@ QVariant CalendarsModel::data(const QModelIndex &index, int role) const
         return entry.calendar.writeable;
     case IsEnabledRole:
         return entry.enabled;
+    case AccountNameRole:
+        return QString::fromStdString(entry.calendar.accountName);
     }
 
     return {};
@@ -58,6 +60,7 @@ QHash<int, QByteArray> CalendarsModel::roleNames() const
     roles[ColorRole] = "color";
     roles[WriteableRole] = "writeable";
     roles[IsEnabledRole] = "isEnabled";
+    roles[AccountNameRole] = "accountName";
     return roles;
 }
 

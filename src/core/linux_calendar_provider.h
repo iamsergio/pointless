@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace pointless::core {
 
@@ -15,10 +16,8 @@ class CalDavClient;
 class LinuxCalendarProvider : public CalendarProvider
 {
 public:
-    explicit LinuxCalendarProvider(
-        const std::string &caldavUrl = {},
-        const std::string &caldavUsername = {},
-        const std::string &caldavPassword = {});
+    explicit LinuxCalendarProvider(std::vector<CalDavAccountConfig> accounts = {},
+                                   std::vector<ICalUrlConfig> icalUrls = {});
     ~LinuxCalendarProvider() override;
     LinuxCalendarProvider(const LinuxCalendarProvider &) = delete;
     LinuxCalendarProvider &operator=(const LinuxCalendarProvider &) = delete;
@@ -32,8 +31,20 @@ public:
         const std::vector<std::string> &calendarIds) const override;
 
 private:
-    std::unique_ptr<CalDavClient> m_client;
-    std::string m_homeSetUrl;
+    struct CalDavAccount
+    {
+        std::string name;
+        std::unique_ptr<CalDavClient> client;
+        std::string homeSetUrl;
+    };
+    std::vector<CalDavAccount> m_accounts;
+
+    struct ICalSource
+    {
+        std::string name;
+        std::string url;
+    };
+    std::vector<ICalSource> m_icalSources;
 };
 
 } // namespace pointless::core

@@ -22,7 +22,8 @@ public:
         TitleRole,
         ColorRole,
         WriteableRole,
-        IsEnabledRole
+        IsEnabledRole,
+        AccountNameRole
     };
 
     explicit CalendarsModel(QObject *parent = nullptr);

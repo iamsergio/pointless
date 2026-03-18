@@ -16,6 +16,7 @@ struct Calendar
     std::string title;
     std::string color; // Hex code without alpha
     bool writeable = false;
+    std::string accountName;
 };
 
 struct DateRange
@@ -53,9 +54,30 @@ public:
         const std::vector<std::string> &calendarIds) const = 0;
 };
 
+struct CalDavAccountConfig
+{
+    std::string name;
+    std::string url;
+    std::string username;
+    std::string password;
+};
+
+struct ICalUrlConfig
+{
+    std::string name;
+    std::string url;
+};
+
 std::unique_ptr<CalendarProvider> createCalendarProvider(
     const std::string &caldavUrl = {},
     const std::string &caldavUsername = {},
     const std::string &caldavPassword = {});
+
+std::unique_ptr<CalendarProvider> createCalendarProvider(
+    std::vector<CalDavAccountConfig> accounts);
+
+std::unique_ptr<CalendarProvider> createCalendarProvider(
+    std::vector<CalDavAccountConfig> accounts,
+    std::vector<ICalUrlConfig> icalUrls);
 
 } // namespace pointless::core
