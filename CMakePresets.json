@@ -53,6 +53,13 @@
       }
     },
     {
+      "name": "static",
+      "inherits": "rel",
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "OFF"
+      }
+    },
+    {
       "name": "dev-asan",
       "inherits": "dev",
       "description": "dev-asan",
