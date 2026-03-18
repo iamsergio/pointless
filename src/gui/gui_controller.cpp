@@ -121,6 +121,13 @@ public:
                     return true;
                 }
             }
+
+            if (keyEvent->key() == Qt::Key_C) {
+                if (!gc->isEditingSomething()) {
+                    gc->setCurrentPage("calendars");
+                    return true;
+                }
+            }
         }
         return false;
     }
