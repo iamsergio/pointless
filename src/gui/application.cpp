@@ -139,7 +139,7 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
     if (parser.isSet(benchmarkStartupOption)) {
         auto *window = qobject_cast<QQuickWindow *>(_engine.rootObjects().first());
         if (window) {
-            connect(window, &QQuickWindow::frameSwapped, this, [this] {
+            connect(window, &QQuickWindow::frameSwapped, this, [] {
                 P_LOG_INFO("Benchmark startup: first frame rendered, exiting");
                 quit();
             });
