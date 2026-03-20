@@ -118,9 +118,9 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
             auto *t4 = new QTimer(gc);
             t4->setSingleShot(true);
 
-            connect(t1, &QTimer::timeout, gc, [switchView, t2] { switchView(GV::Soon, FV::Soon, "Soon"); t2->start(benchmarkInterval); });
-            connect(t2, &QTimer::timeout, gc, [switchView, t3] { switchView(GV::Later, FV::Later, "Later"); t3->start(benchmarkInterval); });
-            connect(t3, &QTimer::timeout, gc, [switchView, t4] { switchView(GV::Goals, FV::Goals, "Goals"); t4->start(benchmarkInterval); });
+            connect(t1, &QTimer::timeout, gc, [switchView, t2, benchmarkInterval] { switchView(GV::Soon, FV::Soon, "Soon"); t2->start(benchmarkInterval); });
+            connect(t2, &QTimer::timeout, gc, [switchView, t3, benchmarkInterval] { switchView(GV::Later, FV::Later, "Later"); t3->start(benchmarkInterval); });
+            connect(t3, &QTimer::timeout, gc, [switchView, t4, benchmarkInterval] { switchView(GV::Goals, FV::Goals, "Goals"); t4->start(benchmarkInterval); });
             connect(t4, &QTimer::timeout, gc, [switchView] { switchView(GV::Week, FV::Week, "Week"); QCoreApplication::exit(0); });
 
             t1->start(benchmarkInterval);
