@@ -199,4 +199,17 @@ std::unique_ptr<CalendarProvider> createCalendarProvider(
     return std::make_unique<AppleCalendarProvider>();
 }
 
+std::unique_ptr<CalendarProvider> createCalendarProvider(
+    std::vector<CalDavAccountConfig> /*accounts*/)
+{
+    return std::make_unique<AppleCalendarProvider>();
+}
+
+std::unique_ptr<CalendarProvider> createCalendarProvider(
+    std::vector<CalDavAccountConfig> /*accounts*/,
+    std::vector<ICalUrlConfig> /*icalUrls*/)
+{
+    return std::make_unique<AppleCalendarProvider>();
+}
+
 } // namespace pointless::core
