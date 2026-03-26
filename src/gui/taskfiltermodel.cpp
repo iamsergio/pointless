@@ -174,9 +174,6 @@ bool TaskFilterModel::lessThan(const QModelIndex &source_left, const QModelIndex
             return false;
     }
 
-    const QString leftTagName = sourceModel()->data(source_left, TaskModel::TagNameRole).toString();
-    const QString rightTagName = sourceModel()->data(source_right, TaskModel::TagNameRole).toString();
-
     if (_viewType == ViewType::Week) {
         const bool leftIsImportant = sourceModel()->data(source_left, TaskModel::IsImportantRole).toBool();
         const bool rightIsImportant = sourceModel()->data(source_right, TaskModel::IsImportantRole).toBool();
@@ -191,6 +188,18 @@ bool TaskFilterModel::lessThan(const QModelIndex &source_left, const QModelIndex
         }
     }
 
+    const bool leftHasDueDate = sourceModel()->data(source_left, TaskModel::HasDueDateRole).toBool();
+    const bool rightHasDueDate = sourceModel()->data(source_right, TaskModel::HasDueDateRole).toBool();
+    if (leftHasDueDate && rightHasDueDate) {
+        const QDate leftDueDate = sourceModel()->data(source_left, TaskModel::DueDateRawRole).toDate();
+        const QDate rightDueDate = sourceModel()->data(source_right, TaskModel::DueDateRawRole).toDate();
+        if (leftDueDate != rightDueDate) {
+            return leftDueDate < rightDueDate;
+        }
+    }
+
+    const QString leftTagName = sourceModel()->data(source_left, TaskModel::TagNameRole).toString();
+    const QString rightTagName = sourceModel()->data(source_right, TaskModel::TagNameRole).toString();
     if (leftTagName != rightTagName) {
         return leftTagName < rightTagName;
     }

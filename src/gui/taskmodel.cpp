@@ -56,6 +56,12 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
             return dateStr;
         }
         return QString();
+    case DueDateRawRole:
+        if (task.dueDate) {
+            const auto timeT = std::chrono::system_clock::to_time_t(*task.dueDate);
+            return QDateTime::fromSecsSinceEpoch(timeT).date();
+        }
+        return QDate();
     case HasDueDateRole:
         return task.dueDate.has_value();
     case TagNameRole:
@@ -129,6 +135,7 @@ QHash<int, QByteArray> TaskModel::roleNames() const
     roles[IsDoneRole] = "isDone";
     roles[IsImportantRole] = "isImportant";
     roles[DueDateRole] = "dueDate";
+    roles[DueDateRawRole] = "dueDateRaw";
     roles[HasDueDateRole] = "hasDueDate";
     roles[TagNameRole] = "tagName";
     roles[IsFromCalendarRole] = "isFromCalendar";

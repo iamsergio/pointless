@@ -28,6 +28,7 @@ public:
         IsDoneRole,
         IsImportantRole,
         DueDateRole,
+        DueDateRawRole,
         HasDueDateRole,
         TagNameRole,
         IsFromCalendarRole,

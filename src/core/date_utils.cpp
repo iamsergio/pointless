@@ -95,7 +95,7 @@ std::chrono::system_clock::time_point thisWeeksMonday(std::chrono::system_clock:
 bool isThisWeek(std::chrono::system_clock::time_point date)
 {
     auto monday = thisWeeksMonday(Clock::now());
-    return date >= monday && date < monday + std::chrono::hours(24 * 7);
+    return date >= monday && date < nextMonday(monday);
 }
 
 bool isNext7Days(std::chrono::system_clock::time_point date)
