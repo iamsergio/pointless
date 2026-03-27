@@ -46,6 +46,7 @@ set(PLAIN_QML_FILES
     Page.qml
     EditTaskPage.qml
     AddTagPopup.qml
+    RenameTagPopup.qml
     AboutPage.qml
     TagsPage.qml
     CalendarsPage.qml

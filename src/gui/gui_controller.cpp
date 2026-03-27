@@ -74,6 +74,7 @@ public:
                     gc->setIsEditingTask(false);
                     gc->closeNotesEditor();
                     gc->setNewTagPopupVisible(false);
+                    gc->setRenameTagPopupVisible(false);
                     gc->setCurrentPage({});
                     return true;
                 }
@@ -792,7 +793,7 @@ bool GuiController::isEditingTask() const
 
 bool GuiController::isEditingSomething() const
 {
-    return _isEditingTask || _isEditingNotes || _newTagPopupVisible || _currentPage == "search";
+    return _isEditingTask || _isEditingNotes || _newTagPopupVisible || _renameTagPopupVisible || _currentPage == "search";
 }
 
 void GuiController::setIsEditingTask(bool isEditing)
@@ -1190,6 +1191,42 @@ bool GuiController::addTag(const QString &tagName)
 void GuiController::removeTag(const QString &tagName)
 {
     _dataController->removeTag(tagName);
+}
+
+bool GuiController::renameTag(const QString &oldName, const QString &newName)
+{
+    if (_dataController->renameTag(oldName, newName)) {
+        setRenameTagPopupVisible(false);
+        return true;
+    }
+    return false;
+}
+
+void GuiController::openRenameTagPopup(const QString &tagName)
+{
+    _renameTagOldName = tagName;
+    Q_EMIT renameTagOldNameChanged();
+    setRenameTagPopupVisible(true);
+}
+
+bool GuiController::renameTagPopupVisible() const
+{
+    return _renameTagPopupVisible;
+}
+
+void GuiController::setRenameTagPopupVisible(bool visible)
+{
+    if (_renameTagPopupVisible == visible)
+        return;
+
+    _renameTagPopupVisible = visible;
+    Q_EMIT renameTagPopupVisibleChanged();
+    Q_EMIT isEditingTaskChanged();
+}
+
+QString GuiController::renameTagOldName() const
+{
+    return _renameTagOldName;
 }
 
 void GuiController::cleanupOldData()

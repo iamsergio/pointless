@@ -54,6 +54,14 @@ ListView {
             }
 
             FontAwesomeButton {
+                fontAwesomeIcon: "\uf304"
+                iconSize: Style.fromPixel(14)
+                iconColor: Style.iconColor
+                backgroundColor: "transparent"
+                onClicked: GuiController.openRenameTagPopup(delegateRoot.name)
+            }
+
+            FontAwesomeButton {
                 fontAwesomeIcon: "\uf2ed"
                 iconSize: Style.fromPixel(14)
                 iconColor: Style.iconColor

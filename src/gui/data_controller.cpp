@@ -297,6 +297,17 @@ bool DataController::removeTag(const QString &tagName)
     return false;
 }
 
+bool DataController::renameTag(const QString &oldName, const QString &newName)
+{
+    if (_localData.data().renameTag(oldName.toStdString(), newName.toStdString())) {
+        _saveToDiskTimer.start();
+        _tagModel->reload();
+        _taskModel->reload();
+        return true;
+    }
+    return false;
+}
+
 bool DataController::removeTask(const QString &taskUuid)
 {
     if (_localData.removeTask(taskUuid.toStdString())) {

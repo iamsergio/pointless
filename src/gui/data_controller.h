@@ -49,6 +49,7 @@ public:
     bool addTask(const pointless::core::Task &task);
     bool addTag(const QString &tagName);
     bool removeTag(const QString &tagName);
+    bool renameTag(const QString &oldName, const QString &newName);
     bool removeTask(const QString &taskUuid);
     void cleanupOldData();
     void deleteCalendarTasks();

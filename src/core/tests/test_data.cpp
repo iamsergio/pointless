@@ -225,13 +225,13 @@ TEST(DataTest, RenameTag_UpdatesTaskTags)
     Task t1;
     t1.uuid = "task-1";
     t1.title = "Task 1";
-    t1.tags = {"old-tag", "other-tag"};
+    t1.tags = { "old-tag", "other-tag" };
     data.addTask(t1);
 
     Task t2;
     t2.uuid = "task-2";
     t2.title = "Task 2";
-    t2.tags = {"other-tag"};
+    t2.tags = { "other-tag" };
     data.addTask(t2);
 
     EXPECT_TRUE(data.renameTag("old-tag", "new-tag"));
@@ -305,14 +305,14 @@ TEST(DataTest, RenameTag_MarksNeedsSyncToServer)
     Task task;
     task.uuid = "task-1";
     task.title = "Task 1";
-    task.tags = {"old-tag"};
+    task.tags = { "old-tag" };
     task.needsSyncToServer = false;
     data.addTask(task);
 
     Task unrelated;
     unrelated.uuid = "task-2";
     unrelated.title = "Task 2";
-    unrelated.tags = {"other"};
+    unrelated.tags = { "other" };
     unrelated.needsSyncToServer = false;
     data.addTask(unrelated);
 

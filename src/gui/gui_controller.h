@@ -81,6 +81,8 @@ class GuiController : public QObject
     Q_PROPERTY(QString notesText READ notesText NOTIFY notesTextChanged)
     Q_PROPERTY(QString notesTaskTitle READ notesTaskTitle NOTIFY notesTaskTitleChanged)
     Q_PROPERTY(bool newTagPopupVisible READ newTagPopupVisible WRITE setNewTagPopupVisible NOTIFY newTagPopupVisibleChanged)
+    Q_PROPERTY(bool renameTagPopupVisible READ renameTagPopupVisible WRITE setRenameTagPopupVisible NOTIFY renameTagPopupVisibleChanged)
+    Q_PROPERTY(QString renameTagOldName READ renameTagOldName NOTIFY renameTagOldNameChanged)
     Q_PROPERTY(PomodoroController *pomodoroController READ pomodoroController CONSTANT)
     Q_PROPERTY(bool deleteTaskVisible READ deleteTaskVisible NOTIFY taskMenuUuidChanged)
     Q_PROPERTY(bool playPomodoroVisible READ playPomodoroVisible NOTIFY taskMenuUuidChanged)
@@ -213,6 +215,8 @@ public:
     Q_INVOKABLE void deleteTask(const QString &taskUuid);
     Q_INVOKABLE bool addTag(const QString &tagName);
     Q_INVOKABLE void removeTag(const QString &tagName);
+    Q_INVOKABLE bool renameTag(const QString &oldName, const QString &newName);
+    Q_INVOKABLE void openRenameTagPopup(const QString &tagName);
     Q_INVOKABLE void cleanupOldData();
     Q_INVOKABLE void openNotesEditor(const QString &taskUuid);
     Q_INVOKABLE void saveNotes(const QString &notes);
@@ -224,6 +228,10 @@ public:
 
     [[nodiscard]] bool newTagPopupVisible() const;
     void setNewTagPopupVisible(bool visible);
+
+    [[nodiscard]] bool renameTagPopupVisible() const;
+    void setRenameTagPopupVisible(bool visible);
+    [[nodiscard]] QString renameTagOldName() const;
 
     [[nodiscard]] PomodoroController *pomodoroController() const;
     [[nodiscard]] bool deleteTaskVisible() const;
@@ -260,6 +268,8 @@ Q_SIGNALS:
     void notesTextChanged();
     void notesTaskTitleChanged();
     void newTagPopupVisibleChanged();
+    void renameTagPopupVisibleChanged();
+    void renameTagOldNameChanged();
     void isFetchingCalendarEventsChanged();
     void fetchCalendarStatusTextChanged();
     void calendarProviderConfiguredChanged();
@@ -301,6 +311,8 @@ private:
     QString _notesText;
     QString _notesTaskTitle;
     bool _newTagPopupVisible = false;
+    bool _renameTagPopupVisible = false;
+    QString _renameTagOldName;
     PomodoroController *const _pomodoroController;
     bool _isFetchingCalendarEvents = false;
     QString _fetchCalendarStatusText;

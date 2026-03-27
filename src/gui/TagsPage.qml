@@ -20,4 +20,8 @@ Page {
         id: addTagPopup
         anchors.fill: parent
     }
+
+    RenameTagPopup {
+        anchors.fill: parent
+    }
 }
