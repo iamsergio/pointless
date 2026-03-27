@@ -63,6 +63,7 @@ public:
     [[nodiscard]] std::vector<Tag> newTags() const;
     [[nodiscard]] const Tag &tagAt(size_t index) const;
     [[nodiscard]] bool containsTag(const std::string &tagName) const;
+    bool renameTag(const std::string &oldName, const std::string &newName);
 
     [[nodiscard]] std::vector<Tag> getUsedTags() const;
     [[nodiscard]] std::vector<Tag> getUnusedTags() const;

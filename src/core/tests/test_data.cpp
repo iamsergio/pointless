@@ -203,6 +203,148 @@ TEST(DataTest, FindDuplicateCalendarTaskUuids_RecurringEventsNotDeduplicated)
     EXPECT_TRUE(dupes.empty());
 }
 
+TEST(DataTest, RenameTag_Success)
+{
+    Data data;
+    Tag tag;
+    tag.name = "old-tag";
+    data.addTag(tag);
+
+    EXPECT_TRUE(data.renameTag("old-tag", "new-tag"));
+    EXPECT_FALSE(data.containsTag("old-tag"));
+    EXPECT_TRUE(data.containsTag("new-tag"));
+}
+
+TEST(DataTest, RenameTag_UpdatesTaskTags)
+{
+    Data data;
+    Tag tag;
+    tag.name = "old-tag";
+    data.addTag(tag);
+
+    Task t1;
+    t1.uuid = "task-1";
+    t1.title = "Task 1";
+    t1.tags = {"old-tag", "other-tag"};
+    data.addTask(t1);
+
+    Task t2;
+    t2.uuid = "task-2";
+    t2.title = "Task 2";
+    t2.tags = {"other-tag"};
+    data.addTask(t2);
+
+    EXPECT_TRUE(data.renameTag("old-tag", "new-tag"));
+
+    auto task1 = data.getTask("task-1");
+    ASSERT_TRUE(task1.has_value());
+    EXPECT_NE(std::ranges::find(task1->tags, "new-tag"), task1->tags.end());
+    EXPECT_EQ(std::ranges::find(task1->tags, "old-tag"), task1->tags.end());
+    EXPECT_NE(std::ranges::find(task1->tags, "other-tag"), task1->tags.end());
+
+    auto task2 = data.getTask("task-2");
+    ASSERT_TRUE(task2.has_value());
+    EXPECT_EQ(std::ranges::find(task2->tags, "new-tag"), task2->tags.end());
+}
+
+TEST(DataTest, RenameTag_OldNameNotFound)
+{
+    Data data;
+    Tag tag;
+    tag.name = "existing";
+    data.addTag(tag);
+
+    EXPECT_FALSE(data.renameTag("nonexistent", "new-name"));
+    EXPECT_TRUE(data.containsTag("existing"));
+}
+
+TEST(DataTest, RenameTag_NewNameAlreadyExists)
+{
+    Data data;
+    Tag t1;
+    t1.name = "tag-a";
+    data.addTag(t1);
+    Tag t2;
+    t2.name = "tag-b";
+    data.addTag(t2);
+
+    EXPECT_FALSE(data.renameTag("tag-a", "tag-b"));
+    EXPECT_TRUE(data.containsTag("tag-a"));
+    EXPECT_TRUE(data.containsTag("tag-b"));
+}
+
+TEST(DataTest, RenameTag_SameName)
+{
+    Data data;
+    Tag tag;
+    tag.name = "same";
+    data.addTag(tag);
+
+    EXPECT_FALSE(data.renameTag("same", "same"));
+}
+
+TEST(DataTest, RenameTag_EmptyNewName)
+{
+    Data data;
+    Tag tag;
+    tag.name = "tag";
+    data.addTag(tag);
+
+    EXPECT_FALSE(data.renameTag("tag", ""));
+    EXPECT_TRUE(data.containsTag("tag"));
+}
+
+TEST(DataTest, RenameTag_MarksNeedsSyncToServer)
+{
+    Data data;
+    Tag tag;
+    tag.name = "old-tag";
+    tag.needsSyncToServer = false;
+    data.addTag(tag);
+
+    Task task;
+    task.uuid = "task-1";
+    task.title = "Task 1";
+    task.tags = {"old-tag"};
+    task.needsSyncToServer = false;
+    data.addTask(task);
+
+    Task unrelated;
+    unrelated.uuid = "task-2";
+    unrelated.title = "Task 2";
+    unrelated.tags = {"other"};
+    unrelated.needsSyncToServer = false;
+    data.addTask(unrelated);
+
+    EXPECT_TRUE(data.renameTag("old-tag", "new-tag"));
+
+    auto renamedTag = data.getTag("new-tag");
+    ASSERT_TRUE(renamedTag.has_value());
+    EXPECT_TRUE(renamedTag->needsSyncToServer);
+
+    auto affectedTask = data.getTask("task-1");
+    ASSERT_TRUE(affectedTask.has_value());
+    EXPECT_TRUE(affectedTask->needsSyncToServer);
+
+    auto unrelatedTask = data.getTask("task-2");
+    ASSERT_TRUE(unrelatedTask.has_value());
+    EXPECT_FALSE(unrelatedTask->needsSyncToServer);
+}
+
+TEST(DataTest, RenameTag_TracksDeletedOldName)
+{
+    Data data;
+    Tag tag;
+    tag.name = "old-tag";
+    data.addTag(tag);
+
+    EXPECT_TRUE(data.renameTag("old-tag", "new-tag"));
+
+    const auto &deleted = data.deletedTagNames();
+    ASSERT_EQ(deleted.size(), 1);
+    EXPECT_EQ(deleted[0], "old-tag");
+}
+
 TEST(DataTest, SerializeEmptyDeletedLists)
 {
     Data originalData;

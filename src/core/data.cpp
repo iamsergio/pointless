@@ -259,6 +259,34 @@ size_t Data::tagCount() const
     return _data.tags.size();
 }
 
+bool Data::renameTag(const std::string &oldName, const std::string &newName)
+{
+    if (oldName == newName || newName.empty())
+        return false;
+
+    auto it = findTagByName(oldName);
+    if (it == _data.tags.end())
+        return false;
+
+    if (findTagByName(newName) != _data.tags.end())
+        return false;
+
+    it->name = newName;
+    it->needsSyncToServer = true;
+
+    for (auto &task : _data.tasks) {
+        auto tagIt = std::ranges::find(task.tags, oldName);
+        if (tagIt != task.tags.end()) {
+            *tagIt = newName;
+            task.needsSyncToServer = true;
+        }
+    }
+
+    addDeletedTagName(oldName);
+
+    return true;
+}
+
 std::vector<Tag> Data::getUsedTags() const
 {
     std::vector<Tag> result;
