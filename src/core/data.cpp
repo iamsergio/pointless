@@ -272,6 +272,7 @@ bool Data::renameTag(const std::string &oldName, const std::string &newName)
         return false;
 
     it->name = newName;
+    it->revision = -1;
     it->needsSyncToServer = true;
 
     for (auto &task : _data.tasks) {

@@ -399,6 +399,56 @@ TEST(DataControllerTest, MoveToSoonClearsDueDate)
     delete guiController;
 }
 
+TEST(DataControllerTest, RenameTagRoundtrip)
+{
+    QGuiApplication _app(g_argc, g_argv);
+    core::Logger::initLogLevel();
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+    DataController controller;
+
+    // Init with 1 tag and 1 task that uses it on remote, empty local
+    core::Data remoteData;
+    core::Tag tag;
+    tag.name = "old-tag";
+    tag.revision = 0;
+    remoteData.addTag(tag);
+
+    core::Task task;
+    task.uuid = "uuid-rename-tag";
+    task.title = "Task with tag";
+    task.tags = { "old-tag" };
+    task.revision = 0;
+    remoteData.addTask(task);
+    remoteData.setRevision(1);
+
+    initData(controller, {}, remoteData);
+
+    // Pull remote data to local via refresh
+    auto syncResult = controller.refreshBlocking();
+    ASSERT_TRUE(syncResult.has_value());
+    ASSERT_EQ(controller._localData.data().tagCount(), 1);
+    EXPECT_EQ(controller._localData.data().tagAt(0).name, "old-tag");
+    ASSERT_EQ(controller._localData.data().taskCount(), 1);
+    EXPECT_EQ(controller._localData.data().taskAt(0).tags.size(), 1);
+    EXPECT_EQ(controller._localData.data().taskAt(0).tags[0], "old-tag");
+
+    // Rename the tag locally
+    ASSERT_TRUE(controller._localData.data().renameTag("old-tag", "new-tag"));
+
+    // Push via refresh
+    auto syncResult2 = controller.refreshBlocking();
+    ASSERT_TRUE(syncResult2.has_value());
+
+    // Pull again and verify the rename persisted on remote
+    auto pullResult = controller.pullRemoteData();
+    ASSERT_TRUE(pullResult.has_value());
+    ASSERT_EQ(pullResult->tagCount(), 1);
+    EXPECT_EQ(pullResult->tagAt(0).name, "new-tag");
+    ASSERT_EQ(pullResult->taskCount(), 1);
+    EXPECT_EQ(pullResult->taskAt(0).tags.size(), 1);
+    EXPECT_EQ(pullResult->taskAt(0).tags[0], "new-tag");
+}
+
 TEST(DataControllerTest, LogoutTokenMetaTest)
 {
     // Requested test:

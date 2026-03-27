@@ -141,4 +141,7 @@ if(NOT IOS)
 
   add_executable(supabase_pull supabase_pull.cpp)
   target_link_libraries(supabase_pull PRIVATE pointless_core)
+
+  add_executable(rename_tag rename_tag.cpp)
+  target_link_libraries(rename_tag PRIVATE pointless_core)
 endif()
