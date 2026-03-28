@@ -23,6 +23,7 @@ Rectangle {
     required property string taskAllTags
     required property bool taskHasNotes
     required property bool taskIsGoal
+    required property bool taskIsYearly
 
     required property bool taskIsSoon
     required property bool taskIsLater
@@ -70,11 +71,22 @@ Rectangle {
             spacing: root.useSmallMode ? Style.fromPixel(5) : Style.fromPixel(10)
 
             CheckBox {
-                visible: !root.taskIsGoal
+                visible: !root.taskIsGoal && !root.taskIsYearly
                 checked: root.taskIsDone
                 smallVariant: root.useSmallMode
                 onClicked: {
                     GuiController.taskModel.setTaskDone(root.taskUuid, !root.taskIsDone);
+                }
+            }
+
+            FontAwesomeButton {
+                visible: root.taskIsYearly && !root.taskIsGoal
+                fontAwesomeIcon: "\uf101"
+                iconSize: root.useSmallMode ? Style.fromPixel(14) : Style.fromPixel(18)
+                iconColor: Style.iconColor
+                backgroundColor: "transparent"
+                onClicked: {
+                    GuiController.taskModel.advanceYearlyTask(root.taskUuid);
                 }
             }
 

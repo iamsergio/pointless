@@ -122,6 +122,7 @@ Item {
                     required property string allTags
                     required property bool hasNotes
                     required property bool isGoal
+                    required property bool isYearly
 
                     objectName: "task_" + column.index + "_" + index
 
@@ -141,6 +142,7 @@ Item {
                     taskAllTags: allTags
                     taskHasNotes: hasNotes
                     taskIsGoal: isGoal
+                    taskIsYearly: isYearly
                     taskIsSoon: isSoon
                     taskIsLater: isLater
                     taskIsCurrent: isCurrent

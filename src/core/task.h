@@ -45,6 +45,7 @@ public:
     std::string title;
     bool isDone = false;
     std::optional<bool> isGoal;
+    std::optional<bool> isYearly;
     bool isImportant = false;
     std::optional<bool> hideOnWeekends;
     int timesPerWeek = 1;
@@ -102,6 +103,7 @@ struct glz::meta<pointless::core::Task>
         "title", &T::title,
         "isDone", &T::isDone,
         "isGoal", &T::isGoal,
+        "isYearly", &T::isYearly,
         "isImportant", &T::isImportant,
         "hideOnWeekends", &T::hideOnWeekends,
         "timesPerWeek", &T::timesPerWeek,

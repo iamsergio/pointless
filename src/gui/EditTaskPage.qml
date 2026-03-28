@@ -14,11 +14,12 @@ Page {
     rightButtonIcon: "\uf00c"
     rightButtonObjectName: "saveButton"
 
-    signal saveClicked(string title, string tag, bool evening, bool isGoal)
+    signal saveClicked(string title, string tag, bool evening, bool isGoal, bool isYearly)
 
     property string selectedTag: ""
     property bool isEvening: false
     property bool isGoal: false
+    property bool isYearly: false
 
     onVisibleChanged: {
         if (visible) {
@@ -27,10 +28,11 @@ Page {
             root.selectedTag = GuiController.tagInEditor;
             root.isEvening = GuiController.isEveningInEditor;
             root.isGoal = GuiController.isGoalInEditor;
+            root.isYearly = GuiController.isYearlyInEditor;
         }
     }
 
-    onRightButtonClicked: root.saveClicked(titleInput.text, root.selectedTag, root.isEvening, root.isGoal)
+    onRightButtonClicked: root.saveClicked(titleInput.text, root.selectedTag, root.isEvening, root.isGoal, root.isYearly)
 
     ColumnLayout {
         anchors.fill: parent
@@ -53,7 +55,7 @@ Page {
                 focus: true
                 Layout.fillWidth: true
                 onTextEntered: function (text) {
-                    root.saveClicked(text, root.selectedTag, root.isEvening, root.isGoal);
+                    root.saveClicked(text, root.selectedTag, root.isEvening, root.isGoal, root.isYearly);
                 }
             }
         }
@@ -139,6 +141,26 @@ Page {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: goalCheckBox.toggle()
+                }
+            }
+
+            CheckBox {
+                id: yearlyCheckBox
+                objectName: "yearlyCheckBox"
+                checked: root.isYearly
+                onCheckedChanged: root.isYearly = checked
+            }
+
+            Text {
+                text: "Yearly"
+                color: Style.sectionTextColor
+                font.pixelSize: Style.fromPixel(14)
+                font.bold: true
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: yearlyCheckBox.toggle()
                 }
             }
         }

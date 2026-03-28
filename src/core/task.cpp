@@ -99,6 +99,9 @@ bool Task::isOverdue() const
 
 bool Task::shouldBeCleanedUp() const
 {
+    if (isYearly.value_or(false))
+        return false;
+
     const auto twoWeeksAgo = core::Clock::now() - std::chrono::days(14);
     return isDone && ((modificationTimestamp && *modificationTimestamp < twoWeeksAgo) || !modificationTimestamp);
 }
@@ -207,5 +210,7 @@ void Task::mergeConflict(const Task &other)
         // Remove Soon
         std::erase(tags, std::string(BUILTIN_TAG_SOON));
     }
+
+    isYearly = isYearly.value_or(false) || other.isYearly.value_or(false);
 }
 } // namespace pointless::core

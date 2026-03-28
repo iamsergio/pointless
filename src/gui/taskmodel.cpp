@@ -120,6 +120,8 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         return task.description.has_value() && !task.description->empty();
     case IsGoalRole:
         return task.isGoal.value_or(false);
+    case IsYearlyRole:
+        return task.isYearly.value_or(false);
     default:
         return {};
     }
@@ -152,6 +154,7 @@ QHash<int, QByteArray> TaskModel::roleNames() const
     roles[AllTagsRole] = "allTags";
     roles[HasNotesRole] = "hasNotes";
     roles[IsGoalRole] = "isGoal";
+    roles[IsYearlyRole] = "isYearly";
     return roles;
 }
 
@@ -265,6 +268,43 @@ void TaskModel::updateTask(const core::Task &task)
     }
 
     dataController()->updateTask(task);
+    emit dataChanged(index(idx), index(idx));
+}
+
+void TaskModel::advanceYearlyTask(const QString &taskUuid)
+{
+    const auto *task = taskForUuid(taskUuid);
+    if (task == nullptr) {
+        P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
+        return;
+    }
+
+    if (!task->isYearly.value_or(false) || !task->dueDate.has_value()) {
+        return;
+    }
+
+    const int idx = indexForTask(taskUuid);
+    if (idx == -1) {
+        P_LOG_ERROR("Failed to find index for task UUID: {}", taskUuid);
+        return;
+    }
+
+    core::Task updatedTask = *task;
+    const auto timeT = std::chrono::system_clock::to_time_t(*updatedTask.dueDate);
+    const std::tm *tm = std::localtime(&timeT);
+    auto ymd = std::chrono::year_month_day{
+        std::chrono::year{tm->tm_year + 1900},
+        std::chrono::month{static_cast<unsigned>(tm->tm_mon + 1)},
+        std::chrono::day{static_cast<unsigned>(tm->tm_mday)}};
+    auto nextYear = ymd.year() + std::chrono::years{1};
+    auto nextYmd = nextYear / ymd.month() / ymd.day();
+    if (!nextYmd.ok()) {
+        nextYmd = nextYear / ymd.month() / std::chrono::last;
+    }
+    auto nextDays = std::chrono::sys_days{nextYmd};
+    updatedTask.dueDate = std::chrono::system_clock::time_point{nextDays.time_since_epoch()};
+
+    dataController()->updateTask(updatedTask);
     emit dataChanged(index(idx), index(idx));
 }
 
