@@ -16,6 +16,14 @@ Rectangle {
 
     signal dateSelected(date selectedDate)
 
+    function setInitialMonth() {
+        if (isNaN(currentDate.getTime())) {
+            calendarModel.month = new Date();
+        } else {
+            calendarModel.month = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        }
+    }
+
     CalendarModel {
         id: calendarModel
     }

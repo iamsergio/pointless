@@ -29,6 +29,7 @@ Page {
             root.isEvening = GuiController.isEveningInEditor;
             root.isGoal = GuiController.isGoalInEditor;
             root.isYearly = GuiController.isYearlyInEditor;
+            calendar.setInitialMonth();
         }
     }
 
