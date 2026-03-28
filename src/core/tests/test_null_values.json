@@ -4,6 +4,7 @@
         {
             "revision": 2,
             "isGoal": null,
+
             "uuid": "2",
             "parentUuid": null,
             "title": "Task 2",
@@ -23,6 +24,7 @@
         {
             "revision": 2,
             "isGoal": null,
+
             "uuid": "3",
             "parentUuid": null,
             "title": "Task 3",

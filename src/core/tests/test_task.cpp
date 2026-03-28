@@ -199,6 +199,37 @@ TEST(TaskTest, CalendarPropertiesSerializeDeserialize)
     EXPECT_EQ(deserialized.deviceCalendarName, "Work Calendar");
 }
 
+TEST(TaskTest, IsYearlyParsing)
+{
+    std::string json = R"({"revision":1,"uuid":"test","title":"Test","isDone":false,"isGoal":null,"isYearly":true,"isImportant":false,"hideOnWeekends":null,"timesPerWeek":1,"lastCompletions":[],"sectionName":"","tags":[],"creationTimestamp":1586385046574,"modificationTimestamp":null,"lastPomodoroDate":null,"dueDate":null,"completionDate":null,"uuidInDeviceCalendar":null,"deviceCalendarUuid":null,"deviceCalendarName":null,"description":null})";
+
+    Task task;
+    auto result = glz::read<glz::opts{.error_on_unknown_keys = true, .skip_null_members = false}>(task, json);
+    ASSERT_TRUE(result == glz::error_code::none) << glz::format_error(result, json);
+    EXPECT_TRUE(task.isYearly);
+}
+
+TEST(TaskTest, IsYearlyDefaultsFalse)
+{
+    std::string json = R"({"revision":1,"uuid":"test","title":"Test","isDone":false,"isGoal":null,"isImportant":false,"hideOnWeekends":null,"timesPerWeek":1,"lastCompletions":[],"sectionName":"","tags":[],"creationTimestamp":1586385046574,"modificationTimestamp":null,"lastPomodoroDate":null,"dueDate":null,"completionDate":null,"uuidInDeviceCalendar":null,"deviceCalendarUuid":null,"deviceCalendarName":null,"description":null})";
+
+    Task task;
+    auto result = glz::read<glz::opts{.error_on_unknown_keys = true, .skip_null_members = false}>(task, json);
+    ASSERT_TRUE(result == glz::error_code::none) << glz::format_error(result, json);
+    EXPECT_FALSE(task.isYearly);
+}
+
+TEST(TaskTest, IsYearlyNullParsesAsNullopt)
+{
+    std::string json = R"({"revision":1,"uuid":"test","title":"Test","isDone":false,"isGoal":null,"isYearly":null,"isImportant":false,"hideOnWeekends":null,"timesPerWeek":1,"lastCompletions":[],"sectionName":"","tags":[],"creationTimestamp":1586385046574,"modificationTimestamp":null,"lastPomodoroDate":null,"dueDate":null,"completionDate":null,"uuidInDeviceCalendar":null,"deviceCalendarUuid":null,"deviceCalendarName":null,"description":null})";
+
+    Task task;
+    task.isYearly = true;
+    auto result = glz::read<glz::opts{.error_on_unknown_keys = true, .skip_null_members = false}>(task, json);
+    ASSERT_TRUE(result == glz::error_code::none) << glz::format_error(result, json);
+    EXPECT_FALSE(task.isYearly.has_value());
+}
+
 TEST(TaskTest, MergeConflict_IsDone_UndoneWins)
 {
     Task task1;
