@@ -292,17 +292,18 @@ void TaskModel::advanceYearlyTask(const QString &taskUuid)
     core::Task updatedTask = *task;
     const auto timeT = std::chrono::system_clock::to_time_t(*updatedTask.dueDate);
     const std::tm *tm = std::localtime(&timeT);
-    auto ymd = std::chrono::year_month_day{
-        std::chrono::year{tm->tm_year + 1900},
-        std::chrono::month{static_cast<unsigned>(tm->tm_mon + 1)},
-        std::chrono::day{static_cast<unsigned>(tm->tm_mday)}};
-    auto nextYear = ymd.year() + std::chrono::years{1};
+    auto ymd = std::chrono::year_month_day {
+        std::chrono::year { tm->tm_year + 1900 },
+        std::chrono::month { static_cast<unsigned>(tm->tm_mon + 1) },
+        std::chrono::day { static_cast<unsigned>(tm->tm_mday) }
+    };
+    auto nextYear = ymd.year() + std::chrono::years { 1 };
     auto nextYmd = nextYear / ymd.month() / ymd.day();
     if (!nextYmd.ok()) {
         nextYmd = nextYear / ymd.month() / std::chrono::last;
     }
-    auto nextDays = std::chrono::sys_days{nextYmd};
-    updatedTask.dueDate = std::chrono::system_clock::time_point{nextDays.time_since_epoch()};
+    auto nextDays = std::chrono::sys_days { nextYmd };
+    updatedTask.dueDate = std::chrono::system_clock::time_point { nextDays.time_since_epoch() };
 
     dataController()->updateTask(updatedTask);
     emit dataChanged(index(idx), index(idx));
