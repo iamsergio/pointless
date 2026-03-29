@@ -53,8 +53,8 @@ QC.ApplicationWindow {
                     GuiController.onBackClicked();
                 }
 
-                onSaveClicked: function (title, tag, evening, isGoal) {
-                    GuiController.saveTask(title, tag, evening, isGoal);
+                onSaveClicked: function (title, tag, evening, isGoal, isYearly) {
+                    GuiController.saveTask(title, tag, evening, isGoal, isYearly);
                 }
             }
 
