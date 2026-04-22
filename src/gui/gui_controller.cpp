@@ -1386,7 +1386,7 @@ PomodoroController *GuiController::pomodoroController() const
 bool GuiController::deleteTaskVisible() const
 {
     const auto *task = _dataController->taskModel()->taskForUuid(_taskMenuUuid);
-    return task != nullptr && task->isGoal.value_or(false);
+    return task != nullptr && (task->isGoal.value_or(false) || task->isYearly.value_or(false));
 }
 
 bool GuiController::playPomodoroVisible() const
