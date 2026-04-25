@@ -3,7 +3,7 @@
 
 'use strict';
 
-const fs   = require('node:fs');
+const fs = require('node:fs');
 const path = require('node:path');
 
 const SCREENSHOT_DIR = path.join(__dirname, '..', 'test-results', 'screenshots');
@@ -11,9 +11,9 @@ const SCREENSHOT_DIR = path.join(__dirname, '..', 'test-results', 'screenshots')
 async function captureScreenshot(page, name) {
   fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
   await page.waitForLoadState('networkidle');
+  const timestamp = Date.now();
   await page.screenshot({
-    path:     path.join(SCREENSHOT_DIR, `${name}.png`),
-    fullPage: true,
+    path: path.join(SCREENSHOT_DIR, `${name}-${timestamp}.png`),
   });
 }
 

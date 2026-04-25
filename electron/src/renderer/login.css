@@ -1,56 +1,72 @@
 /* SPDX-FileCopyrightText: 2025 Sergio Martins */
 /* SPDX-License-Identifier: MIT */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 :root {
-  --bg-page:    #131c27;
-  --bg-input:   #192233;
-  --bg-border:  #222b38;
-  --blue:       #1884f7;
+  --bg-page: #131c27;
+  --bg-input: #192233;
+  --blue: #1884f7;
   --text-white: #ffffff;
   --text-muted: #8a97a8;
   --text-error: #ff4444;
 }
 
-html, body {
+html {
   height: 100%;
   background: var(--bg-page);
   color: var(--text-white);
   font-family: system-ui, sans-serif;
+}
+
+body {
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  padding: 0 24px;
 }
 
+/* Outer column: width 85% of window, gaps of fromPixel(32)=48px between sections */
 .login-panel {
-  width: 85%;
-  max-width: 360px;
+  width: 100%;
+  max-width: 1040px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 36px;
 }
 
+/* fromPixel(32) = 48px */
 .app-title {
-  font-size: 32px;
+  font-size: 44px;
   font-weight: bold;
   text-align: center;
   color: var(--text-white);
 }
 
+/* Inner column grouping both fields: QML inner ColumnLayout spacing=16 (unscaled) */
+.fields-section {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
 .field-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
+/* fromPixel(16) = 24px */
 .field-label {
-  font-size: 16px;
+  font-size: 21px;
   color: var(--text-white);
 }
 
@@ -60,8 +76,9 @@ html, body {
   align-items: center;
 }
 
+/* fromPixel(14) = 21px */
 .forgot-link {
-  font-size: 14px;
+  font-size: 17px;
   color: var(--blue);
   text-decoration: none;
 }
@@ -70,65 +87,75 @@ html, body {
   text-decoration: underline;
 }
 
+/* fromPixel(48)=72px height, fromPixel(12)=18px padding, fromPixel(8)=12px gap */
 .input-wrapper {
   display: flex;
   align-items: center;
   background: var(--bg-input);
   border-radius: 8px;
-  height: 48px;
-  padding: 0 12px;
-  gap: 8px;
+  height: 62px;
+  padding: 0 16px;
+  gap: 12px;
 }
 
+/* fromPixel(16) = 24px */
 .input-icon {
   color: var(--text-muted);
-  font-size: 16px;
+  font-size: 21px;
   flex-shrink: 0;
-  width: 16px;
+  width: 21px;
   text-align: center;
 }
 
 .input-wrapper input {
   flex: 1;
+  min-width: 0;
   background: none;
   border: none;
   outline: none;
   color: var(--text-white);
-  font-size: 16px;
+  font-size: 21px;
 }
 
 .input-wrapper input::placeholder {
   color: var(--text-muted);
 }
 
+/* fromPixel(16) = 24px */
 .eye-toggle {
   background: none;
   border: none;
   cursor: pointer;
   color: var(--text-muted);
-  font-size: 16px;
+  font-size: 21px;
   padding: 0;
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
 }
 
 .eye-toggle:hover {
   color: var(--text-white);
 }
 
+/* fromPixel(8) = 12px gap between login and key buttons */
 .button-row {
   display: flex;
-  gap: 8px;
+  gap: 14px;
 }
 
+/* fromPixel(56)=84px height, fromPixel(20)=30px font */
 .login-btn {
   flex: 1;
-  height: 56px;
+  height: 72px;
   background: var(--blue);
   border: none;
   border-radius: 12px;
   color: var(--text-white);
-  font-size: 20px;
+  font-size: 24px;
   font-weight: bold;
   cursor: pointer;
   transition: background 0.15s;
@@ -143,14 +170,15 @@ html, body {
   cursor: not-allowed;
 }
 
+/* fromPixel(56)=84px square */
 .key-btn {
-  width: 56px;
-  height: 56px;
+  width: 72px;
+  height: 72px;
   background: var(--bg-input);
   border: none;
   border-radius: 8px;
   color: var(--text-muted);
-  font-size: 20px;
+  font-size: 26px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -171,20 +199,27 @@ html, body {
   display: none;
 }
 
+/* fromPixel(24) = 36px */
 .spinner {
-  font-size: 24px;
+  font-size: 36px;
   color: var(--blue);
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
+/* fromPixel(14) = 21px */
 .error-message {
   color: var(--text-error);
-  font-size: 14px;
+  font-size: 21px;
   text-align: center;
   word-wrap: break-word;
 }
@@ -193,10 +228,12 @@ html, body {
   display: none;
 }
 
+/* fromPixel(16) = 24px */
 .signup-row {
   color: var(--text-muted);
-  font-size: 16px;
+  font-size: 19px;
   text-align: center;
+  white-space: nowrap;
 }
 
 .signup-row a {
@@ -208,9 +245,10 @@ html, body {
   text-decoration: underline;
 }
 
+/* fromPixel(16) = 24px */
 .offline-link {
   color: var(--text-muted);
-  font-size: 16px;
+  font-size: 19px;
   cursor: pointer;
 }
 

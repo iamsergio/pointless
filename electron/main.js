@@ -7,10 +7,12 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('node:path');
 const { login } = require('./src/auth');
 
+app.commandLine.appendSwitch('force-device-scale-factor', '1');
+
 function createWindow() {
   const win = new BrowserWindow({
-    width: 440,
-    height: 620,
+    width: 960,
+    height: 960,
     resizable: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
