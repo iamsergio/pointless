@@ -52,3 +52,4 @@ Testing/Temporary/CTestCostData.txt
 pointless_core/target/
 slint/pointless_core/target/
 slint/target
+node_modules
