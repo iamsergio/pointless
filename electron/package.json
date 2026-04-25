@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "test": "node --test test/auth.test.js",
+    "test:e2e": "playwright test",
     "start": "electron .",
     "package": "electron-forge package",
     "make": "electron-forge make"
@@ -18,7 +19,8 @@
     "@electron-forge/maker-deb": "^7.11.1",
     "@electron-forge/maker-rpm": "^7.11.1",
     "@electron-forge/maker-zip": "^7.11.1",
-    "electron": "^41.3.0"
+    "electron": "^41.3.0",
+    "@playwright/test": "^1.52.0"
   },
   "config": {
     "forge": {
