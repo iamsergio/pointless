@@ -5,6 +5,7 @@
 
 const { test, expect, _electron: electron } = require('@playwright/test');
 const path = require('node:path');
+const { captureScreenshot } = require('./test-utils');
 
 test('login with debug credentials succeeds', async () => {
   const email    = process.env.POINTLESS_DEBUG_USERNAME;
@@ -27,6 +28,7 @@ test('login with debug credentials succeeds', async () => {
     await page.locator('#login-btn').click();
 
     await loginSucceeded;
+    await captureScreenshot(page, 'login-success');
 
     await expect(page.locator('#error-message')).toBeHidden();
   } finally {
