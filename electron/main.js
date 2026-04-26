@@ -7,8 +7,6 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('node:path');
 const { login } = require('./src/auth');
 
-app.commandLine.appendSwitch('force-device-scale-factor', '1');
-
 function createWindow() {
   const win = new BrowserWindow({
     width: 960,
@@ -22,7 +20,7 @@ function createWindow() {
     },
   });
 
-  win.loadFile(path.join(__dirname, 'src', 'renderer', 'login.html'));
+  win.loadFile(path.join(__dirname, 'dist', 'index.html'));
 }
 
 ipcMain.handle('auth:login', async (_event, { email, password }) => {

@@ -1,0 +1,39 @@
+/* SPDX-FileCopyrightText: 2025 Sergio Martins */
+/* SPDX-License-Identifier: MIT */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg-page: #131c27;
+    --bg-input: #192233;
+    --blue: #1884f7;
+    --text-white: #ffffff;
+    --text-muted: #8a97a8;
+    --text-error: #ff4444;
+}
+
+html {
+    height: 100%;
+    background: var(--bg-page);
+    color: var(--text-white);
+    font-family: system-ui, sans-serif;
+}
+
+body {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0 24px;
+}
+
+#app {
+    width: 100%;
+}
