@@ -17,6 +17,7 @@ jobs:
         with:
           node-version: 24
           cache: npm
+          cache-dependency-path: electron/package-lock.json
 
       - name: Install dependencies
         run: cd electron && npm ci
