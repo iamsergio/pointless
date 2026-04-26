@@ -2,6 +2,10 @@
 <!-- SPDX-License-Identifier: MIT -->
 
 <script>
+  import MainScreen from './MainScreen.svelte';
+
+  let currentScreen = $state('login');
+
   let email = $state('');
   let password = $state('');
   let passwordVisible = $state(false);
@@ -26,6 +30,7 @@
       const result = await window.pointlessAPI.login(email.trim(), password);
       if (result.success) {
         console.log('Login successful, userId:', result.data.userId);
+        currentScreen = 'main';
       } else {
         errorMessage = result.error || 'Login failed. Please try again.';
       }
@@ -35,73 +40,88 @@
   }
 </script>
 
-<div class="login-panel">
-  <h1 class="app-title">Pointless</h1>
+{#if currentScreen === 'login'}
+  <div class="login-wrapper">
+    <div class="login-panel">
+      <h1 class="app-title">Pointless</h1>
 
-  <div class="fields-section">
-    <div class="field-group">
-      <label class="field-label" for="email">Email</label>
-      <div class="input-wrapper">
-        <i class="fa-solid fa-envelope input-icon"></i>
-        <input
-          id="email"
-          type="email"
-          placeholder="Enter your email"
-          autocomplete="email"
-          bind:value={email}
-          onkeydown={(e) => { if (e.key === 'Enter') passwordInput.focus(); }}
-        >
-      </div>
-    </div>
+      <div class="fields-section">
+        <div class="field-group">
+          <label class="field-label" for="email">Email</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-envelope input-icon"></i>
+            <input
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              autocomplete="email"
+              bind:value={email}
+              onkeydown={(e) => { if (e.key === 'Enter') passwordInput.focus(); }}
+            >
+          </div>
+        </div>
 
-    <div class="field-group">
-      <div class="label-row">
-        <label class="field-label" for="password">Password</label>
-        <a class="forgot-link" href="#">Forgot Password?</a>
+        <div class="field-group">
+          <div class="label-row">
+            <label class="field-label" for="password">Password</label>
+            <a class="forgot-link" href="#">Forgot Password?</a>
+          </div>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input
+              id="password"
+              type={passwordVisible ? 'text' : 'password'}
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              bind:value={password}
+              bind:this={passwordInput}
+              onkeydown={(e) => { if (e.key === 'Enter') attemptLogin(); }}
+            >
+            <button class="eye-toggle" type="button" aria-label="Toggle password visibility" onclick={togglePassword}>
+              <i class="fa-solid {passwordVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="input-wrapper">
-        <i class="fa-solid fa-lock input-icon"></i>
-        <input
-          id="password"
-          type={passwordVisible ? 'text' : 'password'}
-          placeholder="Enter your password"
-          autocomplete="current-password"
-          bind:value={password}
-          bind:this={passwordInput}
-          onkeydown={(e) => { if (e.key === 'Enter') attemptLogin(); }}
-        >
-        <button class="eye-toggle" type="button" aria-label="Toggle password visibility" onclick={togglePassword}>
-          <i class="fa-solid {passwordVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+
+      <div class="button-row">
+        <button id="login-btn" class="login-btn" type="button" disabled={loading} onclick={attemptLogin}>Login</button>
+        <button class="key-btn" type="button" aria-label="Use stored credentials">
+          <i class="fa-solid fa-key"></i>
         </button>
       </div>
+
+      {#if loading}
+        <div class="spinner-wrapper">
+          <i class="fa-solid fa-rotate-right spinner"></i>
+        </div>
+      {/if}
+
+      {#if errorMessage}
+        <p id="error-message" class="error-message">{errorMessage}</p>
+      {/if}
+
+      <p class="signup-row">
+        Don't have an account? <a href="#">Sign Up</a>
+      </p>
+
+      <p class="offline-link" onclick={() => console.log('Offline mode selected')}>Offline mode</p>
     </div>
   </div>
-
-  <div class="button-row">
-    <button id="login-btn" class="login-btn" type="button" disabled={loading} onclick={attemptLogin}>Login</button>
-    <button class="key-btn" type="button" aria-label="Use stored credentials">
-      <i class="fa-solid fa-key"></i>
-    </button>
-  </div>
-
-  {#if loading}
-    <div class="spinner-wrapper">
-      <i class="fa-solid fa-rotate-right spinner"></i>
-    </div>
-  {/if}
-
-  {#if errorMessage}
-    <p id="error-message" class="error-message">{errorMessage}</p>
-  {/if}
-
-  <p class="signup-row">
-    Don't have an account? <a href="#">Sign Up</a>
-  </p>
-
-  <p class="offline-link" onclick={() => console.log('Offline mode selected')}>Offline mode</p>
-</div>
+{:else}
+  <MainScreen />
+{/if}
 
 <style>
+  .login-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    overflow-y: auto;
+  }
+
   .login-panel {
     width: 100%;
     max-width: 1040px;

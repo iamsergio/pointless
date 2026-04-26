@@ -16,6 +16,14 @@
     --text-white: #ffffff;
     --text-muted: #8a97a8;
     --text-error: #ff4444;
+
+    --bg-main: #2d2e32;
+    --bg-section: #1a2332;
+    --btn-active: #0290f6;
+    --btn-inactive: #414244;
+    --task-bg: #3e3f43;
+    --text-secondary: #98999e;
+    --accent: #0ea5e9;
 }
 
 html {
@@ -28,12 +36,13 @@ html {
 body {
     height: 100%;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     overflow: hidden;
-    padding: 0 24px;
 }
 
 #app {
     width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }

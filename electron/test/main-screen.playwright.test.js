@@ -7,7 +7,7 @@ const { test, expect, _electron: electron } = require('@playwright/test');
 const path = require('node:path');
 const { captureScreenshot } = require('./test-utils');
 
-test('login with debug credentials succeeds', async () => {
+test('main screen appears after successful login', async () => {
   const email    = process.env.POINTLESS_DEBUG_USERNAME;
   const password = process.env.POINTLESS_DEBUG_PASSWORD;
 
@@ -28,9 +28,13 @@ test('login with debug credentials succeeds', async () => {
     await page.locator('#login-btn').click();
 
     await loginSucceeded;
-    await captureScreenshot(page, 'login-success', app);
+    await page.locator('#main-screen').waitFor({ state: 'visible', timeout: 5_000 });
 
-    await expect(page.locator('#error-message')).toBeHidden();
+    await captureScreenshot(page, 'main-screen', app);
+
+    await expect(page.locator('#tab-bar')).toBeVisible();
+    await expect(page.locator('#week-nav')).toBeVisible();
+    await expect(page.locator('#bottom-bar')).toBeVisible();
   } finally {
     await app.close();
   }
