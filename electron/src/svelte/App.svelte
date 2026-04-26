@@ -8,6 +8,13 @@
 
   let email = $state('');
   let password = $state('');
+
+  $effect(() => {
+    window.pointlessAPI.getCredentials().then(creds => {
+      if (creds.email) email = creds.email;
+      if (creds.password) password = creds.password;
+    });
+  });
   let passwordVisible = $state(false);
   let loading = $state(false);
   let errorMessage = $state('');

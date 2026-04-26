@@ -8,4 +8,6 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('pointlessAPI', {
   login: (email, password) =>
     ipcRenderer.invoke('auth:login', { email, password }),
+  getCredentials: () =>
+    ipcRenderer.invoke('env:credentials'),
 });

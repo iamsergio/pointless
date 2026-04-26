@@ -23,6 +23,11 @@ function createWindow() {
   win.loadFile(path.join(__dirname, 'dist', 'index.html'));
 }
 
+ipcMain.handle('env:credentials', () => ({
+  email: process.env.POINTLESS_USERNAME || '',
+  password: process.env.POINTLESS_PASSWORD || '',
+}));
+
 ipcMain.handle('auth:login', async (_event, { email, password }) => {
   const supabaseUrl = process.env.POINTLESS_SUPABASE_URL;
   const anonKey = process.env.POINTLESS_SUPABASE_ANON_KEY;
