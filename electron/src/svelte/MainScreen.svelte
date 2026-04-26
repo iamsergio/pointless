@@ -2,19 +2,73 @@
 <!-- SPDX-License-Identifier: MIT -->
 
 <script>
+  let { tasks = [], tags = [] } = $props();
+
   let activeTab = $state('week');
   let toggleOn = $state(false);
 
   const DAY_NAMES = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
   const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+  const BUILTIN_TAGS = new Set(['soon', 'current', 'evening']);
+
+  function tagIsBuiltin(name) { return BUILTIN_TAGS.has(name); }
+
+  function pendingTasks() { return tasks.filter(t => !t.isDone); }
+
+  function trimTime(d) {
+    const r = new Date(d); r.setHours(0, 0, 0, 0); return r;
+  }
+
   function getWeekStart(date) {
     const d = new Date(date);
-    const day = d.getDay(); // 0=Sun
+    const day = d.getDay();
     const daysFromMonday = day === 0 ? 6 : day - 1;
     d.setDate(d.getDate() - daysFromMonday);
     d.setHours(0, 0, 0, 0);
     return d;
+  }
+
+  function thisWeeksMonday() {
+    return getWeekStart(new Date());
+  }
+
+  function nextMonday(monday) {
+    const d = new Date(monday); d.setDate(d.getDate() + 7); return d;
+  }
+
+  function isThisWeek(millis) {
+    if (!millis) return false;
+    const monday = thisWeeksMonday();
+    return millis >= monday.getTime() && millis < nextMonday(monday).getTime();
+  }
+
+  function isOverdue(task) {
+    if (!task.dueDate || task.isDone) return false;
+    return task.dueDate < Date.now();
+  }
+
+  function isCurrent(task) {
+    return (task.tags ?? []).includes('current') || isThisWeek(task.dueDate) || isOverdue(task);
+  }
+
+  function isSoon(task) {
+    if (isCurrent(task)) return false;
+    if ((task.tags ?? []).includes('soon')) return true;
+    if (!task.dueDate) return false;
+    return task.dueDate <= Date.now() + 15 * 86400000 && task.dueDate >= Date.now();
+  }
+
+  function isLater(task) { return !isSoon(task) && !isCurrent(task); }
+
+  function taskNonBuiltinTag(task) {
+    return (task.tags ?? []).find(t => !tagIsBuiltin(t)) ?? '';
+  }
+
+  function isSameDay(millis, date) {
+    const a = trimTime(new Date(millis));
+    const b = trimTime(date);
+    return a.getTime() === b.getTime();
   }
 
   let weekOffset = $state(0);
@@ -46,6 +100,13 @@
     }
     return days;
   });
+
+  function tasksForDay(day) {
+    return pendingTasks().filter(t => t.dueDate && isSameDay(t.dueDate, day));
+  }
+
+  let soonTasks = $derived(pendingTasks().filter(t => isSoon(t)));
+  let laterTasks = $derived(pendingTasks().filter(t => isLater(t)));
 
   function formatDayHeader(date) {
     return `${DAY_NAMES[date.getDay()]}, ${date.getDate()}`;
@@ -85,18 +146,57 @@
 
   <hr class="separator">
 
-  <div class="day-sections">
-    {#each weekDays as day}
-      <div class="day-section">
-        <div class="day-header">
-          <span class="day-label">{formatDayHeader(day)}</span>
-          <button class="add-day-btn" aria-label="Add task">
-            <i class="fa-solid fa-plus"></i>
-          </button>
+  {#if activeTab === 'week'}
+    <div class="day-sections">
+      {#each weekDays as day}
+        {@const dayTasks = tasksForDay(day)}
+        <div class="day-section">
+          <div class="day-header">
+            <span class="day-label">{formatDayHeader(day)}</span>
+            <button class="add-day-btn" aria-label="Add task">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+          {#each dayTasks as task (task.uuid)}
+            <div class="task-row">
+              <span class="task-title">{task.title}</span>
+              {#if taskNonBuiltinTag(task)}
+                <span class="task-tag">{taskNonBuiltinTag(task)}</span>
+              {/if}
+            </div>
+          {/each}
         </div>
-      </div>
-    {/each}
-  </div>
+      {/each}
+    </div>
+  {:else if activeTab === 'soon'}
+    <div class="task-list">
+      {#each soonTasks as task (task.uuid)}
+        <div class="task-row">
+          <span class="task-title">{task.title}</span>
+          {#if taskNonBuiltinTag(task)}
+            <span class="task-tag">{taskNonBuiltinTag(task)}</span>
+          {/if}
+        </div>
+      {/each}
+      {#if soonTasks.length === 0}
+        <p class="empty-msg">No upcoming tasks</p>
+      {/if}
+    </div>
+  {:else}
+    <div class="task-list">
+      {#each laterTasks as task (task.uuid)}
+        <div class="task-row">
+          <span class="task-title">{task.title}</span>
+          {#if taskNonBuiltinTag(task)}
+            <span class="task-tag">{taskNonBuiltinTag(task)}</span>
+          {/if}
+        </div>
+      {/each}
+      {#if laterTasks.length === 0}
+        <p class="empty-msg">No tasks for later</p>
+      {/if}
+    </div>
+  {/if}
 
   <div class="bottom-bar" id="bottom-bar">
     <div class="bottom-left">
@@ -236,6 +336,41 @@
 
   .day-section {
     padding: 0 16px;
+  }
+
+  .task-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 16px 80px;
+  }
+
+  .task-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #3a3b3d;
+  }
+
+  .task-title {
+    font-size: 15px;
+    color: var(--text-white);
+  }
+
+  .task-tag {
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: #3a3b3d;
+    border-radius: 4px;
+    padding: 2px 7px;
+    flex-shrink: 0;
+  }
+
+  .empty-msg {
+    color: var(--text-secondary);
+    font-size: 15px;
+    text-align: center;
+    padding: 32px 0;
   }
 
   .day-header {

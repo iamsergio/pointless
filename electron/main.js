@@ -5,6 +5,7 @@
 
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('node:path');
+const fs = require('node:fs');
 const { login } = require('./src/auth');
 
 function createWindow() {
@@ -42,6 +43,14 @@ ipcMain.handle('auth:login', async (_event, { email, password }) => {
   } catch (err) {
     return { success: false, error: err.message };
   }
+});
+
+ipcMain.handle('data:loadLocal', () => {
+  const dataDir = process.env.POINTLESS_CLIENT_DATA_DIR;
+  if (!dataDir) return null;
+  const filePath = path.join(dataDir, 'pointless.json');
+  const content = fs.readFileSync(filePath, 'utf-8');
+  return JSON.parse(content);
 });
 
 app.whenReady().then(createWindow);

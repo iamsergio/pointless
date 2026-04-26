@@ -5,4 +5,5 @@ cd "$SCRIPT_DIR"
 rm -rf test-results/screenshots/*
 npm run build
 npm test
+npm run test:core
 npm run test:e2e

@@ -5,6 +5,8 @@
   import MainScreen from './MainScreen.svelte';
 
   let currentScreen = $state('login');
+  let tasks = $state([]);
+  let tags = $state([]);
 
   let email = $state('');
   let password = $state('');
@@ -13,6 +15,13 @@
     window.pointlessAPI.getCredentials().then(creds => {
       if (creds.email) email = creds.email;
       if (creds.password) password = creds.password;
+    });
+    window.pointlessAPI.loadLocalData().then(data => {
+      if (data) {
+        tasks = data.tasks ?? [];
+        tags = data.tags ?? [];
+        currentScreen = 'main';
+      }
     });
   });
   let passwordVisible = $state(false);
@@ -116,7 +125,7 @@
     </div>
   </div>
 {:else}
-  <MainScreen />
+  <MainScreen {tasks} {tags} />
 {/if}
 
 <style>

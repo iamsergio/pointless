@@ -10,4 +10,6 @@ contextBridge.exposeInMainWorld('pointlessAPI', {
     ipcRenderer.invoke('auth:login', { email, password }),
   getCredentials: () =>
     ipcRenderer.invoke('env:credentials'),
+  loadLocalData: () =>
+    ipcRenderer.invoke('data:loadLocal'),
 });
