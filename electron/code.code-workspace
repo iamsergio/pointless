@@ -9,7 +9,8 @@
       "vadimcn.vscode-lldb",
       "llvm-vs-code-extensions.vscode-clangd",
       "bradlc.vscode-tailwindcss",
-      "dbaeumer.vscode-eslint"
+      "dbaeumer.vscode-eslint",
+      "svelte.svelte-vscode"
     ],
     "unwantedRecommendations": [
       "ms-azuretools.vscode-docker"

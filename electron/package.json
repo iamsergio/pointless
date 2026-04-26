@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "test": "node --test test/auth.test.js",
+    "test:core": "node --test test/core.test.js",
     "test:e2e": "playwright test",
     "build": "vite build",
     "start": "electron .",
