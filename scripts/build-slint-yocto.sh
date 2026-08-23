@@ -7,19 +7,19 @@ unset LD_LIBRARY_PATH
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if ! rustup target list --installed | grep -q "armv7-unknown-linux-gnueabihf"; then
-    echo "Error: armv7-unknown-linux-gnueabihf target not installed. Install it with: rustup target add armv7-unknown-linux-gnueabihf"
-    exit 1
+	echo "Error: armv7-unknown-linux-gnueabihf target not installed. Install it with: rustup target add armv7-unknown-linux-gnueabihf"
+	exit 1
 fi
 
 if [ -n "$RPI2_SDK" ]; then
-    SDK_FILE="$RPI2_SDK/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi"
+	SDK_FILE="$RPI2_SDK/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi"
 else
-    SDK_FILE=~/raspberrypi2_sdk/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi
+	SDK_FILE=~/raspberrypi2_sdk/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi
 fi
 
 if [ ! -f "$SDK_FILE" ]; then
-    echo "Error: SDK file not found at $SDK_FILE"
-    exit 1
+	echo "Error: SDK file not found at $SDK_FILE"
+	exit 1
 fi
 
 source "$SDK_FILE"
@@ -39,7 +39,7 @@ CXX_EXTRA=$(echo "$CXX" | cut -d' ' -f2-)
 
 # Create a linker wrapper so cargo can reference it as a single path
 LINKER_WRAPPER=$(mktemp /tmp/armv7-linker-XXXXXX.sh)
-cat > "$LINKER_WRAPPER" << EOF
+cat >"$LINKER_WRAPPER" <<EOF
 #!/bin/bash
 exec "$CXX_BIN" $CXX_EXTRA "\$@"
 EOF
