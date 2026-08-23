@@ -1098,6 +1098,7 @@ void GuiController::moveTaskToCurrent(const QString &taskUuid)
     }
     task->removeBuiltinTags();
     task->addTag(pointless::core::BUILTIN_TAG_CURRENT);
+    task->dueDate = std::nullopt;
     taskModel()->updateTask(*task);
 }
 
