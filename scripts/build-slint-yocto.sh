@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2026 Sergio Martins
+#
+# SPDX-License-Identifier: MIT
+
+
 set -e
 
 unset LD_LIBRARY_PATH
