@@ -21,6 +21,10 @@
 #include <chrono>
 #include <cstdlib>
 
+#if defined(Q_OS_LINUX) && defined(POINTLESS_DEVELOPER_MODE)
+#include <sys/prctl.h>
+#endif
+
 using namespace pointless;
 
 namespace {
@@ -35,6 +39,14 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
     : QGuiApplication(argc, argv)
 {
     Q_UNUSED(options)
+
+#if defined(Q_OS_LINUX) && defined(POINTLESS_DEVELOPER_MODE)
+    // Opts this process into same-uid ptrace (e.g. from qt-commander's injector) without
+    // lowering /proc/sys/kernel/yama/ptrace_scope system-wide, which would expose every
+    // other process (browsers, ssh-agent, ...) to the same relaxation.
+    prctl(PR_SET_PTRACER, PR_SET_PTRACER_ANY, 0, 0, 0);
+#endif
+
     QCoreApplication::setApplicationName(QStringLiteral("pointless"));
     QCoreApplication::setApplicationVersion(QStringLiteral("0.1"));
     QCoreApplication::setOrganizationName(orgName);
