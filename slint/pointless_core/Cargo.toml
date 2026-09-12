@@ -12,10 +12,10 @@ serde_json = "1"
 thiserror = "2"
 log = "0.4"
 env_logger = "0.11"
-reqwest = { version = "0.12", features = ["blocking", "json"] }
+reqwest = { version = "0.13", features = ["blocking", "json"] }
 flate2 = "1"
-base64 = "0.22"
-roxmltree = "0.20"
+base64 = "0.23"
+roxmltree = "0.21"
 uuid = { version = "1", features = ["v4"] }
 
 [dev-dependencies]
