@@ -22,7 +22,12 @@ inline bool isWhiteListed(const QString &msg)
 
     static QStringList whiteList = {
         "Populating font family aliases took",
-        "DelegateModel::cancel:"
+        "DelegateModel::cancel:",
+        // Spurious EINVAL from the event loop's poll() when a debugger/injector
+        // (e.g. qt-commander) ptrace-attaches while the main thread is blocked
+        // in it -- not indicative of an actual bug, and Qt itself treats this
+        // as non-fatal by default (QT_CONFIG(poll_exit_on_error) is off).
+        "qt_safe_poll"
     };
 
     return std::ranges::any_of(whiteList.begin(), whiteList.end(), [&](const QString &entry) {
@@ -53,7 +58,8 @@ inline void qtMessageHandler(QtMsgType type, const QMessageLogContext &context, 
     }
 
 #ifdef POINTLESS_DEVELOPER_MODE
-    if (!isWhiteListed(msg) && (type == QtWarningMsg || type == QtCriticalMsg || type == QtFatalMsg)) {
+    static const bool disabled = std::getenv("POINTLESS_DISABLE_FATAL_WARNINGS") != nullptr;
+    if (!disabled && !isWhiteListed(msg) && (type == QtWarningMsg || type == QtCriticalMsg || type == QtFatalMsg)) {
         std::abort();
     }
 #endif
