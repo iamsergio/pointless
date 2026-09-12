@@ -53,3 +53,5 @@ pointless_core/target/
 slint/pointless_core/target/
 slint/target
 node_modules
+.qt-commander/
+/.mcp.json

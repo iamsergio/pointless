@@ -10,3 +10,6 @@
 [submodule "3rdparty/cpr"]
 	path = 3rdparty/cpr
 	url = https://github.com/libcpr/cpr.git
+[submodule "3rdparty/QtCommander"]
+	path = 3rdparty/QtCommander
+	url = ssh://git@kdab:222/KDAB/QtCommander.git

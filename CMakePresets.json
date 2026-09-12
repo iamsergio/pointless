@@ -32,7 +32,8 @@
       "inherits": "base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "POINTLESS_DEVELOPER_MODE": "ON"
+        "POINTLESS_DEVELOPER_MODE": "ON",
+        "POINTLESS_BUILD_QT_COMMANDER": "ON"
       },
       "errors": {
         "dev": true

@@ -192,6 +192,41 @@ endif()
 
 add_subdirectory(src)
 
+option(POINTLESS_BUILD_QT_COMMANDER "Build the qt-commander injector used for UI automation" OFF)
+
+if(POINTLESS_BUILD_QT_COMMANDER)
+  set(qtcommander_dir ${CMAKE_SOURCE_DIR}/3rdparty/QtCommander)
+  if(NOT EXISTS ${qtcommander_dir}/src/injector/CMakeLists.txt)
+    message(FATAL_ERROR "3rdparty/QtCommander is empty — run: git submodule update --init")
+  endif()
+
+  # Read by the two subdirectories below; plain variables, not cache entries.
+  set(QT_MAJOR_VERSION 6)
+  set(WITH_QML ON) # pointless is a QML app
+  set(QT_NO_PRIVATE_MODULE_WARNING ON)
+
+  add_subdirectory(${qtcommander_dir}/src/injector ${CMAKE_BINARY_DIR}/qt-commander/injector)
+  add_subdirectory(${qtcommander_dir}/src/library ${CMAKE_BINARY_DIR}/qt-commander/library)
+
+  # The MCP server only ever looks for the injector and the library in <project root>/.qt-commander/bin (builder.py resolves BUILD_DIR relative to the server's working directory), so write them
+  # straight there rather than relying on a `cmake --install` step that a plain build never runs.
+  set(qtcommander_bindir ${CMAKE_SOURCE_DIR}/.qt-commander/bin)
+  set_target_properties(qt-injector PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${qtcommander_bindir})
+  set_target_properties(qt-commander-lib PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${qtcommander_bindir})
+
+  # The top-level directory-wide AUTOUIC/AUTORCC are inherited by the subdirectories, where they are unwanted. Only AUTOMOC (set by the library itself) is needed.
+  set_target_properties(qt-injector qt-commander-lib PROPERTIES AUTOUIC OFF AUTORCC OFF)
+
+  # An absolute uv: a desktop-launched Claude does not necessarily have ~/.cargo/bin on PATH.
+  find_program(uv_program NAMES uv)
+  if(NOT uv_program)
+    message(FATAL_ERROR "uv not found; required to run the qt-commander MCP server (install uv and ensure it's on PATH)")
+  endif()
+
+  # Claude Code reads .mcp.json from the source root, not the build tree.
+  configure_file(${CMAKE_SOURCE_DIR}/.mcp.json.in ${CMAKE_SOURCE_DIR}/.mcp.json @ONLY)
+endif()
+
 pointless_cpp_set_compiler_flags(pointless_core ${POINTLESS_DEVELOPER_MODE})
 pointless_cpp_set_compiler_flags(pointless_gui ${POINTLESS_DEVELOPER_MODE})
 pointless_cpp_set_compiler_flags(pointless ${POINTLESS_DEVELOPER_MODE})
