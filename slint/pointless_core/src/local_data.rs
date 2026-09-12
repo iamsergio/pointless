@@ -475,10 +475,8 @@ mod tests {
         let _ = fs::create_dir_all(&dir);
         let dest = dir.join("pointless.json");
 
-        let source = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-            .parent()
-            .unwrap()
-            .join("src/core/tests/test.json");
+        let source =
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/test.json");
         fs::copy(&source, &dest).expect("Failed to copy test.json");
 
         let path_str = dest.to_string_lossy().to_string();
