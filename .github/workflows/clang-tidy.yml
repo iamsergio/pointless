@@ -17,8 +17,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v7
-      with:
-        submodules: recursive
+
+    - name: Init submodules
+      run: git submodule update --init --recursive -- 3rdparty/vcpkg 3rdparty/spix 3rdparty/glaze 3rdparty/cpr
 
     - name: Install dependencies
       run: |

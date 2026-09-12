@@ -24,8 +24,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v7
-      with:
-        submodules: recursive
+
+    - name: Init submodules
+      run: git submodule update --init --recursive -- 3rdparty/vcpkg 3rdparty/spix 3rdparty/glaze 3rdparty/cpr
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
@@ -42,7 +43,7 @@ jobs:
       env:
         POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
         POINTLESS_SUPABASE_ANON_KEY: ${{ secrets.POINTLESS_SUPABASE_ANON_KEY }}
-      run: cmake --preset=${{ matrix.preset }}
+      run: cmake --preset=${{ matrix.preset }} -DPOINTLESS_BUILD_QT_COMMANDER=OFF
 
     - name: Build
       run: cmake --build build-${{ matrix.preset }}
