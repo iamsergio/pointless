@@ -22,6 +22,8 @@ jobs:
 
     strategy:
       fail-fast: false
+      # Tests share one Supabase test account, parallel jobs overwrite each other's data
+      max-parallel: 1
       matrix:
         preset: [dev, rel, dev-asan, dev-tsan]
         os: [ubuntu-latest]
