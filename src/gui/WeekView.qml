@@ -54,7 +54,8 @@ Item {
             required property int index
 
             spacing: Style.fromPixel(10)
-            objectName: "weekdayListView_day_" + index
+            objectName: "weekday_" + index
+            readonly property int taskCount: tasks.count
 
             RowLayout {
                 spacing: 0
