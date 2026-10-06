@@ -1,11 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
-#include "test_server.h"
-#include "gui/Clock.h"
-#include "gui/spix_utils.h"
-#include "gui/gui_controller.h"
-#include "gui/data_controller.h"
+#include "gui_test_harness.h"
 #include "core/logger.h"
 #include "core/data_provider.h"
 #include "core/context.h"
@@ -17,10 +13,10 @@
 #include <fstream>
 #include <sstream>
 
-#include <Spix/QtQmlBot.h>
 #include <Spix/Data/ItemPath.h>
 
 using namespace pointless;
+using pointless::tests::GuiTestHarness;
 
 static int g_argc;
 static char **g_argv;
@@ -29,10 +25,13 @@ static char **g_argv;
 
 const std::string testDataPath = std::string(POINTLESS_SOURCE_DIR) + "/src/gui/tests/test_data.json";
 
-class MyTest : public pointless::TestServer
+class MyTest : public spix::TestServer
 {
 public:
-    using pointless::TestServer::TestServer;
+    explicit MyTest(GuiTestHarness &harness)
+        : _harness(harness)
+    {
+    }
 
 protected:
     void executeTest() override
@@ -41,12 +40,10 @@ protected:
         {
             ~AppQuitter()
             {
-                if (qApp->platformName() == QStringLiteral("offscreen"))
-                    qApp->quit();
-                else
-                    P_LOG_INFO("Test finished! Not quitting since using non-offscreen for visual debugging");
+                harness.finish();
             }
-        } appQuitter;
+            GuiTestHarness &harness;
+        } appQuitter { _harness };
 
         P_LOG_INFO("Starting test. On secondary thread.");
 
@@ -83,13 +80,7 @@ protected:
         wait(std::chrono::milliseconds(200));
         EXPECT_EQ(getStringProperty("mainWindow/weekNavigator/dateRangeText", "text"), "Dec 1 - Dec 7");
 
-        spix::ItemPath path("mainWindow/weekView");
-
-        auto window = SpixUtils::getWindowAtPath(path);
-        ASSERT_NE(window, nullptr);
-
-        auto item = SpixUtils::getItemAtPath(path);
-        ASSERT_NE(item, nullptr);
+        ASSERT_TRUE(existsAndVisible("mainWindow/weekView"));
 
         EXPECT_EQ(getStringProperty("mainWindow/weekView", "weekdayModelCount"), "7");
         EXPECT_EQ(getStringProperty("mainWindow/weekView", "weekdayFilterModelCount"), "7");
@@ -109,10 +100,10 @@ protected:
             invokeMethod("mainWindow/weekdayListView", "positionViewAtIndex", { index, 0 });
             wait(std::chrono::milliseconds(200));
 
-            auto listViewItem = SpixUtils::getListViewItemAtIndex(spix::ItemPath("mainWindow/weekdayListView"), index);
+            const std::string weekdayPath = "mainWindow/weekday_" + std::to_string(index);
 
-            ASSERT_NE(listViewItem, nullptr) << "Expected list view item at index " << index << listViewItem;
-            auto prettyDate = SpixUtils::getItemProperty(listViewItem, "prettyDate").toString();
+            ASSERT_TRUE(existsAndVisible(weekdayPath)) << "Expected list view item at index " << index;
+            auto prettyDate = getStringProperty(weekdayPath, "prettyDate");
             EXPECT_EQ(prettyDate, expectedText);
 
             ++index;
@@ -126,16 +117,10 @@ protected:
         for (const auto &expectedCount : expectedTaskCounts) {
             invokeMethod("mainWindow/weekdayListView", "positionViewAtIndex", { index, 0 });
             wait(std::chrono::milliseconds(200));
-            auto listViewItem = SpixUtils::getListViewItemAtIndex(spix::ItemPath("mainWindow/weekdayListView"), index);
-            ASSERT_NE(listViewItem, nullptr);
+            const std::string weekdayPath = "mainWindow/weekday_" + std::to_string(index);
+            ASSERT_TRUE(existsAndVisible(weekdayPath));
 
-            int taskCount = -1;
-            QMetaObject::invokeMethod(listViewItem, [listViewItem, &taskCount]() {
-                auto model = listViewItem->property("tasks").value<QObject *>();
-                if (model)
-                    taskCount = model->property("count").toInt(); }, Qt::BlockingQueuedConnection);
-            ASSERT_NE(taskCount, -1);
-            EXPECT_EQ(taskCount, expectedCount);
+            EXPECT_EQ(getStringProperty(weekdayPath, "taskCount"), std::to_string(expectedCount));
 
             ++index;
         }
@@ -184,9 +169,10 @@ protected:
 
         mouseClick("mainWindow/editTask/saveButton");
         wait(std::chrono::milliseconds(200));
-        auto &localData = GuiController::instance()->dataController()->localData();
         EXPECT_EQ(getStringProperty("mainWindow/editTask", "visible"), "false");
-        EXPECT_TRUE(localData.taskForTitle("foo") != nullptr);
+        bool taskFooExists = false;
+        _harness.runOnGuiThread([this, &taskFooExists] { taskFooExists = _harness.localData().taskForTitle("foo") != nullptr; });
+        EXPECT_TRUE(taskFooExists);
 
         // -----------------------------------------
         // Test editing an existing task
@@ -214,9 +200,16 @@ protected:
         EXPECT_EQ(getStringProperty("mainWindow/editTask", "visible"), "false");
         return;
         // Verify changes in the model
-        auto *task = localData.taskForTitle("Current Task 3 Edited");
-        ASSERT_TRUE(task != nullptr);
-        EXPECT_EQ(task->tagName(), "work");
+        bool taskExists = false;
+        std::string taskTagName;
+        _harness.runOnGuiThread([this, &taskExists, &taskTagName] {
+            auto *task = _harness.localData().taskForTitle("Current Task 3 Edited");
+            taskExists = task != nullptr;
+            if (task)
+                taskTagName = task->tagName();
+        });
+        ASSERT_TRUE(taskExists);
+        EXPECT_EQ(taskTagName, "work");
 
         // Verify changes in UI
         EXPECT_EQ(getStringProperty("mainWindow/task_0_0", "title"), "Current Task 3 Edited");
@@ -224,6 +217,9 @@ protected:
 
         P_LOG_INFO("Finished test!!");
     }
+
+private:
+    GuiTestHarness &_harness;
 };
 
 TEST(DummyTest, BasicAssertions)
@@ -231,8 +227,9 @@ TEST(DummyTest, BasicAssertions)
     EXPECT_STRNE("hello", "world");
     EXPECT_EQ(7 * 6, 42);
 
-    MyTest testServer(g_argc, g_argv);
-    EXPECT_NO_THROW(testServer.exec());
+    GuiTestHarness harness(g_argc, g_argv);
+    MyTest testServer(harness);
+    EXPECT_NO_THROW(harness.run(testServer));
 }
 
 // TEST(OfflineMode, EnableOfflineMode)
@@ -244,7 +241,7 @@ TEST(DummyTest, BasicAssertions)
 
 void initDataProvider(IDataProvider::Type providerType)
 {
-    Gui::Clock::setTestNow(QDateTime(QDate(2025, 12, 1), QTime(16, 0)));
+    GuiTestHarness::setTestNow(2025, 12, 1, 16, 0);
 
     if (providerType == IDataProvider::Type::TestsLocal) {
         core::Context::setContext({ IDataProvider::Type::TestsLocal, testDataPath, static_cast<unsigned int>(core::Context::StartupOption::RestoreAuth), true });

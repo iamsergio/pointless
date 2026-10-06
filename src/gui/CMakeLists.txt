@@ -137,9 +137,16 @@ elseif(APPLE) # macOS
 endif()
 
 if(POINTLESS_ENABLE_TESTS)
+  add_library(gui_test_harness_qt STATIC tests/gui_test_harness_qt.cpp)
+  target_link_libraries(
+    gui_test_harness_qt
+    PUBLIC pointless_core Spix::Core
+    PRIVATE pointless_gui Spix::QtQuick Qt6::Core Qt6::Gui Qt6::Quick)
+  target_include_directories(gui_test_harness_qt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+  target_include_directories(gui_test_harness_qt PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
   add_executable(test_gui tests/test_gui.cpp)
-  target_link_libraries(test_gui PRIVATE pointless_core pointless_gui GTest::gtest_main Spix::QtQuick)
-  target_include_directories(test_gui PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+  target_link_libraries(test_gui PRIVATE pointless_core gui_test_harness_qt Spix::Core GTest::gtest_main)
   target_compile_definitions(test_gui PRIVATE POINTLESS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
   add_test(NAME test_gui COMMAND test_gui --local)
   # add_test(NAME test_gui_supabase COMMAND test_gui --supabase)
