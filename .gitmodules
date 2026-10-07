@@ -13,3 +13,7 @@
 [submodule "3rdparty/QtCommander"]
 	path = 3rdparty/QtCommander
 	url = ssh://git@kdab:222/KDAB/QtCommander.git
+[submodule "3rdparty/slint"]
+	path = 3rdparty/slint
+	url = https://github.com/iamsergio/slint.git
+	shallow = true
