@@ -25,7 +25,7 @@ ctest --test-dir build-dev --output-on-failure --verbose
 # Linux only: Run qmllint
 ninja all_qmllint
 
-# Other presets: rel, dev-asan, dev-tsan, ios-dev, ios-release, clang-tidy
+# Other presets: rel, dev-asan, dev-tsan, ios-dev, ios-release
 ```
 
 **Required environment variables:**
