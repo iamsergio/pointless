@@ -40,13 +40,24 @@ jobs:
         cd 3rdparty/vcpkg
         ./bootstrap-vcpkg.sh
 
+    - name: Create vcpkg cache directory
+      run: mkdir -p ${{ github.workspace }}/.cache/vcpkg
+
+    - name: Cache vcpkg binaries
+      uses: actions/cache@v6
+      with:
+        path: ${{ github.workspace }}/.cache/vcpkg
+        key: vcpkg-bin-${{ runner.os }}-clang-tidy-${{ hashFiles('vcpkg.json') }}
+        restore-keys: vcpkg-bin-${{ runner.os }}-clang-tidy-
+
     - name: Configure CMake
       env:
         POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
         POINTLESS_SUPABASE_ANON_KEY: ${{ secrets.POINTLESS_SUPABASE_ANON_KEY }}
         POINTLESS_USERNAME: ${{ secrets.POINTLESS_USERNAME }}
         POINTLESS_PASSWORD: ${{ secrets.POINTLESS_PASSWORD }}
+        VCPKG_BINARY_SOURCES: 'clear;files,${{ github.workspace }}/.cache/vcpkg,readwrite'
       run: cmake --preset=dev -DPOINTLESS_BUILD_QT_COMMANDER=OFF
 
     - name: Run clang-tidy
-      run: CLANG_TIDY=clang-tidy-20 scripts/run-clang-tidy.sh build-dev
+      run: RUN_CLANG_TIDY=run-clang-tidy-20 CLANG_TIDY=clang-tidy-20 scripts/run-clang-tidy.sh build-dev
