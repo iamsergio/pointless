@@ -35,10 +35,10 @@ jobs:
     - name: Print clang-tidy version
       run: clang-tidy --version
 
-    - name: Setup vcpkg
+    - name: Set gcc-14 as default compiler
       run: |
-        cd 3rdparty/vcpkg
-        ./bootstrap-vcpkg.sh
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
 
     - name: Create vcpkg cache directory
       run: mkdir -p ${{ github.workspace }}/.cache/vcpkg
@@ -47,8 +47,15 @@ jobs:
       uses: actions/cache@v6
       with:
         path: ${{ github.workspace }}/.cache/vcpkg
-        key: vcpkg-bin-${{ runner.os }}-clang-tidy-${{ hashFiles('vcpkg.json') }}
-        restore-keys: vcpkg-bin-${{ runner.os }}-clang-tidy-
+        key: vcpkg-bin-linux-${{ hashFiles('vcpkg.json') }}-${{ github.run_id }}
+        restore-keys: |
+          vcpkg-bin-linux-${{ hashFiles('vcpkg.json') }}-
+          vcpkg-bin-linux-
+
+    - name: Setup vcpkg
+      run: |
+        cd 3rdparty/vcpkg
+        ./bootstrap-vcpkg.sh
 
     - name: Configure CMake
       env:
