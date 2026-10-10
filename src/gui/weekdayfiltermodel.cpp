@@ -36,12 +36,12 @@ WeekdayFilterModel::WeekdayFilterModel(QObject *parent)
     });
 }
 
-QObject *WeekdayFilterModel::source() const
+WeekdayModel *WeekdayFilterModel::source() const
 {
-    return sourceModel();
+    return qobject_cast<WeekdayModel *>(sourceModel());
 }
 
-void WeekdayFilterModel::setSource(QObject *source)
+void WeekdayFilterModel::setSource(WeekdayModel *source)
 {
     if (source == sourceModel())
         return;
@@ -59,10 +59,9 @@ void WeekdayFilterModel::setSource(QObject *source)
         }
     }
 
-    auto *model = qobject_cast<QAbstractItemModel *>(source);
-    setSourceModel(model);
+    setSourceModel(source);
 
-    auto *weekdayModel = qobject_cast<WeekdayModel *>(model);
+    auto *weekdayModel = source;
     if (weekdayModel != nullptr) {
         const int count = weekdayModel->rowCount();
         for (int i = 0; i < count; ++i) {
@@ -81,8 +80,6 @@ void WeekdayFilterModel::setSource(QObject *source)
                 P_LOG_CRITICAL("TaskFilterModel is null at row {}", i);
             }
         }
-    } else if (model != nullptr) {
-        P_LOG_CRITICAL("WeekdayFilterModel source set to a model that is not WeekdayModel");
     } else {
         assert(false); // Not supported
     }
