@@ -40,6 +40,9 @@ jobs:
         cd 3rdparty/vcpkg
         ./bootstrap-vcpkg.sh
 
+    - name: Build vcpkg dependencies in debug only
+      run: echo 'set(VCPKG_BUILD_TYPE debug)' >> 3rdparty/vcpkg/custom_triplets/x64-linux.cmake
+
     - name: Configure CMake
       env:
         POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
@@ -49,4 +52,4 @@ jobs:
       run: cmake --preset=dev -DPOINTLESS_BUILD_QT_COMMANDER=OFF
 
     - name: Run clang-tidy
-      run: CLANG_TIDY=clang-tidy-20 scripts/run-clang-tidy.sh build-dev
+      run: RUN_CLANG_TIDY=run-clang-tidy-20 CLANG_TIDY=clang-tidy-20 scripts/run-clang-tidy.sh build-dev
