@@ -1,19 +1,12 @@
 # SPDX-FileCopyrightText: 2025 Sergio Martins
 # SPDX-License-Identifier: MIT
 
-name: Build
+name: Nightly
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  schedule:
+    - cron: '0 3 * * *'
   workflow_dispatch:
-    inputs:
-      test_name:
-        description: 'Specific test executable to run (e.g., test_data_controller)'
-        required: false
-        type: string
 
 jobs:
   build:
@@ -22,14 +15,16 @@ jobs:
 
     strategy:
       fail-fast: false
+      # Tests share one Supabase test account, parallel jobs overwrite each other's data
+      max-parallel: 1
       matrix:
-        preset: [dev, rel]
+        preset: [dev-asan, dev-tsan]
         os: [ubuntu-latest]
         include:
-          - preset: dev
-            qt-flavor: debug
-          - preset: rel
-            qt-flavor: profile
+          - preset: dev-asan
+            qt-flavor: asan
+          - preset: dev-tsan
+            qt-flavor: tsan
 
     steps:
     - name: Checkout code
@@ -110,7 +105,6 @@ jobs:
       run: cmake --build build-${{ matrix.preset }}
 
     - name: Run tests
-      if: startsWith(matrix.preset, 'dev')
       env:
         POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
         POINTLESS_SUPABASE_ANON_KEY: ${{ secrets.POINTLESS_SUPABASE_ANON_KEY }}
@@ -118,15 +112,7 @@ jobs:
         POINTLESS_DEBUG_PASSWORD: ${{ secrets.POINTLESS_DEBUG_PASSWORD }}
         QT_QPA_PLATFORM: offscreen
       run: |
-        if [ -n "${{ github.event.inputs.test_name }}" ]; then
-          args=""
-          if [ "${{ github.event.inputs.test_name }}" = "test_gui" ]; then
-            args="--local"
-          fi
-          build-${{ matrix.preset }}/bin/${{ github.event.inputs.test_name }} $args
-        else
-          ctest --output-on-failure --verbose --test-dir build-${{ matrix.preset }}
-        fi
+        ctest --output-on-failure --verbose --test-dir build-${{ matrix.preset }}
 
     - name: Run qmllint
       run: |
