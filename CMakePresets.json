@@ -108,25 +108,6 @@
       }
     },
     {
-      "name": "clang-tidy",
-      "inherits": [
-        "base"
-      ],
-      "cacheVariables": {
-        "CMAKE_CXX_CLANG_TIDY": "clang-tidy",
-        "POINTLESS_ENABLE_TESTS": "OFF"
-      }
-    },
-    {
-      "name": "ci-clang-tidy",
-      "inherits": [
-        "clang-tidy"
-      ],
-      "cacheVariables": {
-        "CMAKE_CXX_CLANG_TIDY": "clang-tidy-20;--warnings-as-errors=*"
-      }
-    },
-    {
       "name": "clazy",
       "inherits": "dev",
       "generator": "Ninja",

@@ -44,6 +44,7 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
     // Opts this process into same-uid ptrace (e.g. from qt-commander's injector) without
     // lowering /proc/sys/kernel/yama/ptrace_scope system-wide, which would expose every
     // other process (browsers, ssh-agent, ...) to the same relaxation.
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     prctl(PR_SET_PTRACER, PR_SET_PTRACER_ANY, 0, 0, 0);
 #endif
 
