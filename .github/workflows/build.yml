@@ -95,6 +95,18 @@ jobs:
          qt-tag: "v6.11.0-beta2"
          qt-flavor: ${{ matrix.qt-flavor }}
 
+    - name: Create vcpkg cache directory
+      run: mkdir -p ${{ github.workspace }}/.cache/vcpkg
+
+    - name: Cache vcpkg binaries
+      uses: actions/cache@v6
+      with:
+        path: ${{ github.workspace }}/.cache/vcpkg
+        key: vcpkg-bin-linux-${{ hashFiles('vcpkg.json') }}-${{ github.run_id }}
+        restore-keys: |
+          vcpkg-bin-linux-${{ hashFiles('vcpkg.json') }}-
+          vcpkg-bin-linux-
+
     - name: Setup vcpkg
       run: |
         cd 3rdparty/vcpkg
@@ -104,6 +116,7 @@ jobs:
       env:
         POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
         POINTLESS_SUPABASE_ANON_KEY: ${{ secrets.POINTLESS_SUPABASE_ANON_KEY }}
+        VCPKG_BINARY_SOURCES: 'clear;files,${{ github.workspace }}/.cache/vcpkg,readwrite'
       run: cmake --preset=${{ matrix.preset }} -DPOINTLESS_BUILD_QT_COMMANDER=OFF
 
     - name: Build
