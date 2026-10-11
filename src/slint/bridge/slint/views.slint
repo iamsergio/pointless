@@ -1,0 +1,276 @@
+// SPDX-FileCopyrightText: 2026 Sergio Martins
+// SPDX-License-Identifier: MIT
+
+import { ScrollView } from "std-widgets.slint";
+import { GuiController, GuiViewType, TaskViewType, TaskFilterModel, WeekdayModel, WeekdayFilterModel } from "@bridge/globals.slint";
+import { Style } from "style.slint";
+import { FaButton } from "controls.slint";
+import { TaskItem, TagChip } from "task.slint";
+
+// WeekNavigator.qml
+export component WeekNavigator inherits Rectangle {
+    background: Style.background;
+    height: 60px;
+
+    HorizontalLayout {
+        alignment: center;
+        spacing: Style.px(5);
+
+        VerticalLayout {
+            alignment: center;
+            FaButton {
+                icon: "\u{f053}";
+                icon-size: Style.px(14);
+                icon-color: Style.text-color2;
+                background-color: transparent;
+                preferred-width: Style.px(40);
+                preferred-height: Style.px(40);
+                clicked => {
+                    GuiController.navigator-goto-previous-week();
+                }
+            }
+        }
+
+        VerticalLayout {
+            alignment: center;
+            Rectangle {
+                preferred-width: range.preferred-width;
+                preferred-height: range.preferred-height;
+                range := Text {
+                    text: GuiController.navigator-pretty-start-date + " - " + GuiController.navigator-pretty-end-date;
+                    font-size: Style.px(14);
+                    color: Style.text-color2;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+                TouchArea {
+                    clicked => {
+                        GuiController.navigator-goto-today();
+                    }
+                }
+            }
+        }
+
+        VerticalLayout {
+            alignment: center;
+            FaButton {
+                icon: "\u{f054}";
+                icon-size: Style.px(14);
+                icon-color: Style.text-color2;
+                background-color: transparent;
+                preferred-width: Style.px(40);
+                preferred-height: Style.px(40);
+                clicked => {
+                    GuiController.navigator-goto-next-week();
+                }
+            }
+        }
+    }
+}
+
+// The ScrollView of the Qt views: a vertical scroll bar, not on mobile
+component VScroll inherits ScrollView {
+    vertical-scrollbar-policy: GuiController.is-mobile ? ScrollBarPolicy.always-off : ScrollBarPolicy.as-needed;
+    horizontal-scrollbar-policy: ScrollBarPolicy.always-off;
+}
+
+// TaskView.qml
+export component TaskView inherits Rectangle {
+    in property <bool> show-tags: true;
+    in property <bool> shows-tags-in-second-line: false;
+    in property <bool> shows-date: true;
+    in property <string> search-text: "";
+
+    // GuiViewType has `tags` too, which isn't a task view.
+    pure function view-type(t: GuiViewType) -> TaskViewType {
+        if (t == GuiViewType.soon) {
+            return TaskViewType.soon;
+        } else if (t == GuiViewType.later) {
+            return TaskViewType.later;
+        } else if (t == GuiViewType.goals) {
+            return TaskViewType.goals;
+        }
+        return TaskViewType.week;
+    }
+
+    filter := TaskFilterModel {
+        view-type: view-type(GuiController.current-view-type);
+        tag-name: GuiController.current-tag;
+        search-text: root.search-text;
+    }
+
+    VScroll {
+        // A ScrollView doesn't fill its parent by itself
+        width: parent.width;
+        height: parent.height;
+        VerticalLayout {
+            spacing: Style.task-spacing;
+            alignment: start;
+            for task[i] in filter.rows: TaskItem {
+                task: task;
+                show-tags: root.show-tags;
+                shows-tags-in-second-line: root.shows-tags-in-second-line;
+                shows-date: root.shows-date;
+                a11y-id: "task_" + i;
+                clicked => {
+                    GuiController.set-task-menu-uuid(task.uuid);
+                }
+            }
+        }
+    }
+}
+
+// WeekView.qml
+export component WeekView inherits Rectangle {
+    // for Spix
+    out property <int> weekday-model-count: weekday-model.count;
+    out property <int> weekday-filter-model-count: weekday-filter-model.count;
+
+    weekday-model := WeekdayModel {
+        monday-date: GuiController.navigator-start-date;
+    }
+
+    weekday-filter-model := WeekdayFilterModel {
+        source: weekday-model.rows;
+    }
+
+    VScroll {
+        // A ScrollView doesn't fill its parent by itself
+        width: parent.width;
+        height: parent.height;
+        VerticalLayout {
+            spacing: Style.px(15);
+            alignment: start;
+
+            for day[i] in weekday-filter-model.rows: VerticalLayout {
+                spacing: Style.px(10);
+
+                HorizontalLayout {
+                    spacing: 0px;
+                    Text {
+                        text: day.pretty-date;
+                        font-size: Style.weekday-font-size;
+                        font-weight: 700;
+                        color: Style.weekday-text-color;
+                        vertical-alignment: center;
+                        horizontal-stretch: 1;
+                    }
+                    VerticalLayout {
+                        alignment: center;
+                        FaButton {
+                            icon: "\u{f067}";
+                            icon-size: 18px;
+                            icon-color: Style.icon-color;
+                            preferred-width: 32px;
+                            preferred-height: 32px;
+                            background-color: transparent;
+                            a11y-id: "addTaskButton_" + i;
+                            clicked => {
+                                GuiController.set-task-being-edited("", day.date, "");
+                            }
+                        }
+                    }
+                }
+
+                if day.tasks.length == 0: Rectangle {
+                    height: Style.task-height;
+                    background: Style.background2;
+                    border-radius: 8px;
+                    border-width: 1px;
+                    border-color: #2a3441;
+
+                    Text {
+                        text: "No tasks for this day.";
+                        font-size: Style.px(14);
+                        color: Style.task-secondary-text-color;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                }
+
+                for task[j] in day.tasks: TaskItem {
+                    task: task;
+                    shows-date: false;
+                    a11y-id: "task_" + i + "_" + j;
+                    clicked => {
+                        GuiController.set-task-menu-uuid(task.uuid);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// TagsView.qml
+export component TagsView inherits Rectangle {
+    VScroll {
+        // A ScrollView doesn't fill its parent by itself
+        width: parent.width;
+        height: parent.height;
+        VerticalLayout {
+            spacing: Style.px(4);
+            alignment: start;
+
+            for tag in GuiController.tag-filter-model: Rectangle {
+                height: Style.px(40);
+
+                TouchArea {
+                    clicked => {
+                        GuiController.current-tag = tag.name;
+                        GuiController.current-page = "tasksByTag";
+                    }
+                }
+
+                HorizontalLayout {
+                    padding-left: Style.px(4);
+                    padding-right: Style.px(4);
+                    spacing: Style.px(8);
+
+                    VerticalLayout {
+                        alignment: center;
+                        TagChip {
+                            tag-name: tag.name;
+                            clicked(name) => {
+                                GuiController.current-tag = name;
+                                GuiController.current-page = "tasksByTag";
+                            }
+                        }
+                    }
+
+                    Text {
+                        text: tag.task-count == 1 ? "1 task" : tag.task-count + " tasks";
+                        color: Style.task-secondary-text-color;
+                        font-size: Style.px(12);
+                        vertical-alignment: center;
+                    }
+
+                    Rectangle {
+                        horizontal-stretch: 1;
+                    }
+
+                    FaButton {
+                        icon: "\u{f304}";
+                        icon-size: Style.px(14);
+                        icon-color: Style.icon-color;
+                        background-color: transparent;
+                        clicked => {
+                            GuiController.open-rename-tag-popup(tag.name);
+                        }
+                    }
+
+                    FaButton {
+                        icon: "\u{f2ed}";
+                        icon-size: Style.px(14);
+                        icon-color: Style.icon-color;
+                        background-color: transparent;
+                        enabled: tag.task-count == 0;
+                        opacity: self.enabled ? 1.0 : 0.3;
+                        clicked => {
+                            GuiController.remove-tag(tag.name);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

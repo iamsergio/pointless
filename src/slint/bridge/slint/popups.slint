@@ -1,0 +1,782 @@
+// SPDX-FileCopyrightText: 2026 Sergio Martins
+// SPDX-License-Identifier: MIT
+
+import { GuiController, Errors, PomodoroController, LoginScreenController } from "@bridge/globals.slint";
+import { Style } from "style.slint";
+import { FaButton, PTextField, DialogButton, ListEntry, Icons } from "controls.slint";
+
+// The dark card on a dimmed background, the base of the popups
+component PopupFrame inherits Rectangle {
+    in property <length> card-max-width: Style.px(400);
+    in property <length> card-height;
+    in property <float> width-ratio: 0.9;
+    callback dismissed();
+
+    background: Style.popup-overlay;
+
+    TouchArea {
+        clicked => {
+            root.dismissed();
+        }
+    }
+
+    Rectangle {
+        width: min(parent.width * root.width-ratio, root.card-max-width);
+        height: root.card-height;
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+        background: Style.popup-background;
+        border-color: Style.popup-border;
+        border-width: Style.px(1);
+        border-radius: Style.px(12);
+
+        // A click inside the card isn't a click outside of it
+        TouchArea { }
+
+        VerticalLayout {
+            padding: Style.px(24);
+            spacing: Style.px(16);
+            @children
+        }
+    }
+}
+
+component FieldBox inherits Rectangle {
+    background: Style.field-background;
+    border-color: Style.field-border;
+    border-width: Style.px(1);
+    border-radius: Style.px(8);
+}
+
+component PopupTitle inherits Text {
+    font-size: Style.px(24);
+    font-weight: 700;
+    color: white;
+    horizontal-alignment: center;
+}
+
+// AddTagPopup.qml
+export component AddTagPopup inherits Rectangle {
+    visible: GuiController.new-tag-popup-visible;
+
+    public function open() {
+        field.text = "";
+        GuiController.new-tag-popup-visible = true;
+        field.focus-field();
+    }
+
+    function close() {
+        GuiController.new-tag-popup-visible = false;
+    }
+
+    function add() {
+        // Qt trims it, Slint has no string trimming
+        if (field.text.replace-all(" ", "") != "") {
+            GuiController.add-tag(field.text);
+            root.close();
+        }
+    }
+
+    PopupFrame {
+        card-height: Style.px(220);
+        dismissed => {
+            root.close();
+        }
+
+        PopupTitle {
+            text: "New Tag";
+        }
+
+        FieldBox {
+            field := PTextField {
+                placeholder: "Tag name";
+                font-size: Style.px(16);
+                accepted(t) => {
+                    root.add();
+                }
+            }
+        }
+
+        HorizontalLayout {
+            spacing: Style.px(12);
+            DialogButton {
+                text: "Cancel";
+                fill: Style.field-border;
+                clicked => {
+                    root.close();
+                }
+            }
+            DialogButton {
+                text: "Add";
+                fill: Style.accent;
+                clicked => {
+                    root.add();
+                }
+            }
+        }
+    }
+}
+
+// RenameTagPopup.qml
+export component RenameTagPopup inherits Rectangle {
+    visible: GuiController.rename-tag-popup-visible;
+
+    property <bool> shown: self.visible;
+    changed shown => {
+        if (self.shown) {
+            field.text = GuiController.rename-tag-old-name;
+            field.focus-field();
+            field.select-all-text();
+        }
+    }
+
+    function close() {
+        GuiController.rename-tag-popup-visible = false;
+    }
+
+    function rename() {
+        if (field.text.replace-all(" ", "") != "") {
+            GuiController.rename-tag(GuiController.rename-tag-old-name, field.text);
+        }
+    }
+
+    PopupFrame {
+        card-height: Style.px(270);
+        dismissed => {
+            root.close();
+        }
+
+        PopupTitle {
+            text: "Rename Tag";
+        }
+
+        Text {
+            text: GuiController.rename-tag-old-name;
+            font-size: Style.px(14);
+            color: #888888;
+        }
+
+        FieldBox {
+            field := PTextField {
+                placeholder: "New tag name";
+                font-size: Style.px(16);
+                accepted(t) => {
+                    root.rename();
+                }
+            }
+        }
+
+        HorizontalLayout {
+            spacing: Style.px(12);
+            DialogButton {
+                text: "Cancel";
+                fill: Style.field-border;
+                clicked => {
+                    root.close();
+                }
+            }
+            DialogButton {
+                text: "Rename";
+                fill: Style.accent;
+                clicked => {
+                    root.rename();
+                }
+            }
+        }
+    }
+}
+
+// ErrorPopup.qml
+export component ErrorPopup inherits Rectangle {
+    callback ok-clicked();
+
+    PopupFrame {
+        card-height: contents.preferred-height + Style.px(48);
+        width-ratio: 0.8;
+        dismissed => {
+            root.ok-clicked();
+        }
+
+        contents := VerticalLayout {
+            spacing: Style.px(24);
+
+            PopupTitle {
+                text: "Error";
+                color: #ff4444;
+            }
+            Text {
+                text: Errors.error-text;
+                font-size: Style.px(12);
+                color: white;
+                wrap: word-wrap;
+                horizontal-alignment: center;
+            }
+            DialogButton {
+                text: "OK";
+                fill: Style.accent;
+                font-size: Style.px(18);
+                clicked => {
+                    root.ok-clicked();
+                }
+            }
+        }
+    }
+}
+
+// NotesPopup.qml
+export component NotesPopup inherits Rectangle {
+    background: Style.popup-overlay;
+
+    init => {
+        notes.focus();
+    }
+
+    TouchArea {
+        clicked => {
+            GuiController.close-notes-editor();
+        }
+    }
+
+    Rectangle {
+        width: min(parent.width * 0.9, Style.px(500));
+        height: min(parent.height * 0.7, Style.px(600));
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+        background: Style.popup-background;
+        border-color: Style.popup-border;
+        border-width: Style.px(1);
+        border-radius: Style.px(12);
+
+        TouchArea { }
+
+        VerticalLayout {
+            padding: Style.px(24);
+            spacing: Style.px(16);
+
+            PopupTitle {
+                text: "Notes";
+            }
+
+            Text {
+                text: GuiController.notes-task-title;
+                font-size: Style.px(14);
+                color: #aaaaaa;
+                overflow: elide;
+                horizontal-alignment: center;
+            }
+
+            FieldBox {
+                vertical-stretch: 1;
+                border-radius: Style.px(8);
+
+                Flickable {
+                    x: Style.px(8);
+                    y: Style.px(8);
+                    width: parent.width - Style.px(16);
+                    height: parent.height - Style.px(16);
+                    content-height: max(self.height, notes.preferred-height);
+
+                    notes := TextInput {
+                        width: parent.width;
+                        text: GuiController.notes-text;
+                        font-size: Style.px(14);
+                        color: white;
+                        wrap: word-wrap;
+                        single-line: false;
+                    }
+                }
+            }
+
+            HorizontalLayout {
+                spacing: Style.px(12);
+                DialogButton {
+                    text: "Cancel";
+                    fill: Style.field-border;
+                    clicked => {
+                        GuiController.close-notes-editor();
+                    }
+                }
+                DialogButton {
+                    text: "Save";
+                    fill: Style.accent;
+                    clicked => {
+                        GuiController.save-notes(notes.text);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Menu.qml and MenuItem.qml
+component MenuItem inherits Rectangle {
+    in property <string> text;
+    in property <string> a11y-id;
+    callback triggered();
+
+    accessible-role: button;
+    accessible-id: root.a11y-id;
+    height: Style.menu-height;
+    border-radius: Style.px(6);
+    background: ta.pressed ? Style.task-background.brighter(0.4) : ta.has-hover ? Style.task-background.brighter(0.2) : transparent;
+
+    ta := TouchArea {
+        clicked => {
+            root.triggered();
+        }
+    }
+
+    Text {
+        text: root.text;
+        font-size: Style.px(16);
+        color: Style.task-text-color;
+        horizontal-alignment: center;
+        vertical-alignment: center;
+    }
+}
+
+export component TaskMenu inherits Rectangle {
+    visible: GuiController.task-menu-visible;
+    height: layout.preferred-height;
+    background: Style.task-background;
+    border-width: 1px;
+    border-color: #1a1b1e;
+    border-radius: Style.px(12);
+
+    function done() {
+        GuiController.set-task-menu-uuid("");
+    }
+
+    layout := VerticalLayout {
+        padding-top: Style.px(6);
+        padding-bottom: Style.px(6);
+        padding-left: Style.px(6);
+        padding-right: Style.px(6);
+        spacing: 0px;
+        alignment: start;
+
+        MenuItem {
+            a11y-id: "editMenuItem";
+            text: "Edit...";
+            triggered => {
+                GuiController.set-task-being-edited(GuiController.task-menu-uuid, "", "");
+                root.done();
+            }
+        }
+        MenuItem {
+            a11y-id: "editNotesMenuItem";
+            text: "Edit notes...";
+            triggered => {
+                GuiController.open-notes-editor(GuiController.task-menu-uuid);
+                root.done();
+            }
+        }
+        if GuiController.play-pomodoro-visible: MenuItem {
+            text: PomodoroController.current-task-uuid == GuiController.task-menu-uuid ? "Stop" : "Play";
+            triggered => {
+                if (PomodoroController.current-task-uuid == GuiController.task-menu-uuid) {
+                    PomodoroController.stop();
+                } else {
+                    PomodoroController.play(GuiController.task-menu-uuid);
+                }
+                root.done();
+            }
+        }
+        if GuiController.move-to-current-visible: MenuItem {
+            text: "Move to Current";
+            triggered => {
+                GuiController.move-task-to-current(GuiController.task-menu-uuid);
+                root.done();
+            }
+        }
+        if GuiController.move-to-soon-visible: MenuItem {
+            text: "Move to Soon";
+            triggered => {
+                GuiController.move-task-to-soon(GuiController.task-menu-uuid);
+                root.done();
+            }
+        }
+        if GuiController.move-to-later-visible: MenuItem {
+            text: "Move to Later";
+            triggered => {
+                GuiController.move-task-to-later(GuiController.task-menu-uuid);
+                root.done();
+            }
+        }
+        if GuiController.move-to-tomorrow-visible: MenuItem {
+            text: "Move to Tomorrow";
+            triggered => {
+                GuiController.move-task-to-tomorrow(GuiController.task-menu-uuid);
+                root.done();
+            }
+        }
+        MenuItem {
+            text: "Move to Next Monday";
+            triggered => {
+                GuiController.move-task-to-next-monday(GuiController.task-menu-uuid);
+                root.done();
+            }
+        }
+        if GuiController.move-to-evening-visible: MenuItem {
+            text: "Move to Evening";
+            triggered => {
+                GuiController.move-task-to-evening(GuiController.task-menu-uuid);
+                root.done();
+            }
+        }
+        if GuiController.delete-task-visible: MenuItem {
+            text: "Delete";
+            triggered => {
+                GuiController.delete-task(GuiController.task-menu-uuid);
+                root.done();
+            }
+        }
+        if GuiController.debug-mode: MenuItem {
+            text: "Debug JSON";
+            triggered => {
+                GuiController.dump-task-debug(GuiController.task-menu-uuid);
+                root.done();
+            }
+        }
+    }
+}
+
+// SidePanel.qml
+export component SidePanel inherits Rectangle {
+    in-out property <bool> is-open: false;
+
+    visible: root.is-open || panel.x > -panel.width;
+    accessible-role: groupbox;
+    accessible-id: "sidePanel";
+
+    Rectangle {
+        background: Style.popup-overlay;
+        opacity: root.is-open ? 1.0 : 0.0;
+        animate opacity { duration: 200ms; }
+
+        TouchArea {
+            clicked => {
+                root.is-open = false;
+            }
+        }
+    }
+
+    panel := Rectangle {
+        width: Style.px(250);
+        height: parent.height;
+        background: Style.background;
+        x: root.is-open ? 0px : -self.width;
+        animate x { duration: 200ms; easing: cubic-bezier(0.33, 1, 0.68, 1); }
+
+        VerticalLayout {
+            padding-top: Style.px(40);
+            padding-left: Style.px(16);
+            padding-right: Style.px(16);
+            spacing: Style.px(4);
+            alignment: start;
+
+            Text {
+                text: "Pointless";
+                color: Style.section-text-color;
+                font-size: Style.px(20);
+                font-weight: 700;
+            }
+
+            Rectangle {
+                height: Style.px(12);
+            }
+
+            Rectangle {
+                height: Style.px(1);
+                background: Style.task-background;
+            }
+
+            Rectangle {
+                height: Style.px(4);
+            }
+
+            ListEntry {
+                a11y-id: "sidePanelSearch";
+                text: "Search";
+                text-color: Style.task-text-color;
+                clicked => {
+                    GuiController.current-page = "search";
+                    root.is-open = false;
+                }
+            }
+            ListEntry {
+                a11y-id: "sidePanelAbout";
+                text: "About";
+                text-color: Style.task-text-color;
+                clicked => {
+                    GuiController.current-page = "about";
+                    root.is-open = false;
+                }
+            }
+            ListEntry {
+                a11y-id: "sidePanelCleanup";
+                text: "Cleanup";
+                text-color: Style.task-text-color;
+                clicked => {
+                    GuiController.current-page = "cleanup";
+                    root.is-open = false;
+                }
+            }
+            ListEntry {
+                a11y-id: "sidePanelTags";
+                text: "Tags";
+                text-color: Style.task-text-color;
+                clicked => {
+                    GuiController.current-page = "tags";
+                    root.is-open = false;
+                }
+            }
+            ListEntry {
+                a11y-id: "sidePanelCalendars";
+                text: "Calendars";
+                text-color: Style.task-text-color;
+                clicked => {
+                    GuiController.current-page = "calendars";
+                    root.is-open = false;
+                }
+            }
+            if GuiController.is-authenticated: ListEntry {
+                text: "Logout";
+                text-color: Style.task-text-color;
+                clicked => {
+                    GuiController.logout();
+                    root.is-open = false;
+                }
+            }
+            if GuiController.is-debug: ListEntry {
+                text: "Debug";
+                text-color: red;
+                clicked => {
+                    GuiController.dump-debug();
+                    root.is-open = false;
+                }
+            }
+        }
+    }
+}
+
+// LoginScreen.qml
+export component LoginScreen inherits Rectangle {
+    property <bool> password-visible: false;
+
+    background: Style.popup-background;
+    border-width: Style.px(1);
+    border-color: Style.popup-border;
+
+    controller := LoginScreenController {
+        // Slint → Qt only, the fields below write them
+    }
+
+    VerticalLayout {
+        x: 0;
+        y: 0;
+        width: parent.width;
+        height: parent.height;
+        alignment: center;
+        padding-left: parent.width * 0.075;
+        padding-right: parent.width * 0.075;
+        spacing: Style.px(32);
+
+        Text {
+            text: "Pointless";
+            font-size: Style.px(32);
+            font-weight: 700;
+            color: white;
+            horizontal-alignment: center;
+        }
+
+        VerticalLayout {
+            spacing: 16px;
+
+            Text {
+                text: "Email";
+                font-size: Style.px(16);
+                color: white;
+            }
+
+            Rectangle {
+                preferred-height: Style.px(48);
+                background: #192233;
+                border-radius: 8px;
+
+                HorizontalLayout {
+                    padding-left: Style.px(12);
+                    padding-right: Style.px(12);
+                    spacing: Style.px(8);
+
+                    Text {
+                        text: "\u{f0e0}";
+                        font-family: Icons.font-family;
+                        font-size: Style.px(16);
+                        color: #8a97a8;
+                        vertical-alignment: center;
+                    }
+
+                    email := PTextField {
+                        horizontal-stretch: 1;
+                        placeholder: "Enter your email";
+                        placeholder-color: #8a97a8;
+                        font-size: Style.px(16);
+                        text: controller.username;
+                        edited(t) => {
+                            controller.username = t;
+                        }
+                        accepted(t) => {
+                            password.focus-field();
+                        }
+                    }
+                }
+            }
+
+            HorizontalLayout {
+                spacing: 0px;
+                Text {
+                    text: "Password";
+                    font-size: Style.px(16);
+                    color: white;
+                }
+                Rectangle {
+                    horizontal-stretch: 1;
+                }
+                Text {
+                    text: "Forgot Password?";
+                    color: Style.accent;
+                    font-size: Style.px(14);
+                }
+            }
+
+            Rectangle {
+                preferred-height: Style.px(48);
+                background: #192233;
+                border-radius: 8px;
+
+                HorizontalLayout {
+                    padding-left: 12px;
+                    padding-right: 12px;
+                    spacing: 8px;
+
+                    Text {
+                        text: "\u{f023}";
+                        font-family: Icons.font-family;
+                        font-size: Style.px(16);
+                        color: #8a97a8;
+                        vertical-alignment: center;
+                    }
+
+                    password := PTextField {
+                        horizontal-stretch: 1;
+                        placeholder: "Enter your password";
+                        placeholder-color: #8a97a8;
+                        font-size: Style.px(16);
+                        text: controller.password;
+                        input-type: root.password-visible ? InputType.text : InputType.password;
+                        edited(t) => {
+                            controller.password = t;
+                        }
+                        accepted(t) => {
+                            GuiController.login(controller.username, controller.password);
+                        }
+                    }
+
+                    Text {
+                        text: root.password-visible ? "\u{f06e}" : "\u{f070}";
+                        font-family: Icons.font-family;
+                        font-size: Style.px(16);
+                        color: #8a97a8;
+                        vertical-alignment: center;
+
+                        TouchArea {
+                            mouse-cursor: pointer;
+                            clicked => {
+                                root.password-visible = !root.password-visible;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        HorizontalLayout {
+            spacing: Style.px(8);
+
+            DialogButton {
+                text: "Login";
+                fill: Style.accent;
+                font-size: Style.px(20);
+                enabled: !GuiController.is-logging-in;
+                preferred-height: Style.px(56);
+                horizontal-stretch: 1;
+                clicked => {
+                    GuiController.login(controller.username, controller.password);
+                }
+            }
+
+            if !GuiController.is-mobile: FaButton {
+                icon: "\u{f084}";
+                icon-size: Style.px(20);
+                icon-color: #8a97a8;
+                background-color: #192233;
+                preferred-width: Style.px(56);
+                preferred-height: Style.px(56);
+                clicked => {
+                    GuiController.fetch-pass-store-credentials();
+                }
+            }
+        }
+
+        if GuiController.is-logging-in: HorizontalLayout {
+            alignment: center;
+            FaButton {
+                icon: "\u{f021}";
+                icon-size: Style.px(24);
+                icon-color: Style.accent;
+                background-color: transparent;
+                enabled: false;
+                spinning: true;
+            }
+        }
+
+        if Errors.login-error != "": Text {
+            text: Errors.login-error;
+            color: #ff4444;
+            font-size: Style.px(14);
+            horizontal-alignment: center;
+            wrap: word-wrap;
+        }
+
+        HorizontalLayout {
+            alignment: center;
+            spacing: 4px;
+            Text {
+                text: "Don't have an account?";
+                color: #8a97a8;
+                font-size: Style.px(16);
+            }
+            Text {
+                text: "Sign Up";
+                color: Style.accent;
+                font-size: Style.px(16);
+            }
+        }
+
+        Rectangle {
+            height: offline.preferred-height;
+            offline := Text {
+                text: "Offline mode";
+                color: #8a97a8;
+                font-size: Style.px(16);
+                horizontal-alignment: center;
+            }
+            TouchArea {
+                clicked => {
+                    GuiController.enable-offline-mode();
+                }
+            }
+        }
+    }
+}

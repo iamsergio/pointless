@@ -1,23 +1,269 @@
 // SPDX-FileCopyrightText: 2026 Sergio Martins
 // SPDX-License-Identifier: MIT
 
-// Placeholder window: the bridge code generator needs a window to attach the globals to. The real UI is ported later.
-// C++ only reaches what this file exports.
-import { CalendarModel, LoginScreenController, TaskFilterModel, WeekdayFilterModel, WeekdayModel, GuiControllerConnections, PomodoroControllerConnections } from "@bridge/globals.slint";
+// Port of Main.qml. C++ only reaches what this file exports.
+import { GuiController, GuiViewType, Errors, TaskFilterModel, WeekdayFilterModel, WeekdayModel, GuiControllerConnections, PomodoroControllerConnections } from "@bridge/globals.slint";
 export * from "@bridge/globals.slint";
 
-export component App inherits Window {
-    title: "Pointless";
-    width: 400px;
-    height: 600px;
+import { Style } from "style.slint";
+import { FaButton, ViewButton, ToggleButton } from "controls.slint";
+import { WeekNavigator, WeekView, TaskView } from "views.slint";
+import { AboutPage, TagsPage, TasksByTagPage, CleanupPage, CalendarsPage, SearchPage, EditTaskPage } from "pages.slint";
+import { LoginScreen, TaskMenu, ErrorPopup, NotesPopup, SidePanel } from "popups.slint";
 
-    // The Slint compiler only generates the C++ class of a native component that a window instantiates.
-    // Drop each one when the real UI instantiates it.
-    CalendarModel { }
-    LoginScreenController { }
-    TaskFilterModel { }
-    WeekdayFilterModel { }
-    WeekdayModel { }
+export component App inherits Window {
+    title: GuiController.window-title;
+    width: Style.px(640);
+    height: Style.px(640);
+    background: Style.background;
+
+    // Nothing in the UI uses these signals (yet). The Slint compiler only generates the C++ class of a native component that a
+    // window instantiates, so keep them here until the UI uses them.
     GuiControllerConnections { }
     PomodoroControllerConnections { }
+
+    property <length> bottom-area-height: Style.px(32) + 12px;
+    property <length> bottom-margin: Style.px(GuiController.is-mobile ? 32 : 16);
+
+    // mainView
+    Rectangle {
+        x: 0;
+        y: 0;
+        width: parent.width;
+        height: parent.height - root.bottom-area-height - root.bottom-margin - Style.px(8);
+
+        VerticalLayout {
+            padding: Style.px(20);
+            spacing: 5px;
+
+            HorizontalLayout {
+                vertical-stretch: 0;
+                spacing: Style.px(10);
+
+                ViewButton {
+                    a11y-id: "weekViewButton";
+                    text: "Week";
+                    is-active: GuiController.current-view-type == GuiViewType.week;
+                    clicked => {
+                        GuiController.current-view-type = GuiViewType.week;
+                    }
+                }
+                ViewButton {
+                    a11y-id: "soonViewButton";
+                    text: "Soon";
+                    is-active: GuiController.current-view-type == GuiViewType.soon;
+                    clicked => {
+                        GuiController.current-view-type = GuiViewType.soon;
+                    }
+                }
+                ViewButton {
+                    a11y-id: "laterViewButton";
+                    text: "Later";
+                    is-active: GuiController.current-view-type == GuiViewType.later;
+                    clicked => {
+                        GuiController.current-view-type = GuiViewType.later;
+                    }
+                }
+                Rectangle {
+                    horizontal-stretch: 1;
+                }
+                FaButton {
+                    a11y-id: "goalsViewButton";
+                    icon: "\u{f11e}";
+                    icon-size: Style.px(16);
+                    icon-color: GuiController.current-view-type == GuiViewType.goals ? white : Style.icon-color;
+                    background-color: GuiController.current-view-type == GuiViewType.goals ? Style.button-active : Style.button-background;
+                    preferred-width: Style.px(40);
+                    preferred-height: Style.px(32);
+                    clicked => {
+                        GuiController.current-view-type = GuiViewType.goals;
+                    }
+                }
+            }
+
+            if GuiController.current-view-type == GuiViewType.week: WeekNavigator {
+                vertical-stretch: 0;
+            }
+
+            Rectangle {
+                vertical-stretch: 0;
+                height: Style.px(1);
+                background: Style.task-background;
+            }
+
+            // `if`, not `visible`: a Slint layout reserves space for invisible children, a Qt one doesn't
+            if GuiController.current-view-type == GuiViewType.week: WeekView {
+                vertical-stretch: 1;
+            }
+            if GuiController.current-view-type == GuiViewType.soon: TaskView {
+                vertical-stretch: 1;
+            }
+            if GuiController.current-view-type == GuiViewType.later: TaskView {
+                vertical-stretch: 1;
+            }
+            if GuiController.current-view-type == GuiViewType.goals: TaskView {
+                vertical-stretch: 1;
+            }
+        }
+    }
+
+    // bottomArea
+    Rectangle {
+        x: 0;
+        y: parent.height - root.bottom-margin - root.bottom-area-height;
+        width: parent.width;
+        height: root.bottom-area-height;
+
+        burger := FaButton {
+            a11y-id: "burgerButton";
+            width: self.preferred-width;
+            height: self.preferred-height;
+            icon: "\u{f0c9}";
+            icon-size: Style.plus-button-size;
+            icon-color: Style.plus-button-color;
+            background-color: transparent;
+            visible: !GuiController.is-editing-task;
+            x: Style.px(32);
+            y: parent.height - self.height;
+            clicked => {
+                side-panel.is-open = true;
+            }
+        }
+
+        evening-toggle := ToggleButton {
+            width: self.preferred-width;
+            height: self.preferred-height;
+            visible: !GuiController.is-editing-task && GuiController.show-evening-toggle && GuiController.current-view-type == GuiViewType.week;
+            toggled: GuiController.show-immediate-only;
+            x: burger.x + burger.width + Style.px(16);
+            y: parent.height - self.height - Style.px(4);
+            changed toggled => {
+                GuiController.show-immediate-only = self.toggled;
+            }
+        }
+
+        add-task := FaButton {
+            a11y-id: "addTaskButton";
+            width: self.preferred-width;
+            height: self.preferred-height;
+            icon: "\u{f055}";
+            icon-size: Style.plus-button-size;
+            icon-color: Style.plus-button-color;
+            background-color: transparent;
+            visible: !GuiController.is-editing-task;
+            x: parent.width - self.width - Style.px(32);
+            y: parent.height - self.height;
+            clicked => {
+                GuiController.set-task-being-edited("", "", "");
+            }
+        }
+
+        FaButton {
+            icon: "\u{f021}";
+            icon-size: Style.plus-button-size;
+            icon-color: Style.plus-button-color;
+            background-color: transparent;
+            visible: !GuiController.is-editing-task && !GuiController.is-offline-mode;
+            enabled: !GuiController.is-refreshing;
+            spinning: GuiController.is-refreshing;
+            width: self.preferred-width;
+            height: self.preferred-height;
+            x: add-task.x - self.width - Style.px(16);
+            y: parent.height - self.height;
+            clicked => {
+                GuiController.refresh();
+            }
+        }
+    }
+
+    // The pages are above the bottom buttons: they are z: 100 in the QML, but in the stacking context of the bottom area, which is below the pages
+    AboutPage {
+        a11y-id: "aboutPage";
+        width: parent.width;
+        height: parent.height;
+        back-clicked => {
+            GuiController.current-page = "";
+        }
+    }
+    TagsPage {
+        a11y-id: "tagsPage";
+        width: parent.width;
+        height: parent.height;
+        back-clicked => {
+            GuiController.current-page = "";
+        }
+    }
+    TasksByTagPage {
+        a11y-id: "tasksByTagPage";
+        width: parent.width;
+        height: parent.height;
+        back-clicked => {
+            GuiController.current-page = "";
+            GuiController.current-tag = "";
+        }
+    }
+    CleanupPage {
+        a11y-id: "cleanupPage";
+        width: parent.width;
+        height: parent.height;
+        back-clicked => {
+            GuiController.current-page = "";
+        }
+    }
+    CalendarsPage {
+        a11y-id: "calendarsPage";
+        width: parent.width;
+        height: parent.height;
+        back-clicked => {
+            GuiController.current-page = "";
+        }
+    }
+    SearchPage {
+        a11y-id: "searchPage";
+        width: parent.width;
+        height: parent.height;
+        back-clicked => {
+            GuiController.current-page = "";
+        }
+    }
+    EditTaskPage {
+        width: parent.width;
+        height: parent.height;
+        back-clicked => {
+            GuiController.on-back-clicked();
+        }
+        save-clicked(title, tag, evening, is-goal, is-yearly) => {
+            GuiController.save-task(title, tag, evening, is-goal, is-yearly);
+        }
+    }
+
+    TaskMenu {
+        x: Style.px(7);
+        y: parent.height - self.height - Style.px(7);
+        width: parent.width - Style.px(14);
+    }
+
+    LoginScreen {
+        width: parent.width;
+        height: parent.height;
+        visible: !GuiController.is-authenticated && !GuiController.is-offline-mode;
+    }
+
+    if Errors.error-text != "": ErrorPopup {
+        width: parent.width;
+        height: parent.height;
+        ok-clicked => {
+            Errors.error-text = "";
+        }
+    }
+
+    if GuiController.is-editing-notes: NotesPopup {
+        width: parent.width;
+        height: parent.height;
+    }
+
+    side-panel := SidePanel {
+        width: parent.width;
+        height: parent.height;
+    }
 }

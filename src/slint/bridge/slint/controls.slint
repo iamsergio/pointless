@@ -1,0 +1,282 @@
+// SPDX-FileCopyrightText: 2026 Sergio Martins
+// SPDX-License-Identifier: MIT
+
+import { Style } from "style.slint";
+
+import "../../../gui/fonts/FontAwesome7-Solid-900.otf";
+
+export global Icons {
+    out property <string> font-family: "Font Awesome 7 Free";
+}
+
+// FontAwesomeButton.qml
+export component FaButton inherits Rectangle {
+    in property <string> icon: "\u{f00c}";
+    in property <length> icon-size: Style.px(16);
+    in property <color> icon-color: white;
+    in property <color> background-color: Style.button-background;
+    in property <bool> enabled: true;
+    in property <string> a11y-id;
+    // RotationAnimation { loops: Animation.Infinite }
+    in property <bool> spinning: false;
+    callback clicked();
+
+    property <angle> angle: root.spinning ? 360deg : 0deg;
+    animate angle {
+        duration: root.spinning ? 1000ms : 0ms;
+        iteration-count: root.spinning ? -1 : 1;
+    }
+    accessible-role: button;
+    accessible-id: root.a11y-id;
+
+    // transform-rotation isn't applied to the root element
+    Rectangle {
+        background: root.background-color;
+        border-radius: 4px;
+        transform-rotation: root.angle;
+
+        ta := TouchArea {
+            enabled: root.enabled;
+            mouse-cursor: pointer;
+            clicked => {
+                root.clicked();
+            }
+        }
+
+        // A Qt Button has a padding of 12px by 6px around its content.
+        HorizontalLayout {
+            padding-left: 12px;
+            padding-right: 12px;
+            padding-top: 6px;
+            padding-bottom: 6px;
+            glyph := Text {
+                text: root.icon;
+                font-family: Icons.font-family;
+                font-size: ta.pressed ? root.icon-size + Style.px(2) : root.icon-size;
+                color: (ta.pressed || ta.has-hover) ? root.icon-color.brighter(0.5) : root.icon-color;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+            }
+        }
+    }
+
+    // The size of a button comes from its content, a layout would stretch it
+    max-width: self.preferred-width;
+    preferred-width: 24px + glyph.preferred-width;
+    preferred-height: 12px + glyph.preferred-height;
+}
+
+// ViewButton.qml
+export component ViewButton inherits Rectangle {
+    in property <string> text;
+    in property <bool> is-active;
+    in property <string> a11y-id;
+    callback clicked();
+
+    accessible-role: button;
+    accessible-id: root.a11y-id;
+    preferred-width: Style.px(80);
+    preferred-height: Style.px(32);
+    background: root.is-active ? Style.button-active : Style.button-background;
+    border-radius: 25px;
+
+    TouchArea {
+        clicked => {
+            root.clicked();
+        }
+    }
+
+    Text {
+        text: root.text;
+        font-size: Style.px(12);
+        font-weight: root.is-active ? 700 : 400;
+        color: white;
+        horizontal-alignment: center;
+        vertical-alignment: center;
+    }
+}
+
+// ToggleButton.qml
+export component ToggleButton inherits Rectangle {
+    in-out property <bool> toggled: false;
+
+    max-width: self.preferred-width;
+    preferred-width: Style.px(50);
+    preferred-height: Style.px(28);
+    border-radius: self.height / 2;
+    background: root.toggled ? Style.button-color : #6b7280;
+    animate background { duration: 150ms; }
+
+    Rectangle {
+        width: parent.height - Style.px(6);
+        height: self.width;
+        border-radius: self.width / 2;
+        background: #ffffff;
+        y: (parent.height - self.height) / 2;
+        x: root.toggled ? parent.width - self.width - Style.px(3) : Style.px(3);
+        animate x { duration: 150ms; easing: ease-in-out-quad; }
+    }
+
+    TouchArea {
+        clicked => {
+            root.toggled = !root.toggled;
+        }
+    }
+}
+
+// CheckBox.qml
+export component PCheckBox inherits Rectangle {
+    in-out property <bool> checked: false;
+    in property <bool> small-variant: false;
+    // Like Qt's `onClicked`, the user did it (the property is changed either way)
+    callback toggled(bool);
+
+    // Qt's CheckBox pads its indicator by 6px. A layout would stretch it.
+    max-width: self.preferred-width;
+    preferred-width: indicator.width + 12px;
+    preferred-height: indicator.height + 12px;
+
+    indicator := Rectangle {
+        width: root.small-variant ? Style.px(12) : Style.px(17);
+        height: self.width;
+        x: 6px;
+        y: (parent.height - self.height) / 2;
+        border-radius: self.width / 2;
+        background: Style.task-background;
+        border-color: Style.text-color2;
+        border-width: Style.px(1);
+
+        Rectangle {
+            width: root.small-variant ? Style.px(6) : Style.px(9);
+            height: self.width;
+            border-radius: self.width / 2;
+            background: Style.text-color2;
+            visible: root.checked;
+        }
+    }
+
+    TouchArea {
+        mouse-cursor: pointer;
+        clicked => {
+            root.checked = !root.checked;
+            root.toggled(root.checked);
+        }
+    }
+}
+
+// A QQC.TextField with `background: null`: a TextInput with the placeholder drawn by hand.
+export component PTextField inherits Rectangle {
+    in-out property <string> text <=> input.text;
+    in property <string> placeholder;
+    in property <length> font-size: Style.px(14);
+    in property <color> text-color: white;
+    in property <color> placeholder-color: #888888;
+    in property <InputType> input-type: InputType.text;
+    in property <string> a11y-id;
+    callback accepted(string);
+    callback edited(string);
+    callback key-pressed(KeyEvent) -> EventResult;
+    out property <bool> has-focus: input.has-focus;
+
+    public function focus-field() {
+        input.focus();
+    }
+    public function select-all-text() {
+        input.select-all();
+    }
+
+    // Qt's TextField paddings
+    preferred-height: input.preferred-height + 12px;
+    min-height: self.preferred-height;
+
+    input := TextInput {
+        x: 6px;
+        y: 6px;
+        width: parent.width - 12px;
+        font-size: root.font-size;
+        color: root.text-color;
+        input-type: root.input-type;
+        single-line: true;
+        vertical-alignment: center;
+        accessible-id: root.a11y-id;
+        accessible-role: text-input;
+        accepted => {
+            root.accepted(self.text);
+        }
+        edited => {
+            root.edited(self.text);
+        }
+        key-pressed(event) => {
+            return root.key-pressed(event);
+        }
+    }
+
+    if input.text == "": Text {
+        x: 6px;
+        y: 6px;
+        text: root.placeholder;
+        font-size: root.font-size;
+        color: root.placeholder-color;
+        vertical-alignment: center;
+    }
+}
+
+// The Cancel/Save/OK buttons of the popups
+export component DialogButton inherits Rectangle {
+    in property <string> text;
+    in property <color> fill;
+    in property <length> font-size: Style.px(16);
+    in property <bool> enabled: true;
+    callback clicked();
+
+    preferred-height: Style.px(48);
+    background: root.fill;
+    border-radius: Style.px(8);
+    opacity: root.enabled ? 1.0 : 0.5;
+
+    TouchArea {
+        enabled: root.enabled;
+        clicked => {
+            root.clicked();
+        }
+    }
+
+    Text {
+        text: root.text;
+        color: white;
+        font-size: root.font-size;
+        font-weight: 700;
+        horizontal-alignment: center;
+        vertical-alignment: center;
+    }
+}
+
+// A line of a menu-like list: a label that can be clicked
+export component ListEntry inherits Rectangle {
+    in property <string> text;
+    in property <color> text-color;
+    in property <length> font-size: Style.px(16);
+    in property <string> a11y-id;
+    callback clicked();
+
+    preferred-height: Style.px(40);
+    accessible-role: button;
+    accessible-label: root.text;
+    accessible-id: root.a11y-id;
+
+    TouchArea {
+        mouse-cursor: pointer;
+        clicked => {
+            root.clicked();
+        }
+    }
+
+    Text {
+        x: 0;
+        text: root.text;
+        color: root.text-color;
+        font-size: root.font-size;
+        vertical-alignment: center;
+        height: parent.height;
+    }
+}

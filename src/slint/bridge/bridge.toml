@@ -94,7 +94,7 @@ struct = "CalendarInfo"
 fields = [
     { role = "calendarId", type = "string" },
     { role = "title", type = "string" },
-    { role = "color", type = "string" },
+    { role = "color", type = "color" },
     { role = "writeable", type = "bool" },
     { role = "isEnabled", type = "bool" },
     { role = "accountName", type = "string" },

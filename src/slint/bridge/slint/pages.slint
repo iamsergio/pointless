@@ -1,0 +1,689 @@
+// SPDX-FileCopyrightText: 2026 Sergio Martins
+// SPDX-License-Identifier: MIT
+
+import { GuiController, CalendarModel, Calendars, PomodoroController } from "@bridge/globals.slint";
+import { Style } from "style.slint";
+import { FaButton, PCheckBox, PTextField, ListEntry, Icons } from "controls.slint";
+import { TagChip } from "task.slint";
+import { TaskView, TagsView } from "views.slint";
+import { AddTagPopup, RenameTagPopup } from "popups.slint";
+
+// Page.qml
+export component Page inherits Rectangle {
+    in property <string> page-id;
+    in property <string> page-title;
+    in property <string> right-button-icon;
+    in property <string> right-button-id;
+    in property <string> a11y-id;
+    callback back-clicked();
+    callback right-button-clicked();
+
+    accessible-role: groupbox;
+    accessible-id: root.a11y-id;
+    background: Style.background;
+    visible: root.page-id != "" && GuiController.current-page == root.page-id;
+
+    VerticalLayout {
+        padding: Style.px(16);
+        spacing: Style.px(20);
+
+        HorizontalLayout {
+            vertical-stretch: 0;
+            spacing: Style.px(10);
+
+            FaButton {
+                a11y-id: "backButton";
+                icon: "\u{f053}";
+                icon-color: Style.icon-color;
+                icon-size: Style.px(18);
+                background-color: transparent;
+                clicked => {
+                    root.back-clicked();
+                }
+            }
+
+            Rectangle {
+                horizontal-stretch: 1;
+                Text {
+                    text: root.page-title;
+                    visible: root.page-title != "";
+                    color: white;
+                    font-size: Style.px(18);
+                    font-weight: 700;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+
+            if root.right-button-icon != "": FaButton {
+                a11y-id: root.right-button-id;
+                icon: root.right-button-icon;
+                background-color: transparent;
+                icon-color: white;
+                clicked => {
+                    root.right-button-clicked();
+                }
+            }
+        }
+
+        Rectangle {
+            vertical-stretch: 1;
+            @children
+        }
+    }
+}
+
+// AboutPage.qml
+export component AboutPage inherits Page {
+    page-id: "about";
+    page-title: "About";
+
+    property <int> num-tasks: 0;
+    property <int> local-revision: 0;
+    property <bool> shown: self.visible;
+    changed shown => {
+        if (self.shown) {
+            self.num-tasks = GuiController.num-tasks();
+            self.local-revision = GuiController.local-revision();
+        }
+    }
+
+    VerticalLayout {
+        alignment: center;
+        spacing: Style.px(12);
+
+        Text {
+            text: "Pointless";
+            color: Style.section-text-color;
+            font-size: Style.px(28);
+            font-weight: 700;
+            horizontal-alignment: center;
+        }
+        Text {
+            text: "A simple to-do manager";
+            color: Style.task-secondary-text-color;
+            font-size: Style.px(16);
+            horizontal-alignment: center;
+        }
+        Text {
+            text: "Qt version: " + GuiController.qt-version();
+            color: Style.task-secondary-text-color;
+            font-size: Style.px(14);
+            horizontal-alignment: center;
+        }
+        Text {
+            text: "Local revision: " + root.local-revision;
+            color: Style.task-secondary-text-color;
+            font-size: Style.px(14);
+            horizontal-alignment: center;
+        }
+        Text {
+            text: "Number of tasks: " + root.num-tasks;
+            color: Style.task-secondary-text-color;
+            font-size: Style.px(14);
+            horizontal-alignment: center;
+        }
+    }
+}
+
+// TagsPage.qml
+export component TagsPage inherits Page {
+    page-id: "tags";
+    page-title: "Tags";
+    right-button-icon: "\u{f067}";
+    right-button-clicked => {
+        add-tag-popup.open();
+    }
+
+    TagsView { }
+
+    add-tag-popup := AddTagPopup { }
+
+    RenameTagPopup { }
+}
+
+// TasksByTagPage.qml
+export component TasksByTagPage inherits Page {
+    page-id: "tasksByTag";
+    page-title: GuiController.current-tag;
+    right-button-icon: "\u{f055}";
+    right-button-clicked => {
+        GuiController.set-task-being-edited("", "", GuiController.current-tag);
+    }
+
+    TaskView {
+        show-tags: false;
+        shows-tags-in-second-line: true;
+    }
+}
+
+// CleanupPage.qml
+export component CleanupPage inherits Page {
+    page-id: "cleanup";
+    page-title: "Cleanup";
+
+    VerticalLayout {
+        alignment: start;
+        padding-top: Style.px(20);
+        padding-left: Style.px(16);
+        padding-right: Style.px(16);
+        spacing: Style.px(4);
+
+        ListEntry {
+            text: "Cleanup old tasks";
+            text-color: Style.task-text-color;
+            clicked => {
+                GuiController.cleanup-old-data();
+            }
+        }
+        ListEntry {
+            text: "Delete all calendar events";
+            text-color: Style.task-text-color;
+            clicked => {
+                GuiController.delete-all-calendar-events();
+            }
+        }
+    }
+}
+
+// SearchPage.qml
+export component SearchPage inherits Page {
+    page-id: "search";
+    page-title: "Search";
+
+    property <bool> shown: self.visible;
+    changed shown => {
+        if (self.shown) {
+            search-input.focus-field();
+        } else {
+            search-input.text = "";
+        }
+    }
+
+    VerticalLayout {
+        spacing: Style.px(12);
+
+        Rectangle {
+            vertical-stretch: 0;
+            preferred-height: Style.px(44);
+            background: Style.task-background;
+            border-radius: 4px;
+
+            HorizontalLayout {
+                padding: Style.px(10);
+                spacing: Style.px(8);
+
+                Text {
+                    text: "\u{f002}";
+                    font-family: Icons.font-family;
+                    font-size: Style.px(14);
+                    color: #888888;
+                    vertical-alignment: center;
+                }
+
+                search-input := PTextField {
+                    horizontal-stretch: 1;
+                    placeholder: "Search tasks...";
+                    font-size: Style.px(14);
+                }
+            }
+        }
+
+        TaskView {
+            vertical-stretch: 1;
+            search-text: search-input.text;
+            shows-tags-in-second-line: true;
+            shows-date: true;
+        }
+    }
+}
+
+// CalendarsPage.qml
+export component CalendarsPage inherits Page {
+    page-id: "calendars";
+    page-title: "Calendars";
+
+    property <bool> shown: self.visible;
+    changed shown => {
+        if (!self.shown) {
+            GuiController.clear-fetch-calendar-status-text();
+        }
+    }
+
+    // `parent` in the body of a page is the page, so the content gets its own parent
+    Rectangle {
+        Flickable {
+            x: 0;
+            y: 0;
+            width: parent.width;
+            height: parent.height - Style.px(60);
+            content-height: list.preferred-height;
+
+            list := VerticalLayout {
+                width: parent.width;
+                alignment: start;
+                spacing: Style.px(2);
+
+                for calendar[i] in GuiController.calendars-model: VerticalLayout {
+                    spacing: Style.px(2);
+
+                    // section.delegate, for the first calendar of each account
+                    if calendar.account-name != "" && (i == 0 || GuiController.calendars-model[i - 1].account-name != calendar.account-name): Rectangle {
+                        height: Style.px(36);
+                        Text {
+                            x: Style.px(8);
+                            text: calendar.account-name;
+                            color: Style.task-text-color;
+                            font-size: Style.px(14);
+                            font-weight: 700;
+                            opacity: 0.7;
+                            vertical-alignment: center;
+                        }
+                    }
+
+                    Rectangle {
+                        height: Style.px(44);
+
+                        HorizontalLayout {
+                            padding-left: Style.px(8);
+                            padding-right: Style.px(8);
+                            spacing: Style.px(8);
+
+                            // The QML has a color dot here, a Rectangle with no size, so it never showed.
+                            Text {
+                                horizontal-stretch: 1;
+                                text: calendar.title;
+                                color: Style.task-text-color;
+                                font-size: Style.px(16);
+                                overflow: elide;
+                                vertical-alignment: center;
+                            }
+
+                            PCheckBox {
+                                checked: calendar.is-enabled;
+                                toggled(checked) => {
+                                    Calendars.set-enabled(calendar.calendar-id, checked);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Text {
+            x: Style.px(8);
+            y: button-row.y - self.height - Style.px(8);
+            width: parent.width - Style.px(16);
+            text: GuiController.fetch-calendar-status-text;
+            color: Style.task-text-color;
+            font-size: Style.px(14);
+            horizontal-alignment: center;
+            visible: GuiController.fetch-calendar-status-text != "";
+        }
+
+        button-row := HorizontalLayout {
+            x: Style.px(8);
+            y: parent.height - self.height - Style.px(8);
+            width: parent.width - Style.px(16);
+            height: Style.px(44);
+            spacing: Style.px(8);
+
+            Rectangle {
+                horizontal-stretch: 1;
+                background: GuiController.is-fetching-calendar-events ? Style.button-color.darker(0.3) : Style.button-color;
+                border-radius: Style.px(8);
+
+                TouchArea {
+                    enabled: !GuiController.is-fetching-calendar-events;
+                    clicked => {
+                        GuiController.fetch-calendar-events();
+                    }
+                }
+
+                HorizontalLayout {
+                    alignment: center;
+                    spacing: Style.px(8);
+
+                    if GuiController.is-fetching-calendar-events: FaButton {
+                        icon: "\u{f021}";
+                        icon-size: Style.px(16);
+                        icon-color: Style.button-text-color;
+                        background-color: transparent;
+                        enabled: false;
+                        spinning: true;
+                    }
+
+                    Text {
+                        text: GuiController.is-fetching-calendar-events ? "Fetching..." : "Fetch Calendar Events";
+                        color: Style.button-text-color;
+                        font-size: Style.px(16);
+                        vertical-alignment: center;
+                    }
+                }
+            }
+
+            if !GuiController.is-mobile && !GuiController.is-mac-os && !GuiController.calendar-provider-configured: FaButton {
+                icon: "\u{f084}";
+                icon-size: Style.px(18);
+                icon-color: Style.button-text-color;
+                background-color: Style.button-color;
+                preferred-width: Style.px(44);
+                clicked => {
+                    GuiController.fetch-pass-store-credentials();
+                }
+            }
+        }
+
+    }
+}
+
+// Calendar.qml
+export component Calendar inherits Rectangle {
+    in property <string> current-date;
+    callback date-selected(string);
+
+    public function set-initial-month() {
+        model.show-month-of(root.current-date);
+    }
+
+    background: Style.calendar-background;
+    border-radius: Style.px(10);
+
+    model := CalendarModel { }
+
+    VerticalLayout {
+        padding: Style.px(16);
+        spacing: Style.px(10);
+
+        HorizontalLayout {
+            vertical-stretch: 0;
+            spacing: Style.px(10);
+
+            Text {
+                text: "\u{f073}";
+                font-family: Icons.font-family;
+                font-size: Style.px(20);
+                color: Style.calendar-secondary-text;
+                vertical-alignment: center;
+            }
+
+            Text {
+                text: model.month-title;
+                color: Style.calendar-text;
+                font-size: Style.px(16);
+                font-weight: 700;
+                vertical-alignment: center;
+            }
+
+            Rectangle {
+                horizontal-stretch: 1;
+            }
+
+            FaButton {
+                icon: "\u{f053}";
+                icon-size: Style.px(18);
+                icon-color: Style.calendar-secondary-text;
+                background-color: transparent;
+                clicked => {
+                    model.previous-month();
+                }
+            }
+
+            FaButton {
+                icon: "\u{f054}";
+                icon-size: Style.px(18);
+                icon-color: Style.calendar-secondary-text;
+                background-color: transparent;
+                clicked => {
+                    model.next-month();
+                }
+            }
+        }
+
+        // Weekday headers
+        HorizontalLayout {
+            vertical-stretch: 0;
+            padding-top: Style.px(5);
+            height: Style.px(20);
+            for name in ["M", "T", "W", "T", "F", "S", "S"]: Text {
+                text: name;
+                color: Style.calendar-secondary-text;
+                font-size: Style.px(16);
+                horizontal-alignment: center;
+            }
+        }
+
+        // Days grid
+        Rectangle {
+            vertical-stretch: 1;
+
+            for day[i] in model.rows: Rectangle {
+                property <bool> selected: day.date == root.current-date;
+                x: mod(i, 7) * parent.width / 7;
+                y: floor(i / 7) * parent.height / 6;
+                width: parent.width / 7;
+                height: parent.height / 6;
+
+                Rectangle {
+                    width: min(parent.width, parent.height) * 0.8;
+                    height: self.width;
+                    x: (parent.width - self.width) / 2;
+                    y: (parent.height - self.height) / 2;
+                    border-radius: self.width / 2;
+                    background: selected ? Style.calendar-highlight : transparent;
+
+                    Text {
+                        text: day.day;
+                        color: selected ? white : (day.is-today ? Style.calendar-highlight : (day.is-current-month ? Style.calendar-text : Style.calendar-disabled-text));
+                        font-size: Style.px(14);
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+
+                    TouchArea {
+                        mouse-cursor: pointer;
+                        clicked => {
+                            root.date-selected(day.date);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// EditTaskPage.qml
+export component EditTaskPage inherits Page {
+    a11y-id: "editTask";
+    page-title: "Edit Task";
+    right-button-icon: "\u{f00c}";
+    right-button-id: "saveButton";
+    visible: GuiController.is-editing-task;
+
+    callback save-clicked(string, string, bool, bool, bool);
+
+    property <string> selected-tag: "";
+    property <bool> is-evening: false;
+    property <bool> is-goal: false;
+    property <bool> is-yearly: false;
+
+    property <bool> shown: self.visible;
+    changed shown => {
+        if (self.shown) {
+            title-input.text = GuiController.title-in-editor;
+            title-input.focus-field();
+            self.selected-tag = GuiController.tag-in-editor;
+            self.is-evening = GuiController.is-evening-in-editor;
+            self.is-goal = GuiController.is-goal-in-editor;
+            self.is-yearly = GuiController.is-yearly-in-editor;
+            calendar.set-initial-month();
+        }
+    }
+
+    right-button-clicked => {
+        root.save-clicked(title-input.text, root.selected-tag, root.is-evening, root.is-goal, root.is-yearly);
+    }
+
+    VerticalLayout {
+        spacing: Style.px(20);
+
+        VerticalLayout {
+            vertical-stretch: 0;
+            spacing: Style.px(5);
+
+            Text {
+                text: "Title";
+                color: Style.section-text-color;
+                font-size: Style.px(14);
+                font-weight: 700;
+            }
+
+            // LineEdit.qml
+            // The QML Rectangle has no width, so its background never showed
+            Rectangle {
+                preferred-height: Style.px(50);
+
+                HorizontalLayout {
+                    padding: Style.px(10);
+                    title-input := PTextField {
+                        a11y-id: "titleInput";
+                        placeholder: "New Task Title";
+                        font-size: Style.px(14);
+                        accepted(text) => {
+                            // Qt trims it, Slint has no string trimming
+                            if (text.replace-all(" ", "") == "") {
+                                return;
+                            }
+                            root.save-clicked(text, root.selected-tag, root.is-evening, root.is-goal, root.is-yearly);
+                            self.text = "";
+                        }
+                    }
+                }
+            }
+        }
+
+        VerticalLayout {
+            vertical-stretch: 0;
+            spacing: Style.px(5);
+
+            Text {
+                text: "Tag";
+                color: Style.section-text-color;
+                font-size: Style.px(14);
+                font-weight: 700;
+            }
+
+            Rectangle {
+                background: Style.task-background;
+                border-radius: 4px;
+                preferred-height: Style.px(44);
+
+                HorizontalLayout {
+                    padding: Style.px(10);
+                    spacing: Style.px(8);
+                    alignment: start;
+
+                    for tag in GuiController.tag-filter-model: VerticalLayout {
+                        alignment: center;
+                        TagChip {
+                            a11y-id: "tag_" + tag.name;
+                            is-interactive: true;
+                            is-selected: root.selected-tag == tag.name;
+                            tag-name: tag.name;
+                            clicked(name) => {
+                                root.selected-tag = name;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        HorizontalLayout {
+            vertical-stretch: 0;
+            spacing: Style.px(5);
+            alignment: start;
+
+            PCheckBox {
+                checked: root.is-evening;
+                toggled(c) => {
+                    root.is-evening = c;
+                }
+            }
+            Text {
+                text: "Evening";
+                color: Style.section-text-color;
+                font-size: Style.px(14);
+                font-weight: 700;
+                vertical-alignment: center;
+                TouchArea {
+                    mouse-cursor: pointer;
+                    clicked => {
+                        root.is-evening = !root.is-evening;
+                    }
+                }
+            }
+
+            PCheckBox {
+                checked: root.is-goal;
+                toggled(c) => {
+                    root.is-goal = c;
+                }
+            }
+            Text {
+                text: "Goal";
+                color: Style.section-text-color;
+                font-size: Style.px(14);
+                font-weight: 700;
+                vertical-alignment: center;
+                TouchArea {
+                    mouse-cursor: pointer;
+                    clicked => {
+                        root.is-goal = !root.is-goal;
+                    }
+                }
+            }
+
+            PCheckBox {
+                checked: root.is-yearly;
+                toggled(c) => {
+                    root.is-yearly = c;
+                }
+            }
+            Text {
+                text: "Yearly";
+                color: Style.section-text-color;
+                font-size: Style.px(14);
+                font-weight: 700;
+                vertical-alignment: center;
+                TouchArea {
+                    mouse-cursor: pointer;
+                    clicked => {
+                        root.is-yearly = !root.is-yearly;
+                    }
+                }
+            }
+        }
+
+        VerticalLayout {
+            vertical-stretch: 1;
+            spacing: Style.px(5);
+
+            Text {
+                text: "Date";
+                color: Style.section-text-color;
+                font-size: Style.px(14);
+                font-weight: 700;
+            }
+
+            calendar := Calendar {
+                vertical-stretch: 1;
+                current-date: GuiController.date-in-editor;
+                date-selected(d) => {
+                    GuiController.set-date-in-editor(d);
+                }
+            }
+        }
+    }
+}
