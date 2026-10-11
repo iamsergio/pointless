@@ -51,3 +51,15 @@ Left:
 - Not captured by the screenshot test (as for Qt): login screen, error popup
 - The edit task date picker shows the test clock's month in Slint and the real month in Qt (a bug of the Qt version)
 - Task titles are not trimmed on save, as in the QML
+
+# GUI polish (11)
+
+Done:
+- Text: the Slint Qt backend disabled font hinting, which made text thinner and blurrier than Qt's. `3rdparty/slint` (branch `qt-font-hinting` of the fork, to be pushed) uses the system's hinting, `SLINT_QT_FONT_HINTING=default|none|vertical|full` overrides it. The offscreen screenshots don't show a difference (no fontconfig hint settings there), check it in a real window
+- The task list has no scroll bar (Fluent's is a permanent line over the tasks, Qt's only shows when used), so it can't be dragged, wheel and touch scroll
+- The checkbox of a task is as wide as in Qt, so the title lines up
+- The Qt screenshot of the tasks by tag page was the tags page (the tap handler of the row ignores the test's click), now the test clicks the tag
+
+Too hard or left:
+- Dragging a scroll bar (a custom Slint scroll bar would be needed)
+- The `Later` order and the other items of step 10
