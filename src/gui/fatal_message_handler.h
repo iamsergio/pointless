@@ -27,7 +27,11 @@ inline bool isWhiteListed(const QString &msg)
         // (e.g. qt-commander) ptrace-attaches while the main thread is blocked
         // in it -- not indicative of an actual bug, and Qt itself treats this
         // as non-fatal by default (QT_CONFIG(poll_exit_on_error) is off).
-        "qt_safe_poll"
+        "qt_safe_poll",
+        // The offscreen plugin on a window made by Slint's Qt backend, not indicative of a bug
+        "propagateSizeHints",
+        // Slint's Qt backend, when Spix takes a snapshot while the window repaints
+        "Recursive repaint detected"
     };
 
     return std::ranges::any_of(whiteList.begin(), whiteList.end(), [&](const QString &entry) {

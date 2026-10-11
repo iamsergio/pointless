@@ -12,7 +12,9 @@ if(NOT EXISTS "${QT2SLINT_DIR}/bridge/lib/CMakeLists.txt")
 endif()
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Qml Concurrent)
-find_package(Slint REQUIRED)
+if(NOT TARGET Slint::Slint) # the top-level CMakeLists.txt finds it for Spix
+  find_package(Slint REQUIRED)
+endif()
 
 add_subdirectory(${QT2SLINT_DIR}/bridge/lib bridge_lib)
 include(${QT2SLINT_DIR}/bridge/cmake/QtSlintBridgeBindings.cmake)
@@ -20,12 +22,28 @@ include(${QT2SLINT_DIR}/bridge/cmake/QtSlintBridgeBindings.cmake)
 qtslintbridge_generate_bindings(pointless_bindings CONFIG bridge.toml QOBJECT_TARGETS pointless_gui)
 get_target_property(BINDINGS_DIR pointless_bindings QTSLINTBRIDGE_BINDINGS_DIR)
 
+# The compiled UI, shared by the app and the GUI tests
+add_library(pointless_slint_ui STATIC)
+slint_target_sources(pointless_slint_ui slint/app.slint NAMESPACE ui LIBRARY_PATHS bridge=${BINDINGS_DIR})
+target_include_directories(pointless_slint_ui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../gui)
+target_link_libraries(
+  pointless_slint_ui
+  PUBLIC pointless_bindings
+         pointless_gui
+         pointless_core
+         QtSlintBridge::Bridge
+         Qt6::Core
+         Qt6::Qml
+         Qt6::Concurrent
+         Qt6::Widgets
+         Slint::Slint)
+
 add_executable(pointless_slint main.cpp)
-slint_target_sources(pointless_slint slint/app.slint NAMESPACE ui LIBRARY_PATHS bridge=${BINDINGS_DIR})
 target_include_directories(pointless_slint PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../gui)
 target_link_libraries(
   pointless_slint
-  PRIVATE pointless_bindings
+  PRIVATE pointless_slint_ui
+          pointless_bindings
           pointless_gui
           pointless_core
           QtSlintBridge::Bridge
@@ -34,3 +52,25 @@ target_link_libraries(
           Qt6::Concurrent
           Qt6::Widgets
           Slint::Slint)
+
+if(POINTLESS_ENABLE_TESTS)
+  # The screenshot collection test of the Qt UI, run against the Slint UI. The harness is the only part that differs.
+  add_executable(screenshot_collection_slint gui_test_harness_slint.cpp ../../gui/tests/screenshot_collection.cpp)
+  target_include_directories(screenshot_collection_slint PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../gui ${CMAKE_CURRENT_SOURCE_DIR}/../../gui/tests ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+  target_compile_definitions(screenshot_collection_slint PRIVATE POINTLESS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+  target_link_libraries(
+    screenshot_collection_slint
+    PRIVATE pointless_slint_ui
+            pointless_bindings
+            pointless_gui
+            pointless_core
+            QtSlintBridge::Bridge
+            Spix::Slint
+            Spix::Core
+            GTest::gtest_main
+            Qt6::Core
+            Qt6::Qml
+            Qt6::Concurrent
+            Qt6::Widgets
+            Slint::Slint)
+endif()
