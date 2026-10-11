@@ -31,6 +31,11 @@ struct GuiTestHarness::Private
     spix::QtQmlBot bot;
 };
 
+const char *GuiTestHarness::name()
+{
+    return "qt";
+}
+
 void GuiTestHarness::setTestNow(int year, int month, int day, int hour, int minute)
 {
     Gui::Clock::setTestNow(QDateTime(QDate(year, month, day), QTime(hour, minute)));

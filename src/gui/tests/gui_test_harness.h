@@ -17,6 +17,8 @@ namespace pointless::tests {
 class GuiTestHarness
 {
 public:
+    // "qt" or "slint": the UI under test, the screenshots go to screenshots/<name>/
+    static const char *name();
     static void setTestNow(int year, int month, int day, int hour, int minute);
 
     GuiTestHarness(int &argc, char **argv);

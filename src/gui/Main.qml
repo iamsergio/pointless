@@ -59,18 +59,21 @@ QC.ApplicationWindow {
             }
 
             AboutPage {
+                objectName: "aboutPage"
                 anchors.fill: parent
                 onBackClicked: GuiController.currentPage = ""
                 z: mainView.z + 1
             }
 
             TagsPage {
+                objectName: "tagsPage"
                 anchors.fill: parent
                 onBackClicked: GuiController.currentPage = ""
                 z: mainView.z + 1
             }
 
             TasksByTagPage {
+                objectName: "tasksByTagPage"
                 anchors.fill: parent
                 onBackClicked: {
                     GuiController.currentPage = "";
@@ -80,18 +83,21 @@ QC.ApplicationWindow {
             }
 
             CleanupPage {
+                objectName: "cleanupPage"
                 anchors.fill: parent
                 onBackClicked: GuiController.currentPage = ""
                 z: mainView.z + 1
             }
 
             CalendarsPage {
+                objectName: "calendarsPage"
                 anchors.fill: parent
                 onBackClicked: GuiController.currentPage = ""
                 z: mainView.z + 1
             }
 
             SearchPage {
+                objectName: "searchPage"
                 anchors.fill: parent
                 onBackClicked: GuiController.currentPage = ""
                 z: mainView.z + 1

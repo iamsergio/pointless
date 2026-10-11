@@ -29,6 +29,7 @@ Rectangle {
             spacing: Style.fromPixel(10)
 
             FontAwesomeButton {
+                objectName: "backButton"
                 fontAwesomeIcon: "\uf053"
                 iconColor: Style.iconColor
                 iconSize: Style.fromPixel(18)

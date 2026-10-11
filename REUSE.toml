@@ -31,6 +31,7 @@ path = [
     ".qmllint.ini",
     "version.txt",
     "PORT_TODO.md",
+    "screenshots/**",
     "TODO_TYPES.md",
     "inventory.json",
     "slint/pointless_core/tests/fixtures/test.json",

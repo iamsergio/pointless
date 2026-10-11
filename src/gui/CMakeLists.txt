@@ -159,6 +159,13 @@ if(POINTLESS_ENABLE_TESTS)
   add_test(NAME test_gui COMMAND test_gui --local)
   # add_test(NAME test_gui_supabase COMMAND test_gui --supabase)
 
+  add_executable(screenshot_collection tests/screenshot_collection.cpp)
+  target_link_libraries(screenshot_collection PRIVATE pointless_core gui_test_harness_qt Spix::Core GTest::gtest_main)
+  target_compile_definitions(screenshot_collection PRIVATE POINTLESS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+  # Writes into screenshots/, so not part of the default ctest run
+  add_test(NAME screenshot_collection COMMAND screenshot_collection)
+  set_tests_properties(screenshot_collection PROPERTIES DISABLED TRUE)
+
   add_executable(test_data_controller tests/test_data_controller.cpp)
   target_link_libraries(
     test_data_controller

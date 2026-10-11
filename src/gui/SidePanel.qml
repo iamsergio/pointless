@@ -82,6 +82,7 @@ Item {
                 }
 
                 MouseArea {
+                    objectName: "sidePanelSearch"
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
@@ -104,6 +105,7 @@ Item {
                 }
 
                 MouseArea {
+                    objectName: "sidePanelAbout"
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
@@ -126,6 +128,7 @@ Item {
                 }
 
                 MouseArea {
+                    objectName: "sidePanelCleanup"
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
@@ -148,6 +151,7 @@ Item {
                 }
 
                 MouseArea {
+                    objectName: "sidePanelTags"
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
@@ -170,6 +174,7 @@ Item {
                 }
 
                 MouseArea {
+                    objectName: "sidePanelCalendars"
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
