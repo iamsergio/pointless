@@ -1237,7 +1237,7 @@ void GuiController::moveTaskToNextMonday(const QString &taskUuid)
 
 bool GuiController::addTag(const QString &tagName)
 {
-    return _dataController->addTag(tagName);
+    return _dataController->addTag(tagName.trimmed());
 }
 
 void GuiController::removeTag(const QString &tagName)
@@ -1247,7 +1247,7 @@ void GuiController::removeTag(const QString &tagName)
 
 bool GuiController::renameTag(const QString &oldName, const QString &newName)
 {
-    if (_dataController->renameTag(oldName, newName)) {
+    if (_dataController->renameTag(oldName, newName.trimmed())) {
         setRenameTagPopupVisible(false);
         return true;
     }
