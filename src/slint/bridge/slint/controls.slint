@@ -193,6 +193,7 @@ export component PTextField inherits Rectangle {
         x: 6px;
         y: 6px;
         width: parent.width - 12px;
+        height: parent.height - 12px;
         font-size: root.font-size;
         color: root.text-color;
         input-type: root.input-type;
@@ -214,6 +215,8 @@ export component PTextField inherits Rectangle {
     if input.text == "": Text {
         x: 6px;
         y: 6px;
+        width: parent.width - 12px;
+        height: parent.height - 12px;
         text: root.placeholder;
         font-size: root.font-size;
         color: root.placeholder-color;
@@ -227,8 +230,13 @@ export component DialogButton inherits Rectangle {
     in property <color> fill;
     in property <length> font-size: Style.px(16);
     in property <bool> enabled: true;
+    in property <string> a11y-id;
     callback clicked();
 
+    accessible-role: button;
+    accessible-id: root.a11y-id;
+    // Qt sizes buttons that fill a row by their text
+    horizontal-stretch: label.preferred-width / 1px;
     preferred-height: Style.px(48);
     background: root.fill;
     border-radius: Style.px(8);
@@ -241,7 +249,7 @@ export component DialogButton inherits Rectangle {
         }
     }
 
-    Text {
+    label := Text {
         text: root.text;
         color: white;
         font-size: root.font-size;

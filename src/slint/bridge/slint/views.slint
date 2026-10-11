@@ -213,6 +213,8 @@ export component TagsView inherits Rectangle {
 
             for tag in GuiController.tag-filter-model: Rectangle {
                 height: Style.px(40);
+                accessible-role: button;
+                accessible-id: "tagRow_" + tag.name;
 
                 TouchArea {
                     clicked => {
@@ -249,6 +251,7 @@ export component TagsView inherits Rectangle {
                     }
 
                     FaButton {
+                        a11y-id: "renameTag_" + tag.name;
                         icon: "\u{f304}";
                         icon-size: Style.px(14);
                         icon-color: Style.icon-color;
