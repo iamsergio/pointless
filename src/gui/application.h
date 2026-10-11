@@ -3,12 +3,23 @@
 
 #pragma once
 
+#ifdef SLINT_OVER_CORE
+// Slint's Qt backend needs a QApplication
+#include <QApplication>
+#else
 #include <QGuiApplication>
+#endif
 #include <QQmlApplicationEngine>
+
+#ifdef SLINT_OVER_CORE
+using PointlessAppBase = QApplication;
+#else
+using PointlessAppBase = QGuiApplication;
+#endif
 
 namespace pointless {
 
-class Application : public QGuiApplication
+class Application : public PointlessAppBase
 {
     Q_OBJECT
 public:

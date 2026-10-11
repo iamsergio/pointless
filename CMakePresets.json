@@ -40,6 +40,15 @@
       }
     },
     {
+      "name": "dev-slint",
+      "inherits": "dev",
+      "description": "dev, with the Slint UI over the Qt C++ code",
+      "cacheVariables": {
+        "POINTLESS_SLINT_OVER_QTCORE": "ON",
+        "CMAKE_PREFIX_PATH": "${sourceDir}/build-slint/install"
+      }
+    },
+    {
       "name": "ios-dev",
       "inherits": "ios-base",
       "cacheVariables": {

@@ -77,6 +77,12 @@ string(TIMESTAMP POINTLESS_APPLE_BUILD_NUMBER "%y%m%d%H%M")
 option(POINTLESS_DEVELOPER_MODE "Build with developer options" OFF)
 option(POINTLESS_ENABLE_TESTS "Build tests" ${POINTLESS_DEVELOPER_MODE})
 option(POINTLESS_VERIFY_SSL "Verify SSL certificates in HTTPS requests" ON)
+option(POINTLESS_SLINT_OVER_QTCORE "Build the Slint UI over the existing Qt C++ code (Qt to Slint port, see src/slint/bridge)" OFF)
+
+if(POINTLESS_SLINT_OVER_QTCORE)
+  message(STATUS "Building the Slint UI over QtCore")
+  add_definitions(-DSLINT_OVER_CORE)
+endif()
 
 if(POINTLESS_DEVELOPER_MODE)
   message(STATUS "Building in developer mode")

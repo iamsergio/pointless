@@ -3,6 +3,9 @@
 # SPDX-License-Identifier: MIT
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickControls2 Concurrent)
+if(POINTLESS_SLINT_OVER_QTCORE)
+  find_package(Qt6 REQUIRED COMPONENTS Widgets)
+endif()
 
 qt_policy(SET QTP0001 NEW)
 
@@ -101,6 +104,10 @@ qt_add_qml_module(
 
 target_link_libraries(pointless_gui PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Qt6::QuickControls2 Qt6::Concurrent pointless_core)
 target_link_libraries(pointless_gui PRIVATE pointless_guiplugin)
+if(POINTLESS_SLINT_OVER_QTCORE)
+  # Application is a QApplication, which Slint's Qt backend needs
+  target_link_libraries(pointless_gui PUBLIC Qt6::Widgets)
+endif()
 
 qt_add_executable(pointless main.cpp)
 target_link_libraries(pointless PRIVATE pointless_gui Qt6::Core Qt6::Gui Qt6::Quick)

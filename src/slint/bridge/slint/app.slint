@@ -1,0 +1,23 @@
+// SPDX-FileCopyrightText: 2026 Sergio Martins
+// SPDX-License-Identifier: MIT
+
+// Placeholder window: the bridge code generator needs a window to attach the globals to. The real UI is ported later.
+// C++ only reaches what this file exports.
+import { CalendarModel, LoginScreenController, TaskFilterModel, WeekdayFilterModel, WeekdayModel, GuiControllerConnections, PomodoroControllerConnections } from "@bridge/globals.slint";
+export * from "@bridge/globals.slint";
+
+export component App inherits Window {
+    title: "Pointless";
+    width: 400px;
+    height: 600px;
+
+    // The Slint compiler only generates the C++ class of a native component that a window instantiates.
+    // Drop each one when the real UI instantiates it.
+    CalendarModel { }
+    LoginScreenController { }
+    TaskFilterModel { }
+    WeekdayFilterModel { }
+    WeekdayModel { }
+    GuiControllerConnections { }
+    PomodoroControllerConnections { }
+}

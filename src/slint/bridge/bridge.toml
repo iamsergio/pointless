@@ -1,0 +1,122 @@
+# SPDX-FileCopyrightText: 2026 Sergio Martins
+# SPDX-License-Identifier: MIT
+
+# What the generator (qt2slint/bridge/scripts/gen_bindings.py) can't read from the moc metatypes.
+function = "bindPointless"
+namespace = "ui"
+window = "App"
+window_header = "app.h"
+
+# GuiController is a QML_SINGLETON, so it needs no [[context]] entry.
+
+
+# QML_ELEMENT classes that no QML file instantiates (they are made by DataController/GuiController, and TagModel and TaskModel
+# assert without their DataController parent) are not native components. The UI reaches them as globals (AllTasks, AllTags...).
+[[native]]
+class = "CalendarsModel"
+skip = true
+
+[[native]]
+class = "ErrorController"
+skip = true
+
+[[native]]
+class = "TagFilterModel"
+skip = true
+
+[[native]]
+class = "TagModel"
+skip = true
+
+[[native]]
+class = "TaskModel"
+skip = true
+
+# The objects behind GuiController's CONSTANT QObject* properties are Slint globals. Their natural names (TaskFilterModel...) are
+# the native components of the same classes, which QML instantiates.
+[objects]
+"GuiController.taskFilterModel" = "FilteredTasks"
+"GuiController.taskModel" = "AllTasks"
+"GuiController.tagModel" = "AllTags"
+"GuiController.tagFilterModel" = "FilteredTags"
+"GuiController.errorController" = "Errors"
+"GuiController.calendarsModel" = "Calendars"
+
+[enums]
+"GuiController::ViewType" = "GuiViewType"
+"TaskFilterModel::ViewType" = "TaskViewType"
+
+# Dates are strings (ISO 8601) in Slint.
+[rows.TaskModel]
+struct = "Task"
+fields = [
+    { role = "uuid", type = "string" },
+    { role = "title", type = "string" },
+    { role = "isDone", type = "bool" },
+    { role = "isImportant", type = "bool" },
+    { role = "dueDate", type = "string" },
+    { role = "dueDateRaw", type = "string" },
+    { role = "hasDueDate", type = "bool" },
+    { role = "tagName", type = "string" },
+    { role = "isFromCalendar", type = "bool" },
+    { role = "calendarName", type = "string" },
+    { role = "isEvening", type = "bool" },
+    { role = "needsSyncToServer", type = "bool" },
+    { role = "revision", type = "int" },
+    { role = "isSoon", type = "bool" },
+    { role = "isLater", type = "bool" },
+    { role = "isCurrent", type = "bool" },
+    { role = "isDueTomorrow", type = "bool" },
+    { role = "hasDueDateTime", type = "bool" },
+    { role = "allTags", type = "string" },
+    { role = "description", type = "string" },
+    { role = "hasNotes", type = "bool" },
+    { role = "isGoal", type = "bool" },
+    { role = "isYearly", type = "bool" },
+]
+
+[rows.TaskFilterModel]
+struct = "Task"
+
+[rows.TagModel]
+struct = "Tag"
+fields = [
+    { role = "name", type = "string" },
+    { role = "isBuiltin", type = "bool" },
+    { role = "taskCount", type = "int" },
+]
+
+[rows.TagFilterModel]
+struct = "Tag"
+
+[rows.CalendarsModel]
+struct = "CalendarInfo"
+fields = [
+    { role = "calendarId", type = "string" },
+    { role = "title", type = "string" },
+    { role = "color", type = "string" },
+    { role = "writeable", type = "bool" },
+    { role = "isEnabled", type = "bool" },
+    { role = "accountName", type = "string" },
+]
+
+[rows.CalendarModel]
+struct = "CalendarDay"
+fields = [
+    { role = "date", type = "string" },
+    { role = "day", type = "int" },
+    { role = "isCurrentMonth", type = "bool" },
+    { role = "isToday", type = "bool" },
+]
+
+[rows.WeekdayModel]
+struct = "Weekday"
+fields = [
+    { role = "prettyDate", type = "string" },
+    { role = "tasks", type = "[TaskFilterModel]" },
+    { role = "isPast", type = "bool" },
+    { role = "date", type = "string" },
+]
+
+[rows.WeekdayFilterModel]
+struct = "Weekday"

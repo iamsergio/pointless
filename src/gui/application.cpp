@@ -36,7 +36,7 @@ void printDebugInfo()
 }
 
 Application::Application(int &argc, char **argv, const QString &orgName, Options options)
-    : QGuiApplication(argc, argv)
+    : PointlessAppBase(argc, argv)
 {
     Q_UNUSED(options)
 
@@ -139,6 +139,11 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
             t1->start(benchmarkInterval);
         });
     }
+
+#ifdef SLINT_OVER_CORE
+    // The UI is Slint, created by the bridge's main() (src/slint/bridge)
+    return;
+#endif
 
     QQuickStyle::setStyle(QStringLiteral("Fusion"));
 
