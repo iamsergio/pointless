@@ -19,7 +19,7 @@
 
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SLINT_SRC=${SCRIPT_DIR}/3rdparty/slint/api/cpp
 BUILD_DIR=${SCRIPT_DIR}/build-slint
 INSTALL_DIR=${BUILD_DIR}/install
