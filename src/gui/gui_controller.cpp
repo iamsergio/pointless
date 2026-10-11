@@ -757,7 +757,7 @@ void GuiController::fetchPassStoreCredentials()
         if (!accounts.empty() || !icalUrls.empty())
             reinitCalendarProvider(std::move(accounts), std::move(icalUrls));
 
-        Q_EMIT passStoreCredentialsFetched(result);
+        Q_EMIT passStoreCredentialsFetched(result.value("user").toString(), result.value("pass").toString());
     });
 
     connect(process, &QProcess::errorOccurred, this, [this, process](QProcess::ProcessError error) {
