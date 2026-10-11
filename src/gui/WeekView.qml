@@ -15,6 +15,7 @@ Item {
     // for Spix
     readonly property alias weekdayModelCount: weekdayModel.count
     readonly property alias weekdayFilterModelCount: weekdayFilterModel.count
+    readonly property alias count: weekdayFilterModel.count
 
     WeekdayModel {
         id: weekdayModel
@@ -56,6 +57,9 @@ Item {
             spacing: Style.fromPixel(10)
             objectName: "weekday_" + index
             readonly property int taskCount: tasks.count
+            // For tests, the same properties as in the Slint UI
+            readonly property int count: tasks.count
+            readonly property string text: prettyDate
 
             RowLayout {
                 spacing: 0

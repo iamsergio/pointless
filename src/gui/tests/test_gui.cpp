@@ -47,13 +47,13 @@ protected:
 
         P_LOG_INFO("Starting test. On secondary thread.");
 
-        auto weekActive = getStringProperty("mainWindow/weekViewButton", "isActive");
+        auto weekActive = getStringProperty("mainWindow/weekViewButton", "checked");
         EXPECT_EQ(weekActive, "true");
 
-        auto soonActive = getStringProperty("mainWindow/soonViewButton", "isActive");
+        auto soonActive = getStringProperty("mainWindow/soonViewButton", "checked");
         EXPECT_EQ(soonActive, "false");
 
-        auto laterActive = getStringProperty("mainWindow/laterViewButton", "isActive");
+        auto laterActive = getStringProperty("mainWindow/laterViewButton", "checked");
         EXPECT_EQ(laterActive, "false");
 
         EXPECT_EQ(getStringProperty("mainWindow/weekViewButton", "enabled"), "true");
@@ -82,8 +82,7 @@ protected:
 
         ASSERT_TRUE(existsAndVisible("mainWindow/weekView"));
 
-        EXPECT_EQ(getStringProperty("mainWindow/weekView", "weekdayModelCount"), "7");
-        EXPECT_EQ(getStringProperty("mainWindow/weekView", "weekdayFilterModelCount"), "7");
+        EXPECT_EQ(getStringProperty("mainWindow/weekView", "count"), "7");
 
         // Test header text
         const auto expectedWeekDaysText = { "MONDAY, 1",
@@ -103,7 +102,7 @@ protected:
             const std::string weekdayPath = "mainWindow/weekday_" + std::to_string(index);
 
             ASSERT_TRUE(existsAndVisible(weekdayPath)) << "Expected list view item at index " << index;
-            auto prettyDate = getStringProperty(weekdayPath, "prettyDate");
+            auto prettyDate = getStringProperty(weekdayPath, "text");
             EXPECT_EQ(prettyDate, expectedText);
 
             ++index;
@@ -120,18 +119,20 @@ protected:
             const std::string weekdayPath = "mainWindow/weekday_" + std::to_string(index);
             ASSERT_TRUE(existsAndVisible(weekdayPath));
 
-            EXPECT_EQ(getStringProperty(weekdayPath, "taskCount"), std::to_string(expectedCount));
+            EXPECT_EQ(getStringProperty(weekdayPath, "count"), std::to_string(expectedCount));
 
             ++index;
         }
 
+        // The Slint UI finds only the items inside the window, so go back to the first weekday
+        invokeMethod("mainWindow/weekdayListView", "positionViewAtIndex", { 0, 0 });
+        wait(std::chrono::milliseconds(200));
+
         // 1st task doesn't have a tag
-        EXPECT_EQ(getStringProperty("mainWindow/task_0_0", "title"), "Current Task 3");
-        EXPECT_EQ(getStringProperty("mainWindow/task_0_0", "taskTagName"), "");
+        EXPECT_EQ(getStringProperty("mainWindow/task_0_0", "text"), "Current Task 3");
         EXPECT_EQ(getStringProperty("mainWindow/task_0_0/tagText", "text"), "");
 
         // task with "work" tag is sorted a bit below
-        EXPECT_EQ(getStringProperty("mainWindow/task_0_3", "taskTagName"), "work");
         EXPECT_EQ(getStringProperty("mainWindow/task_0_3/tagText", "text"), "work");
         EXPECT_EQ(getStringProperty("mainWindow/task_0_3/tagText", "visible"), "true");
 
@@ -143,13 +144,13 @@ protected:
         wait(std::chrono::milliseconds(200));
         EXPECT_EQ(getStringProperty("mainWindow/laterView", "count"), "5");
 
-        laterActive = getStringProperty("mainWindow/laterViewButton", "isActive");
+        laterActive = getStringProperty("mainWindow/laterViewButton", "checked");
         EXPECT_EQ(laterActive, "true");
-        weekActive = getStringProperty("mainWindow/weekViewButton", "isActive");
+        weekActive = getStringProperty("mainWindow/weekViewButton", "checked");
         EXPECT_EQ(weekActive, "false");
-        soonActive = getStringProperty("mainWindow/soonViewButton", "isActive");
+        soonActive = getStringProperty("mainWindow/soonViewButton", "checked");
         EXPECT_EQ(soonActive, "false");
-        EXPECT_EQ(getStringProperty("mainWindow/weekNavigator", "visible"), "false");
+        EXPECT_FALSE(existsAndVisible("mainWindow/weekNavigator"));
 
         // -----------------------------------------
         // Test adding a new task via plus button that's in the week view
@@ -161,15 +162,17 @@ protected:
         mouseClick("mainWindow/addTaskButton_2");
         wait(std::chrono::milliseconds(200));
 
-        EXPECT_EQ(getStringProperty("mainWindow/editTask", "visible"), "true");
-        EXPECT_EQ(getStringProperty("mainWindow/editTask/titleInput", "focus"), "true");
+        EXPECT_TRUE(existsAndVisible("mainWindow/editTask"));
+        // The Slint UI can't tell: Spix has no focus property for it
+        if (std::string(GuiTestHarness::name()) == "qt")
+            EXPECT_EQ(getStringProperty("mainWindow/editTask/titleInput", "focus"), "true");
         EXPECT_EQ(getStringProperty("mainWindow/editTask/titleInput", "text"), "");
 
         setStringProperty("mainWindow/editTask/titleInput", "text", "foo");
 
         mouseClick("mainWindow/editTask/saveButton");
         wait(std::chrono::milliseconds(200));
-        EXPECT_EQ(getStringProperty("mainWindow/editTask", "visible"), "false");
+        EXPECT_FALSE(existsAndVisible("mainWindow/editTask"));
         bool taskFooExists = false;
         _harness.runOnGuiThread([this, &taskFooExists] { taskFooExists = _harness.localData().taskForTitle("foo") != nullptr; });
         EXPECT_TRUE(taskFooExists);
@@ -183,12 +186,12 @@ protected:
         wait(std::chrono::milliseconds(200));
 
         // Open menu
-        EXPECT_EQ(getStringProperty("mainWindow/taskMenu", "visible"), "true");
+        EXPECT_TRUE(existsAndVisible("mainWindow/taskMenu"));
         mouseClick("mainWindow/editMenuItem");
         wait(std::chrono::milliseconds(200));
 
         // Verify editor is open and populated
-        EXPECT_EQ(getStringProperty("mainWindow/editTask", "visible"), "true");
+        EXPECT_TRUE(existsAndVisible("mainWindow/editTask"));
         EXPECT_EQ(getStringProperty("mainWindow/editTask/titleInput", "text"), "Current Task 3");
 
         // Change title and tag
@@ -197,7 +200,7 @@ protected:
         mouseClick("mainWindow/editTask/saveButton");
         wait(std::chrono::milliseconds(200));
 
-        EXPECT_EQ(getStringProperty("mainWindow/editTask", "visible"), "false");
+        EXPECT_FALSE(existsAndVisible("mainWindow/editTask"));
         return;
         // Verify changes in the model
         bool taskExists = false;
@@ -212,8 +215,8 @@ protected:
         EXPECT_EQ(taskTagName, "work");
 
         // Verify changes in UI
-        EXPECT_EQ(getStringProperty("mainWindow/task_0_0", "title"), "Current Task 3 Edited");
-        EXPECT_EQ(getStringProperty("mainWindow/task_0_0", "taskTagName"), "work");
+        EXPECT_EQ(getStringProperty("mainWindow/task_0_0", "text"), "Current Task 3 Edited");
+        EXPECT_EQ(getStringProperty("mainWindow/task_0_0/tagText", "text"), "work");
 
         P_LOG_INFO("Finished test!!");
     }

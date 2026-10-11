@@ -42,6 +42,9 @@ Rectangle {
     border.width: isPomodoroActive ? Style.fromPixel(2) : 0
     border.color: "red"
 
+    // For tests, the same property as in the Slint UI
+    readonly property string text: taskTitle
+
     signal clicked
 
     function allTagsExceptCurrent(allTags) {

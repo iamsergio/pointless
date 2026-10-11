@@ -157,6 +157,10 @@ if(POINTLESS_ENABLE_TESTS)
   target_link_libraries(test_gui PRIVATE pointless_core gui_test_harness_qt Spix::Core GTest::gtest_main)
   target_compile_definitions(test_gui PRIVATE POINTLESS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
   add_test(NAME test_gui COMMAND test_gui --local)
+  if(POINTLESS_SLINT_OVER_QTCORE)
+    # It drives the QML UI, which isn't built in this preset, test_gui_slint is the Slint version
+    set_tests_properties(test_gui PROPERTIES DISABLED TRUE)
+  endif()
   # add_test(NAME test_gui_supabase COMMAND test_gui --supabase)
 
   add_executable(screenshot_collection tests/screenshot_collection.cpp)

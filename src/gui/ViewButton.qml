@@ -9,6 +9,8 @@ Button {
     id: root
 
     property bool isActive: false
+    // So tests read the same property as in the Slint UI
+    checked: isActive
 
     implicitWidth: Style.fromPixel(80)
     implicitHeight: Style.fromPixel(32)
