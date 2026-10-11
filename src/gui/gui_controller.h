@@ -276,7 +276,7 @@ Q_SIGNALS:
     void isFetchingCalendarEventsChanged();
     void fetchCalendarStatusTextChanged();
     void calendarProviderConfiguredChanged();
-    void passStoreCredentialsFetched(const QVariantMap &credentials);
+    void passStoreCredentialsFetched(const QString &user, const QString &pass);
 
 private:
     explicit GuiController(QObject *parent = nullptr);

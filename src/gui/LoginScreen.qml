@@ -11,14 +11,8 @@ FocusScope {
 
     property bool passwordVisible: false
 
-    Connections {
-        target: GuiController
-        function onPassStoreCredentialsFetched(credentials) {
-            if (credentials.user)
-                emailInput.text = credentials.user;
-            if (credentials.pass)
-                passwordInput.text = credentials.pass;
-        }
+    LoginScreenController {
+        id: controller
     }
 
     Rectangle {
@@ -74,7 +68,8 @@ FocusScope {
                             id: emailInput
                             Layout.fillWidth: true
                             placeholderText: "Enter your email"
-                            text: GuiController.defaultLoginUsername
+                            text: controller.username
+                            onTextEdited: controller.username = text
                             font.pixelSize: Style.fromPixel(16)
                             color: "white"
                             placeholderTextColor: "#8a97a8"
@@ -127,6 +122,8 @@ FocusScope {
                             id: passwordInput
                             Layout.fillWidth: true
                             placeholderText: "Enter your password"
+                            text: controller.password
+                            onTextEdited: controller.password = text
                             echoMode: root.passwordVisible ? TextInput.Normal : TextInput.Password
                             font.pixelSize: Style.fromPixel(16)
                             color: "white"
@@ -174,7 +171,7 @@ FocusScope {
                     Layout.fillWidth: true
                     implicitHeight: Style.fromPixel(56)
                     onClicked: {
-                        GuiController.login(emailInput.text, passwordInput.text);
+                        GuiController.login(controller.username, controller.password);
                     }
                 }
 
