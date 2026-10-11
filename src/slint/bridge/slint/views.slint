@@ -76,7 +76,9 @@ export component WeekNavigator inherits Rectangle {
 
 // The ScrollView of the Qt views: a vertical scroll bar, not on mobile
 component VScroll inherits ScrollView {
-    vertical-scrollbar-policy: GuiController.is-mobile ? ScrollBarPolicy.always-off : ScrollBarPolicy.as-needed;
+    // Qt's scroll bar is invisible until it's used, Slint's (Fluent) is a permanent line over the tasks. Wheel and touch
+    // still scroll, dragging the bar isn't possible.
+    vertical-scrollbar-policy: ScrollBarPolicy.always-off;
     horizontal-scrollbar-policy: ScrollBarPolicy.always-off;
 }
 
@@ -273,6 +275,7 @@ export component TagsView inherits Rectangle {
                     VerticalLayout {
                         alignment: center;
                         TagChip {
+                            a11y-id: "tagChip_" + tag.name;
                             tag-name: tag.name;
                             clicked(name) => {
                                 GuiController.current-tag = name;
