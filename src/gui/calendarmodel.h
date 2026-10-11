@@ -13,6 +13,7 @@ class CalendarModel : public QAbstractListModel
     QML_ELEMENT
     Q_PROPERTY(QDate month READ month WRITE setMonth NOTIFY monthChanged)
     Q_PROPERTY(int count READ count CONSTANT)
+    Q_PROPERTY(QString monthTitle READ monthTitle NOTIFY monthChanged)
 
 public:
     enum Roles : uint16_t {
@@ -30,6 +31,13 @@ public:
 
     [[nodiscard]] QDate month() const;
     void setMonth(QDate month);
+
+    [[nodiscard]] QString monthTitle() const;
+
+    // Slint can't parse dates, so it asks the model to move.
+    Q_INVOKABLE void showMonthOf(QDate date);
+    Q_INVOKABLE void previousMonth();
+    Q_INVOKABLE void nextMonth();
 
     [[nodiscard]] QDate startDate() const;
 

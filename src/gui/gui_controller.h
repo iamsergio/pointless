@@ -13,6 +13,7 @@
 #include "core/calendar_provider.h"
 
 #include <QDate>
+#include <QColor>
 #include <QObject>
 #include <QQmlEngine>
 #include <QtQml/qqmlregistration.h>
@@ -126,7 +127,9 @@ public:
     Q_INVOKABLE void refresh();
     Q_INVOKABLE void saveTask(QString title, const QString &tag, bool isEvening, bool isGoal, bool isYearly);
     Q_INVOKABLE void addNewTask(QString title, const QString &tag, bool isEvening, bool isGoal, bool isYearly);
-    [[nodiscard]] Q_INVOKABLE QString colorFromTag(const QString &tagName) const;
+    [[nodiscard]] Q_INVOKABLE QColor colorFromTag(const QString &tagName) const;
+    // "a, b, c" without currentTag. Slint has no string splitting.
+    [[nodiscard]] Q_INVOKABLE QString otherTags(const QString &allTags, const QString &currentTag) const;
     [[nodiscard]] static bool isDebug();
     [[nodiscard]] static bool isMobile();
     [[nodiscard]] static bool isAndroid();

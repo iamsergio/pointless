@@ -956,7 +956,7 @@ void GuiController::addNewTask(QString title, const QString &tag, bool isEvening
     saveTask(std::move(title), tag, isEvening, isGoal, isYearly);
 }
 
-QString GuiController::colorFromTag(const QString &tagName) const
+QColor GuiController::colorFromTag(const QString &tagName) const
 {
     // TODO: Store color per tag in the database
     static const QStringList colors = {
@@ -966,9 +966,21 @@ QString GuiController::colorFromTag(const QString &tagName) const
         "#FF8A00"
     };
     if (tagName.isEmpty())
-        return QStringLiteral("#555555");
+        return QColor(QStringLiteral("#555555"));
     const auto index = qHash(tagName) % colors.size();
-    return colors.at(static_cast<int>(index));
+    return QColor(colors.at(static_cast<int>(index)));
+}
+
+QString GuiController::otherTags(const QString &allTags, const QString &currentTag) const
+{
+    QStringList result;
+    const auto tags = allTags.split(QLatin1Char(','), Qt::SkipEmptyParts);
+    for (const QString &tag : tags) {
+        const QString trimmed = tag.trimmed();
+        if (trimmed != currentTag)
+            result.append(trimmed);
+    }
+    return result.join(QStringLiteral(", "));
 }
 
 bool GuiController::isVerbose()

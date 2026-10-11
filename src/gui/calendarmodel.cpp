@@ -8,6 +8,7 @@
 #include <QByteArray>
 #include <QDate>
 #include <QHash>
+#include <QLocale>
 #include <QModelIndex>
 #include <QObject>
 #include <QVariant>
@@ -71,6 +72,27 @@ void CalendarModel::setMonth(QDate month)
     _month = month;
     Q_EMIT monthChanged();
     Q_EMIT dataChanged(index(0), index(41));
+}
+
+QString CalendarModel::monthTitle() const
+{
+    return QLocale().toString(_month, QStringLiteral("MMMM yyyy"));
+}
+
+void CalendarModel::showMonthOf(QDate date)
+{
+    const QDate d = date.isValid() ? date : Gui::Clock::today();
+    setMonth(QDate(d.year(), d.month(), 1));
+}
+
+void CalendarModel::previousMonth()
+{
+    setMonth(QDate(_month.year(), _month.month(), 1).addMonths(-1));
+}
+
+void CalendarModel::nextMonth()
+{
+    setMonth(QDate(_month.year(), _month.month(), 1).addMonths(1));
 }
 
 int CalendarModel::count() const
