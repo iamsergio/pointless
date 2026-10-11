@@ -94,6 +94,27 @@ protected:
         pagePass("sidePanelCleanup", "cleanupPage", "cleanup_page");
         pagePass("sidePanelTags", "tagsPage", "tags_page");
         pagePass("sidePanelCalendars", "calendarsPage", "calendars_page");
+
+        // Tags: the popups and the tasks of a tag
+        mouseClick("mainWindow/burgerButton");
+        wait(std::chrono::milliseconds(400));
+        mouseClick("mainWindow/sidePanel/sidePanelTags");
+        wait(std::chrono::milliseconds(400));
+
+        mouseClick("mainWindow/tagsPage/addTagButton");
+        shot("add_tag_popup");
+        mouseClick("mainWindow/tagsPage/popupCancelButton");
+        wait(std::chrono::milliseconds(300));
+
+        mouseClick("mainWindow/tagsPage/renameTag_work");
+        shot("rename_tag_popup");
+        mouseClick("mainWindow/tagsPage/popupCancelButton");
+        wait(std::chrono::milliseconds(300));
+
+        mouseClick("mainWindow/tagsPage/tagRow_work");
+        shot("tasks_by_tag_page");
+        mouseClick("mainWindow/tasksByTagPage/backButton");
+        wait(std::chrono::milliseconds(300));
     }
 
 private:

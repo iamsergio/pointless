@@ -17,6 +17,7 @@ ListView {
     delegate: Rectangle {
         id: delegateRoot
         required property string name
+        objectName: "tagRow_" + name
         required property int taskCount
         width: root.width
         height: Style.fromPixel(40)
@@ -54,6 +55,7 @@ ListView {
             }
 
             FontAwesomeButton {
+                objectName: "renameTag_" + delegateRoot.name
                 fontAwesomeIcon: "\uf304"
                 iconSize: Style.fromPixel(14)
                 iconColor: Style.iconColor

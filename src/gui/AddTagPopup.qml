@@ -80,6 +80,7 @@ Item {
                     spacing: Style.fromPixel(12)
 
                     Button {
+                        objectName: "popupCancelButton"
                         text: "Cancel"
                         font.pixelSize: Style.fromPixel(16)
                         background: Rectangle {

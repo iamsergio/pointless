@@ -10,6 +10,7 @@ Page {
     pageId: "tags"
     pageTitle: "Tags"
     rightButtonIcon: "\uf067"
+    rightButtonObjectName: "addTagButton"
     onRightButtonClicked: addTagPopup.open()
 
     TagsView {
