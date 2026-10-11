@@ -33,29 +33,17 @@ Qt/QML → Slint port tasks (see /pub_data/etc/ai/qt_to_slint/PORT.md).
 
 # Improvements (10)
 
-- Later view: the order of Later Task 16 and 17 differs from Qt. `TaskFilterModel::lessThan()` isn't a strict weak ordering (a task without a due date compares by tag and row against tasks with one), so the result depends on the order the rows get inserted, which the bridge changes
-- The notes popup has no text cursor in Slint (`init => notes.focus()` doesn't seem to focus)
-- Slint shows a thin scroll bar line at the right of the task lists, Qt hides it when everything fits
-- Cancel/Save buttons: Qt sizes them by their text (Cancel is wider), Slint splits the width equally
-- Text isn't trimmed (see 8), needs a trimming helper in C++ or a bridge feature
-- Not captured by the screenshot test (as for Qt): login screen, error popup, add tag / rename tag popups, tasks by tag page
+Done:
+- Cancel/Save buttons are sized by their text, as in Qt
+- Tag names are trimmed in `GuiController::addTag()`/`renameTag()` (Slint can't trim), the popups' text fields are centered
+- The screenshot test also captures the add tag popup, the rename tag popup and the tasks by tag page (new objectNames in `TagsPage.qml`, `TagsView.qml` and the popups)
+
+Not a bug of the port:
+- Later view: Later Task 16 and 17 are swapped compared with Qt. `TaskFilterModel::lessThan()` isn't a strict weak ordering (an undated task compares by tag and row against a dated one), so the order depends on the sort algorithm's input. The Slint order follows the comparator, the Qt one is by chance. Decide what the order should be, then fix the comparator
+- No text cursor in the Slint screenshots: the offscreen window isn't active. Not seen in a real window
+- Slint (Fluent style) always shows a thin scroll bar when the content is larger than the view, Qt hides it until used
+
+Left:
+- Not captured by the screenshot test (as for Qt): login screen, error popup
 - The edit task date picker shows the test clock's month in Slint and the real month in Qt (a bug of the Qt version)
-
-# Screens
-
-| Screen | Screenshot | QML | Slint |
-|---|---|---|---|
-| Week view | screenshots/week_view.png | src/gui/Main.qml, src/gui/WeekView.qml, src/gui/WeekNavigator.qml, src/gui/Task.qml | ported, see src/slint/bridge/slint/ |
-| Soon view | screenshots/soon_view.png | src/gui/Main.qml, src/gui/SoonView.qml | ported, see src/slint/bridge/slint/ |
-| Later view | screenshots/later_view.png | src/gui/Main.qml, src/gui/LaterView.qml | ported, see src/slint/bridge/slint/ |
-| Goals view | screenshots/goals_view.png | src/gui/Main.qml, src/gui/GoalsView.qml | ported, see src/slint/bridge/slint/ |
-| Add task | screenshots/edit_task_new.png | src/gui/EditTaskPage.qml, src/gui/Calendar.qml | ported, see src/slint/bridge/slint/ |
-| Edit task | screenshots/edit_task_existing.png | src/gui/EditTaskPage.qml, src/gui/Calendar.qml | ported, see src/slint/bridge/slint/ |
-| Task menu | screenshots/task_menu.png | src/gui/Main.qml, src/gui/Menu.qml, src/gui/MenuItem.qml | ported, see src/slint/bridge/slint/ |
-| Notes popup | screenshots/notes_popup.png | src/gui/NotesPopup.qml | ported, see src/slint/bridge/slint/ |
-| Side panel | screenshots/side_panel.png | src/gui/SidePanel.qml | ported, see src/slint/bridge/slint/ |
-| Search | screenshots/search_page.png | src/gui/SearchPage.qml | ported, see src/slint/bridge/slint/ |
-| About | screenshots/about_page.png | src/gui/AboutPage.qml | ported, see src/slint/bridge/slint/ |
-| Cleanup | screenshots/cleanup_page.png | src/gui/CleanupPage.qml | ported, see src/slint/bridge/slint/ |
-| Tags | screenshots/tags_page.png | src/gui/TagsPage.qml | ported, see src/slint/bridge/slint/ |
-| Calendars | screenshots/calendars_page.png | src/gui/CalendarsPage.qml | ported, see src/slint/bridge/slint/ |
+- Task titles are not trimmed on save, as in the QML
