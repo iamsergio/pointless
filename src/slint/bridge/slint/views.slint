@@ -9,6 +9,8 @@ import { TaskItem, TagChip } from "task.slint";
 
 // WeekNavigator.qml
 export component WeekNavigator inherits Rectangle {
+    accessible-role: groupbox;
+    accessible-id: "weekNavigator";
     background: Style.background;
     height: 60px;
 
@@ -19,6 +21,7 @@ export component WeekNavigator inherits Rectangle {
         VerticalLayout {
             alignment: center;
             FaButton {
+                a11y-id: "leftIcon";
                 icon: "\u{f053}";
                 icon-size: Style.px(14);
                 icon-color: Style.text-color2;
@@ -37,6 +40,8 @@ export component WeekNavigator inherits Rectangle {
                 preferred-width: range.preferred-width;
                 preferred-height: range.preferred-height;
                 range := Text {
+                    accessible-role: text;
+                    accessible-id: "dateRangeText";
                     text: GuiController.navigator-pretty-start-date + " - " + GuiController.navigator-pretty-end-date;
                     font-size: Style.px(14);
                     color: Style.text-color2;
@@ -54,6 +59,7 @@ export component WeekNavigator inherits Rectangle {
         VerticalLayout {
             alignment: center;
             FaButton {
+                a11y-id: "rightIcon";
                 icon: "\u{f054}";
                 icon-size: Style.px(14);
                 icon-color: Style.text-color2;
@@ -80,6 +86,11 @@ export component TaskView inherits Rectangle {
     in property <bool> shows-tags-in-second-line: false;
     in property <bool> shows-date: true;
     in property <string> search-text: "";
+    in property <string> a11y-id;
+
+    accessible-role: list;
+    accessible-id: root.a11y-id;
+    accessible-item-count: filter.count;
 
     // GuiViewType has `tags` too, which isn't a task view.
     pure function view-type(t: GuiViewType) -> TaskViewType {
@@ -120,11 +131,24 @@ export component TaskView inherits Rectangle {
     }
 }
 
+// Spix can't scroll, the tests ask for a weekday to be shown (`positionViewAtIndex` of the QML ListView)
+export global TestHelpers {
+    in-out property <int> weekday-index;
+    // Changes with every request, as the same weekday can be asked twice
+    in-out property <int> weekday-serial;
+}
+
 // WeekView.qml
 export component WeekView inherits Rectangle {
-    // for Spix
-    out property <int> weekday-model-count: weekday-model.count;
-    out property <int> weekday-filter-model-count: weekday-filter-model.count;
+    accessible-role: list;
+    accessible-id: "weekView";
+    accessible-item-count: weekday-filter-model.count;
+
+    property <[length]> day-ys: [0px, 0px, 0px, 0px, 0px, 0px, 0px];
+    property <int> scroll-request: TestHelpers.weekday-serial;
+    changed scroll-request => {
+        scroll.content-y = -min(root.day-ys[TestHelpers.weekday-index], max(0px, scroll.content-height - scroll.height));
+    }
 
     weekday-model := WeekdayModel {
         monday-date: GuiController.navigator-start-date;
@@ -134,66 +158,84 @@ export component WeekView inherits Rectangle {
         source: weekday-model.rows;
     }
 
-    VScroll {
+    scroll := VScroll {
         // A ScrollView doesn't fill its parent by itself
         width: parent.width;
         height: parent.height;
+        accessible-role: list;
+        accessible-id: "weekdayListView";
+
         VerticalLayout {
             spacing: Style.px(15);
             alignment: start;
 
-            for day[i] in weekday-filter-model.rows: VerticalLayout {
-                spacing: Style.px(10);
+            for day[i] in weekday-filter-model.rows: Rectangle {
+                height: day-layout.preferred-height;
+                accessible-role: list;
+                accessible-id: "weekday_" + i;
+                accessible-label: day.pretty-date;
+                accessible-item-count: day.tasks.length;
 
-                HorizontalLayout {
-                    spacing: 0px;
-                    Text {
-                        text: day.pretty-date;
-                        font-size: Style.weekday-font-size;
-                        font-weight: 700;
-                        color: Style.weekday-text-color;
-                        vertical-alignment: center;
-                        horizontal-stretch: 1;
-                    }
-                    VerticalLayout {
-                        alignment: center;
-                        FaButton {
-                            icon: "\u{f067}";
-                            icon-size: 18px;
-                            icon-color: Style.icon-color;
-                            preferred-width: 32px;
-                            preferred-height: 32px;
-                            background-color: transparent;
-                            a11y-id: "addTaskButton_" + i;
-                            clicked => {
-                                GuiController.set-task-being-edited("", day.date, "");
+                init => {
+                    root.day-ys[i] = self.y;
+                }
+                changed y => {
+                    root.day-ys[i] = self.y;
+                }
+
+                day-layout := VerticalLayout {
+                    spacing: Style.px(10);
+
+                    HorizontalLayout {
+                        spacing: 0px;
+                        Text {
+                            text: day.pretty-date;
+                            font-size: Style.weekday-font-size;
+                            font-weight: 700;
+                            color: Style.weekday-text-color;
+                            vertical-alignment: center;
+                            horizontal-stretch: 1;
+                        }
+                        VerticalLayout {
+                            alignment: center;
+                            FaButton {
+                                icon: "\u{f067}";
+                                icon-size: 18px;
+                                icon-color: Style.icon-color;
+                                preferred-width: 32px;
+                                preferred-height: 32px;
+                                background-color: transparent;
+                                a11y-id: "addTaskButton_" + i;
+                                clicked => {
+                                    GuiController.set-task-being-edited("", day.date, "");
+                                }
                             }
                         }
                     }
-                }
 
-                if day.tasks.length == 0: Rectangle {
-                    height: Style.task-height;
-                    background: Style.background2;
-                    border-radius: 8px;
-                    border-width: 1px;
-                    border-color: #2a3441;
+                    if day.tasks.length == 0: Rectangle {
+                        height: Style.task-height;
+                        background: Style.background2;
+                        border-radius: 8px;
+                        border-width: 1px;
+                        border-color: #2a3441;
 
-                    Text {
-                        text: "No tasks for this day.";
-                        font-size: Style.px(14);
-                        color: Style.task-secondary-text-color;
-                        horizontal-alignment: center;
-                        vertical-alignment: center;
+                        Text {
+                            text: "No tasks for this day.";
+                            font-size: Style.px(14);
+                            color: Style.task-secondary-text-color;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                        }
                     }
-                }
 
-                for task[j] in day.tasks: TaskItem {
-                    task: task;
-                    shows-date: false;
-                    a11y-id: "task_" + i + "_" + j;
-                    clicked => {
-                        GuiController.set-task-menu-uuid(task.uuid);
+                    for task[j] in day.tasks: TaskItem {
+                        task: task;
+                        shows-date: false;
+                        a11y-id: "task_" + i + "_" + j;
+                        clicked => {
+                            GuiController.set-task-menu-uuid(task.uuid);
+                        }
                     }
                 }
             }

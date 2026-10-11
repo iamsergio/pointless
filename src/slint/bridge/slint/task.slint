@@ -25,6 +25,8 @@ export component TagChip inherits Rectangle {
     accessible-id: root.a11y-id;
 
     label := Text {
+        accessible-role: text;
+        accessible-id: "tagText";
         text: root.tag-name;
         color: white;
         font-size: Style.px(12);
@@ -65,6 +67,7 @@ export component TaskItem inherits Rectangle {
     border-color: red;
     accessible-role: button;
     accessible-id: root.a11y-id;
+    accessible-label: root.task.title;
 
     // onPressAndHold
     long-press := Timer {

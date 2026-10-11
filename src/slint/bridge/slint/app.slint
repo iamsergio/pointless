@@ -7,7 +7,8 @@ export * from "@bridge/globals.slint";
 
 import { Style } from "style.slint";
 import { FaButton, ViewButton, ToggleButton } from "controls.slint";
-import { WeekNavigator, WeekView, TaskView } from "views.slint";
+import { WeekNavigator, WeekView, TaskView, TestHelpers } from "views.slint";
+export { TestHelpers }
 import { AboutPage, TagsPage, TasksByTagPage, CleanupPage, CalendarsPage, SearchPage, EditTaskPage } from "pages.slint";
 import { LoginScreen, TaskMenu, ErrorPopup, NotesPopup, SidePanel } from "popups.slint";
 
@@ -96,12 +97,15 @@ export component App inherits Window {
                 vertical-stretch: 1;
             }
             if GuiController.current-view-type == GuiViewType.soon: TaskView {
+                a11y-id: "soonView";
                 vertical-stretch: 1;
             }
             if GuiController.current-view-type == GuiViewType.later: TaskView {
+                a11y-id: "laterView";
                 vertical-stretch: 1;
             }
             if GuiController.current-view-type == GuiViewType.goals: TaskView {
+                a11y-id: "goalsView";
                 vertical-stretch: 1;
             }
         }

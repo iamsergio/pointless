@@ -75,6 +75,9 @@ export component ViewButton inherits Rectangle {
 
     accessible-role: button;
     accessible-id: root.a11y-id;
+    accessible-checkable: true;
+    accessible-checked: root.is-active;
+    accessible-enabled: true;
     preferred-width: Style.px(80);
     preferred-height: Style.px(32);
     background: root.is-active ? Style.button-active : Style.button-background;

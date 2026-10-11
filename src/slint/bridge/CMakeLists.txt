@@ -58,6 +58,14 @@ if(POINTLESS_ENABLE_TESTS)
   add_executable(screenshot_collection_slint gui_test_harness_slint.cpp ../../gui/tests/screenshot_collection.cpp)
   target_include_directories(screenshot_collection_slint PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../gui ${CMAKE_CURRENT_SOURCE_DIR}/../../gui/tests ${CMAKE_CURRENT_SOURCE_DIR}/../..)
   target_compile_definitions(screenshot_collection_slint PRIVATE POINTLESS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+
+  # test_gui, against the Slint UI
+  add_executable(test_gui_slint gui_test_harness_slint.cpp ../../gui/tests/test_gui.cpp)
+  target_include_directories(test_gui_slint PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../gui ${CMAKE_CURRENT_SOURCE_DIR}/../../gui/tests ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+  target_compile_definitions(test_gui_slint PRIVATE POINTLESS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+  target_link_libraries(test_gui_slint PRIVATE pointless_slint_ui Spix::Slint Spix::Core GTest::gtest_main)
+  add_test(NAME test_gui_slint COMMAND test_gui_slint --local)
+  set_tests_properties(test_gui_slint PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen" TIMEOUT 120)
   target_link_libraries(
     screenshot_collection_slint
     PRIVATE pointless_slint_ui

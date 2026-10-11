@@ -347,6 +347,8 @@ component MenuItem inherits Rectangle {
 
 export component TaskMenu inherits Rectangle {
     visible: GuiController.task-menu-visible;
+    accessible-role: groupbox;
+    accessible-id: "taskMenu";
     height: layout.preferred-height;
     background: Style.task-background;
     border-width: 1px;

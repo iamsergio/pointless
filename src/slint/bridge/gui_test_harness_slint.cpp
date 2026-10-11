@@ -57,6 +57,16 @@ GuiTestHarness::~GuiTestHarness() = default;
 int GuiTestHarness::run(spix::TestServer &test)
 {
     d->bot.addWindow("mainWindow", d->window);
+
+    // The QML ListView of the weekdays loads only what is shown, so tests scroll it. Here the UI scrolls on request.
+    d->bot.registerMethod("positionViewAtIndex", [this](const slint::testing::ElementHandle &, const std::vector<spix::Variant> &args, spix::Variant &) {
+        if (args.empty() || args[0].index() != spix::Variant::Int)
+            return false;
+        auto &helpers = d->window->global<ui::TestHelpers>();
+        helpers.set_weekday_index(static_cast<int>(std::get<long long>(args[0])));
+        helpers.set_weekday_serial(helpers.get_weekday_serial() + 1);
+        return true;
+    });
     d->bot.runTestServer(test);
     d->window->run();
     return 0;
