@@ -16,3 +16,46 @@ Qt/QML → Slint port tasks (see /pub_data/etc/ai/qt_to_slint/PORT.md).
   - [ ] Blockers: `GuiController::passStoreCredentialsFetched(QVariantMap)` has runtime keys (`caldav-url-N`, `ical-url-N`...), unsupported by the bridge, the signal is skipped
   - [x] Build `dev-slint` (all targets build, `pointless_slint` starts offscreen)
   - [ ] Commit
+- [x] 7. Take screenshots of the existing Qt app
+  - [x] `screenshot_collection` Spix test (`src/gui/tests/screenshot_collection.cpp`), run it with `QT_QPA_PLATFORM=offscreen build-dev/bin/screenshot_collection` (disabled in ctest as it writes into the source tree)
+  - [x] Added objectNames to `SidePanel.qml`, `Page.qml` and the pages in `Main.qml`, so Spix can reach the side panel entries and back buttons
+  - Not captured: login screen (needs unauthenticated state), error popup, add tag / rename tag popups, tasks by tag page, the debug menu entry
+  - Note: the date picker in the edit task page ignores the test clock and shows the real current month, so that screenshot changes over time
+
+- [x] 8. The actual port (`.qml` → `.slint` in `src/slint/bridge/slint/`, builds and starts offscreen, not looked at yet: that's step 9)
+  - Qt-side changes the port needed, as Slint can't do them: `CalendarModel` got `monthTitle` and `showMonthOf()`/`previousMonth()`/`nextMonth()` (no date parsing or formatting in Slint), `GuiController::colorFromTag()` returns a `QColor` (no string to color in Slint), new `GuiController::otherTags()` (no string split)
+  - Not ported 1:1: text isn't trimmed (tag names in the add/rename popups, the task title in the edit page, Slint has no trim), the color dot in the calendars page (the QML Rectangle has no size, never showed), `Connections.onIsEditingTaskChanged` (focus handling), `Qt.inputMethod` in the notes popup, `GuiController.passStoreCredentialsFetched` / `pomodoroFinished` (nothing in the QML uses them)
+  - Strikeout of done tasks is a 1px line over the title (Slint `Text` has no strikeout)
+- [x] 9. Verification (Slint screenshots)
+  - `screenshot_collection_slint` (`src/slint/bridge/`) runs the same test as the Qt one (`src/gui/tests/screenshot_collection.cpp`) through a Slint harness (`gui_test_harness_slint.cpp`), run it with `QT_QPA_PLATFORM=offscreen build-dev-slint/bin/screenshot_collection_slint`. Images go to `screenshots/slint/`, compare them with `screenshots/qt/`
+  - Spix comes from the qt2slint checkout (`$QT2SLINT_DIR/3rdparty/spix`, it has the Slint scene) in the `dev-slint` preset, `3rdparty/spix` has none. Its Slint scene needs `stb_image_write.h`: configure with `-DSTB_INCLUDE_DIR=<dir with stb_image_write.h>` until `stb` is in `vcpkg.json`
+  - The two UIs match closely on all 14 screens, not pixel perfect
+
+# Improvements (10)
+
+- Later view: the order of Later Task 16 and 17 differs from Qt. `TaskFilterModel::lessThan()` isn't a strict weak ordering (a task without a due date compares by tag and row against tasks with one), so the result depends on the order the rows get inserted, which the bridge changes
+- The notes popup has no text cursor in Slint (`init => notes.focus()` doesn't seem to focus)
+- Slint shows a thin scroll bar line at the right of the task lists, Qt hides it when everything fits
+- Cancel/Save buttons: Qt sizes them by their text (Cancel is wider), Slint splits the width equally
+- Text isn't trimmed (see 8), needs a trimming helper in C++ or a bridge feature
+- Not captured by the screenshot test (as for Qt): login screen, error popup, add tag / rename tag popups, tasks by tag page
+- The edit task date picker shows the test clock's month in Slint and the real month in Qt (a bug of the Qt version)
+
+# Screens
+
+| Screen | Screenshot | QML | Slint |
+|---|---|---|---|
+| Week view | screenshots/week_view.png | src/gui/Main.qml, src/gui/WeekView.qml, src/gui/WeekNavigator.qml, src/gui/Task.qml | ported, see src/slint/bridge/slint/ |
+| Soon view | screenshots/soon_view.png | src/gui/Main.qml, src/gui/SoonView.qml | ported, see src/slint/bridge/slint/ |
+| Later view | screenshots/later_view.png | src/gui/Main.qml, src/gui/LaterView.qml | ported, see src/slint/bridge/slint/ |
+| Goals view | screenshots/goals_view.png | src/gui/Main.qml, src/gui/GoalsView.qml | ported, see src/slint/bridge/slint/ |
+| Add task | screenshots/edit_task_new.png | src/gui/EditTaskPage.qml, src/gui/Calendar.qml | ported, see src/slint/bridge/slint/ |
+| Edit task | screenshots/edit_task_existing.png | src/gui/EditTaskPage.qml, src/gui/Calendar.qml | ported, see src/slint/bridge/slint/ |
+| Task menu | screenshots/task_menu.png | src/gui/Main.qml, src/gui/Menu.qml, src/gui/MenuItem.qml | ported, see src/slint/bridge/slint/ |
+| Notes popup | screenshots/notes_popup.png | src/gui/NotesPopup.qml | ported, see src/slint/bridge/slint/ |
+| Side panel | screenshots/side_panel.png | src/gui/SidePanel.qml | ported, see src/slint/bridge/slint/ |
+| Search | screenshots/search_page.png | src/gui/SearchPage.qml | ported, see src/slint/bridge/slint/ |
+| About | screenshots/about_page.png | src/gui/AboutPage.qml | ported, see src/slint/bridge/slint/ |
+| Cleanup | screenshots/cleanup_page.png | src/gui/CleanupPage.qml | ported, see src/slint/bridge/slint/ |
+| Tags | screenshots/tags_page.png | src/gui/TagsPage.qml | ported, see src/slint/bridge/slint/ |
+| Calendars | screenshots/calendars_page.png | src/gui/CalendarsPage.qml | ported, see src/slint/bridge/slint/ |
