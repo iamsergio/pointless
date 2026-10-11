@@ -23,13 +23,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        preset: [dev, rel]
+        preset: [dev]
         os: [ubuntu-latest]
         include:
           - preset: dev
             qt-flavor: debug
-          - preset: rel
-            qt-flavor: profile
 
     steps:
     - name: Checkout code
