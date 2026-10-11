@@ -1,0 +1,3582 @@
+{
+ "schema": "qt-qml-inventory/1",
+ "source_dir": "/pub_data/sources/pointless_cpp",
+ "build_dir": "/pub_data/sources/pointless_cpp/build-dev",
+ "legend": {
+  "cpp_types": "QML types implemented in C++ (from .qmltypes, i.e. QML_ELEMENT & friends)",
+  "qml_types": "QML types implemented in .qml files (from the module's qmldir)",
+  "hdr/cpp": "header and implementation file, relative to source_dir",
+  "base": "base type; `origin` says which module/library it comes from",
+  "origin": "`<module>` for a QML module, `qt` for a C++ Qt class, `local` for this module",
+  "uses": "types instantiated inside this file, grouped by origin module",
+  "refs": "types named in expressions but not instantiated (singletons, attached props, enums)",
+  "used_by": "files that instantiate, reference or inherit this type; empty means nothing uses it",
+  "api": "verbatim .qmltypes members: Property/Signal/Method/Enum",
+  "framework_types": "non-project types instantiated or used as a file's base type, with counts: the Slint mapping worklist",
+  "qobjects_not_in_qml": "QObject subclasses in this module that QML never sees directly"
+ },
+ "modules": [
+  {
+   "module": "pointless",
+   "source_dir": "src/gui",
+   "qmldir": "build-dev/pointless/qmldir",
+   "cpp_types": [
+    {
+     "qml": "CalendarModel",
+     "cls": "CalendarModel",
+     "hdr": "src/gui/calendarmodel.h",
+     "cpp": "src/gui/calendarmodel.cpp",
+     "base": "QAbstractListModel",
+     "exports": [
+      "pointless/CalendarModel 1.0"
+     ],
+     "hdr_loc": 43,
+     "cpp_loc": 85,
+     "accessSemantics": "reference",
+     "exportMetaObjectRevisions": [
+      256
+     ],
+     "lineNumber": 10,
+     "api": {
+      "properties": [
+       {
+        "name": "month",
+        "type": "QDate",
+        "read": "month",
+        "write": "setMonth",
+        "notify": "monthChanged",
+        "index": 0,
+        "lineNumber": 14
+       },
+       {
+        "name": "count",
+        "type": "int",
+        "read": "count",
+        "index": 1,
+        "lineNumber": 15,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       }
+      ],
+      "signals": [
+       {
+        "name": "monthChanged",
+        "lineNumber": 39
+       }
+      ]
+     },
+     "base_origin": "qt",
+     "used_by": [
+      "src/gui/Calendar.qml"
+     ]
+    },
+    {
+     "qml": "CalendarsModel",
+     "cls": "CalendarsModel",
+     "hdr": "src/gui/calendarsmodel.h",
+     "cpp": "src/gui/calendarsmodel.cpp",
+     "base": "QAbstractListModel",
+     "exports": [
+      "pointless/CalendarsModel 1.0"
+     ],
+     "hdr_loc": 55,
+     "cpp_loc": 121,
+     "accessSemantics": "reference",
+     "exportMetaObjectRevisions": [
+      256
+     ],
+     "lineNumber": 14,
+     "api": {
+      "properties": [
+       {
+        "name": "count",
+        "type": "int",
+        "read": "count",
+        "notify": "countChanged",
+        "index": 0,
+        "lineNumber": 18,
+        "isReadonly": true
+       }
+      ],
+      "signals": [
+       {
+        "name": "countChanged",
+        "lineNumber": 44
+       }
+      ],
+      "methods": [
+       {
+        "name": "setEnabled",
+        "lineNumber": 37,
+        "parameters": [
+         {
+          "name": "calendarId",
+          "type": "QString"
+         },
+         {
+          "name": "enabled",
+          "type": "bool"
+         }
+        ]
+       }
+      ]
+     },
+     "base_origin": "qt"
+    },
+    {
+     "qml": "ErrorController",
+     "cls": "ErrorController",
+     "hdr": "src/gui/error_controller.h",
+     "cpp": "src/gui/error_controller.cpp",
+     "base": "QObject",
+     "exports": [
+      "pointless/ErrorController 1.0"
+     ],
+     "hdr_loc": 32,
+     "cpp_loc": 39,
+     "accessSemantics": "reference",
+     "exportMetaObjectRevisions": [
+      256
+     ],
+     "lineNumber": 11,
+     "api": {
+      "properties": [
+       {
+        "name": "errorText",
+        "type": "QString",
+        "read": "errorText",
+        "write": "setErrorText",
+        "notify": "errorTextChanged",
+        "index": 0,
+        "lineNumber": 15
+       },
+       {
+        "name": "loginError",
+        "type": "QString",
+        "read": "loginError",
+        "notify": "loginErrorChanged",
+        "index": 1,
+        "lineNumber": 16,
+        "isReadonly": true
+       }
+      ],
+      "signals": [
+       {
+        "name": "errorTextChanged",
+        "lineNumber": 26
+       },
+       {
+        "name": "loginErrorChanged",
+        "lineNumber": 27
+       }
+      ]
+     },
+     "base_origin": "qt"
+    },
+    {
+     "qml": "GuiController",
+     "cls": "GuiController",
+     "hdr": "src/gui/gui_controller.h",
+     "cpp": "src/gui/gui_controller.cpp",
+     "base": "QObject",
+     "exports": [
+      "pointless/GuiController 1.0"
+     ],
+     "hdr_loc": 325,
+     "cpp_loc": 1452,
+     "singleton": true,
+     "creatable": false,
+     "accessSemantics": "reference",
+     "exportMetaObjectRevisions": [
+      256
+     ],
+     "lineNumber": 29,
+     "api": {
+      "enums": [
+       {
+        "name": "ViewType",
+        "isScoped": true,
+        "type": "quint8",
+        "lineNumber": 99,
+        "values": [
+         "Week",
+         "Soon",
+         "Later",
+         "Goals",
+         "Tags"
+        ]
+       }
+      ],
+      "properties": [
+       {
+        "name": "currentViewType",
+        "type": "GuiController::ViewType",
+        "read": "currentViewType",
+        "write": "setCurrentViewType",
+        "notify": "currentViewTypeChanged",
+        "index": 0,
+        "lineNumber": 34
+       },
+       {
+        "name": "navigatorStartDate",
+        "type": "QDate",
+        "read": "navigatorStartDate",
+        "notify": "navigatorStartDateChanged",
+        "index": 1,
+        "lineNumber": 35,
+        "isReadonly": true
+       },
+       {
+        "name": "navigatorEndDate",
+        "type": "QDate",
+        "read": "navigatorEndDate",
+        "notify": "navigatorEndDateChanged",
+        "index": 2,
+        "lineNumber": 36,
+        "isReadonly": true
+       },
+       {
+        "name": "navigatorPrettyStartDate",
+        "type": "QString",
+        "read": "navigatorPrettyStartDate",
+        "notify": "navigatorStartDateChanged",
+        "index": 3,
+        "lineNumber": 37,
+        "isReadonly": true
+       },
+       {
+        "name": "navigatorPrettyEndDate",
+        "type": "QString",
+        "read": "navigatorPrettyEndDate",
+        "notify": "navigatorEndDateChanged",
+        "index": 4,
+        "lineNumber": 38,
+        "isReadonly": true
+       },
+       {
+        "name": "taskFilterModel",
+        "type": "TaskFilterModel",
+        "isPointer": true,
+        "read": "taskFilterModel",
+        "index": 5,
+        "lineNumber": 39,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "taskModel",
+        "type": "TaskModel",
+        "isPointer": true,
+        "read": "taskModel",
+        "index": 6,
+        "lineNumber": 40,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "tagModel",
+        "type": "TagModel",
+        "isPointer": true,
+        "read": "tagModel",
+        "index": 7,
+        "lineNumber": 41,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "tagFilterModel",
+        "type": "TagFilterModel",
+        "isPointer": true,
+        "read": "tagFilterModel",
+        "index": 8,
+        "lineNumber": 42,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "isDebug",
+        "type": "bool",
+        "read": "isDebug",
+        "index": 9,
+        "lineNumber": 43,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "isMobile",
+        "type": "bool",
+        "read": "isMobile",
+        "index": 10,
+        "lineNumber": 44,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "isAndroid",
+        "type": "bool",
+        "read": "isAndroid",
+        "index": 11,
+        "lineNumber": 45,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "isIOS",
+        "type": "bool",
+        "read": "isIOS",
+        "index": 12,
+        "lineNumber": 46,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "isVerbose",
+        "type": "bool",
+        "read": "isVerbose",
+        "index": 13,
+        "lineNumber": 47,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "isMacOS",
+        "type": "bool",
+        "read": "isMacOS",
+        "index": 14,
+        "lineNumber": 48,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "isYocto",
+        "type": "bool",
+        "read": "isYocto",
+        "index": 15,
+        "lineNumber": 49,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "isEGLFS",
+        "type": "bool",
+        "read": "isEGLFS",
+        "index": 16,
+        "lineNumber": 50,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "isEditingTask",
+        "type": "bool",
+        "read": "isEditingTask",
+        "notify": "isEditingTaskChanged",
+        "index": 17,
+        "lineNumber": 51,
+        "isReadonly": true
+       },
+       {
+        "name": "uuidBeingEdited",
+        "type": "QString",
+        "read": "uuidBeingEdited",
+        "notify": "uuidBeingEditedChanged",
+        "index": 18,
+        "lineNumber": 52,
+        "isReadonly": true
+       },
+       {
+        "name": "titleInEditor",
+        "type": "QString",
+        "read": "titleInEditor",
+        "notify": "titleInEditorChanged",
+        "index": 19,
+        "lineNumber": 53,
+        "isReadonly": true
+       },
+       {
+        "name": "tagInEditor",
+        "type": "QString",
+        "read": "tagInEditor",
+        "notify": "tagInEditorChanged",
+        "index": 20,
+        "lineNumber": 54,
+        "isReadonly": true
+       },
+       {
+        "name": "isEveningInEditor",
+        "type": "bool",
+        "read": "isEveningInEditor",
+        "notify": "isEveningInEditorChanged",
+        "index": 21,
+        "lineNumber": 55,
+        "isReadonly": true
+       },
+       {
+        "name": "isGoalInEditor",
+        "type": "bool",
+        "read": "isGoalInEditor",
+        "notify": "isGoalInEditorChanged",
+        "index": 22,
+        "lineNumber": 56,
+        "isReadonly": true
+       },
+       {
+        "name": "isYearlyInEditor",
+        "type": "bool",
+        "read": "isYearlyInEditor",
+        "notify": "isYearlyInEditorChanged",
+        "index": 23,
+        "lineNumber": 57,
+        "isReadonly": true
+       },
+       {
+        "name": "dateInEditor",
+        "type": "QDate",
+        "read": "dateInEditor",
+        "notify": "dateInEditorChanged",
+        "index": 24,
+        "lineNumber": 58,
+        "isReadonly": true
+       },
+       {
+        "name": "windowTitle",
+        "type": "QString",
+        "read": "windowTitle",
+        "notify": "isOfflineModeChanged",
+        "index": 25,
+        "lineNumber": 59,
+        "isReadonly": true
+       },
+       {
+        "name": "isAuthenticated",
+        "type": "bool",
+        "read": "isAuthenticated",
+        "notify": "isAuthenticatedChanged",
+        "index": 26,
+        "lineNumber": 60,
+        "isReadonly": true
+       },
+       {
+        "name": "defaultLoginUsername",
+        "type": "QString",
+        "read": "defaultLoginUsername",
+        "index": 27,
+        "lineNumber": 61,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "taskMenuVisible",
+        "type": "bool",
+        "read": "taskMenuVisible",
+        "notify": "taskMenuUuidChanged",
+        "index": 28,
+        "lineNumber": 62,
+        "isReadonly": true
+       },
+       {
+        "name": "taskMenuUuid",
+        "type": "QString",
+        "read": "taskMenuUuid",
+        "notify": "taskMenuUuidChanged",
+        "index": 29,
+        "lineNumber": 63,
+        "isReadonly": true
+       },
+       {
+        "name": "moveToCurrentVisible",
+        "type": "bool",
+        "read": "moveToCurrentVisible",
+        "notify": "taskMenuUuidChanged",
+        "index": 30,
+        "lineNumber": 64,
+        "isReadonly": true
+       },
+       {
+        "name": "moveToSoonVisible",
+        "type": "bool",
+        "read": "moveToSoonVisible",
+        "notify": "taskMenuUuidChanged",
+        "index": 31,
+        "lineNumber": 65,
+        "isReadonly": true
+       },
+       {
+        "name": "moveToLaterVisible",
+        "type": "bool",
+        "read": "moveToLaterVisible",
+        "notify": "taskMenuUuidChanged",
+        "index": 32,
+        "lineNumber": 66,
+        "isReadonly": true
+       },
+       {
+        "name": "moveToTomorrowVisible",
+        "type": "bool",
+        "read": "moveToTomorrowVisible",
+        "notify": "taskMenuUuidChanged",
+        "index": 33,
+        "lineNumber": 67,
+        "isReadonly": true
+       },
+       {
+        "name": "moveToEveningVisible",
+        "type": "bool",
+        "read": "moveToEveningVisible",
+        "notify": "taskMenuUuidChanged",
+        "index": 34,
+        "lineNumber": 68,
+        "isReadonly": true
+       },
+       {
+        "name": "isRefreshing",
+        "type": "bool",
+        "read": "isRefreshing",
+        "notify": "isRefreshingChanged",
+        "index": 35,
+        "lineNumber": 69,
+        "isReadonly": true
+       },
+       {
+        "name": "isLoggingIn",
+        "type": "bool",
+        "read": "isLoggingIn",
+        "notify": "isLoggingInChanged",
+        "index": 36,
+        "lineNumber": 70,
+        "isReadonly": true
+       },
+       {
+        "name": "errorController",
+        "type": "ErrorController",
+        "isPointer": true,
+        "read": "errorController",
+        "index": 37,
+        "lineNumber": 71,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "isOfflineMode",
+        "type": "bool",
+        "read": "isOfflineMode",
+        "notify": "isOfflineModeChanged",
+        "index": 38,
+        "lineNumber": 72,
+        "isReadonly": true
+       },
+       {
+        "name": "currentPage",
+        "type": "QString",
+        "read": "currentPage",
+        "write": "setCurrentPage",
+        "notify": "currentPageChanged",
+        "index": 39,
+        "lineNumber": 73
+       },
+       {
+        "name": "currentTag",
+        "type": "QString",
+        "read": "currentTag",
+        "write": "setCurrentTag",
+        "notify": "currentTagChanged",
+        "index": 40,
+        "lineNumber": 74
+       },
+       {
+        "name": "calendarsModel",
+        "type": "CalendarsModel",
+        "isPointer": true,
+        "read": "calendarsModel",
+        "index": 41,
+        "lineNumber": 75,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "isFetchingCalendarEvents",
+        "type": "bool",
+        "read": "isFetchingCalendarEvents",
+        "notify": "isFetchingCalendarEventsChanged",
+        "index": 42,
+        "lineNumber": 76,
+        "isReadonly": true
+       },
+       {
+        "name": "fetchCalendarStatusText",
+        "type": "QString",
+        "read": "fetchCalendarStatusText",
+        "notify": "fetchCalendarStatusTextChanged",
+        "index": 43,
+        "lineNumber": 77,
+        "isReadonly": true
+       },
+       {
+        "name": "showImmediateOnly",
+        "type": "bool",
+        "read": "showImmediateOnly",
+        "write": "setShowImmediateOnly",
+        "notify": "showImmediateOnlyChanged",
+        "index": 44,
+        "lineNumber": 78
+       },
+       {
+        "name": "showEveningToggle",
+        "type": "bool",
+        "read": "showEveningToggle",
+        "notify": "showEveningToggleChanged",
+        "index": 45,
+        "lineNumber": 79,
+        "isReadonly": true
+       },
+       {
+        "name": "isEvening",
+        "type": "bool",
+        "read": "isEvening",
+        "notify": "isEveningChanged",
+        "index": 46,
+        "lineNumber": 80,
+        "isReadonly": true
+       },
+       {
+        "name": "isEditingNotes",
+        "type": "bool",
+        "read": "isEditingNotes",
+        "notify": "isEditingNotesChanged",
+        "index": 47,
+        "lineNumber": 81,
+        "isReadonly": true
+       },
+       {
+        "name": "notesText",
+        "type": "QString",
+        "read": "notesText",
+        "notify": "notesTextChanged",
+        "index": 48,
+        "lineNumber": 82,
+        "isReadonly": true
+       },
+       {
+        "name": "notesTaskTitle",
+        "type": "QString",
+        "read": "notesTaskTitle",
+        "notify": "notesTaskTitleChanged",
+        "index": 49,
+        "lineNumber": 83,
+        "isReadonly": true
+       },
+       {
+        "name": "newTagPopupVisible",
+        "type": "bool",
+        "read": "newTagPopupVisible",
+        "write": "setNewTagPopupVisible",
+        "notify": "newTagPopupVisibleChanged",
+        "index": 50,
+        "lineNumber": 84
+       },
+       {
+        "name": "renameTagPopupVisible",
+        "type": "bool",
+        "read": "renameTagPopupVisible",
+        "write": "setRenameTagPopupVisible",
+        "notify": "renameTagPopupVisibleChanged",
+        "index": 51,
+        "lineNumber": 85
+       },
+       {
+        "name": "renameTagOldName",
+        "type": "QString",
+        "read": "renameTagOldName",
+        "notify": "renameTagOldNameChanged",
+        "index": 52,
+        "lineNumber": 86,
+        "isReadonly": true
+       },
+       {
+        "name": "pomodoroController",
+        "type": "PomodoroController",
+        "isPointer": true,
+        "read": "pomodoroController",
+        "index": 53,
+        "lineNumber": 87,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       },
+       {
+        "name": "deleteTaskVisible",
+        "type": "bool",
+        "read": "deleteTaskVisible",
+        "notify": "taskMenuUuidChanged",
+        "index": 54,
+        "lineNumber": 88,
+        "isReadonly": true
+       },
+       {
+        "name": "playPomodoroVisible",
+        "type": "bool",
+        "read": "playPomodoroVisible",
+        "notify": "taskMenuUuidChanged",
+        "index": 55,
+        "lineNumber": 89,
+        "isReadonly": true
+       },
+       {
+        "name": "calendarProviderConfigured",
+        "type": "bool",
+        "read": "calendarProviderConfigured",
+        "notify": "calendarProviderConfiguredChanged",
+        "index": 56,
+        "lineNumber": 90,
+        "isReadonly": true
+       },
+       {
+        "name": "debugMode",
+        "type": "bool",
+        "read": "debugMode",
+        "index": 57,
+        "lineNumber": 91,
+        "isReadonly": true,
+        "isPropertyConstant": true
+       }
+      ],
+      "signals": [
+       {
+        "name": "currentViewTypeChanged",
+        "lineNumber": 249
+       },
+       {
+        "name": "titleInEditorChanged",
+        "lineNumber": 250
+       },
+       {
+        "name": "tagInEditorChanged",
+        "lineNumber": 251
+       },
+       {
+        "name": "isEveningInEditorChanged",
+        "lineNumber": 252
+       },
+       {
+        "name": "isGoalInEditorChanged",
+        "lineNumber": 253
+       },
+       {
+        "name": "isYearlyInEditorChanged",
+        "lineNumber": 254
+       },
+       {
+        "name": "navigatorStartDateChanged",
+        "lineNumber": 255
+       },
+       {
+        "name": "navigatorEndDateChanged",
+        "lineNumber": 256
+       },
+       {
+        "name": "isEditingTaskChanged",
+        "lineNumber": 257
+       },
+       {
+        "name": "uuidBeingEditedChanged",
+        "lineNumber": 258
+       },
+       {
+        "name": "dateInEditorChanged",
+        "lineNumber": 259
+       },
+       {
+        "name": "isAuthenticatedChanged",
+        "lineNumber": 260
+       },
+       {
+        "name": "taskMenuUuidChanged",
+        "lineNumber": 261
+       },
+       {
+        "name": "isRefreshingChanged",
+        "lineNumber": 262
+       },
+       {
+        "name": "isLoggingInChanged",
+        "lineNumber": 263
+       },
+       {
+        "name": "isOfflineModeChanged",
+        "lineNumber": 264
+       },
+       {
+        "name": "currentPageChanged",
+        "lineNumber": 265
+       },
+       {
+        "name": "currentTagChanged",
+        "lineNumber": 266
+       },
+       {
+        "name": "showImmediateOnlyChanged",
+        "lineNumber": 267
+       },
+       {
+        "name": "showEveningToggleChanged",
+        "lineNumber": 268
+       },
+       {
+        "name": "isEveningChanged",
+        "lineNumber": 269
+       },
+       {
+        "name": "isEditingNotesChanged",
+        "lineNumber": 270
+       },
+       {
+        "name": "notesTextChanged",
+        "lineNumber": 271
+       },
+       {
+        "name": "notesTaskTitleChanged",
+        "lineNumber": 272
+       },
+       {
+        "name": "newTagPopupVisibleChanged",
+        "lineNumber": 273
+       },
+       {
+        "name": "renameTagPopupVisibleChanged",
+        "lineNumber": 274
+       },
+       {
+        "name": "renameTagOldNameChanged",
+        "lineNumber": 275
+       },
+       {
+        "name": "isFetchingCalendarEventsChanged",
+        "lineNumber": 276
+       },
+       {
+        "name": "fetchCalendarStatusTextChanged",
+        "lineNumber": 277
+       },
+       {
+        "name": "calendarProviderConfiguredChanged",
+        "lineNumber": 278
+       },
+       {
+        "name": "passStoreCredentialsFetched",
+        "lineNumber": 279,
+        "parameters": [
+         {
+          "name": "credentials",
+          "type": "QVariantMap"
+         }
+        ]
+       }
+      ],
+      "methods": [
+       {
+        "name": "navigatorGotoToday",
+        "lineNumber": 123
+       },
+       {
+        "name": "navigatorGotoNextWeek",
+        "lineNumber": 124
+       },
+       {
+        "name": "navigatorGotoPreviousWeek",
+        "lineNumber": 125
+       },
+       {
+        "name": "refresh",
+        "lineNumber": 126
+       },
+       {
+        "name": "saveTask",
+        "lineNumber": 127,
+        "parameters": [
+         {
+          "name": "title",
+          "type": "QString"
+         },
+         {
+          "name": "tag",
+          "type": "QString"
+         },
+         {
+          "name": "isEvening",
+          "type": "bool"
+         },
+         {
+          "name": "isGoal",
+          "type": "bool"
+         },
+         {
+          "name": "isYearly",
+          "type": "bool"
+         }
+        ]
+       },
+       {
+        "name": "addNewTask",
+        "lineNumber": 128,
+        "parameters": [
+         {
+          "name": "title",
+          "type": "QString"
+         },
+         {
+          "name": "tag",
+          "type": "QString"
+         },
+         {
+          "name": "isEvening",
+          "type": "bool"
+         },
+         {
+          "name": "isGoal",
+          "type": "bool"
+         },
+         {
+          "name": "isYearly",
+          "type": "bool"
+         }
+        ]
+       },
+       {
+        "name": "colorFromTag",
+        "type": "QString",
+        "isMethodConstant": true,
+        "lineNumber": 129,
+        "parameters": [
+         {
+          "name": "tagName",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "setDateInEditor",
+        "lineNumber": 149,
+        "parameters": [
+         {
+          "name": "date",
+          "type": "QDate"
+         }
+        ]
+       },
+       {
+        "name": "setTaskMenuUuid",
+        "lineNumber": 163,
+        "parameters": [
+         {
+          "name": "uuid",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "login",
+        "lineNumber": 164,
+        "parameters": [
+         {
+          "name": "email",
+          "type": "QString"
+         },
+         {
+          "name": "password",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "fetchPassStoreCredentials",
+        "lineNumber": 166
+       },
+       {
+        "name": "logout",
+        "lineNumber": 168
+       },
+       {
+        "name": "enableOfflineMode",
+        "lineNumber": 169
+       },
+       {
+        "name": "clearFetchCalendarStatusText",
+        "lineNumber": 182
+       },
+       {
+        "name": "deleteAllCalendarEvents",
+        "lineNumber": 194
+       },
+       {
+        "name": "fetchCalendarEvents",
+        "lineNumber": 195
+       },
+       {
+        "name": "qtVersion",
+        "type": "QString",
+        "isMethodConstant": true,
+        "lineNumber": 200
+       },
+       {
+        "name": "localRevision",
+        "type": "int",
+        "isMethodConstant": true,
+        "lineNumber": 201
+       },
+       {
+        "name": "numTasks",
+        "type": "int",
+        "isMethodConstant": true,
+        "lineNumber": 202
+       },
+       {
+        "name": "dumpTaskDebug",
+        "isMethodConstant": true,
+        "lineNumber": 204,
+        "parameters": [
+         {
+          "name": "taskUuid",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "dumpDebug",
+        "isMethodConstant": true,
+        "lineNumber": 205
+       },
+       {
+        "name": "onBackClicked",
+        "lineNumber": 206
+       },
+       {
+        "name": "setTaskBeingEdited",
+        "lineNumber": 208,
+        "parameters": [
+         {
+          "name": "uuid",
+          "type": "QString"
+         },
+         {
+          "name": "date",
+          "type": "QDate"
+         },
+         {
+          "name": "tag",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "setTaskBeingEdited",
+        "isCloned": true,
+        "lineNumber": 208,
+        "parameters": [
+         {
+          "name": "uuid",
+          "type": "QString"
+         },
+         {
+          "name": "date",
+          "type": "QDate"
+         }
+        ]
+       },
+       {
+        "name": "clearTaskBeingEdited",
+        "lineNumber": 209
+       },
+       {
+        "name": "moveTaskToCurrent",
+        "lineNumber": 210,
+        "parameters": [
+         {
+          "name": "taskUuid",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "moveTaskToSoon",
+        "lineNumber": 211,
+        "parameters": [
+         {
+          "name": "taskUuid",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "moveTaskToLater",
+        "lineNumber": 212,
+        "parameters": [
+         {
+          "name": "taskUuid",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "moveTaskToTomorrow",
+        "lineNumber": 213,
+        "parameters": [
+         {
+          "name": "taskUuid",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "moveTaskToNextMonday",
+        "lineNumber": 214,
+        "parameters": [
+         {
+          "name": "taskUuid",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "moveTaskToEvening",
+        "lineNumber": 215,
+        "parameters": [
+         {
+          "name": "taskUuid",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "setTaskImportant",
+        "lineNumber": 216,
+        "parameters": [
+         {
+          "name": "taskUuid",
+          "type": "QString"
+         },
+         {
+          "name": "important",
+          "type": "bool"
+         }
+        ]
+       },
+       {
+        "name": "deleteTask",
+        "lineNumber": 217,
+        "parameters": [
+         {
+          "name": "taskUuid",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "addTag",
+        "type": "bool",
+        "lineNumber": 218,
+        "parameters": [
+         {
+          "name": "tagName",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "removeTag",
+        "lineNumber": 219,
+        "parameters": [
+         {
+          "name": "tagName",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "renameTag",
+        "type": "bool",
+        "lineNumber": 220,
+        "parameters": [
+         {
+          "name": "oldName",
+          "type": "QString"
+         },
+         {
+          "name": "newName",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "openRenameTagPopup",
+        "lineNumber": 221,
+        "parameters": [
+         {
+          "name": "tagName",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "cleanupOldData",
+        "lineNumber": 222
+       },
+       {
+        "name": "openNotesEditor",
+        "lineNumber": 223,
+        "parameters": [
+         {
+          "name": "taskUuid",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "saveNotes",
+        "lineNumber": 224,
+        "parameters": [
+         {
+          "name": "notes",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "closeNotesEditor",
+        "lineNumber": 225
+       }
+      ]
+     },
+     "base_origin": "qt",
+     "used_by": [
+      "src/gui/AboutPage.qml",
+      "src/gui/AddTagPopup.qml",
+      "src/gui/CalendarsPage.qml",
+      "src/gui/CleanupPage.qml",
+      "src/gui/EditTaskPage.qml",
+      "src/gui/ErrorPopup.qml",
+      "src/gui/LoginScreen.qml",
+      "src/gui/Main.qml",
+      "src/gui/NotesPopup.qml",
+      "src/gui/Page.qml",
+      "src/gui/RenameTagPopup.qml",
+      "src/gui/SidePanel.qml",
+      "src/gui/Style.qml",
+      "src/gui/Tag.qml",
+      "src/gui/TagsView.qml",
+      "src/gui/Task.qml",
+      "src/gui/TaskView.qml",
+      "src/gui/TasksByTagPage.qml",
+      "src/gui/WeekNavigator.qml",
+      "src/gui/WeekView.qml"
+     ]
+    },
+    {
+     "qml": "PomodoroController",
+     "cls": "PomodoroController",
+     "hdr": "src/gui/pomodoro_controller.h",
+     "cpp": "src/gui/pomodoro_controller.cpp",
+     "base": "QObject",
+     "exports": [
+      "pointless/PomodoroController 1.0"
+     ],
+     "hdr_loc": 47,
+     "cpp_loc": 94,
+     "creatable": false,
+     "accessSemantics": "reference",
+     "exportMetaObjectRevisions": [
+      256
+     ],
+     "lineNumber": 13,
+     "api": {
+      "properties": [
+       {
+        "name": "currentTaskUuid",
+        "type": "QString",
+        "read": "currentTaskUuid",
+        "notify": "currentTaskUuidChanged",
+        "index": 0,
+        "lineNumber": 18,
+        "isReadonly": true
+       },
+       {
+        "name": "isRunning",
+        "type": "bool",
+        "read": "isRunning",
+        "notify": "isRunningChanged",
+        "index": 1,
+        "lineNumber": 19,
+        "isReadonly": true
+       },
+       {
+        "name": "remainingSeconds",
+        "type": "int",
+        "read": "remainingSeconds",
+        "notify": "remainingSecondsChanged",
+        "index": 2,
+        "lineNumber": 20,
+        "isReadonly": true
+       },
+       {
+        "name": "remainingTimeText",
+        "type": "QString",
+        "read": "remainingTimeText",
+        "notify": "remainingSecondsChanged",
+        "index": 3,
+        "lineNumber": 21,
+        "isReadonly": true
+       }
+      ],
+      "signals": [
+       {
+        "name": "currentTaskUuidChanged",
+        "lineNumber": 36
+       },
+       {
+        "name": "isRunningChanged",
+        "lineNumber": 37
+       },
+       {
+        "name": "remainingSecondsChanged",
+        "lineNumber": 38
+       },
+       {
+        "name": "pomodoroFinished",
+        "lineNumber": 39
+       }
+      ],
+      "methods": [
+       {
+        "name": "play",
+        "lineNumber": 32,
+        "parameters": [
+         {
+          "name": "taskUuid",
+          "type": "QString"
+         }
+        ]
+       },
+       {
+        "name": "stop",
+        "lineNumber": 33
+       }
+      ]
+     },
+     "base_origin": "qt"
+    },
+    {
+     "qml": "TagFilterModel",
+     "cls": "TagFilterModel",
+     "hdr": "src/gui/tagfiltermodel.h",
+     "cpp": "src/gui/tagfiltermodel.cpp",
+     "base": "QSortFilterProxyModel",
+     "exports": [
+      "pointless/TagFilterModel 1.0"
+     ],
+     "hdr_loc": 30,
+     "cpp_loc": 71,
+     "accessSemantics": "reference",
+     "exportMetaObjectRevisions": [
+      256
+     ],
+     "lineNumber": 11,
+     "api": {
+      "properties": [
+       {
+        "name": "count",
+        "type": "int",
+        "read": "count",
+        "notify": "countChanged",
+        "index": 0,
+        "lineNumber": 15,
+        "isReadonly": true
+       }
+      ],
+      "signals": [
+       {
+        "name": "countChanged",
+        "lineNumber": 26
+       }
+      ]
+     },
+     "base_origin": "qt"
+    },
+    {
+     "qml": "TagModel",
+     "cls": "TagModel",
+     "hdr": "src/gui/tagmodel.h",
+     "cpp": "src/gui/tagmodel.cpp",
+     "base": "QAbstractListModel",
+     "exports": [
+      "pointless/TagModel 1.0"
+     ],
+     "hdr_loc": 50,
+     "cpp_loc": 85,
+     "accessSemantics": "reference",
+     "exportMetaObjectRevisions": [
+      256
+     ],
+     "lineNumber": 20,
+     "api": {
+      "properties": [
+       {
+        "name": "count",
+        "type": "int",
+        "read": "count",
+        "notify": "countChanged",
+        "index": 0,
+        "lineNumber": 24,
+        "isReadonly": true
+       }
+      ],
+      "signals": [
+       {
+        "name": "countChanged",
+        "lineNumber": 44
+       }
+      ]
+     },
+     "base_origin": "qt"
+    },
+    {
+     "qml": "TaskFilterModel",
+     "cls": "TaskFilterModel",
+     "hdr": "src/gui/taskfiltermodel.h",
+     "cpp": "src/gui/taskfiltermodel.cpp",
+     "base": "QSortFilterProxyModel",
+     "exports": [
+      "pointless/TaskFilterModel 1.0"
+     ],
+     "hdr_loc": 79,
+     "cpp_loc": 272,
+     "accessSemantics": "reference",
+     "exportMetaObjectRevisions": [
+      256
+     ],
+     "lineNumber": 12,
+     "api": {
+      "enums": [
+       {
+        "name": "ViewType",
+        "isScoped": true,
+        "type": "quint8",
+        "lineNumber": 24,
+        "values": [
+         "Week",
+         "Soon",
+         "Later",
+         "Goals"
+        ]
+       }
+      ],
+      "properties": [
+       {
+        "name": "viewType",
+        "type": "TaskFilterModel::ViewType",
+        "read": "viewType",
+        "write": "setViewType",
+        "notify": "viewTypeChanged",
+        "index": 0,
+        "lineNumber": 16
+       },
+       {
+        "name": "dateFilter",
+        "type": "QDate",
+        "read": "dateFilter",
+        "write": "setDateFilter",
+        "notify": "dateFilterChanged",
+        "index": 1,
+        "lineNumber": 17
+       },
+       {
+        "name": "tagName",
+        "type": "QString",
+        "read": "tagName",
+        "write": "setTagName",
+        "notify": "tagNameChanged",
+        "index": 2,
+        "lineNumber": 18
+       },
+       {
+        "name": "count",
+        "type": "int",
+        "read": "count",
+        "notify": "countChanged",
+        "index": 3,
+        "lineNumber": 19,
+        "isReadonly": true
+       },
+       {
+        "name": "isEmpty",
+        "type": "bool",
+        "read": "isEmpty",
+        "notify": "emptyChanged",
+        "index": 4,
+        "lineNumber": 20,
+        "isReadonly": true
+       },
+       {
+        "name": "showImmediateOnly",
+        "type": "bool",
+        "read": "showImmediateOnly",
+        "write": "setShowImmediateOnly",
+        "notify": "showImmediateOnlyChanged",
+        "index": 5,
+        "lineNumber": 21
+       },
+       {
+        "name": "searchText",
+        "type": "QString",
+        "read": "searchText",
+        "write": "setSearchText",
+        "notify": "searchTextChanged",
+        "index": 6,
+        "lineNumber": 22
+       }
+      ],
+      "signals": [
+       {
+        "name": "viewTypeChanged",
+        "lineNumber": 42
+       },
+       {
+        "name": "tagNameChanged",
+        "lineNumber": 46
+       },
+       {
+        "name": "dateFilterChanged",
+        "lineNumber": 50
+       },
+       {
+        "name": "countChanged",
+        "lineNumber": 53
+       },
+       {
+        "name": "emptyChanged",
+        "lineNumber": 57
+       },
+       {
+        "name": "showImmediateOnlyChanged",
+        "lineNumber": 61
+       },
+       {
+        "name": "searchTextChanged",
+        "lineNumber": 65
+       }
+      ]
+     },
+     "base_origin": "qt",
+     "used_by": [
+      "src/gui/TaskView.qml",
+      "src/gui/WeekView.qml"
+     ]
+    },
+    {
+     "qml": "TaskModel",
+     "cls": "TaskModel",
+     "hdr": "src/gui/taskmodel.h",
+     "cpp": "src/gui/taskmodel.cpp",
+     "base": "QAbstractListModel",
+     "exports": [
+      "pointless/TaskModel 1.0"
+     ],
+     "hdr_loc": 82,
+     "cpp_loc": 315,
+     "accessSemantics": "reference",
+     "exportMetaObjectRevisions": [
+      256
+     ],
+     "lineNumber": 19,
+     "api": {
+      "properties": [
+       {
+        "name": "count",
+        "type": "int",
+        "read": "count",
+        "notify": "countChanged",
+        "index": 0,
+        "lineNumber": 23,
+        "isReadonly": true
+       }
+      ],
+      "signals": [
+       {
+        "name": "countChanged",
+        "lineNumber": 76
+       }
+      ],
+      "methods": [
+       {
+        "name": "setTaskDone",
+        "lineNumber": 71,
+        "parameters": [
+         {
+          "name": "taskUuid",
+          "type": "QString"
+         },
+         {
+          "name": "isDone",
+          "type": "bool"
+         }
+        ]
+       },
+       {
+        "name": "advanceYearlyTask",
+        "lineNumber": 72,
+        "parameters": [
+         {
+          "name": "taskUuid",
+          "type": "QString"
+         }
+        ]
+       }
+      ]
+     },
+     "base_origin": "qt"
+    },
+    {
+     "qml": "WeekdayFilterModel",
+     "cls": "WeekdayFilterModel",
+     "hdr": "src/gui/weekdayfiltermodel.h",
+     "cpp": "src/gui/weekdayfiltermodel.cpp",
+     "base": "QSortFilterProxyModel",
+     "exports": [
+      "pointless/WeekdayFilterModel 1.0"
+     ],
+     "hdr_loc": 28,
+     "cpp_loc": 120,
+     "accessSemantics": "reference",
+     "exportMetaObjectRevisions": [
+      256
+     ],
+     "lineNumber": 9,
+     "api": {
+      "properties": [
+       {
+        "name": "source",
+        "type": "QObject",
+        "isPointer": true,
+        "read": "source",
+        "write": "setSource",
+        "notify": "sourceChanged",
+        "index": 0,
+        "lineNumber": 14
+       },
+       {
+        "name": "count",
+        "type": "int",
+        "read": "count",
+        "notify": "countChanged",
+        "index": 1,
+        "lineNumber": 15,
+        "isReadonly": true
+       }
+      ],
+      "signals": [
+       {
+        "name": "sourceChanged",
+        "lineNumber": 26
+       },
+       {
+        "name": "countChanged",
+        "lineNumber": 27
+       }
+      ]
+     },
+     "base_origin": "qt",
+     "used_by": [
+      "src/gui/WeekView.qml"
+     ]
+    },
+    {
+     "qml": "WeekdayModel",
+     "cls": "WeekdayModel",
+     "hdr": "src/gui/weekdaymodel.h",
+     "cpp": "src/gui/weekdaymodel.cpp",
+     "base": "QAbstractListModel",
+     "exports": [
+      "pointless/WeekdayModel 1.0"
+     ],
+     "hdr_loc": 50,
+     "cpp_loc": 105,
+     "accessSemantics": "reference",
+     "exportMetaObjectRevisions": [
+      256
+     ],
+     "lineNumber": 13,
+     "api": {
+      "properties": [
+       {
+        "name": "mondayDate",
+        "type": "QDate",
+        "read": "mondayDate",
+        "write": "setMondayDate",
+        "notify": "mondayDateChanged",
+        "index": 0,
+        "lineNumber": 17
+       },
+       {
+        "name": "count",
+        "type": "int",
+        "read": "count",
+        "notify": "countChanged",
+        "index": 1,
+        "lineNumber": 18,
+        "isReadonly": true
+       }
+      ],
+      "signals": [
+       {
+        "name": "mondayDateChanged",
+        "lineNumber": 44
+       },
+       {
+        "name": "countChanged",
+        "lineNumber": 45
+       }
+      ]
+     },
+     "base_origin": "qt",
+     "used_by": [
+      "src/gui/WeekView.qml"
+     ]
+    }
+   ],
+   "qml_types": [
+    {
+     "qml": "AboutPage",
+     "file": "src/gui/AboutPage.qml",
+     "loc": 65,
+     "version": "1.0",
+     "base": "Page",
+     "base_origin": "local",
+     "uses": {
+      "QtQuick": [
+       "Text"
+      ],
+      "QtQuick.Layouts": [
+       "ColumnLayout"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "AddTagPopup",
+     "file": "src/gui/AddTagPopup.qml",
+     "loc": 132,
+     "version": "1.0",
+     "api": {
+      "functions": [
+       {
+        "name": "close"
+       },
+       {
+        "name": "open"
+       }
+      ]
+     },
+     "base": "Item",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick": [
+       "MouseArea",
+       "Rectangle",
+       "Text"
+      ],
+      "QtQuick.Controls": [
+       "Button",
+       "TextField"
+      ],
+      "QtQuick.Layouts": [
+       "ColumnLayout",
+       "RowLayout"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/TagsPage.qml"
+     ]
+    },
+    {
+     "qml": "Calendar",
+     "file": "src/gui/Calendar.qml",
+     "loc": 153,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "currentDate",
+        "type": "date",
+        "flags": [
+         "required"
+        ]
+       }
+      ],
+      "signals": [
+       {
+        "name": "dateSelected",
+        "parameters": [
+         "selectedDate"
+        ]
+       }
+      ],
+      "functions": [
+       {
+        "name": "setInitialMonth"
+       }
+      ]
+     },
+     "base": "Rectangle",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick": [
+       "GridView",
+       "Item",
+       "MouseArea",
+       "Rectangle",
+       "Repeater",
+       "Row",
+       "Text"
+      ],
+      "QtQuick.Layouts": [
+       "ColumnLayout",
+       "RowLayout"
+      ],
+      "local": [
+       "CalendarModel",
+       "FontAwesomeButton"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "local": [
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/EditTaskPage.qml"
+     ]
+    },
+    {
+     "qml": "CalendarsPage",
+     "file": "src/gui/CalendarsPage.qml",
+     "loc": 170,
+     "version": "1.0",
+     "base": "Page",
+     "base_origin": "local",
+     "uses": {
+      "QtQuick": [
+       "Item",
+       "ListView",
+       "MouseArea",
+       "Rectangle",
+       "RotationAnimation",
+       "Row",
+       "Text"
+      ],
+      "QtQuick.Layouts": [
+       "RowLayout"
+      ],
+      "local": [
+       "CheckBox",
+       "FontAwesomeButton"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "QtQuick": [
+       "Animation"
+      ],
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "CheckBox",
+     "file": "src/gui/CheckBox.qml",
+     "loc": 31,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "smallVariant",
+        "type": "bool"
+       }
+      ]
+     },
+     "base": "CheckBox",
+     "base_origin": "QtQuick.Controls",
+     "uses": {
+      "QtQuick": [
+       "Rectangle"
+      ]
+     },
+     "refs": {
+      "local": [
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/CalendarsPage.qml",
+      "src/gui/EditTaskPage.qml",
+      "src/gui/Task.qml"
+     ]
+    },
+    {
+     "qml": "CleanupPage",
+     "file": "src/gui/CleanupPage.qml",
+     "loc": 67,
+     "version": "1.0",
+     "base": "Page",
+     "base_origin": "local",
+     "uses": {
+      "QtQuick": [
+       "Item",
+       "MouseArea",
+       "Text"
+      ],
+      "QtQuick.Layouts": [
+       "ColumnLayout"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "EditTaskPage",
+     "file": "src/gui/EditTaskPage.qml",
+     "loc": 192,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "isEvening",
+        "type": "bool"
+       },
+       {
+        "name": "isGoal",
+        "type": "bool"
+       },
+       {
+        "name": "isYearly",
+        "type": "bool"
+       },
+       {
+        "name": "selectedTag",
+        "type": "string"
+       }
+      ],
+      "signals": [
+       {
+        "name": "saveClicked",
+        "parameters": [
+         "title",
+         "tag",
+         "evening",
+         "isGoal",
+         "isYearly"
+        ]
+       }
+      ]
+     },
+     "base": "Page",
+     "base_origin": "local",
+     "uses": {
+      "QtQuick": [
+       "Flow",
+       "MouseArea",
+       "Rectangle",
+       "Repeater",
+       "Text"
+      ],
+      "QtQuick.Layouts": [
+       "ColumnLayout",
+       "RowLayout"
+      ],
+      "local": [
+       "Calendar",
+       "CheckBox",
+       "LineEdit",
+       "Tag"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "ErrorPopup",
+     "file": "src/gui/ErrorPopup.qml",
+     "loc": 83,
+     "version": "1.0",
+     "api": {
+      "signals": [
+       {
+        "name": "okClicked"
+       }
+      ]
+     },
+     "base": "Item",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick": [
+       "MouseArea",
+       "Rectangle",
+       "Text"
+      ],
+      "QtQuick.Controls": [
+       "Button"
+      ],
+      "QtQuick.Layouts": [
+       "ColumnLayout"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "FontAwesomeButton",
+     "file": "src/gui/FontAwesomeButton.qml",
+     "loc": 36,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "backgroundColor",
+        "type": "color"
+       },
+       {
+        "name": "fontAwesomeIcon",
+        "type": "string"
+       },
+       {
+        "name": "iconColor",
+        "type": "color"
+       },
+       {
+        "name": "iconSize",
+        "type": "int"
+       }
+      ]
+     },
+     "base": "Button",
+     "base_origin": "QtQuick.Controls",
+     "uses": {
+      "QtQuick": [
+       "FontLoader",
+       "Rectangle",
+       "Text"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "local": [
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/Calendar.qml",
+      "src/gui/CalendarsPage.qml",
+      "src/gui/LoginScreen.qml",
+      "src/gui/Main.qml",
+      "src/gui/Page.qml",
+      "src/gui/TagsView.qml",
+      "src/gui/Task.qml",
+      "src/gui/WeekNavigator.qml",
+      "src/gui/WeekView.qml"
+     ]
+    },
+    {
+     "qml": "GoalsView",
+     "file": "src/gui/GoalsView.qml",
+     "loc": 6,
+     "version": "1.0",
+     "base": "TaskView",
+     "base_origin": "local",
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "LaterView",
+     "file": "src/gui/LaterView.qml",
+     "loc": 7,
+     "version": "1.0",
+     "base": "TaskView",
+     "base_origin": "local",
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "LineEdit",
+     "file": "src/gui/LineEdit.qml",
+     "loc": 52,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "text",
+        "type": "alias",
+        "flags": [
+         "alias"
+        ]
+       }
+      ],
+      "functions": [
+       {
+        "name": "clear"
+       }
+      ],
+      "signals": [
+       {
+        "name": "textEntered",
+        "parameters": [
+         "text"
+        ]
+       }
+      ]
+     },
+     "base": "FocusScope",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick": [
+       "Rectangle"
+      ],
+      "QtQuick.Controls": [
+       "TextField"
+      ],
+      "QtQuick.Layouts": [
+       "RowLayout"
+      ]
+     },
+     "refs": {
+      "QtQuick": [
+       "Text"
+      ],
+      "local": [
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/EditTaskPage.qml"
+     ]
+    },
+    {
+     "qml": "LoginScreen",
+     "file": "src/gui/LoginScreen.qml",
+     "loc": 256,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "passwordVisible",
+        "type": "bool"
+       }
+      ]
+     },
+     "base": "FocusScope",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQml": [
+       "Connections"
+      ],
+      "QtQuick": [
+       "Behavior",
+       "Item",
+       "MouseArea",
+       "NumberAnimation",
+       "Rectangle",
+       "RotationAnimation",
+       "Text"
+      ],
+      "QtQuick.Controls": [
+       "Button",
+       "TextField"
+      ],
+      "QtQuick.Layouts": [
+       "ColumnLayout",
+       "RowLayout"
+      ],
+      "local": [
+       "FontAwesomeButton"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "QtQuick": [
+       "Animation",
+       "TextInput"
+      ],
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "Main",
+     "file": "src/gui/Main.qml",
+     "loc": 439,
+     "version": "1.0",
+     "base": "ApplicationWindow",
+     "base_origin": "QtQuick.Controls",
+     "uses": {
+      "QtQml": [
+       "Connections"
+      ],
+      "QtQuick": [
+       "Behavior",
+       "Item",
+       "NumberAnimation",
+       "Rectangle",
+       "RotationAnimation"
+      ],
+      "QtQuick.Layouts": [
+       "ColumnLayout",
+       "RowLayout"
+      ],
+      "local": [
+       "AboutPage",
+       "CalendarsPage",
+       "CleanupPage",
+       "EditTaskPage",
+       "ErrorPopup",
+       "FontAwesomeButton",
+       "GoalsView",
+       "LaterView",
+       "LoginScreen",
+       "Menu",
+       "MenuItem",
+       "NotesPopup",
+       "SearchPage",
+       "SidePanel",
+       "SoonView",
+       "TagsPage",
+       "TasksByTagPage",
+       "ToggleButton",
+       "ViewButton",
+       "WeekNavigator",
+       "WeekView"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "QtQuick": [
+       "Animation"
+      ],
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     }
+    },
+    {
+     "qml": "Menu",
+     "file": "src/gui/Menu.qml",
+     "loc": 25,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "content",
+        "type": "alias",
+        "flags": [
+         "alias",
+         "default"
+        ]
+       }
+      ]
+     },
+     "base": "Rectangle",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick.Layouts": [
+       "ColumnLayout"
+      ]
+     },
+     "refs": {
+      "local": [
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "MenuItem",
+     "file": "src/gui/MenuItem.qml",
+     "loc": 37,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "text",
+        "type": "alias",
+        "flags": [
+         "alias"
+        ]
+       }
+      ],
+      "signals": [
+       {
+        "name": "triggered"
+       }
+      ]
+     },
+     "base": "Rectangle",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick": [
+       "MouseArea",
+       "Text"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "local": [
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "NotesPopup",
+     "file": "src/gui/NotesPopup.qml",
+     "loc": 145,
+     "version": "1.0",
+     "base": "Item",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick": [
+       "MouseArea",
+       "Rectangle",
+       "Text"
+      ],
+      "QtQuick.Controls": [
+       "Button",
+       "ScrollView",
+       "TextArea"
+      ],
+      "QtQuick.Layouts": [
+       "ColumnLayout",
+       "RowLayout"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "QtQuick": [
+       "InputMethod"
+      ],
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "Page",
+     "file": "src/gui/Page.qml",
+     "loc": 69,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "contentData",
+        "type": "alias",
+        "flags": [
+         "alias",
+         "default"
+        ]
+       },
+       {
+        "name": "pageId",
+        "type": "string"
+       },
+       {
+        "name": "pageTitle",
+        "type": "string"
+       },
+       {
+        "name": "rightButtonIcon",
+        "type": "string"
+       },
+       {
+        "name": "rightButtonObjectName",
+        "type": "string"
+       }
+      ],
+      "signals": [
+       {
+        "name": "backClicked"
+       },
+       {
+        "name": "rightButtonClicked"
+       }
+      ]
+     },
+     "base": "Rectangle",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick": [
+       "Item",
+       "Text"
+      ],
+      "QtQuick.Layouts": [
+       "ColumnLayout",
+       "RowLayout"
+      ],
+      "local": [
+       "FontAwesomeButton"
+      ]
+     },
+     "refs": {
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/AboutPage.qml",
+      "src/gui/CalendarsPage.qml",
+      "src/gui/CleanupPage.qml",
+      "src/gui/EditTaskPage.qml",
+      "src/gui/SearchPage.qml",
+      "src/gui/TagsPage.qml",
+      "src/gui/TasksByTagPage.qml"
+     ]
+    },
+    {
+     "qml": "RenameTagPopup",
+     "file": "src/gui/RenameTagPopup.qml",
+     "loc": 139,
+     "version": "1.0",
+     "api": {
+      "functions": [
+       {
+        "name": "close"
+       }
+      ]
+     },
+     "base": "Item",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick": [
+       "MouseArea",
+       "Rectangle",
+       "Text"
+      ],
+      "QtQuick.Controls": [
+       "Button",
+       "TextField"
+      ],
+      "QtQuick.Layouts": [
+       "ColumnLayout",
+       "RowLayout"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/TagsPage.qml"
+     ]
+    },
+    {
+     "qml": "SearchPage",
+     "file": "src/gui/SearchPage.qml",
+     "loc": 67,
+     "version": "1.0",
+     "base": "Page",
+     "base_origin": "local",
+     "uses": {
+      "QtQuick": [
+       "FontLoader",
+       "Rectangle",
+       "Text"
+      ],
+      "QtQuick.Controls": [
+       "TextField"
+      ],
+      "QtQuick.Layouts": [
+       "ColumnLayout",
+       "RowLayout"
+      ],
+      "local": [
+       "TaskView"
+      ]
+     },
+     "refs": {
+      "local": [
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "SidePanel",
+     "file": "src/gui/SidePanel.qml",
+     "loc": 229,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "isOpen",
+        "type": "bool"
+       }
+      ]
+     },
+     "base": "Item",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick": [
+       "Behavior",
+       "Item",
+       "MouseArea",
+       "NumberAnimation",
+       "Rectangle",
+       "Text"
+      ],
+      "QtQuick.Layouts": [
+       "ColumnLayout"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Easing",
+       "Qt"
+      ],
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "SoonView",
+     "file": "src/gui/SoonView.qml",
+     "loc": 6,
+     "version": "1.0",
+     "base": "TaskView",
+     "base_origin": "local",
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "Style",
+     "file": "src/gui/Style.qml",
+     "loc": 65,
+     "version": "1.0",
+     "singleton": true,
+     "api": {
+      "properties": [
+       {
+        "name": "background",
+        "type": "color"
+       },
+       {
+        "name": "background2",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "buttonActive",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "buttonBackground",
+        "type": "color"
+       },
+       {
+        "name": "buttonColor",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "buttonTextColor",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "calendarBackground",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "calendarDisabledText",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "calendarHighlight",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "calendarSecondaryText",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "calendarText",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "iconColor",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "isMobile",
+        "type": "bool",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "menuHeight",
+        "type": "int",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "plusButtonColor",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "plusButtonSize",
+        "type": "int",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "scaleFactor",
+        "type": "double",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "sectionBackgroundColor",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "sectionFontSize",
+        "type": "int",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "sectionTextColor",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "taskBackground",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "taskCalendarTextDisabled",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "taskCompletedTextColor",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "taskEveningBackground",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "taskEveningHeight",
+        "type": "int",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "taskHeight",
+        "type": "int",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "taskImportantBackground",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "taskSecondaryTextColor",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "taskSpacing",
+        "type": "int",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "taskTextColor",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "textColor2",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "weekdayFontSize",
+        "type": "int",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "weekdayTextColor",
+        "type": "color",
+        "flags": [
+         "readonly"
+        ]
+       }
+      ],
+      "functions": [
+       {
+        "name": "fromPixel",
+        "parameters": [
+         "px"
+        ]
+       }
+      ]
+     },
+     "base": "Item",
+     "base_origin": "QtQuick",
+     "refs": {
+      "local": [
+       "GuiController"
+      ]
+     },
+     "used_by": [
+      "src/gui/AboutPage.qml",
+      "src/gui/AddTagPopup.qml",
+      "src/gui/Calendar.qml",
+      "src/gui/CalendarsPage.qml",
+      "src/gui/CheckBox.qml",
+      "src/gui/CleanupPage.qml",
+      "src/gui/EditTaskPage.qml",
+      "src/gui/ErrorPopup.qml",
+      "src/gui/FontAwesomeButton.qml",
+      "src/gui/LineEdit.qml",
+      "src/gui/LoginScreen.qml",
+      "src/gui/Main.qml",
+      "src/gui/Menu.qml",
+      "src/gui/MenuItem.qml",
+      "src/gui/NotesPopup.qml",
+      "src/gui/Page.qml",
+      "src/gui/RenameTagPopup.qml",
+      "src/gui/SearchPage.qml",
+      "src/gui/SidePanel.qml",
+      "src/gui/Tag.qml",
+      "src/gui/TagsView.qml",
+      "src/gui/Task.qml",
+      "src/gui/TaskView.qml",
+      "src/gui/ToggleButton.qml",
+      "src/gui/ViewButton.qml",
+      "src/gui/WeekNavigator.qml",
+      "src/gui/WeekView.qml"
+     ]
+    },
+    {
+     "qml": "Tag",
+     "file": "src/gui/Tag.qml",
+     "loc": 44,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "isInteractive",
+        "type": "bool"
+       },
+       {
+        "name": "isSelected",
+        "type": "bool"
+       },
+       {
+        "name": "tagName",
+        "type": "string",
+        "flags": [
+         "required"
+        ]
+       }
+      ],
+      "signals": [
+       {
+        "name": "clicked",
+        "parameters": [
+         "tagName"
+        ]
+       }
+      ]
+     },
+     "base": "Rectangle",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick": [
+       "MouseArea",
+       "Text"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/EditTaskPage.qml",
+      "src/gui/TagsView.qml",
+      "src/gui/Task.qml"
+     ]
+    },
+    {
+     "qml": "TagsPage",
+     "file": "src/gui/TagsPage.qml",
+     "loc": 27,
+     "version": "1.0",
+     "base": "Page",
+     "base_origin": "local",
+     "uses": {
+      "local": [
+       "AddTagPopup",
+       "RenameTagPopup",
+       "TagsView"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "TagsView",
+     "file": "src/gui/TagsView.qml",
+     "loc": 75,
+     "version": "1.0",
+     "base": "ListView",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick": [
+       "Item",
+       "Rectangle",
+       "TapHandler",
+       "Text"
+      ],
+      "QtQuick.Layouts": [
+       "RowLayout"
+      ],
+      "local": [
+       "FontAwesomeButton",
+       "Tag"
+      ]
+     },
+     "refs": {
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/TagsPage.qml"
+     ]
+    },
+    {
+     "qml": "Task",
+     "file": "src/gui/Task.qml",
+     "loc": 187,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "isPomodoroActive",
+        "type": "bool",
+        "flags": [
+         "readonly"
+        ]
+       },
+       {
+        "name": "showTags",
+        "type": "bool"
+       },
+       {
+        "name": "showsDate",
+        "type": "bool"
+       },
+       {
+        "name": "showsTagsInSecondLine",
+        "type": "bool"
+       },
+       {
+        "name": "taskAllTags",
+        "type": "string",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskCalendarName",
+        "type": "string",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskDueDate",
+        "type": "string",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskHasDueDate",
+        "type": "bool",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskHasDueDateTime",
+        "type": "bool",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskHasNotes",
+        "type": "bool",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskIsCurrent",
+        "type": "bool",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskIsDone",
+        "type": "bool",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskIsDueTomorrow",
+        "type": "bool",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskIsEvening",
+        "type": "bool",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskIsFromCalendar",
+        "type": "bool",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskIsGoal",
+        "type": "bool",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskIsImportant",
+        "type": "bool",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskIsLater",
+        "type": "bool",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskIsSoon",
+        "type": "bool",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskIsYearly",
+        "type": "bool",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskTagName",
+        "type": "string",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskTitle",
+        "type": "string",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "taskUuid",
+        "type": "string",
+        "flags": [
+         "required"
+        ]
+       },
+       {
+        "name": "useSmallMode",
+        "type": "bool",
+        "flags": [
+         "readonly"
+        ]
+       }
+      ],
+      "functions": [
+       {
+        "name": "allTagsExceptCurrent",
+        "parameters": [
+         "allTags"
+        ]
+       }
+      ],
+      "signals": [
+       {
+        "name": "clicked"
+       }
+      ]
+     },
+     "base": "Rectangle",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick": [
+       "MouseArea",
+       "Text"
+      ],
+      "QtQuick.Layouts": [
+       "ColumnLayout",
+       "RowLayout"
+      ],
+      "local": [
+       "CheckBox",
+       "FontAwesomeButton",
+       "Tag"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/TaskView.qml",
+      "src/gui/WeekView.qml"
+     ]
+    },
+    {
+     "qml": "TaskView",
+     "file": "src/gui/TaskView.qml",
+     "loc": 87,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "searchText",
+        "type": "string"
+       },
+       {
+        "name": "showTags",
+        "type": "bool"
+       },
+       {
+        "name": "showsDate",
+        "type": "bool"
+       },
+       {
+        "name": "showsTagsInSecondLine",
+        "type": "bool"
+       }
+      ]
+     },
+     "base": "ListView",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick.Controls": [
+       "ScrollBar"
+      ],
+      "local": [
+       "Task",
+       "TaskFilterModel"
+      ]
+     },
+     "refs": {
+      "QtQuick": [
+       "ListView"
+      ],
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/GoalsView.qml",
+      "src/gui/LaterView.qml",
+      "src/gui/SearchPage.qml",
+      "src/gui/SoonView.qml",
+      "src/gui/TasksByTagPage.qml"
+     ]
+    },
+    {
+     "qml": "TasksByTagPage",
+     "file": "src/gui/TasksByTagPage.qml",
+     "loc": 23,
+     "version": "1.0",
+     "base": "Page",
+     "base_origin": "local",
+     "uses": {
+      "local": [
+       "TaskView"
+      ]
+     },
+     "refs": {
+      "local": [
+       "GuiController"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "ToggleButton",
+     "file": "src/gui/ToggleButton.qml",
+     "loc": 50,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "toggled",
+        "type": "bool"
+       }
+      ]
+     },
+     "base": "Item",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick": [
+       "Behavior",
+       "ColorAnimation",
+       "MouseArea",
+       "NumberAnimation",
+       "Rectangle"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Easing"
+      ],
+      "local": [
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "ViewButton",
+     "file": "src/gui/ViewButton.qml",
+     "loc": 29,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "isActive",
+        "type": "bool"
+       }
+      ]
+     },
+     "base": "Button",
+     "base_origin": "QtQuick.Controls",
+     "uses": {
+      "QtQuick": [
+       "Rectangle",
+       "Text"
+      ]
+     },
+     "refs": {
+      "local": [
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "WeekNavigator",
+     "file": "src/gui/WeekNavigator.qml",
+     "loc": 55,
+     "version": "1.0",
+     "base": "Rectangle",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick": [
+       "MouseArea",
+       "Text"
+      ],
+      "QtQuick.Layouts": [
+       "RowLayout"
+      ],
+      "local": [
+       "FontAwesomeButton"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "local": [
+       "GuiController",
+       "Style"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    },
+    {
+     "qml": "WeekView",
+     "file": "src/gui/WeekView.qml",
+     "loc": 159,
+     "version": "1.0",
+     "api": {
+      "properties": [
+       {
+        "name": "weekdayFilterModelCount",
+        "type": "alias",
+        "flags": [
+         "readonly",
+         "alias"
+        ]
+       },
+       {
+        "name": "weekdayModelCount",
+        "type": "alias",
+        "flags": [
+         "readonly",
+         "alias"
+        ]
+       }
+      ]
+     },
+     "base": "Item",
+     "base_origin": "QtQuick",
+     "uses": {
+      "QtQuick": [
+       "ListView",
+       "Rectangle",
+       "Repeater",
+       "Text"
+      ],
+      "QtQuick.Controls": [
+       "ScrollBar"
+      ],
+      "QtQuick.Layouts": [
+       "ColumnLayout",
+       "RowLayout"
+      ],
+      "local": [
+       "FontAwesomeButton",
+       "Task",
+       "WeekdayFilterModel",
+       "WeekdayModel"
+      ]
+     },
+     "refs": {
+      "QML": [
+       "Qt"
+      ],
+      "local": [
+       "GuiController",
+       "Style",
+       "TaskFilterModel"
+      ]
+     },
+     "used_by": [
+      "src/gui/Main.qml"
+     ]
+    }
+   ],
+   "depends": [
+    "QtQuick"
+   ],
+   "framework_base_classes": [
+    {
+     "class": "QAbstractItemModel",
+     "hdr": "qabstractitemmodel.h",
+     "base": "QObject"
+    },
+    {
+     "class": "QAbstractListModel",
+     "hdr": "qabstractitemmodel.h",
+     "base": "QAbstractItemModel"
+    },
+    {
+     "class": "QAbstractProxyModel",
+     "hdr": "qabstractproxymodel.h",
+     "base": "QAbstractItemModel"
+    },
+    {
+     "class": "QItemSelection",
+     "hdr": null,
+     "base": null
+    },
+    {
+     "class": "QModelIndex",
+     "hdr": null,
+     "base": null
+    },
+    {
+     "class": "QModelIndexList",
+     "hdr": null,
+     "base": null
+    },
+    {
+     "class": "QPersistentModelIndex",
+     "hdr": null,
+     "base": null
+    },
+    {
+     "class": "QSortFilterProxyModel",
+     "hdr": "qsortfilterproxymodel.h",
+     "base": "QAbstractProxyModel"
+    }
+   ],
+   "qobjects_not_in_qml": [
+    {
+     "cls": "Application",
+     "hdr": "src/gui/application.h",
+     "cpp": "src/gui/application.cpp",
+     "base": "QGuiApplication"
+    },
+    {
+     "cls": "DataController",
+     "hdr": "src/gui/data_controller.h",
+     "cpp": "src/gui/data_controller.cpp",
+     "base": "QObject"
+    }
+   ]
+  }
+ ],
+ "qt_version": "6.12.0",
+ "deep": true,
+ "qmldom": "/pub_data/installed/Qt/latest/gcc_64/bin/qmldom",
+ "framework_types": {
+  "QtQml": {
+   "Connections": 2
+  },
+  "QtQuick": {
+   "Behavior": 6,
+   "ColorAnimation": 1,
+   "Flow": 1,
+   "FocusScope": 2,
+   "FontLoader": 2,
+   "GridView": 1,
+   "Item": 30,
+   "ListView": 4,
+   "MouseArea": 26,
+   "NumberAnimation": 5,
+   "Rectangle": 49,
+   "Repeater": 3,
+   "RotationAnimation": 3,
+   "Row": 2,
+   "TapHandler": 1,
+   "Text": 69
+  },
+  "QtQuick.Controls": {
+   "ApplicationWindow": 1,
+   "Button": 10,
+   "CheckBox": 1,
+   "ScrollBar": 2,
+   "ScrollView": 1,
+   "TextArea": 1,
+   "TextField": 6
+  },
+  "QtQuick.Layouts": {
+   "ColumnLayout": 20,
+   "RowLayout": 21
+  }
+ }
+}

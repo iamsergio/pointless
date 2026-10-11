@@ -30,6 +30,9 @@ path = [
     "src/ios/ExportOptions-TestFlight.plist.in",
     ".qmllint.ini",
     "version.txt",
+    "PORT_TODO.md",
+    "TODO_TYPES.md",
+    "inventory.json",
     "slint/pointless_core/tests/fixtures/test.json",
     "slint/pointless_core/tests/fixtures/test_null_values.json"
 ]
