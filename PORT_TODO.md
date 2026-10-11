@@ -31,6 +31,10 @@ Qt/QML → Slint port tasks (see /pub_data/etc/ai/qt_to_slint/PORT.md).
   - Spix comes from the qt2slint checkout (`$QT2SLINT_DIR/3rdparty/spix`, it has the Slint scene) in the `dev-slint` preset, `3rdparty/spix` has none. Its Slint scene needs `stb_image_write.h`: configure with `-DSTB_INCLUDE_DIR=<dir with stb_image_write.h>` until `stb` is in `vcpkg.json`
   - The two UIs match closely on all 14 screens, not pixel perfect
 
+# GUI tests
+
+- `test_gui` runs against both UIs (`test_gui` in the `dev` preset, `test_gui_slint` in `dev-slint`, where `test_gui` is disabled). It reads the same properties in both: `checked`, `count`, `text`, `existsAndVisible()`. See `TODO.md` of qt2slint for what Spix can't do for Slint
+
 # Improvements (10)
 
 Done:
