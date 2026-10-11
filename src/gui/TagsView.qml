@@ -37,6 +37,7 @@ ListView {
             spacing: Style.fromPixel(8)
 
             Tag {
+                objectName: "tagChip_" + delegateRoot.name
                 tagName: delegateRoot.name
                 onClicked: {
                     GuiController.currentTag = tagName;

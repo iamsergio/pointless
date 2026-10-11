@@ -111,7 +111,7 @@ protected:
         mouseClick("mainWindow/tagsPage/popupCancelButton");
         wait(std::chrono::milliseconds(300));
 
-        mouseClick("mainWindow/tagsPage/tagRow_work");
+        mouseClick("mainWindow/tagsPage/tagChip_work");
         shot("tasks_by_tag_page");
         mouseClick("mainWindow/tasksByTagPage/backButton");
         wait(std::chrono::milliseconds(300));
