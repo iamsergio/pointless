@@ -55,6 +55,7 @@ Left:
 # GUI polish (11)
 
 Done:
+- Thin text with the Qt backend: with a variable system font (Noto Sans on the other computer) the regular text was drawn with the lightest weight, as `QRawFont::loadFromData()` ignores the default axes. Fixed in the Slint fork (`3rdparty/slint`, branch `qt-font-hinting`). Reproduced here with Ubuntu Sans. The femtovg backend wasn't affected
 - Text: the Slint Qt backend disabled font hinting, which made text thinner and blurrier than Qt's. `3rdparty/slint` (branch `qt-font-hinting` of the fork, to be pushed) uses the system's hinting, `SLINT_QT_FONT_HINTING=default|none|vertical|full` overrides it. The offscreen screenshots don't show a difference (no fontconfig hint settings there), check it in a real window
 - The task list has no scroll bar (Fluent's is a permanent line over the tasks, Qt's only shows when used), so it can't be dragged, wheel and touch scroll
 - The checkbox of a task is as wide as in Qt, so the title lines up
