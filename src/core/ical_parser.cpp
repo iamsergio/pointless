@@ -66,14 +66,14 @@ std::vector<ICalEvent> parseICalEvents(const std::string &icalData,
 
         icalproperty *dtstartProp = icalcomponent_get_first_property(vevent, ICAL_DTSTART_PROPERTY);
         if (dtstartProp) {
-            dtstartIcal = icalproperty_get_dtstart(dtstartProp);
+            dtstartIcal = icalcomponent_get_dtstart(vevent);
             isAllDay = icaltime_is_date(dtstartIcal);
             dtstartTp = icalTimeToTimePoint(dtstartIcal);
         }
 
         icalproperty *dtendProp = icalcomponent_get_first_property(vevent, ICAL_DTEND_PROPERTY);
         if (dtendProp) {
-            dtendTp = icalTimeToTimePoint(icalproperty_get_dtend(dtendProp));
+            dtendTp = icalTimeToTimePoint(icalcomponent_get_dtend(vevent));
         }
 
         auto duration = dtendTp - dtstartTp;
