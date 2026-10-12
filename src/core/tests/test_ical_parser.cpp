@@ -662,3 +662,28 @@ END:VCALENDAR)";
     expectUTC(events[0].dtstart, 2026, 9, 13, 23, 0, 0);
     expectUTC(events[0].dtend, 2026, 9, 14, 23, 0, 0);
 }
+
+TEST(ICalParserTest, RecurringAllDayEventIncludesTodayWhenRangeStartsMidDay)
+{
+    ScopedTimezone tz("Europe/Lisbon");
+
+    const std::string ical = R"(BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:allday-3
+SUMMARY:Daily all day
+DTSTART;VALUE=DATE:20260901
+DTEND;VALUE=DATE:20260902
+RRULE:FREQ=DAILY
+END:VEVENT
+END:VCALENDAR)";
+
+    DateRange range;
+    range.start = dayStart(2026, 10, 12) + std::chrono::hours(11);
+    range.end = dayStart(2026, 10, 13);
+
+    auto events = parseICalEvents(ical, range);
+    ASSERT_EQ(events.size(), 2);
+    expectUTC(events[0].dtstart, 2026, 10, 11, 23, 0, 0);
+    expectUTC(events[1].dtstart, 2026, 10, 12, 23, 0, 0);
+}

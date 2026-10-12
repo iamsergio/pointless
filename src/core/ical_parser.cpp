@@ -33,12 +33,6 @@ std::chrono::system_clock::time_point icalTimeToTimePoint(icaltimetype t)
     return std::chrono::system_clock::from_time_t(epoch);
 }
 
-icaltimetype timePointToIcalTime(std::chrono::system_clock::time_point tp)
-{
-    time_t t = std::chrono::system_clock::to_time_t(tp);
-    return icaltime_from_timet_with_zone(t, 0, icaltimezone_get_utc_timezone());
-}
-
 std::string formatRecurrenceId(icaltimetype t)
 {
     return std::format("{:04}{:02}{:02}T{:02}{:02}{:02}Z",
@@ -96,24 +90,22 @@ std::vector<ICalEvent> parseICalEvents(const std::string &icalData,
             if (!iter)
                 return;
 
-            icaltimetype rangeStart = timePointToIcalTime(range->start);
-            icaltimetype rangeEnd = timePointToIcalTime(range->end);
-
             for (icaltimetype next = icalrecur_iterator_next(iter);
                  !icaltime_is_null_time(next);
                  next = icalrecur_iterator_next(iter)) {
 
-                if (icaltime_compare(next, rangeEnd) >= 0)
+                const auto occurrenceStart = icalTimeToTimePoint(next);
+                if (occurrenceStart >= range->end)
                     break;
 
-                if (icaltime_compare(next, rangeStart) < 0)
+                if (occurrenceStart + duration <= range->start)
                     continue;
 
                 ICalEvent ev;
                 ev.uid = uid + "_" + formatRecurrenceId(next);
                 ev.summary = summary;
                 ev.isAllDay = isAllDay;
-                ev.dtstart = icalTimeToTimePoint(next);
+                ev.dtstart = occurrenceStart;
                 ev.dtend = ev.dtstart + duration;
                 events.push_back(std::move(ev));
             }
