@@ -16,12 +16,7 @@ if [ -z "${APPLE_CERTIFICATE_P12_PATH}" ]; then
 	exit 1
 fi
 
-if [ -z "${APPLE_PROVISIONING_PROFILE_PATH}" ]; then
-	echo "APPLE_PROVISIONING_PROFILE_PATH environment variable must be set"
-	exit 1
-fi
-
-if [ ! -f "${APPLE_PROVISIONING_PROFILE_PATH}" ]; then
+if [ -n "${APPLE_PROVISIONING_PROFILE_PATH}" ] && [ ! -f "${APPLE_PROVISIONING_PROFILE_PATH}" ]; then
 	echo "Provisioning profile not found at ${APPLE_PROVISIONING_PROFILE_PATH}"
 	exit 1
 fi
@@ -64,22 +59,28 @@ echo "New keychain search list:"
 security list-keychains -d user
 echo "---"
 
-# install provisioning profile (in new and old locations)
-echo "Installing provisioning profile..."
-mkdir -p ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles
-mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-cp "${APPLE_PROVISIONING_PROFILE_PATH}" ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/
-cp "${APPLE_PROVISIONING_PROFILE_PATH}" ~/Library/MobileDevice/Provisioning\ Profiles
+if [ -n "${APPLE_PROVISIONING_PROFILE_PATH}" ]; then
+	# install provisioning profile (in new and old locations)
+	echo "Installing provisioning profile..."
+	mkdir -p ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles
+	mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+	cp "${APPLE_PROVISIONING_PROFILE_PATH}" ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/
+	cp "${APPLE_PROVISIONING_PROFILE_PATH}" ~/Library/MobileDevice/Provisioning\ Profiles
+fi
 
 # import certificate
 echo "Importing Apple certificate into keychain..."
 security import "${APPLE_CERTIFICATE_P12_PATH}" -k "${KEYCHAIN_FILE}" -P "$APPLE_P12_PASSWORD" -A
 
-# download and install Apple WWDR certificate
-echo "Downloading and installing Apple WWDR certificate..."
-curl -fLo AppleWWDRCA.cer https://developer.apple.com/certificationauthority/AppleWWDRCA.cer
-security import AppleWWDRCA.cer -k "${KEYCHAIN_FILE}" -T /usr/bin/codesign
-rm AppleWWDRCA.cer
+# download and install the Apple intermediate certificates (WWDR for iOS, Developer ID for macOS)
+for CA_URL in https://developer.apple.com/certificationauthority/AppleWWDRCA.cer \
+	https://www.apple.com/certificateauthority/DeveloperIDG2CA.cer; do
+	CA_FILE=$(basename "${CA_URL}")
+	echo "Downloading and installing ${CA_FILE}..."
+	curl -fLo "${CA_FILE}" "${CA_URL}"
+	security import "${CA_FILE}" -k "${KEYCHAIN_FILE}" -T /usr/bin/codesign
+	rm "${CA_FILE}"
+done
 
 # allow codesign to access the key
 security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "${KEYCHAIN_FILE}"

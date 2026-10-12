@@ -44,7 +44,7 @@ jobs:
     - name: Setup signing
       run: |
         ./scripts/ci-dump-base64-to-file.sh
-        ./scripts/ci-setup-ios-keychain.sh
+        ./scripts/ci-setup-keychain.sh
       env:
         APPLE_PROVISIONING_PROFILE_BASE64: ${{ secrets.APPLE_PROVISIONING_PROFILE_BASE64 }}
         APPLE_CERTIFICATE_P12_BASE64: ${{ secrets.APPLE_CERTIFICATE_P12_BASE64 }}
