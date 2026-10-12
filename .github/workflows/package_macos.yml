@@ -56,28 +56,16 @@ jobs:
         cd 3rdparty/vcpkg
         ./bootstrap-vcpkg.sh
 
-    - name: Setup signing keychain
-      env:
-        MACOS_CERTIFICATES_P12_BASE64: ${{ secrets.MACOS_CERTIFICATES_P12_BASE64 }}
-        MACOS_CERTIFICATES_P12_PASSWORD: ${{ secrets.MACOS_CERTIFICATES_P12_PASSWORD }}
-        KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+    - name: Setup signing
       run: |
-        KEYCHAIN_FILE="${RUNNER_TEMP}/macos-signing.keychain-db"
-        CERTS_FILE="${RUNNER_TEMP}/certs.p12"
-        echo "${MACOS_CERTIFICATES_P12_BASE64}" | base64 --decode > "${CERTS_FILE}"
-        curl -fLo "${RUNNER_TEMP}/DeveloperIDG2CA.cer" https://www.apple.com/certificateauthority/DeveloperIDG2CA.cer
-
-        security create-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_FILE}"
-        security set-keychain-settings -lut 21600 "${KEYCHAIN_FILE}"
-        security unlock-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_FILE}"
-        security import "${CERTS_FILE}" -k "${KEYCHAIN_FILE}" -P "${MACOS_CERTIFICATES_P12_PASSWORD}" \
-          -T /usr/bin/codesign -T /usr/bin/productsign
-        security import "${RUNNER_TEMP}/DeveloperIDG2CA.cer" -k "${KEYCHAIN_FILE}"
-        security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_FILE}"
-        security list-keychains -d user -s "${KEYCHAIN_FILE}" $(security list-keychains -d user | tr -d '"')
-        rm "${CERTS_FILE}"
-
-        security find-identity -v "${KEYCHAIN_FILE}"
+        ./scripts/ci-dump-base64-to-file.sh
+        ./scripts/ci-setup-keychain.sh
+      env:
+        APPLE_CERTIFICATE_P12_BASE64: ${{ secrets.MACOS_CERTIFICATES_P12_BASE64 }}
+        APPLE_CERTIFICATE_P12_PATH: ${{ runner.temp }}/cert.p12
+        KEYCHAIN_FILE: ${{ runner.temp }}/macos-build.keychain
+        KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        APPLE_P12_PASSWORD: ${{ secrets.MACOS_CERTIFICATES_P12_PASSWORD }}
 
     - name: Build
       env:
