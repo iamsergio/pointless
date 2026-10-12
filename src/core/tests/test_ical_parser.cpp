@@ -515,3 +515,71 @@ END:VCALENDAR)";
     EXPECT_EQ(events[0].uid, "weekly-2");
     expectUTC(events[0].dtstart, 2025, 1, 6, 9, 0, 0);
 }
+
+namespace {
+
+const char *const berlinTimezone = R"(BEGIN:VTIMEZONE
+TZID:Europe/Berlin
+BEGIN:DAYLIGHT
+DTSTART:20260329T010000
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+END:DAYLIGHT
+BEGIN:STANDARD
+DTSTART:20261025T010000
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+END:STANDARD
+END:VTIMEZONE
+)";
+
+std::chrono::system_clock::time_point dayStart(int year, int month, int day)
+{
+    std::tm tm = {};
+    tm.tm_year = year - 1900;
+    tm.tm_mon = month - 1;
+    tm.tm_mday = day;
+    return std::chrono::system_clock::from_time_t(timegm(&tm));
+}
+
+} // namespace
+
+TEST(ICalParserTest, TzidEvent)
+{
+    const std::string ical = std::string("BEGIN:VCALENDAR\nVERSION:2.0\n") + berlinTimezone + R"(BEGIN:VEVENT
+UID:tz-1
+SUMMARY:Daily
+DTSTART;TZID=Europe/Berlin:20260914T133000
+DTEND;TZID=Europe/Berlin:20260914T140000
+END:VEVENT
+END:VCALENDAR)";
+
+    auto events = parseICalEvents(ical);
+    ASSERT_EQ(events.size(), 1);
+    expectUTC(events[0].dtstart, 2026, 9, 14, 11, 30, 0);
+    expectUTC(events[0].dtend, 2026, 9, 14, 12, 0, 0);
+}
+
+TEST(ICalParserTest, TzidRecurringEvent)
+{
+    const std::string ical = std::string("BEGIN:VCALENDAR\nVERSION:2.0\n") + berlinTimezone + R"(BEGIN:VEVENT
+UID:tz-2
+SUMMARY:Daily
+DTSTART;TZID=Europe/Berlin:20260803T133000
+DTEND;TZID=Europe/Berlin:20260803T140000
+RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR
+END:VEVENT
+END:VCALENDAR)";
+
+    DateRange range;
+    range.start = dayStart(2026, 9, 14);
+    range.end = dayStart(2026, 9, 16);
+
+    auto events = parseICalEvents(ical, range);
+    ASSERT_EQ(events.size(), 2);
+    expectUTC(events[0].dtstart, 2026, 9, 14, 11, 30, 0);
+    expectUTC(events[0].dtend, 2026, 9, 14, 12, 0, 0);
+    expectUTC(events[1].dtstart, 2026, 9, 15, 11, 30, 0);
+}
