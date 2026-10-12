@@ -20,7 +20,7 @@ size_t icalWriteCallback(char *ptr, size_t size, size_t nmemb, void *userdata)
     return size * nmemb;
 }
 
-std::string fetchICalUrl(const std::string &url)
+std::string fetchICalUrl(const std::string &url, const std::string &username, const std::string &password)
 {
     CURL *curl = curl_easy_init();
     if (!curl)
@@ -32,8 +32,15 @@ std::string fetchICalUrl(const std::string &url)
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, icalWriteCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &responseBody);
+    if (!username.empty()) {
+        curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+        curl_easy_setopt(curl, CURLOPT_USERNAME, username.c_str());
+        curl_easy_setopt(curl, CURLOPT_PASSWORD, password.c_str());
+    }
 
     CURLcode res = curl_easy_perform(curl);
+    long httpCode = 0;
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
     curl_easy_cleanup(curl);
 
     if (res != CURLE_OK) {
@@ -41,6 +48,12 @@ std::string fetchICalUrl(const std::string &url)
         return {};
     }
 
+    if (httpCode == 401) {
+        P_LOG_WARNING("iCal URL {} requires authentication, set ical-user and ical-pass", url);
+        return {};
+    }
+
+    P_LOG_DEBUG("Downloaded iCal URL {}: HTTP {}, {} bytes", url, httpCode, responseBody.size());
     return responseBody;
 }
 
@@ -93,6 +106,8 @@ LinuxCalendarProvider::LinuxCalendarProvider(std::vector<CalDavAccountConfig> ac
     for (auto &cfg : icalUrls) {
         ICalSource source;
         source.url = std::move(cfg.url);
+        source.username = std::move(cfg.username);
+        source.password = std::move(cfg.password);
         source.name = cfg.name.empty() ? source.url : std::move(cfg.name);
         m_icalSources.push_back(std::move(source));
     }
@@ -173,11 +188,15 @@ std::vector<CalendarEvent> LinuxCalendarProvider::getEvents(
         if (!requested)
             continue;
 
-        std::string icalData = fetchICalUrl(source.url);
-        if (icalData.empty())
+        std::string icalData = fetchICalUrl(source.url, source.username, source.password);
+        if (icalData.empty()) {
+            P_LOG_WARNING("iCal '{}' ({}) returned no data", source.name, source.url);
             continue;
+        }
 
         auto parsed = parseICalEvents(icalData, range);
+        P_LOG_DEBUG("iCal '{}' ({}): {} bytes downloaded, {} events parsed in range", source.name, source.url,
+                    icalData.size(), parsed.size());
         for (auto &ev : parsed) {
             CalendarEvent ce;
             ce.eventId = ev.uid;

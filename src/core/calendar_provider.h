@@ -66,6 +66,8 @@ struct ICalUrlConfig
 {
     std::string name;
     std::string url;
+    std::string username;
+    std::string password;
 };
 
 std::unique_ptr<CalendarProvider> createCalendarProvider(
