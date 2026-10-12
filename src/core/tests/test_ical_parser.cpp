@@ -26,6 +26,32 @@ void expectUTC(const std::chrono::system_clock::time_point &tp,
     EXPECT_EQ(tm.tm_sec, second);
 }
 
+class ScopedTimezone
+{
+public:
+    explicit ScopedTimezone(const char *tz)
+    {
+        if (const char *old = getenv("TZ"))
+            _old = old;
+        _hadOld = getenv("TZ") != nullptr;
+        setenv("TZ", tz, 1);
+        tzset();
+    }
+
+    ~ScopedTimezone()
+    {
+        if (_hadOld)
+            setenv("TZ", _old.c_str(), 1);
+        else
+            unsetenv("TZ");
+        tzset();
+    }
+
+private:
+    std::string _old;
+    bool _hadOld = false;
+};
+
 } // namespace
 
 TEST(ICalParserTest, SimpleEvent)
@@ -52,6 +78,8 @@ END:VCALENDAR)";
 
 TEST(ICalParserTest, AllDayEvent)
 {
+    ScopedTimezone tz("UTC");
+
     const std::string ical = R"(BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
@@ -128,6 +156,8 @@ TEST(ICalParserTest, InvalidInput)
 
 TEST(ICalParserTest, AllDayMultiDay)
 {
+    ScopedTimezone tz("UTC");
+
     const std::string ical = R"(BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
@@ -314,6 +344,8 @@ END:VCALENDAR)";
 
 TEST(ICalParserTest, MixedAllDayAndTimedEvents)
 {
+    ScopedTimezone tz("UTC");
+
     const std::string ical = R"(BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
@@ -582,4 +614,51 @@ END:VCALENDAR)";
     expectUTC(events[0].dtstart, 2026, 9, 14, 11, 30, 0);
     expectUTC(events[0].dtend, 2026, 9, 14, 12, 0, 0);
     expectUTC(events[1].dtstart, 2026, 9, 15, 11, 30, 0);
+}
+
+TEST(ICalParserTest, AllDayEventStartsAtLocalMidnight)
+{
+    ScopedTimezone tz("Europe/Lisbon");
+
+    const std::string ical = R"(BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:allday-1
+SUMMARY:Holiday
+DTSTART;VALUE=DATE:20260914
+DTEND;VALUE=DATE:20260915
+END:VEVENT
+END:VCALENDAR)";
+
+    auto events = parseICalEvents(ical);
+    ASSERT_EQ(events.size(), 1);
+    EXPECT_TRUE(events[0].isAllDay);
+    expectUTC(events[0].dtstart, 2026, 9, 13, 23, 0, 0);
+    expectUTC(events[0].dtend, 2026, 9, 14, 23, 0, 0);
+}
+
+TEST(ICalParserTest, RecurringAllDayEventStartsAtLocalMidnight)
+{
+    ScopedTimezone tz("Europe/Lisbon");
+
+    const std::string ical = R"(BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:allday-2
+SUMMARY:Birthday
+DTSTART;VALUE=DATE:20250914
+DTEND;VALUE=DATE:20250915
+RRULE:FREQ=YEARLY
+END:VEVENT
+END:VCALENDAR)";
+
+    DateRange range;
+    range.start = dayStart(2026, 9, 1);
+    range.end = dayStart(2026, 10, 1);
+
+    auto events = parseICalEvents(ical, range);
+    ASSERT_EQ(events.size(), 1);
+    EXPECT_TRUE(events[0].isAllDay);
+    expectUTC(events[0].dtstart, 2026, 9, 13, 23, 0, 0);
+    expectUTC(events[0].dtend, 2026, 9, 14, 23, 0, 0);
 }
