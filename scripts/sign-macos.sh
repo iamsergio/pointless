@@ -28,7 +28,9 @@ if [ -z "$APPLE_DEV_ID_APPLICATION" ]; then
 	exit 1
 fi
 
-security unlock
+if [ -z "$CI" ]; then
+	security unlock
+fi
 
 echo "Running macdeployqt ..."
 macdeployqt "$BUILD_DIR/bin/pointless.app" -qmldir="${SCRIPT_DIR}"/..
