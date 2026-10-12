@@ -6,6 +6,8 @@
 
 #include <libical/ical.h>
 
+#include <chrono>
+#include <ctime>
 #include <format>
 
 namespace pointless::core {
@@ -14,6 +16,15 @@ namespace {
 
 std::chrono::system_clock::time_point icalTimeToTimePoint(icaltimetype t)
 {
+    if (icaltime_is_date(t)) {
+        std::tm tm = {};
+        tm.tm_year = t.year - 1900;
+        tm.tm_mon = t.month - 1;
+        tm.tm_mday = t.day;
+        tm.tm_isdst = -1;
+        return std::chrono::system_clock::from_time_t(std::mktime(&tm));
+    }
+
     const icaltimezone *tz = icaltime_get_timezone(t);
     if (!tz)
         tz = icaltimezone_get_utc_timezone();
