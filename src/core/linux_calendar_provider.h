@@ -43,6 +43,8 @@ private:
     {
         std::string name;
         std::string url;
+        std::string username;
+        std::string password;
     };
     std::vector<ICalSource> m_icalSources;
 };

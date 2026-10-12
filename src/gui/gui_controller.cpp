@@ -675,6 +675,20 @@ QVariantMap GuiController::parsePassStoreOutput(const QString &output)
     if (icalNameMatch.hasMatch())
         result["ical-name"] = icalNameMatch.captured(1).trimmed();
 
+    static const QRegularExpression icalUserRegex(R"(^ical-user:(\S+))", QRegularExpression::MultilineOption);
+    static const QRegularExpression icalPassRegex(R"(^ical-pass:(\S+))", QRegularExpression::MultilineOption);
+
+    const auto icalUserMatch = icalUserRegex.match(output);
+    if (icalUserMatch.hasMatch())
+        result["ical-user"] = icalUserMatch.captured(1);
+
+    const auto icalPassMatch = icalPassRegex.match(output);
+    if (icalPassMatch.hasMatch())
+        result["ical-pass"] = icalPassMatch.captured(1);
+
+    static const QRegularExpression numberedIcalUserRegex(R"(^ical-user-(\d+):(\S+))", QRegularExpression::MultilineOption);
+    static const QRegularExpression numberedIcalPassRegex(R"(^ical-pass-(\d+):(\S+))", QRegularExpression::MultilineOption);
+
     static const QRegularExpression numberedIcalUrlRegex(R"(^ical-url-(\d+):(\S+))", QRegularExpression::MultilineOption);
     static const QRegularExpression numberedIcalNameRegex(R"(^ical-name-(\d+):(.+)$)", QRegularExpression::MultilineOption);
 
@@ -688,6 +702,18 @@ QVariantMap GuiController::parsePassStoreOutput(const QString &output)
     while (it.hasNext()) {
         const auto match = it.next();
         result[QStringLiteral("ical-name-%1").arg(match.captured(1))] = match.captured(2).trimmed();
+    }
+
+    it = numberedIcalUserRegex.globalMatch(output);
+    while (it.hasNext()) {
+        const auto match = it.next();
+        result[QStringLiteral("ical-user-%1").arg(match.captured(1))] = match.captured(2);
+    }
+
+    it = numberedIcalPassRegex.globalMatch(output);
+    while (it.hasNext()) {
+        const auto match = it.next();
+        result[QStringLiteral("ical-pass-%1").arg(match.captured(1))] = match.captured(2);
     }
 
     return result;
@@ -740,6 +766,8 @@ void GuiController::fetchPassStoreCredentials()
             pointless::core::ICalUrlConfig cfg;
             cfg.url = result["ical-url"].toString().toStdString();
             cfg.name = result.value("ical-name").toString().toStdString();
+            cfg.username = result.value("ical-user").toString().toStdString();
+            cfg.password = result.value("ical-pass").toString().toStdString();
             icalUrls.push_back(std::move(cfg));
         }
 
@@ -751,6 +779,8 @@ void GuiController::fetchPassStoreCredentials()
             cfg.url = result[urlKey].toString().toStdString();
             const QString nameKey = QStringLiteral("ical-name-%1").arg(i);
             cfg.name = result.value(nameKey).toString().toStdString();
+            cfg.username = result.value(QStringLiteral("ical-user-%1").arg(i)).toString().toStdString();
+            cfg.password = result.value(QStringLiteral("ical-pass-%1").arg(i)).toString().toStdString();
             icalUrls.push_back(std::move(cfg));
         }
 
