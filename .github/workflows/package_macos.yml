@@ -1,0 +1,106 @@
+# SPDX-FileCopyrightText: 2025 Sergio Martins
+# SPDX-License-Identifier: MIT
+
+name: Package for macOS
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to attach the package to"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    name: Package (rel macos-latest)
+    runs-on: macos-latest
+
+    env:
+      RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v7
+      with:
+        ref: ${{ env.RELEASE_TAG }}
+
+    - name: Init submodules
+      run: git submodule update --init --recursive -- 3rdparty/vcpkg 3rdparty/spix 3rdparty/glaze 3rdparty/cpr
+
+    - name: Create vcpkg cache directory
+      run: mkdir -p ${{ github.workspace }}/.cache/vcpkg
+
+    - name: Cache vcpkg binaries
+      uses: actions/cache@v6
+      with:
+        path: ${{ github.workspace }}/.cache/vcpkg
+        key: vcpkg-bin-macos-rel-${{ hashFiles('vcpkg.json') }}-${{ github.run_id }}
+        restore-keys: |
+          vcpkg-bin-macos-rel-${{ hashFiles('vcpkg.json') }}-
+          vcpkg-bin-macos-rel-
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: '6.11.0'
+        cache: true
+
+    - name: Setup vcpkg
+      run: |
+        cd 3rdparty/vcpkg
+        ./bootstrap-vcpkg.sh
+
+    - name: Setup signing keychain
+      env:
+        MACOS_CERTIFICATES_P12_BASE64: ${{ secrets.MACOS_CERTIFICATES_P12_BASE64 }}
+        MACOS_CERTIFICATES_P12_PASSWORD: ${{ secrets.MACOS_CERTIFICATES_P12_PASSWORD }}
+        KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+      run: |
+        KEYCHAIN_FILE="${RUNNER_TEMP}/macos-signing.keychain-db"
+        CERTS_FILE="${RUNNER_TEMP}/certs.p12"
+        echo "${MACOS_CERTIFICATES_P12_BASE64}" | base64 --decode > "${CERTS_FILE}"
+        curl -fLo "${RUNNER_TEMP}/DeveloperIDG2CA.cer" https://www.apple.com/certificateauthority/DeveloperIDG2CA.cer
+
+        security create-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_FILE}"
+        security set-keychain-settings -lut 21600 "${KEYCHAIN_FILE}"
+        security unlock-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_FILE}"
+        security import "${CERTS_FILE}" -k "${KEYCHAIN_FILE}" -P "${MACOS_CERTIFICATES_P12_PASSWORD}" \
+          -T /usr/bin/codesign -T /usr/bin/productsign
+        security import "${RUNNER_TEMP}/DeveloperIDG2CA.cer" -k "${KEYCHAIN_FILE}"
+        security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_FILE}"
+        security list-keychains -d user -s "${KEYCHAIN_FILE}" $(security list-keychains -d user | tr -d '"')
+        rm "${CERTS_FILE}"
+
+        security find-identity -v "${KEYCHAIN_FILE}"
+
+    - name: Build
+      env:
+        POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
+        POINTLESS_SUPABASE_ANON_KEY: ${{ secrets.POINTLESS_SUPABASE_ANON_KEY }}
+        VCPKG_BINARY_SOURCES: 'clear;files,${{ github.workspace }}/.cache/vcpkg,readwrite'
+      run: |
+        cmake --preset=rel -DPOINTLESS_BUILD_QT_COMMANDER=OFF
+        cmake --build build-rel
+
+    - name: Sign, package and notarize
+      env:
+        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        APPLE_ID: ${{ secrets.POINTLESS_APPLE_ID }}
+        APPLE_SPECIFIC_PASSWORD: ${{ secrets.APPLE_SPECIFIC_PASSWORD }}
+        APPLE_DEV_ID_APPLICATION: ${{ secrets.APPLE_DEV_ID_APPLICATION }}
+        APPLE_DEV_ID_INSTALLER: ${{ secrets.APPLE_DEV_ID_INSTALLER }}
+      run: ./scripts/package-macos.sh build-rel
+
+    - name: Upload package to release
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        PKG="Pointless-${RELEASE_TAG}-macos-arm64.pkg"
+        cp build-rel/Pointless.pkg "${PKG}"
+        gh release upload "${RELEASE_TAG}" "${PKG}" --clobber
