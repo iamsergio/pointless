@@ -5,7 +5,7 @@
 if(NOT POINTLESS_YOCTO_BUILD)
   set(VCPKG_OVERLAY_TRIPLETS "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/vcpkg/custom_triplets/")
 endif()
-include(cmake/ios-utils.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/ios-utils.cmake)
 
 if(POINTLESS_IOS_BUILD)
   if(NOT DEFINED ENV{QT_INSTALL})
@@ -58,7 +58,7 @@ endif()
 
 if(NOT POINTLESS_YOCTO_BUILD)
   if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-    set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/3rdparty/vcpkg/scripts/buildsystems/vcpkg.cmake)
+    set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/3rdparty/vcpkg/scripts/buildsystems/vcpkg.cmake)
   endif()
 endif()
 
@@ -70,7 +70,7 @@ if(APPLE)
   enable_language(OBJCXX)
 endif()
 
-include(cmake/CompilerFlags.cmake)
+include(${PROJECT_SOURCE_DIR}/cmake/CompilerFlags.cmake)
 
 set(POINTLESS_VERSION "1.0.0")
 string(TIMESTAMP POINTLESS_APPLE_BUILD_NUMBER "%y%m%d%H%M")
@@ -109,9 +109,9 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
 find_package(spdlog CONFIG REQUIRED)
 
@@ -157,10 +157,10 @@ if(IOS)
       "$ENV{APPLE_TEAM_ID}"
       CACHE STRING "iOS development team to use for signing")
 
-  configure_file(${CMAKE_SOURCE_DIR}/src/ios/Info.plist.in ${CMAKE_BINARY_DIR}/Info.plist @ONLY)
-  configure_file(${CMAKE_SOURCE_DIR}/src/ios/ExportOptions-TestFlight.plist.in ${CMAKE_BINARY_DIR}/ExportOptions-TestFlight.plist @ONLY)
+  configure_file(${PROJECT_SOURCE_DIR}/src/ios/Info.plist.in ${PROJECT_BINARY_DIR}/Info.plist @ONLY)
+  configure_file(${PROJECT_SOURCE_DIR}/src/ios/ExportOptions-TestFlight.plist.in ${PROJECT_BINARY_DIR}/ExportOptions-TestFlight.plist @ONLY)
 elseif(APPLE)
-  configure_file(${CMAKE_SOURCE_DIR}/src/mac/Info.plist.in ${CMAKE_BINARY_DIR}/Info.plist @ONLY)
+  configure_file(${PROJECT_SOURCE_DIR}/src/mac/Info.plist.in ${PROJECT_BINARY_DIR}/Info.plist @ONLY)
 endif()
 
 if(POINTLESS_YOCTO_BUILD)
@@ -207,8 +207,8 @@ add_subdirectory(src)
 
 option(POINTLESS_BUILD_QT_COMMANDER "Build the qt-commander injector used for UI automation" OFF)
 
-if(POINTLESS_BUILD_QT_COMMANDER)
-  set(qtcommander_dir ${CMAKE_SOURCE_DIR}/3rdparty/QtCommander)
+if(POINTLESS_BUILD_QT_COMMANDER AND PROJECT_IS_TOP_LEVEL)
+  set(qtcommander_dir ${PROJECT_SOURCE_DIR}/3rdparty/QtCommander)
   if(NOT EXISTS ${qtcommander_dir}/src/injector/CMakeLists.txt)
     message(FATAL_ERROR "3rdparty/QtCommander is empty — run: git submodule update --init")
   endif()
@@ -218,12 +218,12 @@ if(POINTLESS_BUILD_QT_COMMANDER)
   set(WITH_QML ON) # pointless is a QML app
   set(QT_NO_PRIVATE_MODULE_WARNING ON)
 
-  add_subdirectory(${qtcommander_dir}/src/injector ${CMAKE_BINARY_DIR}/qt-commander/injector)
-  add_subdirectory(${qtcommander_dir}/src/library ${CMAKE_BINARY_DIR}/qt-commander/library)
+  add_subdirectory(${qtcommander_dir}/src/injector ${PROJECT_BINARY_DIR}/qt-commander/injector)
+  add_subdirectory(${qtcommander_dir}/src/library ${PROJECT_BINARY_DIR}/qt-commander/library)
 
   # The MCP server only ever looks for the injector and the library in <project root>/.qt-commander/bin (builder.py resolves BUILD_DIR relative to the server's working directory), so write them
   # straight there rather than relying on a `cmake --install` step that a plain build never runs.
-  set(qtcommander_bindir ${CMAKE_SOURCE_DIR}/.qt-commander/bin)
+  set(qtcommander_bindir ${PROJECT_SOURCE_DIR}/.qt-commander/bin)
   set_target_properties(qt-injector PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${qtcommander_bindir})
   set_target_properties(qt-commander-lib PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${qtcommander_bindir})
 
@@ -237,7 +237,7 @@ if(POINTLESS_BUILD_QT_COMMANDER)
   endif()
 
   # Claude Code reads .mcp.json from the source root, not the build tree.
-  configure_file(${CMAKE_SOURCE_DIR}/.mcp.json.in ${CMAKE_SOURCE_DIR}/.mcp.json @ONLY)
+  configure_file(${PROJECT_SOURCE_DIR}/.mcp.json.in ${PROJECT_SOURCE_DIR}/.mcp.json @ONLY)
 endif()
 
 pointless_cpp_set_compiler_flags(pointless_core ${POINTLESS_DEVELOPER_MODE})

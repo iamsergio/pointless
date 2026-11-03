@@ -75,9 +75,9 @@ if(APPLE AND NOT IOS)
     PROPERTIES MACOSX_BUNDLE TRUE
                MACOSX_BUNDLE_GUI_IDENTIFIER "com.iamsergio.pointless.calendar-info"
                MACOSX_BUNDLE_BUNDLE_NAME "CalendarInfo"
-               MACOSX_BUNDLE_INFO_PLIST "${CMAKE_BINARY_DIR}/Info.plist")
-  target_sources(calendar_info PRIVATE ${CMAKE_SOURCE_DIR}/src/mac/pointless.entitlements)
-  set_source_files_properties("${CMAKE_SOURCE_DIR}/src/mac/pointless.entitlements" PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+               MACOSX_BUNDLE_INFO_PLIST "${PROJECT_BINARY_DIR}/Info.plist")
+  target_sources(calendar_info PRIVATE ${PROJECT_SOURCE_DIR}/src/mac/pointless.entitlements)
+  set_source_files_properties("${PROJECT_SOURCE_DIR}/src/mac/pointless.entitlements" PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 endif()
 
 target_include_directories(
@@ -94,7 +94,7 @@ if(POINTLESS_ENABLE_TESTS)
   add_executable(test_taskmanager tests/test_taskmanager.cpp)
   target_link_libraries(test_taskmanager PRIVATE pointless_core GTest::gtest_main)
   target_include_directories(test_taskmanager PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-  target_compile_definitions(test_taskmanager PRIVATE POINTLESS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+  target_compile_definitions(test_taskmanager PRIVATE POINTLESS_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
   add_test(NAME test_taskmanager COMMAND test_taskmanager)
 
   add_executable(test_tag tests/test_tag.cpp)
