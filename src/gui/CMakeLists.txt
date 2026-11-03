@@ -76,6 +76,8 @@ qt_add_qml_module(
   ${QML_SINGLETONS}
   SOURCES
   application.cpp
+  pointless_init.cpp
+  pointless_settings.cpp
   Clock.cpp
   gui_controller.cpp
   data_controller.cpp

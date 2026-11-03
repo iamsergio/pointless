@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "gui/local_settings.h"
+#include "gui/pointless_settings.h"
 
 #include <gtest/gtest.h>
 #include <QCoreApplication>
@@ -52,6 +53,7 @@ int main(int argc, char **argv)
     QCoreApplication app(g_argc, g_argv);
     app.setOrganizationName("PointlessTest");
     app.setApplicationName("LocalSettingsTest");
+    pointless::setSettingsIdentity("PointlessTest", "LocalSettingsTest");
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

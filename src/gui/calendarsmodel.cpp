@@ -3,6 +3,7 @@
 
 #include "calendarsmodel.h"
 
+#include "pointless_settings.h"
 #include "core/logger.h"
 
 #include <QByteArray>
@@ -71,7 +72,7 @@ int CalendarsModel::count() const
 
 void CalendarsModel::setEnabled(const QString &calendarId, bool enabled)
 {
-    QSettings settings;
+    QSettings settings = pointless::createSettings();
     QStringList disabledIds = settings.value(s_disabledCalendarIdsKey).toStringList();
 
     if (enabled)
@@ -97,7 +98,7 @@ void CalendarsModel::reload()
 
     auto calendars = _provider->getCalendars();
 
-    QSettings settings;
+    QSettings settings = pointless::createSettings();
     const QStringList disabledIds = settings.value(s_disabledCalendarIdsKey).toStringList();
 
     _entries.clear();
