@@ -4,7 +4,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick 2.15
-import QtQuick.Controls as QC
+import QtQuick.Controls.Fusion as QC
 import QtQuick.Layouts 1.15
 
 import pointless 1.0

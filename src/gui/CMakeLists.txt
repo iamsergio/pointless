@@ -33,6 +33,7 @@ endif()
 
 set(PLAIN_QML_FILES
     Main.qml
+    MainView.qml
     WeekNavigator.qml
     Task.qml
     Tag.qml
