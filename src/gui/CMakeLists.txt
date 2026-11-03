@@ -98,7 +98,7 @@ qt_add_qml_module(
   fonts/FontAwesome7Free-Regular-400.otf
   fonts/FontAwesome7-Solid-900.otf
   OUTPUT_DIRECTORY
-  ${CMAKE_BINARY_DIR}/pointless
+  ${PROJECT_BINARY_DIR}/pointless
   # NO_PLUGIN
 )
 
@@ -130,10 +130,10 @@ if(IOS)
                MACOSX_BUNDLE_IDENTIFIER ${BUNDLE_IDENTIFIER}
                MACOSX_BUNDLE TRUE
                XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME "AppIcon"
-               MACOSX_BUNDLE_INFO_PLIST "${CMAKE_BINARY_DIR}/Info.plist")
+               MACOSX_BUNDLE_INFO_PLIST "${PROJECT_BINARY_DIR}/Info.plist")
 
-  target_sources(pointless PRIVATE ${CMAKE_SOURCE_DIR}/assets/ios/Images.xcassets)
-  set_source_files_properties("${CMAKE_SOURCE_DIR}/assets/ios/Images.xcassets" PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+  target_sources(pointless PRIVATE ${PROJECT_SOURCE_DIR}/assets/ios/Images.xcassets)
+  set_source_files_properties("${PROJECT_SOURCE_DIR}/assets/ios/Images.xcassets" PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
 elseif(APPLE) # macOS
   set_target_properties(
@@ -141,7 +141,7 @@ elseif(APPLE) # macOS
     PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER ${BUNDLE_IDENTIFIER}
                MACOSX_BUNDLE_IDENTIFIER ${BUNDLE_IDENTIFIER}
                MACOSX_BUNDLE TRUE
-               MACOSX_BUNDLE_INFO_PLIST "${CMAKE_BINARY_DIR}/Info.plist")
+               MACOSX_BUNDLE_INFO_PLIST "${PROJECT_BINARY_DIR}/Info.plist")
 endif()
 
 if(POINTLESS_ENABLE_TESTS)
@@ -155,7 +155,7 @@ if(POINTLESS_ENABLE_TESTS)
 
   add_executable(test_gui tests/test_gui.cpp)
   target_link_libraries(test_gui PRIVATE pointless_core gui_test_harness_qt Spix::Core GTest::gtest_main)
-  target_compile_definitions(test_gui PRIVATE POINTLESS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+  target_compile_definitions(test_gui PRIVATE POINTLESS_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
   add_test(NAME test_gui COMMAND test_gui --local)
   if(POINTLESS_SLINT_OVER_QTCORE)
     # It drives the QML UI, which isn't built in this preset, test_gui_slint is the Slint version
@@ -165,7 +165,7 @@ if(POINTLESS_ENABLE_TESTS)
 
   add_executable(screenshot_collection tests/screenshot_collection.cpp)
   target_link_libraries(screenshot_collection PRIVATE pointless_core gui_test_harness_qt Spix::Core GTest::gtest_main)
-  target_compile_definitions(screenshot_collection PRIVATE POINTLESS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+  target_compile_definitions(screenshot_collection PRIVATE POINTLESS_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
   # Writes into screenshots/, so not part of the default ctest run
   add_test(NAME screenshot_collection COMMAND screenshot_collection)
   set_tests_properties(screenshot_collection PROPERTIES DISABLED TRUE)
