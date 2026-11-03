@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import QtQuick 2.15
-import QtQuick.Controls 2.15
+import QtQuick.Controls.Fusion
 import pointless 1.0
 
 Button {

@@ -13,7 +13,6 @@
 #include <QCommandLineParser>
 #include <QDebug>
 #include <QGuiApplication>
-#include <QQuickStyle>
 #include <QQuickWindow>
 
 #include <chrono>
@@ -116,8 +115,6 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
     // The UI is Slint, created by the bridge's main() (src/slint/bridge)
     return;
 #endif
-
-    QQuickStyle::setStyle(QStringLiteral("Fusion"));
 
     _engine.loadFromModule("pointless", "Main");
 

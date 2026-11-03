@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import QtQuick 2.15
-import QtQuick.Controls as QQC
+import QtQuick.Controls.Fusion as QQC
 
 import pointless 1.0
 
