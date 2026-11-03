@@ -10,6 +10,7 @@
 #include "tagfiltermodel.h"
 #include "date_utils.h"
 #include "data_controller.h"
+#include "pointless_settings.h"
 #include "error_controller.h"
 #include "utils.h"
 #include "Clock.h"
@@ -1022,7 +1023,7 @@ void GuiController::dumpDebug() const
                static_cast<const void *>(&data), static_cast<const void *>(&localData), data.revision(), data.taskCount());
 
     P_LOG_INFO("Config location: {}", QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation).toStdString());
-    QSettings s;
+    QSettings s = pointless::createSettings();
     P_LOG_INFO("QSettings file: {}", s.fileName().toStdString());
 }
 

@@ -2,11 +2,13 @@
 // SPDX-License-Identifier: MIT
 
 #include "local_settings.h"
+#include "pointless_settings.h"
 #include "core/logger.h"
 
 #include <QSettings>
 
 LocalSettings::LocalSettings()
+    : _settings(pointless::createSettings())
 {
     P_LOG_INFO("refresh token={}", maskedToken(refreshToken()));
 }
