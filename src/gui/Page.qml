@@ -17,8 +17,11 @@ Rectangle {
     property string rightButtonIcon: ""
     property string rightButtonObjectName: ""
     signal rightButtonClicked()
+    property string backButtonText: ""
+    property string rightButtonText: ""
     default property alias contentData: contentArea.data
     property alias headerData: centerArea.data
+    property alias overlayData: overlay.data
 
     ColumnLayout {
         anchors.fill: parent
@@ -35,8 +38,9 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
                 fontAwesomeIcon: "\uf053"
-                iconColor: Style.ink
-                iconSize: Style.fromPixel(18)
+                textLabel: root.backButtonText
+                iconColor: root.backButtonText.length > 0 ? Style.inkSecondary : Style.ink
+                iconSize: Style.fromPixel(root.backButtonText.length > 0 ? 15 : 18)
                 onClicked: root.backClicked()
             }
 
@@ -67,10 +71,13 @@ Rectangle {
                 objectName: root.rightButtonObjectName
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                visible: root.rightButtonIcon.length > 0
+                visible: root.rightButtonIcon.length > 0 || root.rightButtonText.length > 0
                 fontAwesomeIcon: root.rightButtonIcon
-                iconColor: Style.ink
-                iconSize: Style.fromPixel(18)
+                textLabel: root.rightButtonText
+                diameter: Style.fromPixel(root.rightButtonText.length > 0 ? 34 : 40)
+                fillColor: root.rightButtonText.length > 0 ? Style.accent : "transparent"
+                iconColor: root.rightButtonText.length > 0 ? Style.accentInk : Style.ink
+                iconSize: Style.fromPixel(root.rightButtonText.length > 0 ? 14 : 18)
                 onClicked: root.rightButtonClicked()
             }
         }
@@ -80,5 +87,11 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
         }
+    }
+
+    Item {
+        id: overlay
+        anchors.fill: parent
+        z: 10
     }
 }

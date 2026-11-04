@@ -9,12 +9,17 @@ import pointless 1.0
 
 Rectangle {
     id: root
-    color: Style.calendarBackground
-    radius: Style.fromPixel(10)
+    color: Style.surface
+    radius: Style.fromPixel(18)
+    border.width: 1
+    border.color: Style.line
+    implicitHeight: calendarColumn.implicitHeight + Style.fromPixel(28)
 
     required property date currentDate
 
     signal dateSelected(date selectedDate)
+
+    readonly property real cellSize: Style.fromPixel(33)
 
     function setInitialMonth() {
         if (isNaN(currentDate.getTime())) {
@@ -24,94 +29,79 @@ Rectangle {
         }
     }
 
+    function shiftMonth(delta) {
+        var d = calendarModel.month;
+        calendarModel.month = new Date(d.getFullYear(), d.getMonth() + delta, 1);
+    }
+
     CalendarModel {
         id: calendarModel
     }
 
     ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: Style.fromPixel(16)
-        spacing: Style.fromPixel(10)
+        id: calendarColumn
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+            margins: Style.fromPixel(14)
+        }
+        spacing: Style.fromPixel(8)
 
-        // Header
         RowLayout {
             Layout.fillWidth: true
-            spacing: Style.fromPixel(10)
-
-            Text {
-                text: "\uf073" // Calendar icon
-                font.family: "Font Awesome 6 Free"
-                font.pixelSize: Style.fromPixel(20)
-                color: Style.calendarSecondaryText
-            }
+            spacing: Style.fromPixel(4)
 
             Text {
                 text: Qt.formatDate(calendarModel.month, "MMMM yyyy")
-                color: Style.calendarText
+                color: Style.ink
                 font.pixelSize: Style.fromPixel(16)
-                font.bold: true
-            }
-
-            Item {
+                font.weight: Font.DemiBold
                 Layout.fillWidth: true
             }
 
-            FontAwesomeButton {
+            IconButton {
                 id: previousMonthButton
-                fontAwesomeIcon: "\uf053" // Chevron left
-                iconSize: Style.fromPixel(18)
-                iconColor: Style.calendarSecondaryText
-                backgroundColor: "transparent"
-                onClicked: {
-                    var d = calendarModel.month;
-                    var newDate = new Date(d.getFullYear(), d.getMonth() - 1, 1);
-                    calendarModel.month = newDate;
-                }
+                diameter: Style.fromPixel(32)
+                fontAwesomeIcon: "\uf053"
+                iconSize: Style.fromPixel(13)
+                onClicked: root.shiftMonth(-1)
             }
 
-            FontAwesomeButton {
+            IconButton {
                 id: nextMonthButton
-                fontAwesomeIcon: "\uf054" // Chevron right
-                iconSize: previousMonthButton.iconSize
-                iconColor: Style.calendarSecondaryText
-                backgroundColor: "transparent"
-                onClicked: {
-                    var d = calendarModel.month;
-                    var newDate = new Date(d.getFullYear(), d.getMonth() + 1, 1);
-                    calendarModel.month = newDate;
-                }
+                diameter: Style.fromPixel(32)
+                fontAwesomeIcon: "\uf054"
+                iconSize: Style.fromPixel(13)
+                onClicked: root.shiftMonth(1)
             }
         }
 
-        // Weekday headers
-        Item {
+        Row {
             Layout.fillWidth: true
-            Layout.preferredHeight: Style.fromPixel(20)
-            Row {
-                anchors.fill: parent
-                anchors.topMargin: Style.fromPixel(5)
-                Repeater {
-                    model: ["M", "T", "W", "T", "F", "S", "S"]
-                    Text {
-                        required property string modelData
-                        text: modelData
-                        color: Style.calendarSecondaryText
-                        font.pixelSize: Style.fromPixel(16)
-                        width: parent.width / 7
-                        horizontalAlignment: Text.AlignHCenter
-                    }
+            Repeater {
+                model: ["M", "T", "W", "T", "F", "S", "S"]
+                Text {
+                    required property string modelData
+                    text: modelData
+                    color: Style.inkTertiary
+                    font.pixelSize: Style.fromPixel(11)
+                    font.weight: Font.DemiBold
+                    width: calendarColumn.width / 7
+                    height: Style.fromPixel(20)
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
                 }
             }
         }
 
-        // Days Grid
         GridView {
             id: daysGrid
             Layout.fillWidth: true
-            Layout.fillHeight: true
+            Layout.preferredHeight: cellHeight * 6
             model: calendarModel
             cellWidth: width / 7
-            cellHeight: height / 6
+            cellHeight: root.cellSize + Style.fromPixel(4)
             interactive: false
 
             delegate: Item {
@@ -124,19 +114,24 @@ Rectangle {
                 required property string day
                 required property bool isCurrentMonth
                 readonly property bool isSelectedDay: date.getDate() === root.currentDate.getDate() && date.getMonth() === root.currentDate.getMonth() && date.getFullYear() === root.currentDate.getFullYear()
+                readonly property bool isWeekend: date.getDay() === 0 || date.getDay() === 6
 
                 Rectangle {
                     anchors.centerIn: parent
-                    width: Math.min(parent.width, parent.height) * 0.8
+                    width: root.cellSize
                     height: width
                     radius: width / 2
-                    color: delegateRoot.isSelectedDay ? Style.calendarHighlight : "transparent"
+                    color: delegateRoot.isSelectedDay ? Style.accent : "transparent"
+                    border.width: delegateRoot.isToday && !delegateRoot.isSelectedDay ? 1 : 0
+                    border.color: Style.accent
 
                     Text {
                         anchors.centerIn: parent
                         text: delegateRoot.day
-                        color: delegateRoot.isSelectedDay ? "white" : (delegateRoot.isToday ? Style.calendarHighlight : (delegateRoot.isCurrentMonth ? Style.calendarText : Style.calendarDisabledText))
+                        color: delegateRoot.isSelectedDay ? Style.accentInk : (!delegateRoot.isCurrentMonth ? Style.inkTertiary : (delegateRoot.isWeekend ? Style.inkSecondary : Style.ink))
+                        opacity: delegateRoot.isCurrentMonth || delegateRoot.isSelectedDay ? 1 : 0.5
                         font.pixelSize: Style.fromPixel(14)
+                        font.weight: delegateRoot.isSelectedDay ? Font.DemiBold : Font.Normal
                     }
 
                     MouseArea {

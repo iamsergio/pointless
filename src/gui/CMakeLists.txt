@@ -35,19 +35,15 @@ set(PLAIN_QML_FILES
     Main.qml
     MainView.qml
     WeekNavigator.qml
-    Tag.qml
     WeekView.qml
     SoonView.qml
     LaterView.qml
-    FontAwesomeButton.qml
     ViewButton.qml
     IconButton.qml
     TaskRow.qml
     TaskList.qml
     LoginScreen.qml
-    CheckBox.qml
     Calendar.qml
-    LineEdit.qml
     Page.qml
     EditTaskPage.qml
     AddTagPopup.qml
@@ -61,10 +57,10 @@ set(PLAIN_QML_FILES
     Menu.qml
     MenuItem.qml
     SidePanel.qml
+    Switch.qml
     TagsView.qml
     TasksByTagPage.qml
     SearchPage.qml
-    ToggleButton.qml
     GoalsView.qml)
 
 qt_add_qml_module(
