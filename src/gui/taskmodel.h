@@ -45,7 +45,8 @@ public:
         DescriptionRole,
         HasNotesRole,
         IsGoalRole,
-        IsYearlyRole
+        IsYearlyRole,
+        MeetingUrlRole
     };
 
     explicit TaskModel(QObject *parent = nullptr);

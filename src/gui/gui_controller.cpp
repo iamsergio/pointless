@@ -45,6 +45,7 @@
 #include <QRegularExpression>
 #endif
 
+#include <algorithm>
 #include <cstdlib>
 #include <string>
 #include <utility>
@@ -216,17 +217,24 @@ GuiController::GuiController(QObject *parent)
 
             const auto allTasks = _dataController->localData().data().getAllTasks();
 
+            const auto meetingUrlOf = [](const core::CalendarEvent &event) -> std::optional<std::string> {
+                if (event.meetingUrl.empty())
+                    return std::nullopt;
+                return event.meetingUrl;
+            };
+
             int addedCount = 0;
             for (const auto &event : events) {
-                bool alreadyImported = false;
-                for (const auto &task : allTasks) {
-                    if (task.uuidInDeviceCalendar.has_value() && *task.uuidInDeviceCalendar == event.eventId) {
-                        alreadyImported = true;
-                        break;
-                    }
-                }
+                const auto importedTask = std::ranges::find_if(allTasks, [&event](const core::Task &task) {
+                    return task.uuidInDeviceCalendar.has_value() && *task.uuidInDeviceCalendar == event.eventId;
+                });
 
-                if (alreadyImported) {
+                if (importedTask != allTasks.end()) {
+                    if (importedTask->meetingUrl != meetingUrlOf(event)) {
+                        core::Task updated = *importedTask;
+                        updated.meetingUrl = meetingUrlOf(event);
+                        taskModel()->updateTask(updated);
+                    }
                     continue;
                 }
 
@@ -237,6 +245,7 @@ GuiController::GuiController(QObject *parent)
                 task.uuidInDeviceCalendar = event.eventId;
                 task.deviceCalendarUuid = event.calendarId;
                 task.deviceCalendarName = event.calendarName;
+                task.meetingUrl = meetingUrlOf(event);
 
                 taskModel()->addTask(task);
                 addedCount++;

@@ -272,6 +272,7 @@ Item {
                             required property bool hasNotes
                             required property bool isGoal
                             required property bool isYearly
+                            required property string meetingUrl
 
                             readonly property bool showsEveningLabel: {
                                 if (!isEvening)
@@ -341,6 +342,7 @@ Item {
                                 taskHasNotes: entry.hasNotes
                                 taskIsGoal: entry.isGoal
                                 taskIsYearly: entry.isYearly
+                                taskMeetingUrl: entry.meetingUrl
                                 taskIsSoon: entry.isSoon
                                 taskIsLater: entry.isLater
                                 taskIsCurrent: entry.isCurrent

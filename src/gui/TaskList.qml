@@ -67,6 +67,7 @@ Rectangle {
             required property bool hasNotes
             required property bool isGoal
             required property bool isYearly
+            required property string meetingUrl
 
             objectName: "task_" + index
 
@@ -86,6 +87,7 @@ Rectangle {
             taskHasNotes: hasNotes
             taskIsGoal: isGoal
             taskIsYearly: isYearly
+            taskMeetingUrl: meetingUrl
             taskHasDueDate: hasDueDate
             taskHasDueDateTime: hasDueDateTime
             taskIsSoon: isSoon

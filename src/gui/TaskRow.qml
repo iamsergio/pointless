@@ -24,6 +24,7 @@ Rectangle {
     required property bool taskHasNotes
     required property bool taskIsGoal
     required property bool taskIsYearly
+    required property string taskMeetingUrl
 
     required property bool taskIsSoon
     required property bool taskIsLater
@@ -251,6 +252,26 @@ Rectangle {
                     font.pixelSize: Style.fromPixel(12.5)
                     color: Style.inkSecondary
                 }
+            }
+        }
+
+        Text {
+            objectName: "meetingLinkButton"
+            visible: root.taskMeetingUrl !== ""
+            text: "\uf0c1"
+            font.family: fontAwesome.name
+            font.pixelSize: Style.fromPixel(16)
+            color: meetingLinkHover.hovered ? Style.accent : Style.inkTertiary
+
+            HoverHandler {
+                id: meetingLinkHover
+                cursorShape: Qt.PointingHandCursor
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                anchors.margins: -Style.fromPixel(8)
+                onClicked: Qt.openUrlExternally(root.taskMeetingUrl)
             }
         }
 
