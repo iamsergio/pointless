@@ -529,6 +529,107 @@ END:VCALENDAR)";
     EXPECT_TRUE(foundException) << "Exception VEVENT inside range should be preserved";
 }
 
+TEST(ICalParserTest, TeamsLinkFromDescription)
+{
+    const std::string ical = "BEGIN:VCALENDAR\r\n"
+                             "VERSION:2.0\r\n"
+                             "BEGIN:VEVENT\r\n"
+                             "UID:teams-1\r\n"
+                             "SUMMARY:Daily\r\n"
+                             "DTSTART:20250106T090000Z\r\n"
+                             "DTEND:20250106T091500Z\r\n"
+                             "LOCATION:Microsoft Teams Meeting\r\n"
+                             "DESCRIPTION:Need help?<https://aka.ms/JoinTeamsMeeting?omkt=en-US>\\n\\nJoin\r\n"
+                             "  the meeting now<https://teams.microsoft.com/l/meetup-join/19%3ameeting_abc\r\n"
+                             " %40thread.v2/0?context=%7b%22Tid%22%3a%2242%22%7d>\\nMeeting ID: 1\\, 2\r\n"
+                             "END:VEVENT\r\n"
+                             "END:VCALENDAR\r\n";
+
+    auto events = parseICalEvents(ical);
+    ASSERT_EQ(events.size(), 1);
+    EXPECT_EQ(events[0].meetingUrl, "https://teams.microsoft.com/l/meetup-join/19%3ameeting_abc%40thread.v2/0?context=%7b%22Tid%22%3a%2242%22%7d");
+}
+
+TEST(ICalParserTest, TeamsLinkFromMicrosoftProperty)
+{
+    const std::string ical = R"(BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:teams-2
+SUMMARY:Status
+DTSTART:20250106T090000Z
+DTEND:20250106T091500Z
+DESCRIPTION:Join https://teams.microsoft.com/meet/222?p=b
+X-MICROSOFT-SKYPETEAMSMEETINGURL:https://teams.microsoft.com/l/meetup-join/19%3ameeting_xyz%40thread.v2/0
+END:VEVENT
+END:VCALENDAR)";
+
+    auto events = parseICalEvents(ical);
+    ASSERT_EQ(events.size(), 1);
+    EXPECT_EQ(events[0].meetingUrl, "https://teams.microsoft.com/l/meetup-join/19%3ameeting_xyz%40thread.v2/0");
+}
+
+TEST(ICalParserTest, ZoomLinkFromLocation)
+{
+    const std::string ical = R"(BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:zoom-1
+SUMMARY:Sync
+DTSTART:20250106T090000Z
+DTEND:20250106T091500Z
+LOCATION:https://zoom.us/j/81132435236?pwd=xyz
+URL:message:%3Cabc@mail%3E
+END:VEVENT
+END:VCALENDAR)";
+
+    auto events = parseICalEvents(ical);
+    ASSERT_EQ(events.size(), 1);
+    EXPECT_EQ(events[0].meetingUrl, "https://zoom.us/j/81132435236?pwd=xyz");
+}
+
+TEST(ICalParserTest, EventWithoutMeetingLink)
+{
+    const std::string ical = R"(BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:plain-1
+SUMMARY:Dentist
+DTSTART:20250106T090000Z
+DTEND:20250106T091500Z
+DESCRIPTION:Bring https://example.com/form
+END:VEVENT
+END:VCALENDAR)";
+
+    auto events = parseICalEvents(ical);
+    ASSERT_EQ(events.size(), 1);
+    EXPECT_TRUE(events[0].meetingUrl.empty());
+}
+
+TEST(ICalParserTest, RecurringOccurrencesKeepMeetingLink)
+{
+    const std::string ical = R"(BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:weekly-teams
+SUMMARY:Weekly
+DTSTART:20250106T090000Z
+DTEND:20250106T093000Z
+RRULE:FREQ=WEEKLY;BYDAY=MO
+DESCRIPTION:Join https://teams.microsoft.com/meet/111?p=a
+END:VEVENT
+END:VCALENDAR)";
+
+    DateRange range;
+    range.start = std::chrono::sys_days(std::chrono::year(2025) / 2 / 3);
+    range.end = std::chrono::sys_days(std::chrono::year(2025) / 2 / 17);
+
+    auto events = parseICalEvents(ical, range);
+    ASSERT_EQ(events.size(), 2);
+    EXPECT_EQ(events[0].meetingUrl, "https://teams.microsoft.com/meet/111?p=a");
+    EXPECT_EQ(events[1].meetingUrl, "https://teams.microsoft.com/meet/111?p=a");
+}
+
 TEST(ICalParserTest, RecurringEventWithoutRangeReturnsOriginal)
 {
     const std::string ical = R"(BEGIN:VCALENDAR

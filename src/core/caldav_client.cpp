@@ -371,6 +371,7 @@ std::vector<CalendarEvent> CalDavClient::fetchEvents(
             ce.calendarId = calendarId;
             ce.calendarName = calendarName;
             ce.title = ev.summary;
+            ce.meetingUrl = std::move(ev.meetingUrl);
             ce.startDate = ev.dtstart;
             ce.endDate = ev.dtend;
             ce.isAllDay = ev.isAllDay;

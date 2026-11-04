@@ -33,6 +33,7 @@ struct CalendarEvent
     std::string calendarId;
     std::string calendarName;
     std::string title;
+    std::string meetingUrl;
     std::chrono::system_clock::time_point startDate;
     std::chrono::system_clock::time_point endDate;
     bool isAllDay = false;

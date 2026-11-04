@@ -3,6 +3,7 @@
 
 #include "ical_parser.h"
 #include "logger.h"
+#include "meeting_url.h"
 
 #include <libical/ical.h>
 
@@ -38,6 +39,35 @@ std::string formatRecurrenceId(icaltimetype t)
     return std::format("{:04}{:02}{:02}T{:02}{:02}{:02}Z",
                        t.year, t.month, t.day,
                        t.hour, t.minute, t.second);
+}
+
+std::string_view nullableText(const char *value)
+{
+    return value ? std::string_view(value) : std::string_view();
+}
+
+std::string_view xPropertyText(icalcomponent *vevent, std::string_view name)
+{
+    for (icalproperty *prop = icalcomponent_get_first_property(vevent, ICAL_X_PROPERTY);
+         prop != nullptr;
+         prop = icalcomponent_get_next_property(vevent, ICAL_X_PROPERTY)) {
+        const char *propName = icalproperty_get_x_name(prop);
+        if (propName && name == propName) {
+            return nullableText(icalproperty_get_x(prop));
+        }
+    }
+
+    return {};
+}
+
+std::string findEventMeetingUrl(icalcomponent *vevent)
+{
+    icalproperty *urlProp = icalcomponent_get_first_property(vevent, ICAL_URL_PROPERTY);
+
+    return findMeetingUrl({ xPropertyText(vevent, "X-MICROSOFT-SKYPETEAMSMEETINGURL"),
+                            urlProp ? nullableText(icalproperty_get_url(urlProp)) : std::string_view(),
+                            nullableText(icalcomponent_get_location(vevent)),
+                            nullableText(icalcomponent_get_description(vevent)) });
 }
 
 } // namespace
@@ -82,6 +112,7 @@ std::vector<ICalEvent> parseICalEvents(const std::string &icalData,
         }
 
         auto duration = dtendTp - dtstartTp;
+        const std::string meetingUrl = findEventMeetingUrl(vevent);
 
         icalproperty *rruleProp = icalcomponent_get_first_property(vevent, ICAL_RRULE_PROPERTY);
         if (rruleProp && range.has_value()) {
@@ -104,6 +135,7 @@ std::vector<ICalEvent> parseICalEvents(const std::string &icalData,
                 ICalEvent ev;
                 ev.uid = uid + "_" + formatRecurrenceId(next);
                 ev.summary = summary;
+                ev.meetingUrl = meetingUrl;
                 ev.isAllDay = isAllDay;
                 ev.dtstart = occurrenceStart;
                 ev.dtend = ev.dtstart + duration;
@@ -123,6 +155,7 @@ std::vector<ICalEvent> parseICalEvents(const std::string &icalData,
             ICalEvent ev;
             ev.uid = uid;
             ev.summary = summary;
+            ev.meetingUrl = meetingUrl;
             ev.isAllDay = isAllDay;
             ev.dtstart = dtstartTp;
             ev.dtend = dtendTp;

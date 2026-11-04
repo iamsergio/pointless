@@ -28,6 +28,7 @@ add_library(
   merger.cpp
   ${POINTLESS_TESTS_SRCS}
   logger.cpp
+  meeting_url.cpp
   calendar_provider.cpp)
 
 if("$ENV{POINTLESS_SUPABASE_ANON_KEY}" STREQUAL "")
@@ -106,6 +107,11 @@ if(POINTLESS_ENABLE_TESTS)
   target_link_libraries(test_task PRIVATE pointless_core GTest::gtest_main)
   target_include_directories(test_task PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
   add_test(NAME test_task COMMAND test_task)
+
+  add_executable(test_meeting_url tests/test_meeting_url.cpp)
+  target_link_libraries(test_meeting_url PRIVATE pointless_core GTest::gtest_main)
+  target_include_directories(test_meeting_url PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+  add_test(NAME test_meeting_url COMMAND test_meeting_url)
 
   add_executable(test_supabase tests/test_supabase.cpp)
   target_link_libraries(test_supabase PRIVATE pointless_core GTest::gtest_main)

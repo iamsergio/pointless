@@ -16,6 +16,7 @@ struct ICalEvent
 {
     std::string uid;
     std::string summary;
+    std::string meetingUrl;
     std::chrono::system_clock::time_point dtstart;
     std::chrono::system_clock::time_point dtend;
     bool isAllDay = false;

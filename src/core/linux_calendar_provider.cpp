@@ -205,6 +205,7 @@ std::vector<CalendarEvent> LinuxCalendarProvider::getEvents(
             ce.calendarId = source.url;
             ce.calendarName = source.name;
             ce.title = ev.summary;
+            ce.meetingUrl = std::move(ev.meetingUrl);
             ce.startDate = ev.dtstart;
             ce.endDate = ev.dtend;
             ce.isAllDay = ev.isAllDay;
