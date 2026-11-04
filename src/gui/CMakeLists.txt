@@ -35,12 +35,10 @@ set(PLAIN_QML_FILES
     Main.qml
     MainView.qml
     WeekNavigator.qml
-    Task.qml
     Tag.qml
     WeekView.qml
     SoonView.qml
     LaterView.qml
-    TaskView.qml
     FontAwesomeButton.qml
     ViewButton.qml
     IconButton.qml

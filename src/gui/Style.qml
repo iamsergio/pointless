@@ -19,7 +19,7 @@ Item {
         return px * scaleFactor;
     }
 
-    property color background: "#2d2e32"
+    property color background: "#11141B"
     readonly property color background2: "#141b28"
     property color buttonBackground: "#414244"
     readonly property color surface: "#1A1E27"
