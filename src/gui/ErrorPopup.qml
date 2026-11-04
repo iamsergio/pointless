@@ -11,8 +11,13 @@ Item {
 
     signal okClicked
 
+    FontLoader {
+        id: fontAwesome
+        source: "fonts/FontAwesome7-Solid-900.otf"
+    }
+
     Rectangle {
-        color: "#80000000"
+        color: "#8C000000"
         anchors.fill: parent
 
         MouseArea {
@@ -24,55 +29,76 @@ Item {
 
         Rectangle {
             anchors.centerIn: parent
-            width: Math.min(parent.width * 0.8, Style.fromPixel(400))
-            height: contentLayout.height + Style.fromPixel(48)
-            color: "#131c27"
-            border.width: Style.fromPixel(1)
-            border.color: "#222b38"
-            radius: Style.fromPixel(12)
+            width: Math.min(parent.width - Style.fromPixel(40), Style.fromPixel(400))
+            height: contentLayout.implicitHeight + Style.fromPixel(36)
+            color: Style.surface
+            radius: Style.fromPixel(26)
+
+            MouseArea {
+                anchors.fill: parent
+            }
 
             ColumnLayout {
                 id: contentLayout
-                anchors.centerIn: parent
-                width: parent.width - Style.fromPixel(32)
-                spacing: Style.fromPixel(24)
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                    leftMargin: Style.fromPixel(22)
+                    rightMargin: Style.fromPixel(22)
+                }
+                spacing: Style.fromPixel(14)
+
+                Rectangle {
+                    implicitWidth: Style.fromPixel(44)
+                    implicitHeight: Style.fromPixel(44)
+                    radius: Style.fromPixel(14)
+                    color: Style.dangerSoft
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: ""
+                        font.family: fontAwesome.name
+                        font.pixelSize: Style.fromPixel(20)
+                        color: Style.danger
+                    }
+                }
 
                 Text {
-                    text: "Error"
-                    font.pixelSize: Style.fromPixel(24)
-                    font.bold: true
-                    color: "#ff4444"
-                    horizontalAlignment: Text.AlignHCenter
-                    Layout.alignment: Qt.AlignHCenter
+                    text: "Something went wrong"
+                    font.pixelSize: Style.fromPixel(21)
+                    font.weight: Font.DemiBold
+                    color: Style.ink
+                    Layout.fillWidth: true
                 }
 
                 Text {
                     text: GuiController.errorController.errorText
-                    font.pixelSize: Style.fromPixel(12)
-                    color: "white"
+                    font.pixelSize: Style.fromPixel(14)
+                    color: Style.inkSecondary
                     wrapMode: Text.WordWrap
-                    horizontalAlignment: Text.AlignHCenter
                     Layout.fillWidth: true
                 }
 
                 Button {
                     id: okButton
                     text: "OK"
-                    font.pixelSize: Style.fromPixel(18)
+                    Layout.fillWidth: true
+                    Layout.topMargin: Style.fromPixel(4)
+                    implicitHeight: Style.fromPixel(48)
                     background: Rectangle {
-                        color: "#1884f7"
-                        radius: Style.fromPixel(8)
+                        color: Style.accent
+                        radius: Style.fromPixel(15)
+                        opacity: okButton.pressed ? 0.8 : 1
                     }
                     contentItem: Text {
-                        color: "white"
+                        color: Style.accentInk
                         text: "OK"
-                        font.pixelSize: Style.fromPixel(18)
-                        font.bold: true
+                        font.pixelSize: Style.fromPixel(15.5)
+                        font.weight: Font.DemiBold
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
-                    Layout.fillWidth: true
-                    implicitHeight: Style.fromPixel(48)
                     onClicked: {
                         root.okClicked();
                     }

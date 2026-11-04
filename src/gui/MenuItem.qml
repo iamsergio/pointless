@@ -7,31 +7,64 @@ import pointless 1.0
 
 Rectangle {
     id: root
-    border.width: 0
-    color: mouseArea.containsPress ? Qt.lighter(Style.taskBackground, 1.4)
-         : mouseArea.containsMouse ? Qt.lighter(Style.taskBackground, 1.2)
-         : "transparent"
-    height: Style.menuHeight
-    Layout.fillWidth: true
-    Layout.leftMargin: Style.fromPixel(6)
-    Layout.rightMargin: Style.fromPixel(6)
-    radius: Style.fromPixel(6)
+
+    property alias text: textItem.text
+    property string fontAwesomeIcon: ""
+    property color textColor: Style.ink
+    property color iconColor: Style.inkSecondary
+    property bool chip: false
 
     signal triggered
 
-    property alias text: textItem.text
+    implicitWidth: chip ? chipRow.implicitWidth + Style.fromPixel(28) : 0
+    height: chip ? Style.fromPixel(34) : Style.fromPixel(50)
+    Layout.fillWidth: !chip
+    radius: chip ? height / 2 : 0
+    border.width: chip ? 1 : 0
+    border.color: Style.line
+    color: mouseArea.containsPress ? (chip ? Style.raised : Qt.lighter(Style.raised, 1.2)) : "transparent"
 
-    Text {
-        id: textItem
-        font.pixelSize: Style.fromPixel(16)
-        color: Style.taskTextColor
-        anchors.centerIn: parent
+    FontLoader {
+        id: fontAwesome
+        source: "fonts/FontAwesome7-Solid-900.otf"
+    }
+
+    RowLayout {
+        id: chipRow
+        anchors.verticalCenter: parent.verticalCenter
+        x: root.chip ? Style.fromPixel(14) : Style.fromPixel(16)
+        width: root.chip ? implicitWidth : parent.width - Style.fromPixel(32)
+        spacing: Style.fromPixel(root.chip ? 7 : 14)
+
+        Text {
+            visible: root.fontAwesomeIcon !== ""
+            text: root.fontAwesomeIcon
+            font.family: fontAwesome.name
+            font.pixelSize: Style.fromPixel(root.chip ? 16 : 18)
+            color: root.iconColor
+            horizontalAlignment: Text.AlignHCenter
+            Layout.preferredWidth: root.chip ? implicitWidth : Style.fromPixel(24)
+        }
+
+        Text {
+            id: textItem
+            font.pixelSize: Style.fromPixel(root.chip ? 14 : 15.5)
+            color: root.textColor
+            Layout.fillWidth: !root.chip
+        }
+    }
+
+    Rectangle {
+        visible: !root.chip
+        anchors.bottom: parent.bottom
+        width: parent.width
+        height: 1
+        color: Style.line
     }
 
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-        hoverEnabled: true
         onClicked: root.triggered()
     }
 }

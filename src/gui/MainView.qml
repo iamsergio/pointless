@@ -296,116 +296,135 @@ Item {
             Menu {
                 id: taskMenu
                 visible: GuiController.taskMenuVisible
-                anchors {
-                    bottom: parent.bottom
-                    left: parent.left
-                    right: parent.right
-                    leftMargin: Style.fromPixel(7)
-                    rightMargin: Style.fromPixel(7)
-                    bottomMargin: Style.fromPixel(7)
-                }
+                anchors.fill: parent
                 z: mainView.z + 5
 
-                MenuItem {
-                    id: editMenuItem
-                    text: "Edit..."
-                    onTriggered: {
-                        GuiController.setTaskBeingEdited(GuiController.taskMenuUuid, new Date(NaN));
-                        GuiController.setTaskMenuUuid("");
-                    }
-                }
-                MenuItem {
-                    id: editNotesMenuItem
-                    text: "Edit notes..."
-                    onTriggered: {
-                        GuiController.openNotesEditor(GuiController.taskMenuUuid);
-                        GuiController.setTaskMenuUuid("");
-                    }
-                }
-                MenuItem {
-                    id: playPomodoroMenuItem
-                    visible: GuiController.playPomodoroVisible
-                    text: GuiController.pomodoroController.currentTaskUuid === GuiController.taskMenuUuid ? "Stop" : "Play"
-                    onTriggered: {
-                        if (GuiController.pomodoroController.currentTaskUuid === GuiController.taskMenuUuid) {
-                            GuiController.pomodoroController.stop();
-                        } else {
-                            GuiController.pomodoroController.play(GuiController.taskMenuUuid);
+                onDismissed: GuiController.setTaskMenuUuid("")
+
+                moveItems: [
+                    MenuItem {
+                        id: moveToCurrentMenuItem
+                        chip: true
+                        text: "Current"
+                        fontAwesomeIcon: "\uf0e7"
+                        visible: GuiController.moveToCurrentVisible
+                        onTriggered: {
+                            GuiController.moveTaskToCurrent(GuiController.taskMenuUuid);
+                            GuiController.setTaskMenuUuid("");
                         }
-                        GuiController.setTaskMenuUuid("");
+                    },
+                    MenuItem {
+                        id: moveToSoonMenuItem
+                        chip: true
+                        text: "Soon"
+                        fontAwesomeIcon: "\uf04e"
+                        visible: GuiController.moveToSoonVisible
+                        onTriggered: {
+                            GuiController.moveTaskToSoon(GuiController.taskMenuUuid);
+                            GuiController.setTaskMenuUuid("");
+                        }
+                    },
+                    MenuItem {
+                        id: moveToLaterMenuItem
+                        chip: true
+                        text: "Later"
+                        fontAwesomeIcon: "\uf254"
+                        visible: GuiController.moveToLaterVisible
+                        onTriggered: {
+                            GuiController.moveTaskToLater(GuiController.taskMenuUuid);
+                            GuiController.setTaskMenuUuid("");
+                        }
+                    },
+                    MenuItem {
+                        id: moveToTomorrowMenuItem
+                        chip: true
+                        text: "Tomorrow"
+                        fontAwesomeIcon: "\uf185"
+                        visible: GuiController.moveToTomorrowVisible
+                        onTriggered: {
+                            GuiController.moveTaskToTomorrow(GuiController.taskMenuUuid);
+                            GuiController.setTaskMenuUuid("");
+                        }
+                    },
+                    MenuItem {
+                        id: moveToMondayMenuItem
+                        chip: true
+                        text: "Next Monday"
+                        fontAwesomeIcon: "\uf784"
+                        onTriggered: {
+                            GuiController.moveTaskToNextMonday(GuiController.taskMenuUuid);
+                            GuiController.setTaskMenuUuid("");
+                        }
+                    },
+                    MenuItem {
+                        id: moveToEveningMenuItem
+                        chip: true
+                        text: "This evening"
+                        fontAwesomeIcon: "\uf186"
+                        visible: GuiController.moveToEveningVisible
+                        onTriggered: {
+                            GuiController.moveTaskToEvening(GuiController.taskMenuUuid);
+                            GuiController.setTaskMenuUuid("");
+                        }
                     }
-                }
-                MenuItem {
-                    id: moveToCurrentMenuItem
-                    text: "Move to Current"
-                    visible: GuiController.moveToCurrentVisible
-                    onTriggered: {
-                        GuiController.moveTaskToCurrent(GuiController.taskMenuUuid);
-                        GuiController.setTaskMenuUuid("");
+                ]
+
+                actionItems: [
+                    MenuItem {
+                        id: editMenuItem
+                        text: "Edit task"
+                        fontAwesomeIcon: "\uf304"
+                        onTriggered: {
+                            GuiController.setTaskBeingEdited(GuiController.taskMenuUuid, new Date(NaN));
+                            GuiController.setTaskMenuUuid("");
+                        }
+                    },
+                    MenuItem {
+                        id: editNotesMenuItem
+                        text: "Edit notes"
+                        fontAwesomeIcon: "\uf249"
+                        onTriggered: {
+                            GuiController.openNotesEditor(GuiController.taskMenuUuid);
+                            GuiController.setTaskMenuUuid("");
+                        }
+                    },
+                    MenuItem {
+                        id: playPomodoroMenuItem
+                        visible: GuiController.playPomodoroVisible
+                        text: GuiController.pomodoroController.currentTaskUuid === GuiController.taskMenuUuid ? "Stop timer" : "Start timer"
+                        fontAwesomeIcon: "\uf2f2"
+                        onTriggered: {
+                            if (GuiController.pomodoroController.currentTaskUuid === GuiController.taskMenuUuid) {
+                                GuiController.pomodoroController.stop();
+                            } else {
+                                GuiController.pomodoroController.play(GuiController.taskMenuUuid);
+                            }
+                            GuiController.setTaskMenuUuid("");
+                        }
+                    },
+                    MenuItem {
+                        id: deleteTaskMenuItem
+                        text: "Delete task"
+                        fontAwesomeIcon: "\uf1f8"
+                        iconColor: Style.danger
+                        textColor: Style.danger
+                        visible: GuiController.deleteTaskVisible
+                        onTriggered: {
+                            GuiController.deleteTask(GuiController.taskMenuUuid);
+                            GuiController.setTaskMenuUuid("");
+                        }
+                    },
+                    MenuItem {
+                        id: debugJsonMenuItem
+                        text: "Debug JSON"
+                        fontAwesomeIcon: "\uf188"
+                        visible: GuiController.debugMode
+                        onTriggered: {
+                            GuiController.dumpTaskDebug(GuiController.taskMenuUuid);
+                            GuiController.setTaskMenuUuid("");
+                        }
                     }
-                }
-                MenuItem {
-                    id: moveToSoonMenuItem
-                    text: "Move to Soon"
-                    visible: GuiController.moveToSoonVisible
-                    onTriggered: {
-                        GuiController.moveTaskToSoon(GuiController.taskMenuUuid);
-                        GuiController.setTaskMenuUuid("");
-                    }
-                }
-                MenuItem {
-                    id: moveToLaterMenuItem
-                    text: "Move to Later"
-                    visible: GuiController.moveToLaterVisible
-                    onTriggered: {
-                        GuiController.moveTaskToLater(GuiController.taskMenuUuid);
-                        GuiController.setTaskMenuUuid("");
-                    }
-                }
-                MenuItem {
-                    id: moveToTomorrowMenuItem
-                    visible: GuiController.moveToTomorrowVisible
-                    text: "Move to Tomorrow"
-                    onTriggered: {
-                        GuiController.moveTaskToTomorrow(GuiController.taskMenuUuid);
-                        GuiController.setTaskMenuUuid("");
-                    }
-                }
-                MenuItem {
-                    id: moveToMondayMenuItem
-                    text: "Move to Next Monday"
-                    onTriggered: {
-                        GuiController.moveTaskToNextMonday(GuiController.taskMenuUuid);
-                        GuiController.setTaskMenuUuid("");
-                    }
-                }
-                MenuItem {
-                    id: moveToEveningMenuItem
-                    text: "Move to Evening"
-                    visible: GuiController.moveToEveningVisible
-                    onTriggered: {
-                        GuiController.moveTaskToEvening(GuiController.taskMenuUuid);
-                        GuiController.setTaskMenuUuid("");
-                    }
-                }
-                MenuItem {
-                    id: deleteTaskMenuItem
-                    text: "Delete"
-                    visible: GuiController.deleteTaskVisible
-                    onTriggered: {
-                        GuiController.deleteTask(GuiController.taskMenuUuid);
-                        GuiController.setTaskMenuUuid("");
-                    }
-                }
-                MenuItem {
-                    id: debugJsonMenuItem
-                    text: "Debug JSON"
-                    visible: GuiController.debugMode
-                    onTriggered: {
-                        GuiController.dumpTaskDebug(GuiController.taskMenuUuid);
-                        GuiController.setTaskMenuUuid("");
-                    }
-                }
+                ]
             }
 
             ErrorPopup {

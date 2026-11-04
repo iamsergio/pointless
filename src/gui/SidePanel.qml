@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2025 Sergio Martins
 // SPDX-License-Identifier: MIT
 
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 
@@ -11,10 +13,69 @@ Item {
     property bool isOpen: false
     visible: isOpen || panelRect.x > -panelRect.width
 
+    FontLoader {
+        id: fontAwesome
+        source: "fonts/FontAwesome7-Solid-900.otf"
+    }
+
+    component PanelRow: Rectangle {
+        id: row
+
+        readonly property string iconFont: fontAwesome.name
+
+        property string fontAwesomeIcon: ""
+        property alias text: label.text
+        property color textColor: Style.ink
+        property color iconColor: Style.inkSecondary
+        property alias trailing: trailingSlot.data
+
+        signal clicked
+
+        Layout.fillWidth: true
+        implicitHeight: Style.fromPixel(48)
+        radius: Style.fromPixel(14)
+        color: rowArea.containsPress ? Style.raised : "transparent"
+
+        RowLayout {
+            anchors.fill: parent
+            anchors.leftMargin: Style.fromPixel(14)
+            anchors.rightMargin: Style.fromPixel(14)
+            spacing: Style.fromPixel(14)
+
+            Text {
+                text: row.fontAwesomeIcon
+                font.family: row.iconFont
+                font.pixelSize: Style.fromPixel(20)
+                color: row.iconColor
+                horizontalAlignment: Text.AlignHCenter
+                Layout.preferredWidth: Style.fromPixel(24)
+            }
+
+            Text {
+                id: label
+                font.pixelSize: Style.fromPixel(15.5)
+                color: row.textColor
+                Layout.fillWidth: true
+            }
+
+            Item {
+                id: trailingSlot
+                implicitWidth: childrenRect.width
+                implicitHeight: childrenRect.height
+            }
+        }
+
+        MouseArea {
+            id: rowArea
+            anchors.fill: parent
+            onClicked: row.clicked()
+        }
+    }
+
     Rectangle {
         id: overlay
         anchors.fill: parent
-        color: "#80000000"
+        color: "#8C000000"
         opacity: root.isOpen ? 1.0 : 0.0
 
         Behavior on opacity {
@@ -31,9 +92,11 @@ Item {
 
     Rectangle {
         id: panelRect
-        width: Style.fromPixel(250)
+        width: Math.min(Style.fromPixel(270), parent.width * 0.75)
         height: parent.height
-        color: Style.background
+        color: Style.surface
+        topRightRadius: Style.fromPixel(30)
+        bottomRightRadius: Style.fromPixel(30)
         x: root.isOpen ? 0 : -width
 
         Behavior on x {
@@ -43,189 +106,134 @@ Item {
             }
         }
 
+        MouseArea {
+            anchors.fill: parent
+        }
+
         ColumnLayout {
             anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
-                topMargin: Style.fromPixel(40)
-                leftMargin: Style.fromPixel(16)
-                rightMargin: Style.fromPixel(16)
+                fill: parent
+                topMargin: Style.fromPixel(28) + root.SafeArea.margins.top
+                bottomMargin: Style.fromPixel(20) + root.SafeArea.margins.bottom
+                leftMargin: Style.fromPixel(14)
+                rightMargin: Style.fromPixel(14)
             }
             spacing: Style.fromPixel(4)
 
-            Text {
-                text: "Pointless"
-                color: Style.sectionTextColor
-                font.pixelSize: Style.fromPixel(20)
-                font.bold: true
-                Layout.bottomMargin: Style.fromPixel(16)
-            }
+            RowLayout {
+                Layout.leftMargin: Style.fromPixel(14)
+                Layout.bottomMargin: Style.fromPixel(18)
+                spacing: Style.fromPixel(12)
 
-            Rectangle {
-                Layout.fillWidth: true
-                implicitHeight: Style.fromPixel(1)
-                color: Style.taskBackground
-                Layout.bottomMargin: Style.fromPixel(8)
-            }
+                Rectangle {
+                    implicitWidth: Style.fromPixel(30)
+                    implicitHeight: Style.fromPixel(30)
+                    radius: width / 2
+                    color: Style.accent
 
-            Item {
-                Layout.fillWidth: true
-                implicitHeight: Style.fromPixel(40)
-
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    text: "Search"
-                    color: Style.taskTextColor
-                    font.pixelSize: Style.fromPixel(16)
-                }
-
-                MouseArea {
-                    objectName: "sidePanelSearch"
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        GuiController.currentPage = "search";
-                        root.isOpen = false;
+                    Text {
+                        anchors.centerIn: parent
+                        text: "\uf00c"
+                        font.family: fontAwesome.name
+                        font.pixelSize: Style.fromPixel(15)
+                        color: Style.accentInk
                     }
                 }
-            }
-
-            Item {
-                Layout.fillWidth: true
-                implicitHeight: Style.fromPixel(40)
 
                 Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    text: "About"
-                    color: Style.taskTextColor
-                    font.pixelSize: Style.fromPixel(16)
+                    text: "Pointless"
+                    color: Style.ink
+                    font.pixelSize: Style.fromPixel(24)
+                    font.bold: true
                 }
+            }
 
-                MouseArea {
-                    objectName: "sidePanelAbout"
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        GuiController.currentPage = "about";
-                        root.isOpen = false;
-                    }
+            PanelRow {
+                objectName: "sidePanelSearch"
+                text: "Search"
+                fontAwesomeIcon: "\uf002"
+                onClicked: {
+                    GuiController.currentPage = "search";
+                    root.isOpen = false;
+                }
+            }
+
+            PanelRow {
+                objectName: "sidePanelTags"
+                text: "Tags"
+                fontAwesomeIcon: "\uf02b"
+                onClicked: {
+                    GuiController.currentPage = "tags";
+                    root.isOpen = false;
+                }
+            }
+
+            PanelRow {
+                objectName: "sidePanelCalendars"
+                text: "Calendars"
+                fontAwesomeIcon: "\uf073"
+                onClicked: {
+                    GuiController.currentPage = "calendars";
+                    root.isOpen = false;
+                }
+            }
+
+            PanelRow {
+                objectName: "sidePanelCleanup"
+                text: "Cleanup"
+                fontAwesomeIcon: "\uf51a"
+                onClicked: {
+                    GuiController.currentPage = "cleanup";
+                    root.isOpen = false;
+                }
+            }
+
+            PanelRow {
+                objectName: "sidePanelAbout"
+                text: "About"
+                fontAwesomeIcon: "\uf05a"
+                onClicked: {
+                    GuiController.currentPage = "about";
+                    root.isOpen = false;
                 }
             }
 
             Item {
-                Layout.fillWidth: true
-                implicitHeight: Style.fromPixel(40)
-
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    text: "Cleanup"
-                    color: Style.taskTextColor
-                    font.pixelSize: Style.fromPixel(16)
-                }
-
-                MouseArea {
-                    objectName: "sidePanelCleanup"
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        GuiController.currentPage = "cleanup";
-                        root.isOpen = false;
-                    }
-                }
+                Layout.fillHeight: true
             }
 
-            Item {
-                Layout.fillWidth: true
-                implicitHeight: Style.fromPixel(40)
-
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    text: "Tags"
-                    color: Style.taskTextColor
-                    font.pixelSize: Style.fromPixel(16)
-                }
-
-                MouseArea {
-                    objectName: "sidePanelTags"
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        GuiController.currentPage = "tags";
-                        root.isOpen = false;
-                    }
-                }
-            }
-
-            Item {
-                Layout.fillWidth: true
-                implicitHeight: Style.fromPixel(40)
-
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    text: "Calendars"
-                    color: Style.taskTextColor
-                    font.pixelSize: Style.fromPixel(16)
-                }
-
-                MouseArea {
-                    objectName: "sidePanelCalendars"
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        GuiController.currentPage = "calendars";
-                        root.isOpen = false;
-                    }
-                }
-            }
-
-            Item {
-                Layout.fillWidth: true
-                implicitHeight: Style.fromPixel(40)
+            PanelRow {
                 visible: GuiController.isAuthenticated
-
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    text: "Logout"
-                    color: Style.taskTextColor
-                    font.pixelSize: Style.fromPixel(16)
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        GuiController.logout();
-                        root.isOpen = false;
-                    }
+                text: "Log out"
+                fontAwesomeIcon: "\uf2f5"
+                onClicked: {
+                    GuiController.logout();
+                    root.isOpen = false;
                 }
             }
 
-            Item {
-                Layout.fillWidth: true
-                implicitHeight: Style.fromPixel(40)
+            PanelRow {
                 visible: GuiController.isDebug
-
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    text: "Debug"
-                    color: "red"
-                    font.pixelSize: Style.fromPixel(16)
+                text: "Debug"
+                fontAwesomeIcon: "\uf188"
+                onClicked: {
+                    GuiController.dumpDebug();
+                    root.isOpen = false;
                 }
 
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        GuiController.dumpDebug();
-                        root.isOpen = false;
+                trailing: Rectangle {
+                    width: pillLabel.implicitWidth + Style.fromPixel(16)
+                    height: Style.fromPixel(22)
+                    radius: height / 2
+                    color: Style.raised
+
+                    Text {
+                        id: pillLabel
+                        anchors.centerIn: parent
+                        text: "Dev build"
+                        font.pixelSize: Style.fromPixel(11)
+                        font.weight: Font.DemiBold
+                        color: Style.inkSecondary
                     }
                 }
             }
