@@ -23,7 +23,7 @@ using namespace pointless::tests;
 struct GuiTestHarness::Private
 {
     Private(int &argc, char **argv)
-        : app(argc, argv, "com.pointless.tests", initPlatform())
+        : app(argc, argv, "com.pointless.tests", initPlatform(argv[0]))
     {
     }
 
