@@ -27,6 +27,119 @@ Item {
         source: weekdayModel
     }
 
+    function weekdayItemAt(i: int): var {
+        return weekdayListView.itemAtIndex(i);
+    }
+
+    function repeaterItemAt(repeater: Repeater, i: int): var {
+        return repeater.itemAt(i);
+    }
+
+    function scrollToDate(target) {
+        for (let i = 0; i < weekdayListView.count; ++i) {
+            const item = weekdayItemAt(i);
+            if (item && item.date.getTime() === target.getTime()) {
+                weekdayListView.positionViewAtIndex(i, ListView.Beginning);
+                return;
+            }
+        }
+    }
+
+    RowLayout {
+        id: dayStrip
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+            topMargin: Style.fromPixel(14)
+        }
+        height: implicitHeight
+        spacing: 0
+
+        Repeater {
+            model: weekdayModel
+
+            delegate: Item {
+                id: dayCell
+
+                required property date date
+                required property bool isToday
+                required property bool isPast
+                required property TaskFilterModel tasks
+
+                readonly property bool isWeekend: date.getDay() === 0 || date.getDay() === 6
+
+                Layout.fillWidth: true
+                Layout.preferredWidth: 1
+                implicitHeight: dayColumn.implicitHeight
+                opacity: isPast ? 0.35 : 1
+
+                ColumnLayout {
+                    id: dayColumn
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    spacing: Style.fromPixel(4)
+
+                    Text {
+                        Layout.alignment: Qt.AlignHCenter
+                        text: Qt.formatDate(dayCell.date, "ddd")
+                        font.pixelSize: Style.fromPixel(11.5)
+                        font.weight: Font.DemiBold
+                        color: dayCell.isToday ? Style.accentText : Style.inkTertiary
+                    }
+
+                    Rectangle {
+                        Layout.alignment: Qt.AlignHCenter
+                        implicitWidth: Style.fromPixel(34)
+                        implicitHeight: Style.fromPixel(34)
+                        radius: width / 2
+                        color: dayCell.isToday ? Style.accent : "transparent"
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: dayCell.date.getDate()
+                            font.pixelSize: Style.fromPixel(18)
+                            font.weight: Font.DemiBold
+                            color: dayCell.isToday ? Style.accentInk : (dayCell.isWeekend ? Style.inkSecondary : Style.ink)
+                        }
+                    }
+
+                    Row {
+                        Layout.alignment: Qt.AlignHCenter
+                        Layout.preferredHeight: Style.fromPixel(5)
+                        spacing: Style.fromPixel(3)
+
+                        Repeater {
+                            model: Math.min(4, dayCell.tasks.count)
+
+                            Rectangle {
+                                width: Style.fromPixel(5)
+                                height: Style.fromPixel(5)
+                                radius: width / 2
+                                color: dayCell.isWeekend ? Style.inkTertiary : Style.accent
+                            }
+                        }
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    enabled: !dayCell.isPast
+                    onClicked: root.scrollToDate(dayCell.date)
+                }
+            }
+        }
+    }
+
+    Item {
+        id: stripSpacer
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: dayStrip.bottom
+        }
+        height: Style.fromPixel(12)
+    }
+
     ListView {
         id: weekdayListView
 
@@ -35,14 +148,14 @@ Item {
         anchors {
             left: parent.left
             right: parent.right
-            top: parent.top
+            top: stripSpacer.bottom
             bottom: parent.bottom
         }
         clip: true
         QC.ScrollBar.vertical: QC.ScrollBar {
             visible: !GuiController.isMobile
         }
-        spacing: Style.fromPixel(15)
+        spacing: Style.fromPixel(20)
         model: weekdayFilterModel
         delegate: ColumnLayout {
             id: column
@@ -52,6 +165,7 @@ Item {
             required property string prettyDate
             required property TaskFilterModel tasks
             required property bool isPast
+            required property bool isToday
             required property int index
 
             spacing: Style.fromPixel(10)
@@ -62,26 +176,54 @@ Item {
             readonly property string text: prettyDate
 
             RowLayout {
-                spacing: 0
                 Layout.fillWidth: true
+                Layout.leftMargin: Style.fromPixel(6)
+                Layout.rightMargin: Style.fromPixel(6)
+                Layout.minimumHeight: Style.fromPixel(30)
+                spacing: Style.fromPixel(10)
+
                 Text {
-                    font.pixelSize: Style.weekdayFontSize
-                    font.bold: true
-                    color: Style.weekdayTextColor
-                    text: column.prettyDate
-                    Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+                    text: Qt.formatDate(column.date, "dddd")
+                    font.pixelSize: Style.fromPixel(18.5)
+                    font.weight: Font.DemiBold
+                    color: column.isPast ? Style.inkSecondary : Style.ink
+                }
+
+                Rectangle {
+                    visible: column.isToday
+                    implicitWidth: todayText.implicitWidth + Style.fromPixel(16)
+                    implicitHeight: todayText.implicitHeight + Style.fromPixel(6)
+                    radius: Style.fromPixel(10)
+                    color: Style.accentSoft
+
+                    Text {
+                        id: todayText
+                        anchors.centerIn: parent
+                        text: "Today"
+                        font.pixelSize: Style.fromPixel(11.5)
+                        font.weight: Font.DemiBold
+                        color: Style.accentText
+                    }
+                }
+
+                Text {
+                    text: column.count > 0 ? column.count : "Nothing planned"
+                    font.pixelSize: Style.fromPixel(column.count > 0 ? 13 : 13.5)
+                    color: Style.inkTertiary
+                }
+
+                Item {
                     Layout.fillWidth: true
                 }
-                FontAwesomeButton {
+
+                IconButton {
                     id: addTaskButton
                     objectName: "addTaskButton_" + column.index
-                    fontAwesomeIcon: "\uf067" // plus icon
-                    iconSize: 18
-                    iconColor: Style.iconColor
-                    implicitWidth: 32
-                    implicitHeight: 32
-                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                    backgroundColor: "transparent"
+                    diameter: Style.fromPixel(30)
+                    fillColor: Style.raised
+                    fontAwesomeIcon: "\uf067"
+                    iconSize: Style.fromPixel(16)
+                    iconColor: Style.inkSecondary
                     onClicked: {
                         GuiController.setTaskBeingEdited("", column.date);
                     }
@@ -89,76 +231,135 @@ Item {
             }
 
             Rectangle {
-                visible: column.tasks.count === 0
+                visible: column.count > 0
                 Layout.fillWidth: true
-                Layout.preferredHeight: Style.taskHeight
-                color: Style.background2
-                radius: 8
+                implicitHeight: tasksColumn.implicitHeight + 2
+                color: Style.surface
                 border.width: 1
-                border.color: "#2a3441"
+                border.color: Style.line
+                radius: Style.fromPixel(18)
 
-                Text {
-                    anchors.centerIn: parent
-                    text: "No tasks for this day."
-                    font.pixelSize: Style.fromPixel(14)
-                    color: Style.taskSecondaryTextColor
-                }
-            }
+                Column {
+                    id: tasksColumn
+                    anchors.fill: parent
+                    anchors.margins: 1
 
-            Repeater {
-                model: column.tasks
-                Task {
-                    required property int index
-                    required property string uuid
-                    required property string title
-                    required property bool isDone
-                    required property bool isImportant
-                    required property bool isEvening
-                    required property string dueDate
-                    required property bool hasDueDate
-                    required property string tagName
-                    required property bool isFromCalendar
-                    required property string calendarName
-                    required property bool isSoon
-                    required property bool isLater
-                    required property bool isCurrent
-                    required property bool isDueTomorrow
-                    required property bool hasDueDateTime
-                    required property string allTags
-                    required property bool hasNotes
-                    required property bool isGoal
-                    required property bool isYearly
+                    Repeater {
+                        id: taskRepeater
+                        model: column.tasks
 
-                    objectName: "task_" + column.index + "_" + index
+                        delegate: Column {
+                            id: entry
 
-                    Layout.fillWidth: true
+                            required property int index
+                            required property string uuid
+                            required property string title
+                            required property bool isDone
+                            required property bool isImportant
+                            required property bool isEvening
+                            required property var dueDate
+                            required property var dueDateRaw
+                            required property bool hasDueDate
+                            required property string tagName
+                            required property bool isFromCalendar
+                            required property string calendarName
+                            required property bool isSoon
+                            required property bool isLater
+                            required property bool isCurrent
+                            required property bool isDueTomorrow
+                            required property bool hasDueDateTime
+                            required property string allTags
+                            required property bool hasNotes
+                            required property bool isGoal
+                            required property bool isYearly
 
-                    taskUuid: uuid
-                    taskTitle: title
-                    taskIsDone: isDone
-                    taskIsImportant: isImportant
-                    taskIsEvening: isEvening
-                    taskDueDate: dueDate
-                    taskHasDueDate: hasDueDate
-                    taskHasDueDateTime: hasDueDateTime
-                    taskTagName: tagName
-                    taskIsFromCalendar: isFromCalendar
-                    taskCalendarName: calendarName
-                    taskAllTags: allTags
-                    taskHasNotes: hasNotes
-                    taskIsGoal: isGoal
-                    taskIsYearly: isYearly
-                    taskIsSoon: isSoon
-                    taskIsLater: isLater
-                    taskIsCurrent: isCurrent
-                    taskIsDueTomorrow: isDueTomorrow
-                    showsDate: false
+                            readonly property bool showsEveningLabel: {
+                                if (!isEvening)
+                                    return false;
+                                const previous = root.repeaterItemAt(taskRepeater, index - 1);
+                                return !previous || !previous.isEvening;
+                            }
 
-                    onClicked: {
-                        GuiController.setTaskMenuUuid(uuid);
+                            width: tasksColumn.width
+
+                            Rectangle {
+                                visible: entry.showsEveningLabel
+                                width: parent.width
+                                height: Style.fromPixel(40)
+                                color: Style.duskSoft
+
+                                Rectangle {
+                                    visible: entry.index > 0
+                                    x: Style.fromPixel(47)
+                                    width: parent.width - x
+                                    height: 1
+                                    color: Style.line
+                                }
+
+                                Row {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: Style.fromPixel(14)
+                                    spacing: Style.fromPixel(8)
+
+                                    Text {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: "\uf186"
+                                        font.family: eveningFont.name
+                                        font.pixelSize: Style.fromPixel(15)
+                                        color: Style.dusk
+                                    }
+
+                                    Text {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: "This evening"
+                                        font.pixelSize: Style.fromPixel(13.5)
+                                        font.weight: Font.DemiBold
+                                        color: Style.dusk
+                                    }
+                                }
+                            }
+
+                            TaskRow {
+                                objectName: "task_" + column.index + "_" + entry.index
+
+                                width: parent.width
+                                rowIndex: entry.showsEveningLabel ? 0 : entry.index
+                                taskUuid: entry.uuid
+                                taskTitle: entry.title
+                                taskIsDone: entry.isDone
+                                taskIsImportant: entry.isImportant
+                                taskIsEvening: entry.isEvening
+                                taskDueDate: entry.dueDate
+                                taskDueDateRaw: entry.dueDateRaw
+                                taskHasDueDate: entry.hasDueDate
+                                taskHasDueDateTime: entry.hasDueDateTime
+                                taskTagName: entry.tagName
+                                taskIsFromCalendar: entry.isFromCalendar
+                                taskCalendarName: entry.calendarName
+                                taskAllTags: entry.allTags
+                                taskHasNotes: entry.hasNotes
+                                taskIsGoal: entry.isGoal
+                                taskIsYearly: entry.isYearly
+                                taskIsSoon: entry.isSoon
+                                taskIsLater: entry.isLater
+                                taskIsCurrent: entry.isCurrent
+                                taskIsDueTomorrow: entry.isDueTomorrow
+                                showsDate: false
+
+                                onClicked: {
+                                    GuiController.setTaskMenuUuid(entry.uuid);
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
+    }
+
+    FontLoader {
+        id: eveningFont
+        source: "fonts/FontAwesome7-Solid-900.otf"
     }
 }

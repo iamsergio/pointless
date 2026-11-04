@@ -34,6 +34,7 @@ Item {
     readonly property color accentText: "#A3B5FF"
     readonly property color amber: "#F0B44C"
     readonly property color dusk: "#A897F6"
+    readonly property color duskSoft: "#272241"
     readonly property color good: "#3CCB8A"
     readonly property color buttonActive: "#0290f6"
     readonly property color sectionBackgroundColor: "#1a2332"

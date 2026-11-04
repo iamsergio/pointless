@@ -7,48 +7,82 @@ import QtQuick.Layouts 1.15
 import pointless 1.0
 
 Rectangle {
+    id: root
+
+    readonly property date startDate: GuiController.navigatorStartDate
+    readonly property date endDate: GuiController.navigatorEndDate
+    readonly property string titleText: {
+        if (startDate.getMonth() === endDate.getMonth())
+            return Qt.formatDate(startDate, "MMMM");
+        return Qt.formatDate(startDate, "MMM") + " – " + Qt.formatDate(endDate, "MMM");
+    }
+    readonly property int weekNumber: {
+        const d = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()));
+        const dayNum = d.getUTCDay() || 7;
+        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+    }
+
     color: Style.background
-    height: 60
+    implicitHeight: content.implicitHeight
+
+    // For tests, the same item as in the Slint UI
+    Text {
+        id: dateRangeText
+        visible: false
+        text: GuiController.navigatorPrettyStartDate + " - " + GuiController.navigatorPrettyEndDate
+    }
 
     RowLayout {
-        anchors.centerIn: parent
-        spacing: Style.fromPixel(5)
-
-        FontAwesomeButton {
-            id: leftIcon
-            fontAwesomeIcon: "\uf053" // left arrow
-            iconSize: Style.fromPixel(14)
-            iconColor: Style.textColor2
-            backgroundColor: "transparent"
-            implicitWidth: Style.fromPixel(40)
-            implicitHeight: Style.fromPixel(40)
-            onClicked: GuiController.navigatorGotoPreviousWeek()
-        }
+        id: content
+        anchors.left: parent.left
+        anchors.right: parent.right
+        spacing: Style.fromPixel(10)
 
         MouseArea {
-            implicitHeight: dateRangeText.implicitHeight
-            implicitWidth: dateRangeText.implicitWidth
-            Layout.alignment: Qt.AlignVCenter
+            implicitHeight: titleRow.implicitHeight
+            implicitWidth: titleRow.implicitWidth
             onClicked: GuiController.navigatorGotoToday()
-            Text {
-                id: dateRangeText
-                text: GuiController.navigatorPrettyStartDate + " - " + GuiController.navigatorPrettyEndDate
-                font.pixelSize: Style.fromPixel(14)
-                color: Style.textColor2
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                anchors.centerIn: parent
+
+            RowLayout {
+                id: titleRow
+                spacing: Style.fromPixel(10)
+
+                Text {
+                    Layout.alignment: Qt.AlignBaseline
+                    text: root.titleText
+                    font.pixelSize: Style.fromPixel(30)
+                    font.bold: true
+                    color: Style.ink
+                }
+
+                Text {
+                    Layout.alignment: Qt.AlignBaseline
+                    text: "Week " + root.weekNumber
+                    font.pixelSize: Style.fromPixel(13.5)
+                    color: Style.inkSecondary
+                }
             }
         }
 
-        FontAwesomeButton {
+        Item {
+            Layout.fillWidth: true
+        }
+
+        IconButton {
+            id: leftIcon
+            diameter: Style.fromPixel(32)
+            fontAwesomeIcon: "\uf053"
+            iconSize: Style.fromPixel(16)
+            onClicked: GuiController.navigatorGotoPreviousWeek()
+        }
+
+        IconButton {
             id: rightIcon
-            fontAwesomeIcon: "\uf054" // right arrow
-            iconSize: leftIcon.iconSize
-            iconColor: leftIcon.iconColor
-            backgroundColor: leftIcon.backgroundColor
-            implicitWidth: leftIcon.implicitWidth
-            implicitHeight: leftIcon.implicitHeight
+            diameter: Style.fromPixel(32)
+            fontAwesomeIcon: "\uf054"
+            iconSize: Style.fromPixel(16)
             onClicked: GuiController.navigatorGotoNextWeek()
         }
     }

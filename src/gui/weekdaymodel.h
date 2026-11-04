@@ -29,6 +29,7 @@ public:
         PrettyDateRole = Qt::UserRole + 1,
         TasksRole,
         IsPastRole,
+        IsTodayRole,
         DateRole
     };
 
