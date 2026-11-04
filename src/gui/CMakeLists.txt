@@ -44,6 +44,8 @@ set(PLAIN_QML_FILES
     FontAwesomeButton.qml
     ViewButton.qml
     IconButton.qml
+    TaskRow.qml
+    TaskList.qml
     LoginScreen.qml
     CheckBox.qml
     Calendar.qml
