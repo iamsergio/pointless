@@ -115,43 +115,50 @@ Item {
 
                     RowLayout {
                         Layout.fillWidth: true
-                        Layout.alignment: Qt.AlignLeft
-                        spacing: Style.fromPixel(10)
+                        Layout.preferredHeight: Style.fromPixel(50)
+                        visible: !GuiController.isEditingTask
+                        spacing: Style.fromPixel(4)
 
-                        ViewButton {
-                            id: weekViewButton
-                            text: "Week"
-                            isActive: GuiController.currentViewType === GuiController.Week
-                            onClicked: GuiController.currentViewType = GuiController.Week
-                        }
-
-                        ViewButton {
-                            id: soonViewButton
-                            text: "Soon"
-                            isActive: GuiController.currentViewType === GuiController.Soon
-                            onClicked: GuiController.currentViewType = GuiController.Soon
-                        }
-
-                        ViewButton {
-                            id: laterViewButton
-                            text: "Later"
-                            isActive: GuiController.currentViewType === GuiController.Later
-                            onClicked: GuiController.currentViewType = GuiController.Later
+                        IconButton {
+                            id: burgerButton
+                            fontAwesomeIcon: "\uf0c9"
+                            onClicked: sidePanel.isOpen = true
                         }
 
                         Item {
                             Layout.fillWidth: true
                         }
 
-                        FontAwesomeButton {
-                            id: goalsViewButton
-                            fontAwesomeIcon: "\uf11e"
-                            iconSize: Style.fromPixel(16)
-                            iconColor: GuiController.currentViewType === GuiController.Goals ? "white" : Style.iconColor
-                            backgroundColor: GuiController.currentViewType === GuiController.Goals ? Style.buttonActive : Style.buttonBackground
-                            implicitWidth: Style.fromPixel(40)
-                            implicitHeight: Style.fromPixel(32)
-                            onClicked: GuiController.currentViewType = GuiController.Goals
+                        IconButton {
+                            id: searchButton
+                            fontAwesomeIcon: "\uf002"
+                            onClicked: GuiController.currentPage = "search"
+                        }
+
+                        IconButton {
+                            id: refreshButton
+                            fontAwesomeIcon: "\uf021"
+                            visible: !GuiController.isOfflineMode
+                            enabled: !GuiController.isRefreshing
+                            onClicked: GuiController.refresh()
+
+                            rotation: GuiController.isRefreshing ? 360 : 0
+
+                            RotationAnimation on rotation {
+                                id: spinAnimation
+                                from: 0
+                                to: 360
+                                duration: 1000
+                                loops: Animation.Infinite
+                                running: GuiController.isRefreshing
+                            }
+
+                            Behavior on rotation {
+                                enabled: !GuiController.isRefreshing
+                                NumberAnimation {
+                                    duration: 200
+                                }
+                            }
                         }
                     }
 
@@ -197,97 +204,88 @@ Item {
                 }
             }
 
-            Item {
+            RowLayout {
                 id: bottomArea
-
-                height: addTaskButton.height
+                visible: !GuiController.isEditingTask
+                height: Style.fromPixel(60)
+                spacing: Style.fromPixel(10)
                 anchors {
                     left: parent.left
                     right: parent.right
                     bottom: parent.bottom
+                    leftMargin: Style.fromPixel(12)
+                    rightMargin: Style.fromPixel(12)
                     bottomMargin: Style.fromPixel(GuiController.isMobile ? 32 : 16)
                 }
 
-                FontAwesomeButton {
-                    id: burgerButton
-                    fontAwesomeIcon: "\uf0c9"
-                    iconSize: Style.plusButtonSize
-                    iconColor: Style.plusButtonColor
-                    backgroundColor: "transparent"
-                    visible: !GuiController.isEditingTask
-                    anchors {
-                        left: parent.left
-                        bottom: parent.bottom
-                        leftMargin: Style.fromPixel(32)
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    radius: height / 2
+                    color: Style.surface
+                    border.width: 1
+                    border.color: Style.line
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: Style.fromPixel(5)
+                        spacing: 0
+
+                        ViewButton {
+                            id: weekViewButton
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            Layout.preferredWidth: 1
+                            text: "Week"
+                            fontAwesomeIcon: "\uf784"
+                            isActive: GuiController.currentViewType === GuiController.Week
+                            onClicked: GuiController.currentViewType = GuiController.Week
+                        }
+
+                        ViewButton {
+                            id: soonViewButton
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            Layout.preferredWidth: 1
+                            text: "Soon"
+                            fontAwesomeIcon: "\uf04e"
+                            isActive: GuiController.currentViewType === GuiController.Soon
+                            onClicked: GuiController.currentViewType = GuiController.Soon
+                        }
+
+                        ViewButton {
+                            id: laterViewButton
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            Layout.preferredWidth: 1
+                            text: "Later"
+                            fontAwesomeIcon: "\uf254"
+                            isActive: GuiController.currentViewType === GuiController.Later
+                            onClicked: GuiController.currentViewType = GuiController.Later
+                        }
+
+                        ViewButton {
+                            id: goalsViewButton
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            Layout.preferredWidth: 1
+                            text: "Goals"
+                            fontAwesomeIcon: "\uf024"
+                            isActive: GuiController.currentViewType === GuiController.Goals
+                            onClicked: GuiController.currentViewType = GuiController.Goals
+                        }
                     }
-                    z: 100
-                    onClicked: sidePanel.isOpen = true
                 }
 
-                ToggleButton {
-                    id: eveningToggle
-                    visible: !GuiController.isEditingTask && GuiController.showEveningToggle && GuiController.currentViewType === GuiController.Week
-                    toggled: GuiController.showImmediateOnly
-                    anchors {
-                        left: burgerButton.right
-                        bottom: parent.bottom
-                        leftMargin: Style.fromPixel(16)
-                        bottomMargin: Style.fromPixel(4)
-                    }
-                    z: 100
-                    onToggledChanged: GuiController.showImmediateOnly = toggled
-                }
-
-                FontAwesomeButton {
+                IconButton {
                     id: addTaskButton
-                    fontAwesomeIcon: "\uf055"
-                    iconSize: Style.plusButtonSize
-                    iconColor: Style.plusButtonColor
-                    backgroundColor: "transparent"
-                    visible: !GuiController.isEditingTask
-                    anchors {
-                        right: parent.right
-                        bottom: parent.bottom
-                        rightMargin: Style.fromPixel(32)
-                    }
-                    z: 100
+                    diameter: Style.fromPixel(60)
+                    fontAwesomeIcon: "\u002b"
+                    iconSize: Style.fromPixel(24)
+                    iconColor: Style.accentInk
+                    fillColor: Style.accent
                     onClicked: {
                         GuiController.setTaskBeingEdited("", new Date(NaN));
-                    }
-                }
-
-                FontAwesomeButton {
-                    id: refreshButton
-                    fontAwesomeIcon: "\uf021"
-                    iconSize: Style.plusButtonSize
-                    iconColor: Style.plusButtonColor
-                    backgroundColor: "transparent"
-                    visible: !GuiController.isEditingTask && !GuiController.isOfflineMode
-                    enabled: !GuiController.isRefreshing
-                    anchors {
-                        right: addTaskButton.left
-                        bottom: parent.bottom
-                        rightMargin: Style.fromPixel(16)
-                    }
-                    z: 100
-                    onClicked: GuiController.refresh()
-
-                    rotation: GuiController.isRefreshing ? 360 : 0
-
-                    RotationAnimation on rotation {
-                        id: spinAnimation
-                        from: 0
-                        to: 360
-                        duration: 1000
-                        loops: Animation.Infinite
-                        running: GuiController.isRefreshing
-                    }
-
-                    Behavior on rotation {
-                        enabled: !GuiController.isRefreshing
-                        NumberAnimation {
-                            duration: 200
-                        }
                     }
                 }
             }
