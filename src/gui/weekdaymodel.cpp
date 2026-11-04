@@ -88,6 +88,10 @@ QVariant WeekdayModel::data(const QModelIndex &index, int role) const
         QDate date = _mondayDate.addDays(index.row());
         return date < Gui::Clock::today();
     }
+    if (role == IsTodayRole) {
+        QDate date = _mondayDate.addDays(index.row());
+        return date == Gui::Clock::today();
+    }
     if (role == DateRole) {
         return _mondayDate.addDays(index.row());
     }
@@ -100,6 +104,7 @@ QHash<int, QByteArray> WeekdayModel::roleNames() const
     roles[PrettyDateRole] = "prettyDate";
     roles[TasksRole] = "tasks";
     roles[IsPastRole] = "isPast";
+    roles[IsTodayRole] = "isToday";
     roles[DateRole] = "date";
     return roles;
 }

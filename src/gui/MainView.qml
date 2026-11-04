@@ -136,6 +136,15 @@ Item {
                         }
 
                         IconButton {
+                            id: eveningToggle
+                            fontAwesomeIcon: "\uf186"
+                            visible: GuiController.currentViewType === GuiController.Week && GuiController.showEveningToggle
+                            fillColor: GuiController.showImmediateOnly ? Style.accentSoft : "transparent"
+                            iconColor: GuiController.showImmediateOnly ? Style.accentText : Style.inkSecondary
+                            onClicked: GuiController.showImmediateOnly = !GuiController.showImmediateOnly
+                        }
+
+                        IconButton {
                             id: refreshButton
                             fontAwesomeIcon: "\uf021"
                             visible: !GuiController.isOfflineMode
