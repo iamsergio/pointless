@@ -15,188 +15,219 @@ FocusScope {
         id: controller
     }
 
+    FontLoader {
+        id: fontAwesome
+        source: "fonts/FontAwesome7-Solid-900.otf"
+    }
+
     Rectangle {
-        color: "#131c27"
-        border.width: Style.fromPixel(1)
-        border.color: "#222b38"
+        color: Style.background
         anchors.fill: parent
 
         ColumnLayout {
-            anchors.centerIn: parent
-            spacing: Style.fromPixel(32)
-            width: parent.width * 0.85
-
-            Text {
-                text: "Pointless"
-                font.pixelSize: Style.fromPixel(32)
-                font.bold: true
-                color: "white"
-                horizontalAlignment: Text.AlignHCenter
-                Layout.alignment: Qt.AlignHCenter
+            anchors {
+                fill: parent
+                margins: Style.fromPixel(22)
             }
+            spacing: 0
 
-            ColumnLayout {
-                spacing: 16
-                Layout.fillWidth: true
+            Rectangle {
+                Layout.preferredWidth: Style.fromPixel(56)
+                Layout.preferredHeight: Style.fromPixel(56)
+                radius: width / 2
+                color: Style.accent
 
                 Text {
-                    text: "Email"
-                    font.pixelSize: Style.fromPixel(16)
-                    color: "white"
+                    anchors.centerIn: parent
+                    text: "\uf00c"
+                    font.family: fontAwesome.name
+                    font.pixelSize: Style.fromPixel(23)
+                    color: Style.accentInk
                 }
+            }
 
-                Rectangle {
-                    Layout.fillWidth: true
-                    implicitHeight: Style.fromPixel(48)
-                    color: "#192233"
-                    radius: 8
+            Text {
+                Layout.topMargin: Style.fromPixel(16)
+                text: "Pointless"
+                font.pixelSize: Style.fromPixel(30)
+                font.weight: Font.Bold
+                color: Style.ink
+            }
 
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.leftMargin: Style.fromPixel(12)
-                        anchors.rightMargin: Style.fromPixel(12)
-                        spacing: Style.fromPixel(8)
+            Text {
+                Layout.topMargin: Style.fromPixel(6)
+                Layout.fillWidth: true
+                text: "Log in to sync your tasks between devices."
+                font.pixelSize: Style.fromPixel(15)
+                color: Style.inkSecondary
+                wrapMode: Text.WordWrap
+            }
 
-                        Text {
-                            text: "\uf0e0"
-                            font.family: "Font Awesome 7 Free"
-                            font.pixelSize: Style.fromPixel(16)
-                            color: "#8a97a8"
-                        }
+            Text {
+                Layout.topMargin: Style.fromPixel(28)
+                text: "Email"
+                font.pixelSize: Style.fromPixel(13)
+                font.weight: Font.DemiBold
+                color: Style.inkSecondary
+            }
 
-                        TextField {
-                            id: emailInput
-                            Layout.fillWidth: true
-                            placeholderText: "Enter your email"
-                            text: controller.username
-                            onTextEdited: controller.username = text
-                            font.pixelSize: Style.fromPixel(16)
-                            color: "white"
-                            placeholderTextColor: "#8a97a8"
-                            background: null
-                            focus: true
-                        }
-                    }
-                }
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.topMargin: Style.fromPixel(8)
+                implicitHeight: Style.fromPixel(50)
+                color: Style.raised
+                radius: Style.fromPixel(14)
+                border.width: emailInput.activeFocus ? 1.5 : 0
+                border.color: Style.accent
 
                 RowLayout {
-                    Layout.fillWidth: true
-                    spacing: 0
+                    anchors.fill: parent
+                    anchors.leftMargin: Style.fromPixel(16)
+                    anchors.rightMargin: Style.fromPixel(16)
+                    spacing: Style.fromPixel(12)
+
                     Text {
-                        text: "Password"
-                        font.pixelSize: Style.fromPixel(16)
-                        color: "white"
-                        Layout.alignment: Qt.AlignLeft
+                        text: "\uf0e0"
+                        font.family: fontAwesome.name
+                        font.pixelSize: Style.fromPixel(15)
+                        color: Style.inkTertiary
                     }
-                    Item {
+
+                    TextField {
+                        id: emailInput
                         Layout.fillWidth: true
-                    }
-                    Text {
-                        text: "Forgot Password?"
-                        color: "#1884f7"
-                        font.pixelSize: Style.fromPixel(14)
-                        Layout.alignment: Qt.AlignRight
-                    }
-                }
-
-                Rectangle {
-                    Layout.fillWidth: true
-                    implicitHeight: Style.fromPixel(48)
-                    color: "#192233"
-                    radius: 8
-
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.leftMargin: 12
-                        anchors.rightMargin: 12
-                        spacing: 8
-
-                        Text {
-                            text: "\uf023"
-                            font.family: "Font Awesome 7 Free"
-                            font.pixelSize: Style.fromPixel(16)
-                            color: "#8a97a8"
-                        }
-
-                        TextField {
-                            id: passwordInput
-                            Layout.fillWidth: true
-                            placeholderText: "Enter your password"
-                            text: controller.password
-                            onTextEdited: controller.password = text
-                            echoMode: root.passwordVisible ? TextInput.Normal : TextInput.Password
-                            font.pixelSize: Style.fromPixel(16)
-                            color: "white"
-                            placeholderTextColor: "#8a97a8"
-                            background: null
-                        }
-
-                        Text {
-                            text: root.passwordVisible ? "\uf06e" : "\uf070"
-                            font.family: "Font Awesome 7 Free"
-                            font.pixelSize: Style.fromPixel(16)
-                            color: "#8a97a8"
-
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: root.passwordVisible = !root.passwordVisible
-                            }
-                        }
+                        placeholderText: "Enter your email"
+                        text: controller.username
+                        onTextEdited: controller.username = text
+                        font.pixelSize: Style.fromPixel(16)
+                        color: Style.ink
+                        placeholderTextColor: Style.inkTertiary
+                        leftPadding: 0
+                        background: null
+                        focus: true
                     }
                 }
             }
 
             RowLayout {
                 Layout.fillWidth: true
+                Layout.topMargin: Style.fromPixel(18)
+                spacing: 0
+
+                Text {
+                    text: "Password"
+                    font.pixelSize: Style.fromPixel(13)
+                    font.weight: Font.DemiBold
+                    color: Style.inkSecondary
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                }
+
+                Text {
+                    text: "Forgot password?"
+                    color: Style.accentText
+                    font.pixelSize: Style.fromPixel(13)
+                    font.weight: Font.DemiBold
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.topMargin: Style.fromPixel(8)
+                implicitHeight: Style.fromPixel(50)
+                color: Style.raised
+                radius: Style.fromPixel(14)
+                border.width: passwordInput.activeFocus ? 1.5 : 0
+                border.color: Style.accent
+
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: Style.fromPixel(16)
+                    anchors.rightMargin: Style.fromPixel(6)
+                    spacing: Style.fromPixel(12)
+
+                    Text {
+                        text: "\uf023"
+                        font.family: fontAwesome.name
+                        font.pixelSize: Style.fromPixel(15)
+                        color: Style.inkTertiary
+                    }
+
+                    TextField {
+                        id: passwordInput
+                        Layout.fillWidth: true
+                        placeholderText: "Enter your password"
+                        text: controller.password
+                        onTextEdited: controller.password = text
+                        echoMode: root.passwordVisible ? TextInput.Normal : TextInput.Password
+                        font.pixelSize: Style.fromPixel(16)
+                        color: Style.ink
+                        placeholderTextColor: Style.inkTertiary
+                        leftPadding: 0
+                        background: null
+                    }
+
+                    IconButton {
+                        diameter: Style.fromPixel(38)
+                        iconSize: Style.fromPixel(15)
+                        iconColor: Style.inkTertiary
+                        fontAwesomeIcon: root.passwordVisible ? "\uf070" : "\uf06e"
+                        onClicked: root.passwordVisible = !root.passwordVisible
+                    }
+                }
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.topMargin: Style.fromPixel(22)
                 spacing: Style.fromPixel(8)
 
                 Button {
                     id: loginButton
-                    text: "Login"
-                    font.pixelSize: Style.fromPixel(20)
+                    text: "Log in"
                     enabled: !GuiController.isLoggingIn
+                    Layout.fillWidth: true
+                    implicitHeight: Style.fromPixel(50)
                     background: Rectangle {
-                        color: "#1884f7"
-                        radius: 12
+                        color: Style.accent
+                        radius: Style.fromPixel(15)
+                        opacity: !loginButton.enabled ? 0.5 : (loginButton.pressed ? 0.8 : 1)
                     }
                     contentItem: Text {
-                        color: "white"
-                        text: "Login"
-                        font.pixelSize: Style.fromPixel(20)
-                        font.bold: true
+                        color: Style.accentInk
+                        text: "Log in"
+                        font.pixelSize: Style.fromPixel(15.5)
+                        font.weight: Font.DemiBold
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
-                    Layout.fillWidth: true
-                    implicitHeight: Style.fromPixel(56)
                     onClicked: {
                         GuiController.login(controller.username, controller.password);
                     }
                 }
 
-                FontAwesomeButton {
+                IconButton {
                     fontAwesomeIcon: "\uf084"
-                    iconSize: Style.fromPixel(20)
-                    iconColor: "#8a97a8"
-                    backgroundColor: "#192233"
+                    iconSize: Style.fromPixel(18)
+                    fillColor: Style.raised
                     visible: !GuiController.isMobile
-                    implicitWidth: Style.fromPixel(56)
-                    implicitHeight: Style.fromPixel(56)
+                    diameter: Style.fromPixel(50)
                     onClicked: {
                         GuiController.fetchPassStoreCredentials();
                     }
                 }
             }
 
-            FontAwesomeButton {
+            IconButton {
                 fontAwesomeIcon: "\uf021"
-                iconSize: Style.fromPixel(24)
-                iconColor: "#1884f7"
-                backgroundColor: "transparent"
+                iconSize: Style.fromPixel(22)
+                iconColor: Style.accentText
                 visible: GuiController.isLoggingIn
                 enabled: false
                 Layout.alignment: Qt.AlignHCenter
+                Layout.topMargin: Style.fromPixel(10)
                 rotation: GuiController.isLoggingIn ? 360 : 0
                 RotationAnimation on rotation {
                     from: 0
@@ -215,38 +246,54 @@ FocusScope {
 
             Text {
                 text: GuiController.errorController.loginError
-                color: "#ff4444"
+                color: Style.danger
                 font.pixelSize: Style.fromPixel(14)
                 Layout.fillWidth: true
-                horizontalAlignment: Text.AlignHCenter
+                Layout.topMargin: Style.fromPixel(12)
                 visible: GuiController.errorController.loginError.length > 0
                 wrapMode: Text.WordWrap
             }
 
-            RowLayout {
+            Text {
                 Layout.alignment: Qt.AlignHCenter
-                spacing: 4
-                Text {
-                    text: "Don't have an account?"
-                    color: "#8a97a8"
-                    font.pixelSize: Style.fromPixel(16)
+                Layout.topMargin: Style.fromPixel(18)
+                textFormat: Text.StyledText
+                text: "No account yet? <font color=\"" + Style.accentText + "\"><b>Sign up</b></font>"
+                color: Style.inkSecondary
+                font.pixelSize: Style.fromPixel(14)
+            }
+
+            Item {
+                Layout.fillHeight: true
+                Layout.minimumHeight: Style.fromPixel(16)
+            }
+
+            Button {
+                id: offlineButton
+                Layout.fillWidth: true
+                implicitHeight: Style.fromPixel(50)
+                onClicked: GuiController.enableOfflineMode()
+                background: Rectangle {
+                    color: Style.raised
+                    radius: Style.fromPixel(15)
+                    opacity: offlineButton.pressed ? 0.8 : 1
                 }
-                Text {
-                    text: "Sign Up"
-                    color: "#1884f7"
-                    font.pixelSize: Style.fromPixel(16)
+                contentItem: Text {
+                    color: Style.ink
+                    text: "Continue offline"
+                    font.pixelSize: Style.fromPixel(15.5)
+                    font.weight: Font.DemiBold
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
                 }
             }
+
             Text {
-                text: "Offline mode"
-                color: "#8a97a8"
-                font.pixelSize: Style.fromPixel(16)
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        GuiController.enableOfflineMode()
-                    }
-                }
+                Layout.alignment: Qt.AlignHCenter
+                Layout.topMargin: Style.fromPixel(8)
+                text: "Your tasks stay on this device."
+                color: Style.inkSecondary
+                font.pixelSize: Style.fromPixel(12)
             }
         }
     }

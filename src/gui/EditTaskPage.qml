@@ -4,14 +4,16 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick 2.15
+import QtQuick.Controls.Fusion as QC
 import QtQuick.Layouts 1.15
 import pointless 1.0
 
 Page {
     id: root
     objectName: "editTask"
-    pageTitle: "Edit Task"
-    rightButtonIcon: "\uf00c"
+    pageTitle: isNewTask ? "New task" : "Edit task"
+    backButtonText: "Cancel"
+    rightButtonText: "Save"
     rightButtonObjectName: "saveButton"
 
     signal saveClicked(string title, string tag, bool evening, bool isGoal, bool isYearly)
@@ -20,9 +22,16 @@ Page {
     property bool isEvening: false
     property bool isGoal: false
     property bool isYearly: false
+    property bool isNewTask: true
+
+    FontLoader {
+        id: fontAwesome
+        source: "fonts/FontAwesome7-Solid-900.otf"
+    }
 
     onVisibleChanged: {
         if (visible) {
+            isNewTask = GuiController.titleInEditor === "";
             titleInput.text = GuiController.titleInEditor;
             titleInput.forceActiveFocus();
             root.selectedTag = GuiController.tagInEditor;
@@ -30,161 +39,272 @@ Page {
             root.isGoal = GuiController.isGoalInEditor;
             root.isYearly = GuiController.isYearlyInEditor;
             calendar.setInitialMonth();
+            scroller.contentY = 0;
         }
     }
 
     onRightButtonClicked: root.saveClicked(titleInput.text, root.selectedTag, root.isEvening, root.isGoal, root.isYearly)
 
-    ColumnLayout {
+    Flickable {
+        id: scroller
         anchors.fill: parent
-        spacing: Style.fromPixel(20)
+        contentWidth: width
+        contentHeight: formColumn.implicitHeight + Style.fromPixel(16)
+        boundsBehavior: Flickable.StopAtBounds
+        clip: true
 
         ColumnLayout {
-            Layout.fillWidth: true
-            spacing: Style.fromPixel(5)
+            id: formColumn
+            width: scroller.width
+            spacing: Style.fromPixel(22)
 
-            Text {
-                text: "Title"
-                color: Style.sectionTextColor
-                font.pixelSize: Style.fromPixel(14)
-                font.bold: true
-            }
-
-            LineEdit {
+            QC.TextField {
                 id: titleInput
                 objectName: "titleInput"
                 focus: true
                 Layout.fillWidth: true
-                onTextEntered: function (text) {
-                    root.saveClicked(text, root.selectedTag, root.isEvening, root.isGoal, root.isYearly);
+                implicitHeight: Style.fromPixel(56)
+                placeholderText: "What needs doing?"
+                placeholderTextColor: Style.inkTertiary
+                color: Style.ink
+                font.pixelSize: Style.fromPixel(23)
+                font.weight: Font.DemiBold
+                leftPadding: 0
+                rightPadding: 0
+                selectByMouse: true
+                background: Rectangle {
+                    color: "transparent"
+
+                    Rectangle {
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                            bottom: parent.bottom
+                        }
+                        height: 2
+                        color: Style.accent
+                    }
+                }
+                onAccepted: {
+                    if (text.trim() !== "")
+                        root.saveClicked(text, root.selectedTag, root.isEvening, root.isGoal, root.isYearly);
                 }
             }
-        }
 
-        ColumnLayout {
-            Layout.fillWidth: true
-            spacing: Style.fromPixel(5)
-
-            Text {
-                text: "Tag"
-                color: Style.sectionTextColor
-                font.pixelSize: Style.fromPixel(14)
-                font.bold: true
-            }
-
-            Rectangle {
+            ColumnLayout {
                 Layout.fillWidth: true
-                implicitHeight: tagFlow.implicitHeight + Style.fromPixel(20)
-                color: Style.taskBackground
-                radius: 4
+                spacing: Style.fromPixel(10)
+
+                Text {
+                    text: "Tags"
+                    color: Style.inkSecondary
+                    font.pixelSize: Style.fromPixel(13)
+                    font.weight: Font.DemiBold
+                }
 
                 Flow {
-                    id: tagFlow
-                    anchors.fill: parent
-                    anchors.margins: Style.fromPixel(10)
+                    Layout.fillWidth: true
                     spacing: Style.fromPixel(8)
 
                     Repeater {
                         model: GuiController.tagFilterModel
-                        Tag {
+
+                        Rectangle {
+                            id: chip
                             required property string name
                             objectName: "tag_" + name
-                            isInteractive: true
-                            isSelected: root.selectedTag === name
-                            tagName: name
-                            onClicked: function (name) {
-                                root.selectedTag = name;
+                            readonly property bool selected: root.selectedTag === name
+
+                            visible: name !== ""
+                            height: Style.fromPixel(34)
+                            width: chipRow.implicitWidth + Style.fromPixel(28)
+                            radius: height / 2
+                            color: selected ? Style.accentSoft : Style.surface
+                            border.width: selected ? 0 : 1
+                            border.color: Style.line
+
+                            Row {
+                                id: chipRow
+                                anchors.centerIn: parent
+                                spacing: Style.fromPixel(7)
+
+                                Rectangle {
+                                    width: Style.fromPixel(7)
+                                    height: width
+                                    radius: width / 2
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    color: GuiController.colorFromTag(chip.name)
+                                }
+
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: chip.name
+                                    color: chip.selected ? Style.accentText : Style.ink
+                                    font.pixelSize: Style.fromPixel(14)
+                                    font.weight: chip.selected ? Font.DemiBold : Font.Normal
+                                }
+
+                                Text {
+                                    visible: chip.selected
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: "\uf00c"
+                                    font.family: fontAwesome.name
+                                    font.pixelSize: Style.fromPixel(11)
+                                    color: Style.accentText
+                                }
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: root.selectedTag = chip.name
                             }
                         }
                     }
                 }
             }
-        }
 
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: Style.fromPixel(5)
-
-            CheckBox {
-                id: eveningCheckBox
-                objectName: "eveningCheckBox"
-                checked: root.isEvening
-                onCheckedChanged: root.isEvening = checked
-            }
-
-            Text {
-                text: "Evening"
-                color: Style.sectionTextColor
-                font.pixelSize: Style.fromPixel(14)
-                font.bold: true
-
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: eveningCheckBox.toggle()
-                }
-            }
-
-            CheckBox {
-                id: goalCheckBox
-                objectName: "goalCheckBox"
-                checked: root.isGoal
-                onCheckedChanged: root.isGoal = checked
-            }
-
-            Text {
-                text: "Goal"
-                color: Style.sectionTextColor
-                font.pixelSize: Style.fromPixel(14)
-                font.bold: true
-
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: goalCheckBox.toggle()
-                }
-            }
-
-            CheckBox {
-                id: yearlyCheckBox
-                objectName: "yearlyCheckBox"
-                checked: root.isYearly
-                onCheckedChanged: root.isYearly = checked
-            }
-
-            Text {
-                text: "Yearly"
-                color: Style.sectionTextColor
-                font.pixelSize: Style.fromPixel(14)
-                font.bold: true
-
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: yearlyCheckBox.toggle()
-                }
-            }
-        }
-
-        ColumnLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            spacing: Style.fromPixel(5)
-
-            Text {
-                text: "Date"
-                color: Style.sectionTextColor
-                font.pixelSize: Style.fromPixel(14)
-                font.bold: true
-            }
-
-            Calendar {
-                id: calendar
-                currentDate: GuiController.dateInEditor
+            Rectangle {
                 Layout.fillWidth: true
-                Layout.fillHeight: true
-                onDateSelected: function (selectedDate) {
-                    GuiController.setDateInEditor(selectedDate);
+                implicitHeight: optionsColumn.implicitHeight
+                radius: Style.fromPixel(18)
+                color: Style.surface
+                clip: true
+
+                ColumnLayout {
+                    id: optionsColumn
+                    width: parent.width
+                    spacing: 0
+
+                    component OptionRow: Item {
+                        id: optionRow
+                        property string icon: ""
+                        property string title: ""
+                        property string hint: ""
+                        property color tileColor: Style.raised
+                        property color tileInk: Style.inkSecondary
+                        property bool showDivider: true
+                        property alias checked: optionSwitch.checked
+                        property alias switchObjectName: optionSwitch.objectName
+                        signal toggled
+
+                        Layout.fillWidth: true
+                        implicitHeight: Style.fromPixel(64)
+
+                        Rectangle {
+                            id: tile
+                            x: Style.fromPixel(14)
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: Style.fromPixel(32)
+                            height: width
+                            radius: Style.fromPixel(10)
+                            color: optionRow.tileColor
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: optionRow.icon
+                                font.family: fontAwesome.name
+                                font.pixelSize: Style.fromPixel(14)
+                                color: optionRow.tileInk
+                            }
+                        }
+
+                        Column {
+                            anchors {
+                                left: tile.right
+                                leftMargin: Style.fromPixel(12)
+                                right: optionSwitch.left
+                                rightMargin: Style.fromPixel(12)
+                                verticalCenter: parent.verticalCenter
+                            }
+                            spacing: Style.fromPixel(2)
+
+                            Text {
+                                width: parent.width
+                                text: optionRow.title
+                                color: Style.ink
+                                font.pixelSize: Style.fromPixel(15.5)
+                                elide: Text.ElideRight
+                            }
+
+                            Text {
+                                width: parent.width
+                                text: optionRow.hint
+                                color: Style.inkSecondary
+                                font.pixelSize: Style.fromPixel(12.5)
+                                elide: Text.ElideRight
+                            }
+                        }
+
+                        Switch {
+                            id: optionSwitch
+                            anchors {
+                                right: parent.right
+                                rightMargin: Style.fromPixel(14)
+                                verticalCenter: parent.verticalCenter
+                            }
+                            onToggled: optionRow.toggled()
+                        }
+
+                        Rectangle {
+                            visible: optionRow.showDivider
+                            anchors.bottom: parent.bottom
+                            width: parent.width
+                            height: 1
+                            color: Style.line
+                        }
+                    }
+
+                    OptionRow {
+                        icon: "\uf186"
+                        title: "Evening"
+                        hint: "Shown smaller until the evening"
+                        tileColor: Style.duskSoft
+                        tileInk: Style.dusk
+                        switchObjectName: "eveningCheckBox"
+                        checked: root.isEvening
+                        onToggled: root.isEvening = !root.isEvening
+                    }
+
+                    OptionRow {
+                        icon: "\uf024"
+                        title: "Goal"
+                        hint: "Listed under Goals"
+                        switchObjectName: "goalCheckBox"
+                        checked: root.isGoal
+                        onToggled: root.isGoal = !root.isGoal
+                    }
+
+                    OptionRow {
+                        icon: "\uf363"
+                        title: "Repeats every year"
+                        hint: "Comes back on the same date"
+                        showDivider: false
+                        switchObjectName: "yearlyCheckBox"
+                        checked: root.isYearly
+                        onToggled: root.isYearly = !root.isYearly
+                    }
+                }
+            }
+
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: Style.fromPixel(10)
+
+                Text {
+                    text: "Date"
+                    color: Style.inkSecondary
+                    font.pixelSize: Style.fromPixel(13)
+                    font.weight: Font.DemiBold
+                }
+
+                Calendar {
+                    id: calendar
+                    currentDate: GuiController.dateInEditor
+                    Layout.fillWidth: true
+                    onDateSelected: function (selectedDate) {
+                        GuiController.setDateInEditor(selectedDate);
+                    }
                 }
             }
         }

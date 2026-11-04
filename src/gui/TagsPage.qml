@@ -17,12 +17,13 @@ Page {
         anchors.fill: parent
     }
 
-    AddTagPopup {
-        id: addTagPopup
-        anchors.fill: parent
-    }
-
-    RenameTagPopup {
-        anchors.fill: parent
-    }
+    overlayData: [
+        AddTagPopup {
+            id: addTagPopup
+            anchors.fill: parent
+        },
+        RenameTagPopup {
+            anchors.fill: parent
+        }
+    ]
 }
