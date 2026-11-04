@@ -40,7 +40,7 @@ ListView {
                 objectName: "tagChip_" + delegateRoot.name
                 tagName: delegateRoot.name
                 onClicked: {
-                    GuiController.currentTag = tagName;
+                    GuiController.currentTag = delegateRoot.name;
                     GuiController.currentPage = "tasksByTag";
                 }
             }
