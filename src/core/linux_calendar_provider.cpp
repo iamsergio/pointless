@@ -194,6 +194,8 @@ std::vector<CalendarEvent> LinuxCalendarProvider::getEvents(
             continue;
         }
 
+        dumpICal(source.name, icalData);
+
         auto parsed = parseICalEvents(icalData, range);
         P_LOG_DEBUG("iCal '{}' ({}): {} bytes downloaded, {} events parsed in range", source.name, source.url,
                     icalData.size(), parsed.size());

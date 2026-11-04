@@ -343,6 +343,7 @@ std::vector<CalendarEvent> CalDavClient::fetchEvents(
     }
 
     std::vector<CalendarEvent> events;
+    std::string icalDump;
 
     auto multistatus = findDescendantByLocalName(doc.root(), "multistatus");
     if (!multistatus)
@@ -360,6 +361,9 @@ std::vector<CalendarEvent> CalDavClient::fetchEvents(
         if (icalData.empty())
             continue;
 
+        icalDump += icalData;
+        icalDump += '\n';
+
         auto parsed = parseICalEvents(icalData, range);
         for (auto &ev : parsed) {
             CalendarEvent ce;
@@ -373,6 +377,8 @@ std::vector<CalendarEvent> CalDavClient::fetchEvents(
             events.push_back(std::move(ce));
         }
     }
+
+    dumpICal(calendarName, icalDump);
 
     return events;
 }
