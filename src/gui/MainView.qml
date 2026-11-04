@@ -177,12 +177,6 @@ Item {
                         visible: GuiController.currentViewType === GuiController.Week
                     }
 
-                    Rectangle {
-                        Layout.fillWidth: true
-                        implicitHeight: Style.fromPixel(1)
-                        color: Style.taskBackground
-                    }
-
                     WeekView {
                         id: weekView
                         Layout.fillWidth: true
