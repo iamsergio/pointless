@@ -8,10 +8,12 @@
 #include "pointless_settings.h"
 
 #include "gui/qt_logger.h"
+#include "core/calendar_provider.h"
 
 #include <QCommandLineOption>
 #include <QCommandLineParser>
 #include <QDebug>
+#include <QDir>
 #include <QGuiApplication>
 #include <QQuickWindow>
 
@@ -67,7 +69,17 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
     QCommandLineOption benchmarkStartupOption(QStringLiteral("benchmark-startup"), QStringLiteral("Exit after first frame is rendered"));
     parser.addOption(benchmarkStartupOption);
 
+#ifndef Q_OS_DARWIN
+    QCommandLineOption dumpICalOption(QStringLiteral("dump-ical"), QStringLiteral("Write the iCal data of each calendar fetch to the temp directory"));
+    parser.addOption(dumpICalOption);
+#endif
+
     parser.process(*this);
+
+#ifndef Q_OS_DARWIN
+    if (parser.isSet(dumpICalOption))
+        core::setICalDumpDirectory(QDir(QDir::tempPath()).filePath(QStringLiteral("pointless-ical")).toStdString());
+#endif
 
     InitOptions initOptions;
     initOptions.debug = parser.isSet(debugOption);

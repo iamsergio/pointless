@@ -4,8 +4,10 @@
 #pragma once
 
 #include <chrono>
+#include <filesystem>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace pointless::core {
@@ -69,6 +71,9 @@ struct ICalUrlConfig
     std::string username;
     std::string password;
 };
+
+void setICalDumpDirectory(std::filesystem::path directory);
+void dumpICal(std::string_view sourceName, std::string_view icalData);
 
 std::unique_ptr<CalendarProvider> createCalendarProvider(
     const std::string &caldavUrl = {},
