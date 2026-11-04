@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "apple_calendar_provider.h"
+#include "meeting_url.h"
 
 #import <EventKit/EventKit.h>
 #import <Foundation/Foundation.h>
@@ -9,6 +10,16 @@
 #include <iostream>
 
 namespace pointless::core {
+
+namespace {
+
+    std::string_view nullableText(NSString* text)
+    {
+        const char* utf8 = [text UTF8String];
+        return utf8 ? std::string_view(utf8) : std::string_view();
+    }
+
+}
 
 struct AppleCalendarProvider::Private {
     EKEventStore* eventStore = nil;
@@ -174,6 +185,9 @@ std::vector<CalendarEvent> AppleCalendarProvider::getEvents(
         event.calendarName = [ekEvent.calendar.title UTF8String];
         event.title = [ekEvent.title UTF8String];
         event.isAllDay = ekEvent.allDay;
+        event.meetingUrl = findMeetingUrl({ nullableText(ekEvent.URL.absoluteString),
+            nullableText(ekEvent.location),
+            nullableText(ekEvent.notes) });
 
         NSTimeInterval startInterval = [ekEvent.startDate timeIntervalSince1970];
         event.startDate = std::chrono::system_clock::time_point(

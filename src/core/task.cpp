@@ -195,6 +195,14 @@ void Task::mergeConflict(const Task &other)
         description = other.description;
     }
 
+    if (meetingUrl.has_value() && other.meetingUrl.has_value()) {
+        if (otherIsMoreRecent) {
+            meetingUrl = other.meetingUrl;
+        }
+    } else if (other.meetingUrl.has_value()) {
+        meetingUrl = other.meetingUrl;
+    }
+
     // Tags: Union
     std::vector<std::string> newTags = tags;
     for (const auto &tag : other.tags) {

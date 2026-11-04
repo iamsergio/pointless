@@ -61,6 +61,7 @@ public:
     std::optional<std::string> deviceCalendarUuid;
     std::optional<std::string> deviceCalendarName;
     std::optional<std::string> description;
+    std::optional<std::string> meetingUrl;
 };
 
 } // namespace pointless::core
@@ -118,5 +119,6 @@ struct glz::meta<pointless::core::Task>
         "uuidInDeviceCalendar", &T::uuidInDeviceCalendar,
         "deviceCalendarUuid", &T::deviceCalendarUuid,
         "deviceCalendarName", &T::deviceCalendarName,
-        "description", &T::description);
+        "description", &T::description,
+        "meetingUrl", &T::meetingUrl);
 };

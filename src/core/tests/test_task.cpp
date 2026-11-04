@@ -199,6 +199,46 @@ TEST(TaskTest, CalendarPropertiesSerializeDeserialize)
     EXPECT_EQ(deserialized.deviceCalendarName, "Work Calendar");
 }
 
+TEST(TaskTest, MeetingUrlSerializeDeserialize)
+{
+    Task original;
+    original.meetingUrl = "https://teams.microsoft.com/meet/111?p=a";
+
+    auto json_result = glz::write_json(original);
+    ASSERT_TRUE(json_result.has_value());
+
+    Task deserialized;
+    ASSERT_TRUE(glz::read_json(deserialized, json_result.value()) == glz::error_code::none);
+    EXPECT_EQ(deserialized.meetingUrl, "https://teams.microsoft.com/meet/111?p=a");
+
+    Task withoutUrl;
+    ASSERT_TRUE(glz::read_json(withoutUrl, std::string(R"({"uuid":"x","title":"t"})")) == glz::error_code::none);
+    EXPECT_FALSE(withoutUrl.meetingUrl.has_value());
+}
+
+TEST(TaskTest, MergeConflict_MeetingUrl)
+{
+    const auto now = pointless::core::Clock::now();
+
+    Task task;
+    Task other;
+    other.meetingUrl = "https://zoom.us/j/1";
+    task.mergeConflict(other);
+    EXPECT_EQ(task.meetingUrl, "https://zoom.us/j/1");
+
+    Task newer;
+    newer.modificationTimestamp = now;
+    newer.meetingUrl = "https://zoom.us/j/2";
+    task.modificationTimestamp = now - std::chrono::hours(1);
+    task.mergeConflict(newer);
+    EXPECT_EQ(task.meetingUrl, "https://zoom.us/j/2");
+
+    Task olderWithoutUrl;
+    olderWithoutUrl.modificationTimestamp = now - std::chrono::hours(2);
+    task.mergeConflict(olderWithoutUrl);
+    EXPECT_EQ(task.meetingUrl, "https://zoom.us/j/2");
+}
+
 TEST(TaskTest, IsYearlyParsing)
 {
     std::string json = R"({"revision":1,"uuid":"test","title":"Test","isDone":false,"isGoal":null,"isYearly":true,"isImportant":false,"hideOnWeekends":null,"timesPerWeek":1,"lastCompletions":[],"sectionName":"","tags":[],"creationTimestamp":1586385046574,"modificationTimestamp":null,"lastPomodoroDate":null,"dueDate":null,"completionDate":null,"uuidInDeviceCalendar":null,"deviceCalendarUuid":null,"deviceCalendarName":null,"description":null})";
