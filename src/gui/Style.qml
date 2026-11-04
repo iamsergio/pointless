@@ -36,6 +36,8 @@ Item {
     readonly property color dusk: "#A897F6"
     readonly property color duskSoft: "#272241"
     readonly property color good: "#3CCB8A"
+    readonly property color danger: "#FF6E61"
+    readonly property color dangerSoft: "#3B1F1E"
     readonly property color buttonActive: "#0290f6"
     readonly property color sectionBackgroundColor: "#1a2332"
     readonly property color sectionTextColor: "#ffffff"

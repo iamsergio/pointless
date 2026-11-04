@@ -10,7 +10,7 @@ Item {
     id: root
 
     Rectangle {
-        color: "#80000000"
+        color: "#8C000000"
         anchors.fill: parent
 
         MouseArea {
@@ -28,46 +28,92 @@ Item {
         }
 
         Rectangle {
-            anchors.centerIn: parent
-            width: Math.min(parent.width * 0.9, Style.fromPixel(500))
-            height: Math.min(parent.height * 0.7, Style.fromPixel(600))
-            color: "#131c27"
-            border.width: Style.fromPixel(1)
-            border.color: "#222b38"
-            radius: Style.fromPixel(12)
+            anchors {
+                top: parent.top
+                topMargin: Style.fromPixel(12)
+                horizontalCenter: parent.horizontalCenter
+                bottom: parent.bottom
+                bottomMargin: Style.fromPixel(GuiController.isMobile ? 32 : 16) + Style.fromPixel(60) + Style.fromPixel(14)
+            }
+            width: Math.min(parent.width - Style.fromPixel(24), Style.fromPixel(560))
+            color: Style.surface
+            radius: Style.fromPixel(28)
+
+            MouseArea {
+                anchors.fill: parent
+            }
 
             ColumnLayout {
                 id: contentLayout
                 anchors.fill: parent
-                anchors.margins: Style.fromPixel(24)
-                spacing: Style.fromPixel(16)
+                anchors.margins: Style.fromPixel(18)
+                spacing: Style.fromPixel(12)
 
-                Text {
-                    text: "Notes"
-                    font.pixelSize: Style.fromPixel(24)
-                    font.bold: true
-                    color: "white"
-                    horizontalAlignment: Text.AlignHCenter
-                    Layout.alignment: Qt.AlignHCenter
+                RowLayout {
+                    Layout.fillWidth: true
+
+                    Text {
+                        text: "Cancel"
+                        font.pixelSize: Style.fromPixel(15)
+                        color: Style.inkSecondary
+                        Layout.preferredWidth: Style.fromPixel(70)
+
+                        MouseArea {
+                            anchors.fill: parent
+                            anchors.margins: -Style.fromPixel(8)
+                            onClicked: GuiController.closeNotesEditor()
+                        }
+                    }
+
+                    Text {
+                        text: "Notes"
+                        font.pixelSize: Style.fromPixel(16)
+                        font.weight: Font.DemiBold
+                        color: Style.ink
+                        horizontalAlignment: Text.AlignHCenter
+                        Layout.fillWidth: true
+                    }
+
+                    Item {
+                        Layout.preferredWidth: Style.fromPixel(70)
+                        implicitHeight: Style.fromPixel(34)
+
+                        Rectangle {
+                            anchors.right: parent.right
+                            width: Style.fromPixel(64)
+                            height: parent.height
+                            radius: height / 2
+                            color: Style.accent
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "Save"
+                                font.pixelSize: Style.fromPixel(14.5)
+                                font.weight: Font.DemiBold
+                                color: Style.accentInk
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: GuiController.saveNotes(notesTextArea.text)
+                            }
+                        }
+                    }
                 }
 
                 Text {
                     text: GuiController.notesTaskTitle
                     font.pixelSize: Style.fromPixel(14)
-                    color: "#aaaaaa"
+                    color: Style.inkSecondary
                     elide: Text.ElideRight
                     Layout.fillWidth: true
-                    Layout.alignment: Qt.AlignHCenter
-                    horizontalAlignment: Text.AlignHCenter
                 }
 
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    color: "#1a2332"
-                    border.width: Style.fromPixel(1)
-                    border.color: "#2a3342"
-                    radius: Style.fromPixel(8)
+                    color: Style.raised
+                    radius: Style.fromPixel(16)
 
                     ScrollView {
                         anchors.fill: parent
@@ -77,65 +123,14 @@ Item {
                         TextArea {
                             id: notesTextArea
                             text: GuiController.notesText
-                            font.pixelSize: Style.fromPixel(14)
-                            color: "white"
+                            font.pixelSize: Style.fromPixel(15)
+                            color: Style.ink
                             wrapMode: TextArea.Wrap
                             selectByMouse: true
-                            background: Rectangle {
-                                color: "transparent"
-                            }
+                            background: null
                             Component.onCompleted: {
                                 notesTextArea.forceActiveFocus();
                             }
-                        }
-                    }
-                }
-
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: Style.fromPixel(12)
-
-                    Button {
-                        text: "Cancel"
-                        font.pixelSize: Style.fromPixel(16)
-                        background: Rectangle {
-                            color: "#2a3342"
-                            radius: Style.fromPixel(8)
-                        }
-                        contentItem: Text {
-                            color: "white"
-                            text: "Cancel"
-                            font.pixelSize: Style.fromPixel(16)
-                            font.bold: true
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                        Layout.fillWidth: true
-                        implicitHeight: Style.fromPixel(48)
-                        onClicked: {
-                            GuiController.closeNotesEditor();
-                        }
-                    }
-
-                    Button {
-                        text: "Save"
-                        font.pixelSize: Style.fromPixel(16)
-                        background: Rectangle {
-                            color: "#1884f7"
-                            radius: Style.fromPixel(8)
-                        }
-                        contentItem: Text {
-                            color: "white"
-                            text: "Save"
-                            font.pixelSize: Style.fromPixel(16)
-                            font.bold: true
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                        Layout.fillWidth: true
-                        implicitHeight: Style.fromPixel(48)
-                        onClicked: {
-                            GuiController.saveNotes(notesTextArea.text);
                         }
                     }
                 }

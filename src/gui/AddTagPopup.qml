@@ -10,6 +10,13 @@ Item {
     id: root
     visible: GuiController.newTagPopupVisible
 
+    onVisibleChanged: {
+        if (visible) {
+            tagNameField.text = "";
+            tagNameField.forceActiveFocus();
+        }
+    }
+
     function open() {
         tagNameField.text = "";
         GuiController.newTagPopupVisible = true;
@@ -21,7 +28,7 @@ Item {
     }
 
     Rectangle {
-        color: "#80000000"
+        color: "#8C000000"
         anchors.fill: parent
 
         MouseArea {
@@ -33,92 +40,113 @@ Item {
 
         Rectangle {
             anchors.centerIn: parent
-            width: Math.min(parent.width * 0.9, Style.fromPixel(400))
-            height: Style.fromPixel(220)
-            color: "#131c27"
-            border.width: Style.fromPixel(1)
-            border.color: "#222b38"
-            radius: Style.fromPixel(12)
+            width: Math.min(parent.width - Style.fromPixel(40), Style.fromPixel(400))
+            height: contentLayout.implicitHeight + Style.fromPixel(36)
+            color: Style.surface
+            radius: Style.fromPixel(26)
+
+            MouseArea {
+                anchors.fill: parent
+            }
 
             ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: Style.fromPixel(24)
-                spacing: Style.fromPixel(16)
+                id: contentLayout
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                    leftMargin: Style.fromPixel(22)
+                    rightMargin: Style.fromPixel(22)
+                }
+                spacing: Style.fromPixel(14)
 
                 Text {
-                    text: "New Tag"
-                    font.pixelSize: Style.fromPixel(24)
-                    font.bold: true
-                    color: "white"
-                    horizontalAlignment: Text.AlignHCenter
-                    Layout.alignment: Qt.AlignHCenter
+                    text: "New tag"
+                    font.pixelSize: Style.fromPixel(21)
+                    font.weight: Font.DemiBold
+                    color: Style.ink
+                }
+
+                Text {
+                    text: "Tags group related tasks across your views, like work or errands."
+                    font.pixelSize: Style.fromPixel(14)
+                    color: Style.inkSecondary
+                    wrapMode: Text.WordWrap
+                    Layout.fillWidth: true
                 }
 
                 TextField {
                     id: tagNameField
                     Layout.fillWidth: true
+                    implicitHeight: Style.fromPixel(50)
                     placeholderText: "Tag name"
-                    placeholderTextColor: "#888888"
+                    placeholderTextColor: Style.inkTertiary
                     font.pixelSize: Style.fromPixel(16)
-                    color: "white"
+                    color: Style.ink
+                    leftPadding: Style.fromPixel(16)
+                    rightPadding: Style.fromPixel(16)
+                    selectByMouse: true
                     background: Rectangle {
-                        color: "#1a2332"
-                        border.width: Style.fromPixel(1)
-                        border.color: "#2a3342"
-                        radius: Style.fromPixel(8)
+                        color: Style.raised
+                        radius: Style.fromPixel(14)
+                        border.width: tagNameField.activeFocus ? 1.5 : 0
+                        border.color: Style.accent
                     }
                     Keys.onReturnPressed: {
-                        if (tagNameField.text.trim().length > 0) {
-                            GuiController.addTag(tagNameField.text.trim());
-                            root.close();
-                        }
+                            if (tagNameField.text.trim().length > 0) {
+                                GuiController.addTag(tagNameField.text.trim());
+                                root.close();
+                            }
                     }
                 }
 
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: Style.fromPixel(12)
+                    spacing: Style.fromPixel(10)
 
                     Button {
+                        id: cancelButton
                         objectName: "popupCancelButton"
                         text: "Cancel"
-                        font.pixelSize: Style.fromPixel(16)
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 1
+                        implicitHeight: Style.fromPixel(48)
                         background: Rectangle {
-                            color: "#2a3342"
-                            radius: Style.fromPixel(8)
+                            color: Style.raised
+                            radius: Style.fromPixel(15)
+                            opacity: cancelButton.pressed ? 0.8 : 1
                         }
                         contentItem: Text {
-                            color: "white"
+                            color: Style.ink
                             text: "Cancel"
-                            font.pixelSize: Style.fromPixel(16)
-                            font.bold: true
+                            font.pixelSize: Style.fromPixel(15.5)
+                            font.weight: Font.DemiBold
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                         }
-                        Layout.fillWidth: true
-                        implicitHeight: Style.fromPixel(48)
                         onClicked: {
                             root.close();
                         }
                     }
-
                     Button {
-                        text: "Add"
-                        font.pixelSize: Style.fromPixel(16)
+                        id: addConfirmButton
+                        text: "Add tag"
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 1
+                        implicitHeight: Style.fromPixel(48)
                         background: Rectangle {
-                            color: "#1884f7"
-                            radius: Style.fromPixel(8)
+                            color: Style.accent
+                            radius: Style.fromPixel(15)
+                            opacity: addConfirmButton.pressed ? 0.8 : 1
                         }
                         contentItem: Text {
-                            color: "white"
-                            text: "Add"
-                            font.pixelSize: Style.fromPixel(16)
-                            font.bold: true
+                            color: Style.accentInk
+                            text: "Add tag"
+                            font.pixelSize: Style.fromPixel(15.5)
+                            font.weight: Font.DemiBold
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                         }
-                        Layout.fillWidth: true
-                        implicitHeight: Style.fromPixel(48)
                         onClicked: {
                             if (tagNameField.text.trim().length > 0) {
                                 GuiController.addTag(tagNameField.text.trim());
