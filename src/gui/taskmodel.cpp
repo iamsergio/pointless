@@ -122,6 +122,8 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         return task.isGoal.value_or(false);
     case IsYearlyRole:
         return task.isYearly.value_or(false);
+    case MeetingUrlRole:
+        return QString::fromStdString(task.meetingUrl.value_or(std::string()));
     default:
         return {};
     }
@@ -155,6 +157,7 @@ QHash<int, QByteArray> TaskModel::roleNames() const
     roles[HasNotesRole] = "hasNotes";
     roles[IsGoalRole] = "isGoal";
     roles[IsYearlyRole] = "isYearly";
+    roles[MeetingUrlRole] = "meetingUrl";
     return roles;
 }
 
