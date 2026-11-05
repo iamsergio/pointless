@@ -16,6 +16,7 @@
 #include <QDir>
 #include <QGuiApplication>
 #include <QQuickWindow>
+#include <QStyleHints>
 
 #include <chrono>
 #include <cstdlib>
@@ -43,6 +44,8 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
     QCoreApplication::setApplicationVersion(QStringLiteral("0.1"));
     QCoreApplication::setOrganizationName(orgName);
     setSettingsIdentity(orgName, QString::fromLatin1(settingsApplicationName));
+
+    styleHints()->setWheelScrollLines(styleHints()->wheelScrollLines() * 2);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QStringLiteral("Pointless"));
