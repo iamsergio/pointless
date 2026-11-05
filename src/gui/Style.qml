@@ -9,7 +9,7 @@ import pointless 1.0
 
 Item {
     id: root
-    readonly property double scaleFactor: 1.5
+    readonly property double scaleFactor: 1.0
     readonly property bool isMobile: GuiController.isMobile
 
     function fromPixel(px) {
