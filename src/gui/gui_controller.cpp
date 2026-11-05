@@ -68,7 +68,7 @@ public:
 
     bool eventFilter(QObject * /*obj*/, QEvent *event) override
     {
-        if (event->type() == QEvent::KeyPress) {
+        if (event->type() == QEvent::KeyPress && GuiController::instance()->shortcutsEnabled()) {
             auto *keyEvent = static_cast<QKeyEvent *>(event); // NOLINT
             auto *gc = GuiController::instance();
             if (keyEvent->key() == Qt::Key_Escape) {
@@ -1479,6 +1479,16 @@ bool GuiController::isEveningForHour(int hour)
 bool GuiController::calendarProviderConfigured() const
 {
     return _calendarProvider && _calendarProvider->isConfigured();
+}
+
+bool GuiController::shortcutsEnabled() const
+{
+    return _shortcutsEnabled;
+}
+
+void GuiController::setShortcutsEnabled(bool enabled)
+{
+    _shortcutsEnabled = enabled;
 }
 
 bool GuiController::debugMode()

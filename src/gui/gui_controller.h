@@ -243,6 +243,9 @@ public:
     [[nodiscard]] bool playPomodoroVisible() const;
 
     [[nodiscard]] bool calendarProviderConfigured() const;
+    [[nodiscard]] bool shortcutsEnabled() const;
+    void setShortcutsEnabled(bool enabled);
+
     [[nodiscard]] static bool debugMode();
     static void setDebugMode(bool enabled);
 
@@ -324,5 +327,6 @@ private:
     bool _isFetchingCalendarEvents = false;
     QString _fetchCalendarStatusText;
     QFutureWatcher<std::vector<pointless::core::CalendarEvent>> *_calendarFetchWatcher = nullptr;
+    bool _shortcutsEnabled = true;
     static bool _debugMode;
 };

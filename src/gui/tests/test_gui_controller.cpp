@@ -12,6 +12,7 @@
 #include "core/data_provider.h"
 #include "core/logger.h"
 
+#include <QKeyEvent>
 #include <QTest>
 
 #include <gtest/gtest.h>
@@ -272,6 +273,26 @@ TEST(GuiControllerTest, CalendarProviderConfiguredWithoutEnvVars)
     GuiController *guiController = GuiController::instance();
 
     EXPECT_EQ(guiController->calendarProviderConfigured(), std::getenv("POINTLESS_CALDAV_URL") != nullptr);
+
+    delete guiController;
+}
+
+TEST(GuiControllerTest, DisabledShortcutsLeaveKeysAlone)
+{
+    QGuiApplication _app(g_argc, g_argv);
+    core::Logger::initLogLevel();
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+
+    GuiController *guiController = GuiController::instance();
+    QKeyEvent keyT(QEvent::KeyPress, Qt::Key_T, Qt::NoModifier, QStringLiteral("t"));
+
+    guiController->setShortcutsEnabled(false);
+    QCoreApplication::sendEvent(&_app, &keyT);
+    EXPECT_TRUE(guiController->currentPage().isEmpty());
+
+    guiController->setShortcutsEnabled(true);
+    QCoreApplication::sendEvent(&_app, &keyT);
+    EXPECT_EQ(guiController->currentPage(), QStringLiteral("tags"));
 
     delete guiController;
 }

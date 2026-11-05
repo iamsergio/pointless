@@ -13,6 +13,7 @@ struct InitOptions
 };
 
 void initialize(const InitOptions &options);
+void setShortcutsEnabled(bool enabled);
 void shutdown();
 
 }

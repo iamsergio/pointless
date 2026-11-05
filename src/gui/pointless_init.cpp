@@ -47,6 +47,11 @@ void pointless::initialize(const InitOptions &options)
     GuiController::instance();
 }
 
+void pointless::setShortcutsEnabled(bool enabled)
+{
+    GuiController::instance()->setShortcutsEnabled(enabled);
+}
+
 void pointless::shutdown()
 {
     P_LOG_INFO("Application exiting");
