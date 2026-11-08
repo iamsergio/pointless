@@ -196,6 +196,12 @@ if(POINTLESS_ENABLE_TESTS)
   target_include_directories(test_gui_controller PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
   add_test(NAME test_gui_controller COMMAND test_gui_controller)
 
+  add_executable(test_cli tests/test_cli.cpp)
+  target_link_libraries(test_cli PRIVATE pointless_core GTest::gtest_main Qt6::Core)
+  target_compile_definitions(test_cli PRIVATE POINTLESS_EXECUTABLE="$<TARGET_FILE:pointless>")
+  add_dependencies(test_cli pointless)
+  add_test(NAME test_cli COMMAND test_cli)
+
   add_executable(test_gui_date_utils tests/test_date_utils.cpp)
   target_link_libraries(test_gui_date_utils PRIVATE pointless_core pointless_gui GTest::gtest_main Qt6::Core)
   target_include_directories(test_gui_date_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

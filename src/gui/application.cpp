@@ -72,6 +72,9 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
     QCommandLineOption benchmarkStartupOption(QStringLiteral("benchmark-startup"), QStringLiteral("Exit after first frame is rendered"));
     parser.addOption(benchmarkStartupOption);
 
+    QCommandLineOption addOption(QStringLiteral("add"), QStringLiteral("Add a task, sync it and exit"), QStringLiteral("title"));
+    parser.addOption(addOption);
+
 #ifndef Q_OS_DARWIN
     QCommandLineOption dumpICalOption(QStringLiteral("dump-ical"), QStringLiteral("Write the iCal data of each calendar fetch to the temp directory"));
     parser.addOption(dumpICalOption);
@@ -89,6 +92,11 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
     initOptions.restoreAuth = !parser.isSet(noRestoreAuthOption);
     initOptions.testSupabase = parser.isSet(testSupabaseOption);
     initialize(initOptions);
+
+    if (parser.isSet(addOption)) {
+        addTaskAndQuit(parser.value(addOption));
+        return;
+    }
 
     if (parser.isSet(benchmarkOption)) {
         auto *gc = GuiController::instance();
@@ -147,6 +155,33 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
             });
         }
     }
+}
+
+void Application::addTaskAndQuit(const QString &title)
+{
+    auto *gc = GuiController::instance();
+    auto *dc = gc->dataController();
+
+    auto task = dc->addTaskFromTitleAndSave(title);
+    if (!task) {
+        P_LOG_ERROR("Failed to add task: {}", task.error());
+        QTimer::singleShot(0, this, [] { QCoreApplication::exit(1); });
+        return;
+    }
+
+    P_LOG_INFO("Added task '{}'", task->title);
+
+    connect(dc, &DataController::refreshFinished, this, [](bool success, const QString &) {
+        if (!success)
+            P_LOG_WARNING("Sync failed, the task will be uploaded on the next sync");
+        QCoreApplication::quit();
+    });
+
+    // Queued after GuiController's initial refresh, which uploads the task when authenticated
+    QTimer::singleShot(0, this, [gc] {
+        if (!gc->isRefreshing())
+            QCoreApplication::quit();
+    });
 }
 
 Application::~Application()

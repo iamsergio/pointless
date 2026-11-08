@@ -38,6 +38,7 @@ public:
     Application &operator=(Application &&) = delete;
 
 private:
+    void addTaskAndQuit(const QString &title);
     QQmlApplicationEngine _engine;
 };
 

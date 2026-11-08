@@ -875,24 +875,9 @@ void GuiController::saveTask(QString title, const QString &tag, bool isEvening, 
 {
     auto guard = qScopeGuard([this] { clearTaskBeingEdited(); });
 
-    QString processedTitle = std::move(title);
-    QString extractedTag;
+    const auto parsed = _dataController->parseTaskTitle(title);
 
-    QStringList tokens = processedTitle.split(' ', Qt::SkipEmptyParts);
-    if (!tokens.isEmpty()) {
-        const QString &lastToken = tokens.last();
-        if (lastToken.startsWith(':') && lastToken.length() > 1) {
-            extractedTag = lastToken.mid(1);
-            tokens.removeLast();
-            processedTitle = tokens.join(' ');
-        } else if (_dataController->containsTag(lastToken)) {
-            extractedTag = lastToken;
-            tokens.removeLast();
-            processedTitle = tokens.join(' ');
-        }
-    }
-
-    if (processedTitle.isEmpty()) {
+    if (parsed.title.isEmpty()) {
         P_LOG_ERROR("Won't save task with empty title");
         return;
     }
@@ -919,9 +904,9 @@ void GuiController::saveTask(QString title, const QString &tag, bool isEvening, 
         }
     }
 
-    task->title = processedTitle.toStdString();
+    task->title = parsed.title.toStdString();
 
-    std::string newTag = extractedTag.isEmpty() ? tag.toStdString() : extractedTag.toStdString();
+    std::string newTag = parsed.tag.isEmpty() ? tag.toStdString() : parsed.tag.toStdString();
 
     std::vector<std::string> newTags;
     // Keep internal builtins ("soon", "current")

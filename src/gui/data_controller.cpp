@@ -12,6 +12,7 @@
 #include "fatal_message_handler.h"
 
 #include <QtConcurrent/QtConcurrent>
+#include <QUuid>
 
 #include <fstream>
 #include <chrono>
@@ -267,6 +268,53 @@ bool DataController::addTask(const pointless::core::Task &task)
         return true;
     }
     return false;
+}
+
+std::expected<pointless::core::Task, std::string> DataController::addTaskFromTitleAndSave(const QString &title)
+{
+    // Load first, otherwise the next refresh sees non-empty data and won't read the file
+    if (!_localData.data().isValid()) {
+        if (auto result = _localData.loadDataFromFile(); !result)
+            return std::unexpected(result.error().toString());
+    }
+
+    const auto parsed = parseTaskTitle(title);
+    if (parsed.title.isEmpty())
+        return std::unexpected("Won't add task with empty title");
+
+    pointless::core::Task task;
+    task.uuid = QUuid::createUuid().toString(QUuid::WithoutBraces).toStdString();
+    task.title = parsed.title.toStdString();
+    if (!parsed.tag.isEmpty())
+        task.tags.push_back(parsed.tag.toStdString());
+
+    if (!_localData.addTask(task))
+        return std::unexpected("Invalid task");
+
+    if (auto result = _localData.save(); !result)
+        return std::unexpected(result.error());
+
+    return task;
+}
+
+ParsedTaskTitle DataController::parseTaskTitle(const QString &title) const
+{
+    QStringList tokens = title.split(' ', Qt::SkipEmptyParts);
+    if (tokens.isEmpty())
+        return {};
+
+    const QString &lastToken = tokens.last();
+    QString tag;
+    if (lastToken.startsWith(':') && lastToken.length() > 1) {
+        tag = lastToken.mid(1);
+    } else if (containsTag(lastToken)) {
+        tag = lastToken;
+    } else {
+        return { .title = title, .tag = {} };
+    }
+
+    tokens.removeLast();
+    return { .title = tokens.join(' '), .tag = tag };
 }
 
 bool DataController::addTag(const QString &tagName)
