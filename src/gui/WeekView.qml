@@ -288,6 +288,8 @@ Item {
                                 width: parent.width
                                 height: Style.fromPixel(40)
                                 color: Style.duskSoft
+                                topLeftRadius: entry.index === 0 ? Style.fromPixel(18) - 1 : 0
+                                topRightRadius: entry.index === 0 ? Style.fromPixel(18) - 1 : 0
 
                                 Rectangle {
                                     visible: entry.index > 0
