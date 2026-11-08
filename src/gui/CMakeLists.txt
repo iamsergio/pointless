@@ -142,6 +142,44 @@ elseif(APPLE) # macOS
                MACOSX_BUNDLE_IDENTIFIER ${BUNDLE_IDENTIFIER}
                MACOSX_BUNDLE TRUE
                MACOSX_BUNDLE_INFO_PLIST "${PROJECT_BINARY_DIR}/Info.plist")
+
+  set(POINTLESS_ICON_SRC ${PROJECT_SOURCE_DIR}/assets/icon.png)
+  set(POINTLESS_ICONSET ${CMAKE_CURRENT_BINARY_DIR}/pointless.iconset)
+  set(POINTLESS_ICNS ${CMAKE_CURRENT_BINARY_DIR}/pointless.icns)
+  set(POINTLESS_ICON_COMMANDS)
+  foreach(size 16 32 128 256 512)
+    math(EXPR size2x "${size} * 2")
+    list(
+      APPEND
+      POINTLESS_ICON_COMMANDS
+      COMMAND
+      sips
+      -z
+      ${size}
+      ${size}
+      ${POINTLESS_ICON_SRC}
+      --out
+      ${POINTLESS_ICONSET}/icon_${size}x${size}.png)
+    list(
+      APPEND
+      POINTLESS_ICON_COMMANDS
+      COMMAND
+      sips
+      -z
+      ${size2x}
+      ${size2x}
+      ${POINTLESS_ICON_SRC}
+      --out
+      ${POINTLESS_ICONSET}/icon_${size}x${size}@2x.png)
+  endforeach()
+  add_custom_command(
+    OUTPUT ${POINTLESS_ICNS}
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${POINTLESS_ICONSET} ${POINTLESS_ICON_COMMANDS}
+    COMMAND iconutil -c icns ${POINTLESS_ICONSET} -o ${POINTLESS_ICNS}
+    DEPENDS ${POINTLESS_ICON_SRC}
+    VERBATIM)
+  target_sources(pointless PRIVATE ${POINTLESS_ICNS})
+  set_source_files_properties(${POINTLESS_ICNS} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 endif()
 
 if(POINTLESS_ENABLE_TESTS)

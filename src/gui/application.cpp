@@ -43,6 +43,8 @@ Application::Application(int &argc, char **argv, const QString &orgName, Options
     QCoreApplication::setApplicationName(QString::fromLatin1(settingsApplicationName));
     QCoreApplication::setApplicationVersion(QStringLiteral("0.1"));
     QCoreApplication::setOrganizationName(orgName);
+    // Becomes the Wayland app_id, which the compositor matches against a .desktop file to find the icon
+    QGuiApplication::setDesktopFileName(QStringLiteral("com.iamsergio.pointless"));
     setSettingsIdentity(orgName, QString::fromLatin1(settingsApplicationName));
 
     styleHints()->setWheelScrollLines(styleHints()->wheelScrollLines() * 2);
