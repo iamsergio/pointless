@@ -24,6 +24,12 @@
 class TaskModel;
 class TagModel;
 
+struct ParsedTaskTitle
+{
+    QString title;
+    QString tag;
+};
+
 class DataController : public QObject
 {
     Q_OBJECT
@@ -47,6 +53,8 @@ public:
     std::expected<void, TraceableError> refresh(bool isOfflineMode = false);
     bool updateTask(const pointless::core::Task &task);
     bool addTask(const pointless::core::Task &task);
+    std::expected<pointless::core::Task, std::string> addTaskFromTitleAndSave(const QString &title);
+    [[nodiscard]] ParsedTaskTitle parseTaskTitle(const QString &title) const;
     bool addTag(const QString &tagName);
     bool removeTag(const QString &tagName);
     bool renameTag(const QString &oldName, const QString &newName);
