@@ -6,6 +6,8 @@
     <string>pointless</string>
 	<key>CFBundleDisplayName</key>
     <string>Pointless</string>
+    <key>CFBundleIconFile</key>
+    <string>pointless</string>
     <key>CFBundleIdentifier</key>
     <string>com.iamsergio.pointless</string>
     <key>CFBundleName</key>
