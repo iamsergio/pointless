@@ -78,6 +78,8 @@ Use `BUILTIN_TAG_*` constants, `tagIsBuiltin()`, and `removeBuiltinTags()`. Ther
 
 4. **Icons** - Use `FontAwesomeButton.qml` with FontAwesome icons. Avoid image files.
 
+5. **Slint** - Don't add or extend features in the Slint UI (`src/slint/`, `slint/`) unless explicitly asked. New features target the QML UI only.
+
 ## Testing
 
 - **Core tests**: `src/core/tests/` - gtest-based unit tests
