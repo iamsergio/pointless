@@ -59,7 +59,8 @@ SPDX-License-Identifier = "OFL-1.1"
 path = [
     "assets/android/**",
     "assets/ios/**",
-    "assets/icon.png"
+    "assets/icon.png",
+    "assets/icon.svg"
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2025 Sergio Martins"
