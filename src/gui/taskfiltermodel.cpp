@@ -38,6 +38,16 @@ TaskFilterModel::TaskFilterModel(QObject *parent)
 
     connect(this, &TaskFilterModel::countChanged, this, &TaskFilterModel::evaluateEmpty);
 
+    connect(this, &QSortFilterProxyModel::rowsInserted, this, &TaskFilterModel::scheduleFirstEveningUpdate);
+    connect(this, &QSortFilterProxyModel::rowsRemoved, this, &TaskFilterModel::scheduleFirstEveningUpdate);
+    connect(this, &QSortFilterProxyModel::rowsMoved, this, &TaskFilterModel::scheduleFirstEveningUpdate);
+    connect(this, &QSortFilterProxyModel::layoutChanged, this, &TaskFilterModel::scheduleFirstEveningUpdate);
+    connect(this, &QSortFilterProxyModel::modelReset, this, &TaskFilterModel::scheduleFirstEveningUpdate);
+    connect(this, &QSortFilterProxyModel::dataChanged, this, [this](const QModelIndex &, const QModelIndex &, const QList<int> &roles) {
+        if (roles.isEmpty() || roles.contains(TaskModel::IsEveningRole))
+            scheduleFirstEveningUpdate();
+    });
+
     connect(GuiController::instance(), &GuiController::showImmediateOnlyChanged, this, [this] {
         setShowImmediateOnly(GuiController::instance()->showImmediateOnly());
     });
@@ -205,6 +215,43 @@ bool TaskFilterModel::lessThan(const QModelIndex &source_left, const QModelIndex
     }
 
     return source_left.row() < source_right.row();
+}
+
+QVariant TaskFilterModel::data(const QModelIndex &index, int role) const
+{
+    if (role == IsFirstEveningRole) {
+        if (!index.isValid())
+            return {};
+        const int row = index.row();
+        return isEveningAt(row) && (row == 0 || !isEveningAt(row - 1));
+    }
+
+    return QSortFilterProxyModel::data(index, role);
+}
+
+QHash<int, QByteArray> TaskFilterModel::roleNames() const
+{
+    auto roles = QSortFilterProxyModel::roleNames();
+    roles[IsFirstEveningRole] = "isFirstEvening";
+    return roles;
+}
+
+bool TaskFilterModel::isEveningAt(int row) const
+{
+    return QSortFilterProxyModel::data(index(row, 0), TaskModel::IsEveningRole).toBool();
+}
+
+void TaskFilterModel::scheduleFirstEveningUpdate()
+{
+    if (_firstEveningUpdatePending)
+        return;
+    _firstEveningUpdatePending = true;
+
+    QMetaObject::invokeMethod(this, [this] {
+        _firstEveningUpdatePending = false;
+        const int count = rowCount();
+        if (count > 0)
+            Q_EMIT dataChanged(index(0, 0), index(count - 1, 0), { IsFirstEveningRole }); }, Qt::QueuedConnection);
 }
 
 QDate TaskFilterModel::dateFilter() const

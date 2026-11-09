@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "taskmodel.h"
+
 #include <QSortFilterProxyModel>
 #include <QtQml/qqmlregistration.h>
 #include <QDate>
@@ -28,6 +30,10 @@ public:
         Goals
     };
     Q_ENUM(ViewType)
+
+    enum Roles : std::uint16_t {
+        IsFirstEveningRole = TaskModel::MeetingUrlRole + 1
+    };
 
     explicit TaskFilterModel(QObject *parent = nullptr);
     ~TaskFilterModel() override = default;
@@ -66,9 +72,13 @@ public:
 
     [[nodiscard]] bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
     [[nodiscard]] bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;
+    [[nodiscard]] QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    [[nodiscard]] QHash<int, QByteArray> roleNames() const override;
 
 private:
     void evaluateEmpty();
+    [[nodiscard]] bool isEveningAt(int row) const;
+    void scheduleFirstEveningUpdate();
 
     ViewType _viewType = ViewType::Week;
     QString _tagName;
@@ -76,4 +86,5 @@ private:
     int _previousRowCount = 0;
     bool _showImmediateOnly = false;
     QString _searchText;
+    bool _firstEveningUpdatePending = false;
 };

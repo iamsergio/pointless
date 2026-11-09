@@ -31,10 +31,6 @@ Item {
         return weekdayListView.itemAtIndex(i);
     }
 
-    function repeaterItemAt(repeater: Repeater, i: int): var {
-        return repeater.itemAt(i);
-    }
-
     function scrollToDate(target) {
         for (let i = 0; i < weekdayListView.count; ++i) {
             const item = weekdayItemAt(i);
@@ -273,19 +269,14 @@ Item {
                             required property bool isGoal
                             required property bool isYearly
                             required property string meetingUrl
+                            required property bool isFirstEvening
 
-                            readonly property bool showsEveningLabel: {
-                                if (!isEvening)
-                                    return false;
-                                const previous = root.repeaterItemAt(taskRepeater, index - 1);
-                                return !previous || !previous.isEvening;
-                            }
 
                             width: tasksColumn.width
 
                             Rectangle {
                                 objectName: "eveningLabel_" + column.index + "_" + entry.index
-                                visible: entry.showsEveningLabel
+                                visible: entry.isFirstEvening
                                 width: parent.width
                                 height: Style.fromPixel(40)
                                 color: Style.duskSoft
@@ -328,7 +319,7 @@ Item {
                                 objectName: "task_" + column.index + "_" + entry.index
 
                                 width: parent.width
-                                rowIndex: entry.showsEveningLabel ? 0 : entry.index
+                                rowIndex: entry.isFirstEvening ? 0 : entry.index
                                 taskUuid: entry.uuid
                                 taskTitle: entry.title
                                 taskIsDone: entry.isDone
