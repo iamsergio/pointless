@@ -132,7 +132,7 @@ bool TaskFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source
         return taskTitle.contains(_searchText, Qt::CaseInsensitive);
     }
 
-    if (_showImmediateOnly && task->isEvening()) {
+    if (_showImmediateOnly && TaskModel::isEvening(*task)) {
         return false;
     }
 

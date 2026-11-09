@@ -27,6 +27,19 @@ int TaskModel::rowCount(const QModelIndex &parent) const
     return static_cast<int>(data.taskCount());
 }
 
+bool TaskModel::isEvening(const core::Task &task)
+{
+    if (task.containsTag(core::BUILTIN_TAG_EVENING))
+        return true;
+
+    if (task.dueDate) {
+        const auto timeT = std::chrono::system_clock::to_time_t(*task.dueDate);
+        const QDateTime dt = QDateTime::fromSecsSinceEpoch(timeT);
+        return dt.time().hour() >= 17;
+    }
+    return false;
+}
+
 QVariant TaskModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid() || index.row() >= static_cast<int>(localData().taskCount())) {
@@ -74,15 +87,7 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         }
         return {};
     case IsEveningRole:
-        if (task.containsTag(core::BUILTIN_TAG_EVENING))
-            return true;
-
-        if (task.dueDate) {
-            const auto timeT = std::chrono::system_clock::to_time_t(*task.dueDate);
-            const QDateTime dt = QDateTime::fromSecsSinceEpoch(timeT);
-            return dt.time().hour() >= 17;
-        }
-        return false;
+        return isEvening(task);
     case NeedsSyncToServerRole:
         return task.needsSyncToServer;
     case RevisionRole:
