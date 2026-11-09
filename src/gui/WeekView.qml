@@ -284,6 +284,7 @@ Item {
                             width: tasksColumn.width
 
                             Rectangle {
+                                objectName: "eveningLabel_" + column.index + "_" + entry.index
                                 visible: entry.showsEveningLabel
                                 width: parent.width
                                 height: Style.fromPixel(40)

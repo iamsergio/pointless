@@ -15,6 +15,7 @@ path = [
     "src/core/tests/test.json",
     "src/core/tests/test_null_values.json",
     "src/gui/tests/test_data.json",
+    "src/gui/tests/test_data_evening.json",
     "vcpkg.json",
     ".clang-format",
     ".clangd",

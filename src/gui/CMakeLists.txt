@@ -201,6 +201,16 @@ if(POINTLESS_ENABLE_TESTS)
   endif()
   # add_test(NAME test_gui_supabase COMMAND test_gui --supabase)
 
+  add_executable(test_evening_label tests/test_evening_label.cpp)
+  target_link_libraries(test_evening_label PRIVATE pointless_core gui_test_harness_qt Spix::Core GTest::gtest_main)
+  target_compile_definitions(test_evening_label PRIVATE POINTLESS_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
+  add_test(NAME test_evening_label COMMAND test_evening_label)
+  # Known bug: the "This evening" label goes stale when tasks are inserted above it
+  set_tests_properties(test_evening_label PROPERTIES WILL_FAIL TRUE)
+  if(POINTLESS_SLINT_OVER_QTCORE)
+    set_tests_properties(test_evening_label PROPERTIES DISABLED TRUE)
+  endif()
+
   add_executable(screenshot_collection tests/screenshot_collection.cpp)
   target_link_libraries(screenshot_collection PRIVATE pointless_core gui_test_harness_qt Spix::Core GTest::gtest_main)
   target_compile_definitions(screenshot_collection PRIVATE POINTLESS_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
