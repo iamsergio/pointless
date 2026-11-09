@@ -79,6 +79,7 @@ private:
     void evaluateEmpty();
     [[nodiscard]] bool isEveningAt(int row) const;
     void scheduleFirstEveningUpdate();
+    void emitFirstEveningChanged();
 
     ViewType _viewType = ViewType::Week;
     QString _tagName;
