@@ -961,9 +961,9 @@ QColor GuiController::colorFromTag(const QString &tagName) const
         "#FF8A00"
     };
     if (tagName.isEmpty())
-        return QColor(QStringLiteral("#555555"));
+        return { QStringLiteral("#555555") };
     const auto index = qHash(tagName) % colors.size();
-    return QColor(colors.at(static_cast<int>(index)));
+    return { colors.at(static_cast<int>(index)) };
 }
 
 QString GuiController::otherTags(const QString &allTags, const QString &currentTag) const
