@@ -16,6 +16,7 @@
 #include <QObject>
 #include <QSortFilterProxyModel>
 #include <QDate>
+#include <QTimer>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 9, 0)
 #define beginFilterChange() ( void )0
@@ -246,12 +247,15 @@ void TaskFilterModel::scheduleFirstEveningUpdate()
     if (_firstEveningUpdatePending)
         return;
     _firstEveningUpdatePending = true;
+    QTimer::singleShot(0, this, &TaskFilterModel::emitFirstEveningChanged);
+}
 
-    QMetaObject::invokeMethod(this, [this] {
-        _firstEveningUpdatePending = false;
-        const int count = rowCount();
-        if (count > 0)
-            Q_EMIT dataChanged(index(0, 0), index(count - 1, 0), { IsFirstEveningRole }); }, Qt::QueuedConnection);
+void TaskFilterModel::emitFirstEveningChanged()
+{
+    _firstEveningUpdatePending = false;
+    const int count = rowCount();
+    if (count > 0)
+        Q_EMIT dataChanged(index(0, 0), index(count - 1, 0), { IsFirstEveningRole });
 }
 
 QDate TaskFilterModel::dateFilter() const
