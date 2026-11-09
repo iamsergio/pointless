@@ -23,13 +23,3 @@ updates:
       submodule-updates:
         patterns:
           - "*"
-
-  - package-ecosystem: "cargo"
-    directory: "/slint"
-    schedule:
-      interval: "monthly"
-    open-pull-requests-limit: 5
-    groups:
-      cargo-updates:
-        patterns:
-          - "*"
