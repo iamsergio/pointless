@@ -12,6 +12,9 @@ jobs:
   build:
     name: Build (${{ matrix.preset }} ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    concurrency:
+      group: supabase-test-account
+      queue: max
 
     strategy:
       fail-fast: false
