@@ -3,6 +3,7 @@
 
 #include "taskmodel.h"
 #include "Clock.h"
+#include "core/completion_log.h"
 #include "data_controller.h"
 #include "gui_controller.h"
 #include "pomodoro_controller.h"
@@ -261,6 +262,8 @@ void TaskModel::setTaskDone(const QString &taskUuid, bool isDone)
         if (pomodoro->isRunning() && pomodoro->currentTaskUuid() == taskUuid) {
             pomodoro->stop();
         }
+
+        core::CompletionLog::append(updatedTask);
     }
 
     dataController()->updateTask(updatedTask);

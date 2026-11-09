@@ -29,7 +29,8 @@ add_library(
   ${POINTLESS_TESTS_SRCS}
   logger.cpp
   meeting_url.cpp
-  calendar_provider.cpp)
+  calendar_provider.cpp
+  completion_log.cpp)
 
 if("$ENV{POINTLESS_SUPABASE_ANON_KEY}" STREQUAL "")
   message(FATAL_ERROR "POINTLESS_SUPABASE_ANON_KEY environment variable is empty or not set")
@@ -102,6 +103,12 @@ if(POINTLESS_ENABLE_TESTS)
   target_link_libraries(test_tag PRIVATE pointless_core GTest::gtest_main)
   target_include_directories(test_tag PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
   add_test(NAME test_tag COMMAND test_tag)
+
+  add_executable(test_completion_log tests/test_completion_log.cpp)
+  target_link_libraries(test_completion_log PRIVATE pointless_core GTest::gtest_main)
+  target_include_directories(test_completion_log PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+  add_test(NAME test_completion_log COMMAND test_completion_log)
+  set_tests_properties(test_completion_log PROPERTIES ENVIRONMENT TZ=UTC)
 
   add_executable(test_task tests/test_task.cpp)
   target_link_libraries(test_task PRIVATE pointless_core GTest::gtest_main)

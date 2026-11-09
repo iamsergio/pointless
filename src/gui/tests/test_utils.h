@@ -8,6 +8,7 @@
 #include <QtGlobal>
 #include <QCoreApplication>
 #include <QFileInfo>
+#include <QTemporaryDir>
 
 using namespace pointless;
 
@@ -16,6 +17,9 @@ Application::Options initPlatform(const char *argv0)
     if (std::getenv("QT_QPA_PLATFORM") == nullptr) {
         qputenv("QT_QPA_PLATFORM", "offscreen");
     }
+
+    static QTemporaryDir completionLogDir;
+    qputenv("J_PATH", completionLogDir.path().toLocal8Bit());
 
     core::Logger::setWarningsFatal(true);
     QCoreApplication::setOrganizationName("com.pointless.tests");
