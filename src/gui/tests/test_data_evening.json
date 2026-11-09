@@ -121,14 +121,11 @@
             "isDone": false,
             "isImportant": false,
             "hideOnWeekends": false,
-            "tags": [
-                "current",
-                "evening"
-            ],
+            "tags": [],
             "creationTimestamp": 1764590400000,
             "modificationTimestamp": null,
             "lastPomodoroDate": null,
-            "dueDate": null,
+            "dueDate": 1764619200000,
             "completionDate": null,
             "uuidInDeviceCalendar": null,
             "deviceCalendarUuid": null,
