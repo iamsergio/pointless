@@ -1,0 +1,138 @@
+{
+    "revision": 1,
+    "tags": [
+        {
+            "revision": 1,
+            "name": "current"
+        },
+        {
+            "revision": 1,
+            "name": "evening"
+        }
+    ],
+    "tasks": [
+        {
+            "revision": 1,
+            "uuid": "1",
+            "parentUuid": null,
+            "title": "Morning Task 1",
+            "isDone": false,
+            "isImportant": false,
+            "hideOnWeekends": false,
+            "tags": [
+                "current"
+            ],
+            "creationTimestamp": 1764590400000,
+            "modificationTimestamp": null,
+            "lastPomodoroDate": null,
+            "dueDate": null,
+            "completionDate": null,
+            "uuidInDeviceCalendar": null,
+            "deviceCalendarUuid": null,
+            "deviceCalendarName": null
+        },
+        {
+            "revision": 1,
+            "uuid": "2",
+            "parentUuid": null,
+            "title": "Morning Task 2",
+            "isDone": false,
+            "isImportant": false,
+            "hideOnWeekends": false,
+            "tags": [
+                "current"
+            ],
+            "creationTimestamp": 1764590400000,
+            "modificationTimestamp": null,
+            "lastPomodoroDate": null,
+            "dueDate": null,
+            "completionDate": null,
+            "uuidInDeviceCalendar": null,
+            "deviceCalendarUuid": null,
+            "deviceCalendarName": null
+        },
+        {
+            "revision": 1,
+            "uuid": "3",
+            "parentUuid": null,
+            "title": "Morning Task 3",
+            "isDone": false,
+            "isImportant": false,
+            "hideOnWeekends": false,
+            "tags": [
+                "current"
+            ],
+            "creationTimestamp": 1764590400000,
+            "modificationTimestamp": null,
+            "lastPomodoroDate": null,
+            "dueDate": null,
+            "completionDate": null,
+            "uuidInDeviceCalendar": null,
+            "deviceCalendarUuid": null,
+            "deviceCalendarName": null
+        },
+        {
+            "revision": 1,
+            "uuid": "4",
+            "parentUuid": null,
+            "title": "Evening Task 1",
+            "isDone": false,
+            "isImportant": false,
+            "hideOnWeekends": false,
+            "tags": [
+                "current",
+                "evening"
+            ],
+            "creationTimestamp": 1764590400000,
+            "modificationTimestamp": null,
+            "lastPomodoroDate": null,
+            "dueDate": null,
+            "completionDate": null,
+            "uuidInDeviceCalendar": null,
+            "deviceCalendarUuid": null,
+            "deviceCalendarName": null
+        },
+        {
+            "revision": 1,
+            "uuid": "5",
+            "parentUuid": null,
+            "title": "Evening Task 2",
+            "isDone": false,
+            "isImportant": false,
+            "hideOnWeekends": false,
+            "tags": [
+                "current",
+                "evening"
+            ],
+            "creationTimestamp": 1764590400000,
+            "modificationTimestamp": null,
+            "lastPomodoroDate": null,
+            "dueDate": null,
+            "completionDate": null,
+            "uuidInDeviceCalendar": null,
+            "deviceCalendarUuid": null,
+            "deviceCalendarName": null
+        },
+        {
+            "revision": 1,
+            "uuid": "6",
+            "parentUuid": null,
+            "title": "Evening Task 3",
+            "isDone": false,
+            "isImportant": false,
+            "hideOnWeekends": false,
+            "tags": [
+                "current",
+                "evening"
+            ],
+            "creationTimestamp": 1764590400000,
+            "modificationTimestamp": null,
+            "lastPomodoroDate": null,
+            "dueDate": null,
+            "completionDate": null,
+            "uuidInDeviceCalendar": null,
+            "deviceCalendarUuid": null,
+            "deviceCalendarName": null
+        }
+    ]
+}
