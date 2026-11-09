@@ -4,6 +4,7 @@
 #include "meeting_url.h"
 
 #include <array>
+#include <cstdint>
 #include <optional>
 #include <vector>
 
@@ -52,7 +53,7 @@ std::string percentDecode(std::string_view encoded)
             const int high = hexValue(encoded[i + 1]);
             const int low = hexValue(encoded[i + 2]);
             if (high >= 0 && low >= 0) {
-                decoded.push_back(static_cast<char>((high << 4) | low));
+                decoded.push_back(static_cast<char>((static_cast<unsigned>(high) << 4U) | static_cast<unsigned>(low)));
                 i += 2;
                 continue;
             }
@@ -95,7 +96,7 @@ std::string unwrapSafeLink(std::string_view url)
     return percentDecode(url.substr(start, end == std::string_view::npos ? std::string_view::npos : end - start));
 }
 
-enum class MeetingKind {
+enum class MeetingKind : std::uint8_t {
     Teams,
     Zoom,
     GoogleMeet,
