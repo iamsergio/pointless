@@ -65,6 +65,7 @@ public:
     void reload();
     void addTask(const pointless::core::Task &task);
     [[nodiscard]] const pointless::core::Task *taskAt(int row) const;
+    [[nodiscard]] static bool isEvening(const pointless::core::Task &task);
     [[nodiscard]] const pointless::core::Task *taskForUuid(const QString &taskUuid) const;
     [[nodiscard]] pointless::core::Task *taskForUuid(const QString &taskUuid);
     [[nodiscard]] int indexForTask(const QString &taskUuid) const;
