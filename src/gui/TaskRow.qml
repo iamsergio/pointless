@@ -54,7 +54,7 @@ Rectangle {
 
     implicitHeight: useSmallMode ? Style.fromPixel(42) : Math.max(Style.fromPixel(52), content.implicitHeight + Style.fromPixel(20))
     height: implicitHeight
-    color: isPomodoroActive ? Style.accentSoft : "transparent"
+    color: "transparent"
 
     readonly property string text: taskTitle
 
@@ -84,8 +84,8 @@ Rectangle {
         anchors.fill: parent
         anchors.margins: Style.fromPixel(4)
         radius: Style.fromPixel(12)
-        color: Style.raised
-        visible: rowHover.hovered && !root.isPomodoroActive
+        color: root.isPomodoroActive ? Style.accentSoft : Style.raised
+        visible: rowHover.hovered || root.isPomodoroActive
     }
 
     Rectangle {
