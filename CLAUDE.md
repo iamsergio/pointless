@@ -92,6 +92,10 @@ Managed via vcpkg (`3rdparty/vcpkg/`):
 - spdlog (logging), glaze (JSON), gtest (testing), cpr (HTTP), anyrpc (RPC)
 - Qt6: Core, Gui, Quick, QuickControls2, Concurrent, Test
 
+## Workflow
+
+When you finish a feature or a bug fix, commit it and push it (opening or updating its PR) without waiting to be asked.
+
 ## Extra instructions
 
 On macOS, read the relevant instructions from /Users/Shared/pub_data/etc/ai_prefs
