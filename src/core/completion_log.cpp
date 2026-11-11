@@ -10,6 +10,7 @@
 #include <array>
 #include <ctime>
 #include <fstream>
+#include <sstream>
 #include <system_error>
 
 namespace pointless::core::CompletionLog {
@@ -37,13 +38,21 @@ std::filesystem::path filePath(std::chrono::system_clock::time_point date)
     return baseDir() / year.data() / (std::string("w") + std::to_string(std::stoi(week.data())) + ".md");
 }
 
-std::string lineForTask(const Task &task)
+std::string entryForTask(const Task &task)
 {
     const auto tag = task.tagName();
-    if (tag.empty())
-        return task.title;
+    std::string entry = "- " + (tag.empty() ? task.title : tag + ": " + task.title) + '\n';
 
-    return tag + ": " + task.title;
+    std::istringstream notes(task.description.value_or(""));
+    for (std::string line; std::getline(notes, line);) {
+        const auto first = line.find_first_not_of(" \t\r");
+        if (first == std::string::npos)
+            continue;
+        const auto last = line.find_last_not_of(" \t\r");
+        entry += "  - " + line.substr(first, last - first + 1) + '\n';
+    }
+
+    return entry;
 }
 
 bool append(const Task &task)
@@ -63,7 +72,7 @@ bool append(const Task &task)
         return false;
     }
 
-    file << lineForTask(task) << '\n';
+    file << entryForTask(task);
     return file.good();
 }
 

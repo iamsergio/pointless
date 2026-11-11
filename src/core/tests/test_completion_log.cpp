@@ -64,14 +64,29 @@ TEST_F(CompletionLogTest, FallsBackToHome)
     EXPECT_EQ(CompletionLog::baseDir(), std::filesystem::path(std::getenv("HOME")) / "pointless_logs");
 }
 
-TEST_F(CompletionLogTest, LineForTask)
+TEST_F(CompletionLogTest, EntryForTask)
 {
     Task task;
     task.title = "Buy milk";
-    EXPECT_EQ(CompletionLog::lineForTask(task), "Buy milk");
+    EXPECT_EQ(CompletionLog::entryForTask(task), "- Buy milk\n");
 
     task.tags = { pointless::core::BUILTIN_TAG_SOON, "shopping", "home" };
-    EXPECT_EQ(CompletionLog::lineForTask(task), "shopping: Buy milk");
+    EXPECT_EQ(CompletionLog::entryForTask(task), "- shopping: Buy milk\n");
+
+    task.description = "";
+    EXPECT_EQ(CompletionLog::entryForTask(task), "- shopping: Buy milk\n");
+}
+
+TEST_F(CompletionLogTest, EntryForTaskWithNotes)
+{
+    Task task;
+    task.title = "Buy milk";
+    task.tags = { "shopping" };
+    task.description = "Semi-skimmed";
+    EXPECT_EQ(CompletionLog::entryForTask(task), "- shopping: Buy milk\n  - Semi-skimmed\n");
+
+    task.description = "  Two litres \r\n\n   \nFrom the corner shop\n";
+    EXPECT_EQ(CompletionLog::entryForTask(task), "- shopping: Buy milk\n  - Two litres\n  - From the corner shop\n");
 }
 
 TEST_F(CompletionLogTest, AppendCreatesDirectoriesAndAppends)
@@ -81,6 +96,7 @@ TEST_F(CompletionLogTest, AppendCreatesDirectoriesAndAppends)
     Task first;
     first.title = "Buy milk";
     first.tags = { "shopping" };
+    first.description = "Semi-skimmed";
     Task second;
     second.title = "Fix bug";
     second.tags = { "work" };
@@ -88,5 +104,5 @@ TEST_F(CompletionLogTest, AppendCreatesDirectoriesAndAppends)
     EXPECT_TRUE(CompletionLog::append(first));
     EXPECT_TRUE(CompletionLog::append(second));
 
-    EXPECT_EQ(readFile(_dir / "2026" / "w15.md"), "shopping: Buy milk\nwork: Fix bug\n");
+    EXPECT_EQ(readFile(_dir / "2026" / "w15.md"), "- shopping: Buy milk\n  - Semi-skimmed\n- work: Fix bug\n");
 }
