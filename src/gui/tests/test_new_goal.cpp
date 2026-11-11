@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 #include "gui_test_harness.h"
-#include "core/logger.h"
 #include "core/data_provider.h"
 #include "core/context.h"
 #include "core/local_data.h"
@@ -79,7 +78,6 @@ TEST(NewGoal, titleMatchingATagIsSaved)
     core::Context::setContext({ IDataProvider::Type::TestsLocal, testDataPath, static_cast<unsigned int>(core::Context::StartupOption::RestoreAuth), true });
 
     GuiTestHarness harness(g_argc, g_argv);
-    core::Logger::setWarningsFatal(false);
     NewGoalTest testServer(harness);
     EXPECT_NO_THROW(harness.run(testServer));
 }

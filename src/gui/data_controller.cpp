@@ -307,7 +307,7 @@ ParsedTaskTitle DataController::parseTaskTitle(const QString &title) const
     QString tag;
     if (lastToken.startsWith(':') && lastToken.length() > 1) {
         tag = lastToken.mid(1);
-    } else if (containsTag(lastToken)) {
+    } else if (tokens.size() > 1 && containsTag(lastToken)) {
         tag = lastToken;
     } else {
         return { .title = title, .tag = {} };
