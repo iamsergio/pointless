@@ -15,7 +15,7 @@ namespace CompletionLog {
 
 std::filesystem::path baseDir();
 std::filesystem::path filePath(std::chrono::system_clock::time_point date);
-std::string lineForTask(const Task &task);
+std::string entryForTask(const Task &task);
 bool append(const Task &task);
 
 }
