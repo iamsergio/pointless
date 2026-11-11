@@ -214,8 +214,6 @@ if(POINTLESS_ENABLE_TESTS)
   target_link_libraries(test_new_goal PRIVATE pointless_core gui_test_harness_qt Spix::Core GTest::gtest_main)
   target_compile_definitions(test_new_goal PRIVATE POINTLESS_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
   add_test(NAME test_new_goal COMMAND test_new_goal)
-  # Expected to fail: a title matching a tag name is stripped to empty, so the task isn't saved. The test turns off fatal errors so it fails on its assertions instead of aborting.
-  set_tests_properties(test_new_goal PROPERTIES WILL_FAIL TRUE)
   if(POINTLESS_SLINT_OVER_QTCORE)
     set_tests_properties(test_new_goal PROPERTIES DISABLED TRUE)
   endif()
