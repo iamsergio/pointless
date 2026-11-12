@@ -748,6 +748,23 @@ bool DataController::containsTag(const QString &tagName) const
     return _localData.data().containsTag(tagName.toStdString());
 }
 
+QStringList DataController::tagCompletions(const QString &prefix) const
+{
+    QStringList result;
+    if (prefix.isEmpty())
+        return result;
+
+    for (const auto &tag : _localData.data().allTags()) {
+        if (core::tagIsBuiltin(tag))
+            continue;
+        const QString name = QString::fromStdString(tag.name);
+        if (name.startsWith(prefix, Qt::CaseInsensitive))
+            result.append(name);
+    }
+    result.sort(Qt::CaseInsensitive);
+    return result;
+}
+
 void DataController::scheduleSave()
 {
     _saveToDiskTimer.start();
