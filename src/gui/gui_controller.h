@@ -130,6 +130,7 @@ public:
     [[nodiscard]] Q_INVOKABLE QColor colorFromTag(const QString &tagName) const;
     // "a, b, c" without currentTag. Slint has no string splitting.
     [[nodiscard]] Q_INVOKABLE QString otherTags(const QString &allTags, const QString &currentTag) const;
+    [[nodiscard]] Q_INVOKABLE QStringList tagCompletions(const QString &prefix) const;
     [[nodiscard]] static bool isDebug();
     [[nodiscard]] static bool isMobile();
     [[nodiscard]] static bool isAndroid();

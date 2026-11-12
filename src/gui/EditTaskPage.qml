@@ -89,6 +89,45 @@ Page {
                     if (text.trim() !== "")
                         root.saveClicked(text, root.selectedTag, root.isEvening, root.isGoal, root.isYearly);
                 }
+
+                property var completionCandidates: []
+                property int completionIndex: -1
+                property int completionStart: -1
+                property string completedText: ""
+
+                function cycleTagCompletion(step: int): bool {
+                    const cycling = completionIndex >= 0 && text === completedText && cursorPosition === completionStart + completionCandidates[completionIndex].length;
+                    if (!cycling) {
+                        const beforeCursor = text.substring(0, cursorPosition);
+                        let wordStart = beforeCursor.lastIndexOf(" ") + 1;
+                        if (beforeCursor.charAt(wordStart) === ":")
+                            wordStart++;
+                        const prefix = beforeCursor.substring(wordStart);
+                        if (prefix === "")
+                            return false;
+                        const candidates = GuiController.tagCompletions(prefix);
+                        if (candidates.length === 0)
+                            return true;
+                        completionCandidates = candidates;
+                        completionStart = wordStart;
+                        completionIndex = step > 0 ? 0 : candidates.length - 1;
+                    } else {
+                        completionIndex = (completionIndex + step + completionCandidates.length) % completionCandidates.length;
+                    }
+
+                    const candidate = completionCandidates[completionIndex];
+                    text = text.substring(0, completionStart) + candidate + text.substring(cursorPosition);
+                    cursorPosition = completionStart + candidate.length;
+                    completedText = text;
+                    return true;
+                }
+
+                Keys.onTabPressed: event => {
+                    event.accepted = cycleTagCompletion(1);
+                }
+                Keys.onBacktabPressed: event => {
+                    event.accepted = cycleTagCompletion(-1);
+                }
             }
 
             ColumnLayout {

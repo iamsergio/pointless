@@ -966,6 +966,11 @@ QColor GuiController::colorFromTag(const QString &tagName) const
     return { colors.at(static_cast<int>(index)) };
 }
 
+QStringList GuiController::tagCompletions(const QString &prefix) const
+{
+    return _dataController->tagCompletions(prefix);
+}
+
 QString GuiController::otherTags(const QString &allTags, const QString &currentTag) const
 {
     QStringList result;

@@ -71,6 +71,7 @@ public:
     [[nodiscard]] Q_INVOKABLE int taskCountForTag(const QString &tagName) const;
     [[nodiscard]] int visibleTaskCountForTag(const QString &tagName) const;
     [[nodiscard]] bool containsTag(const QString &tagName) const;
+    [[nodiscard]] QStringList tagCompletions(const QString &prefix) const;
     void scheduleSave();
     void waitForAsyncOperations();
 
