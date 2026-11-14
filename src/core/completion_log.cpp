@@ -32,8 +32,8 @@ std::filesystem::path filePath(std::chrono::system_clock::time_point date)
     // ISO 8601: weeks start on Monday and the year is the week-based year
     std::array<char, 8> year {};
     std::array<char, 8> week {};
-    std::strftime(year.data(), year.size(), "%G", &tm);
-    std::strftime(week.data(), week.size(), "%V", &tm);
+    ( void )std::strftime(year.data(), year.size(), "%G", &tm);
+    ( void )std::strftime(week.data(), week.size(), "%V", &tm);
 
     return baseDir() / year.data() / (std::string("w") + std::to_string(std::stoi(week.data())) + ".md");
 }
