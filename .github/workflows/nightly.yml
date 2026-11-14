@@ -130,6 +130,7 @@ jobs:
         POINTLESS_DEBUG_USERNAME: ${{ secrets.POINTLESS_DEBUG_USERNAME }}
         POINTLESS_DEBUG_PASSWORD: ${{ secrets.POINTLESS_DEBUG_PASSWORD }}
         QT_QPA_PLATFORM: offscreen
+        LSAN_OPTIONS: suppressions=${{ github.workspace }}/lsan.supp
       run: |
         ctest --output-on-failure --verbose --test-dir build-${{ matrix.preset }}
 
