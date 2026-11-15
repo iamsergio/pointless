@@ -123,6 +123,7 @@ jobs:
       run: cmake --build build-${{ matrix.preset }}
 
     - name: Run tests
+      timeout-minutes: 20
       if: startsWith(matrix.preset, 'dev')
       env:
         POINTLESS_SUPABASE_URL: ${{ secrets.POINTLESS_SUPABASE_URL }}
