@@ -1438,6 +1438,12 @@ bool GuiController::playPomodoroVisible() const
     return task != nullptr && task->isCurrent();
 }
 
+bool GuiController::logCompletionVisible() const
+{
+    const auto *task = _dataController->taskModel()->taskForUuid(_taskMenuUuid);
+    return task != nullptr && !task->isDone;
+}
+
 bool GuiController::showImmediateOnly() const
 {
     return _showImmediateOnly;

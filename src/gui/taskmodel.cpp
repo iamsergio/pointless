@@ -262,12 +262,26 @@ void TaskModel::setTaskDone(const QString &taskUuid, bool isDone)
         if (pomodoro->isRunning() && pomodoro->currentTaskUuid() == taskUuid) {
             pomodoro->stop();
         }
-
-        core::CompletionLog::append(updatedTask);
     }
 
     dataController()->updateTask(updatedTask);
     emit dataChanged(index(idx), index(idx));
+}
+
+void TaskModel::logTaskCompletion(const QString &taskUuid)
+{
+    const auto *task = taskForUuid(taskUuid);
+    if (task == nullptr) {
+        P_LOG_ERROR("Invalid task UUID: {}", taskUuid);
+        return;
+    }
+
+    if (task->isDone) {
+        return;
+    }
+
+    core::CompletionLog::append(*task);
+    setTaskDone(taskUuid, true);
 }
 
 void TaskModel::updateTask(const core::Task &task)

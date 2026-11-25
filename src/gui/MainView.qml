@@ -403,6 +403,16 @@ Item {
                         }
                     },
                     MenuItem {
+                        id: logCompletionMenuItem
+                        text: "Log completion"
+                        fontAwesomeIcon: "\uf00c"
+                        visible: GuiController.logCompletionVisible
+                        onTriggered: {
+                            GuiController.taskModel.logTaskCompletion(GuiController.taskMenuUuid);
+                            GuiController.setTaskMenuUuid("");
+                        }
+                    },
+                    MenuItem {
                         id: deleteTaskMenuItem
                         text: "Delete task"
                         fontAwesomeIcon: "\uf1f8"

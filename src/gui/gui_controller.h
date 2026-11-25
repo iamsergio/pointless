@@ -88,6 +88,7 @@ class GuiController : public QObject
     Q_PROPERTY(PomodoroController *pomodoroController READ pomodoroController CONSTANT)
     Q_PROPERTY(bool deleteTaskVisible READ deleteTaskVisible NOTIFY taskMenuUuidChanged)
     Q_PROPERTY(bool playPomodoroVisible READ playPomodoroVisible NOTIFY taskMenuUuidChanged)
+    Q_PROPERTY(bool logCompletionVisible READ logCompletionVisible NOTIFY taskMenuUuidChanged)
     Q_PROPERTY(bool calendarProviderConfigured READ calendarProviderConfigured NOTIFY calendarProviderConfiguredChanged)
     Q_PROPERTY(bool debugMode READ debugMode CONSTANT)
 public:
@@ -242,6 +243,7 @@ public:
     [[nodiscard]] PomodoroController *pomodoroController() const;
     [[nodiscard]] bool deleteTaskVisible() const;
     [[nodiscard]] bool playPomodoroVisible() const;
+    [[nodiscard]] bool logCompletionVisible() const;
 
     [[nodiscard]] bool calendarProviderConfigured() const;
     [[nodiscard]] bool shortcutsEnabled() const;
