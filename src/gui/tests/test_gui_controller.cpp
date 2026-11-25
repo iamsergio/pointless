@@ -8,6 +8,8 @@
 #include "gui/tests/test_utils.h"
 #include "gui/local_settings.h"
 
+#include "core/Clock.h"
+#include "core/completion_log.h"
 #include "core/context.h"
 #include "core/data_provider.h"
 #include "core/logger.h"
@@ -18,6 +20,8 @@
 #include <gtest/gtest.h>
 
 #include <filesystem>
+#include <fstream>
+#include <iterator>
 
 using namespace pointless;
 
@@ -111,6 +115,56 @@ TEST(GuiControllerTest, PomodoroStopsWhenTaskMarkedDone)
     EXPECT_FALSE(guiController->pomodoroController()->isRunning());
     EXPECT_TRUE(guiController->pomodoroController()->currentTaskUuid().isEmpty());
 
+    delete guiController;
+}
+
+TEST(GuiControllerTest, OnlyLogCompletionWritesToTheCompletionLog)
+{
+    QGuiApplication _app(g_argc, g_argv);
+    core::Logger::initLogLevel();
+    core::Context::setContext({ IDataProvider::Type::TestSupabase, s_filename });
+
+    const auto logDir = std::filesystem::temp_directory_path() / ("pointless_test_log_completion_" + std::to_string(::getpid()));
+    std::filesystem::remove_all(logDir);
+    setenv("J_PATH", logDir.c_str(), 1);
+
+    GuiController *guiController = GuiController::instance();
+    DataController *controller = guiController->dataController();
+
+    core::Data remoteData;
+    core::Task plainTask;
+    plainTask.uuid = "uuid-plain-done";
+    plainTask.title = "Plain done";
+    plainTask.revision = 0;
+    remoteData.addTask(plainTask);
+    core::Task loggedTask;
+    loggedTask.uuid = "uuid-logged-done";
+    loggedTask.title = "Logged done";
+    loggedTask.revision = 0;
+    remoteData.addTask(loggedTask);
+    remoteData.setRevision(1);
+
+    initData(*controller, {}, remoteData);
+    auto syncResult = controller->refreshBlocking();
+    ASSERT_TRUE(syncResult.has_value());
+
+    controller->taskModel()->setTaskDone("uuid-plain-done", true);
+    EXPECT_TRUE(controller->taskModel()->taskForUuid("uuid-plain-done")->isDone);
+    EXPECT_FALSE(std::filesystem::exists(logDir));
+
+    guiController->setTaskMenuUuid("uuid-logged-done");
+    EXPECT_TRUE(guiController->logCompletionVisible());
+    controller->taskModel()->logTaskCompletion("uuid-logged-done");
+    EXPECT_TRUE(controller->taskModel()->taskForUuid("uuid-logged-done")->isDone);
+    EXPECT_FALSE(guiController->logCompletionVisible());
+
+    std::ifstream logFile(core::CompletionLog::filePath(core::Clock::now()));
+    const std::string contents((std::istreambuf_iterator<char>(logFile)), std::istreambuf_iterator<char>());
+    EXPECT_EQ(contents, "- Logged done\n");
+
+    guiController->setTaskMenuUuid("");
+    unsetenv("J_PATH");
+    std::filesystem::remove_all(logDir);
     delete guiController;
 }
 

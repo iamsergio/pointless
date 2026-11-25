@@ -71,6 +71,7 @@ public:
     [[nodiscard]] int indexForTask(const QString &taskUuid) const;
 
     Q_INVOKABLE void setTaskDone(const QString &taskUuid, bool isDone);
+    Q_INVOKABLE void logTaskCompletion(const QString &taskUuid);
     Q_INVOKABLE void advanceYearlyTask(const QString &taskUuid);
     void updateTask(const pointless::core::Task &task);
 
