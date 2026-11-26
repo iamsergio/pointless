@@ -3,7 +3,7 @@
 	url = https://github.com/iamsergio/vcpkg.git
 [submodule "3rdparty/spix"]
 	path = 3rdparty/spix
-	url = https://github.com/faaxm/spix.git
+	url = ssh://git@projects.kdab.com:222/KDAB-Labs/spix.git
 [submodule "3rdparty/glaze"]
 	path = 3rdparty/glaze
 	url = https://github.com/stephenberry/glaze.git
@@ -17,3 +17,7 @@
 	path = 3rdparty/slint
 	url = https://github.com/iamsergio/slint.git
 	shallow = true
+[submodule "3rdparty/common"]
+	path = 3rdparty/common
+	url = https://github.com/iamsergio/common.git
+	branch = main
