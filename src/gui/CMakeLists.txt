@@ -104,6 +104,7 @@ qt_add_qml_module(
 
 target_link_libraries(pointless_gui PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Qt6::QuickControls2 Qt6::Concurrent pointless_core)
 target_link_libraries(pointless_gui PRIVATE pointless_guiplugin)
+target_link_libraries(pointless_gui PUBLIC pointless_definitions)
 if(POINTLESS_SLINT_OVER_QTCORE)
   # Application is a QApplication, which Slint's Qt backend needs
   target_link_libraries(pointless_gui PUBLIC Qt6::Widgets)

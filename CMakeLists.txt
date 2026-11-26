@@ -79,21 +79,23 @@ option(POINTLESS_ENABLE_TESTS "Build tests" ${POINTLESS_DEVELOPER_MODE})
 option(POINTLESS_VERIFY_SSL "Verify SSL certificates in HTTPS requests" ON)
 option(POINTLESS_SLINT_OVER_QTCORE "Build the Slint UI over the existing Qt C++ code (Qt to Slint port, see src/slint/bridge)" OFF)
 
+add_library(pointless_definitions INTERFACE)
+
 if(POINTLESS_SLINT_OVER_QTCORE)
   message(STATUS "Building the Slint UI over QtCore")
-  add_definitions(-DSLINT_OVER_CORE)
+  target_compile_definitions(pointless_definitions INTERFACE SLINT_OVER_CORE)
 endif()
 
 if(POINTLESS_DEVELOPER_MODE)
   message(STATUS "Building in developer mode")
-  add_definitions(-DPOINTLESS_DEVELOPER_MODE)
+  target_compile_definitions(pointless_definitions INTERFACE POINTLESS_DEVELOPER_MODE)
 endif()
 
 if(NOT POINTLESS_VERIFY_SSL)
   message(STATUS "SSL verification disabled")
-  add_definitions(-DPOINTLESS_VERIFY_SSL=0)
+  target_compile_definitions(pointless_definitions INTERFACE POINTLESS_VERIFY_SSL=0)
 else()
-  add_definitions(-DPOINTLESS_VERIFY_SSL=1)
+  target_compile_definitions(pointless_definitions INTERFACE POINTLESS_VERIFY_SSL=1)
 endif()
 
 if(POINTLESS_ENABLE_TESTS)
@@ -102,7 +104,7 @@ if(POINTLESS_ENABLE_TESTS)
   find_package(GTest CONFIG REQUIRED)
   find_package(Qt6Test REQUIRED)
 
-  add_definitions(-DPOINTLESS_ENABLE_TESTS)
+  target_compile_definitions(pointless_definitions INTERFACE POINTLESS_ENABLE_TESTS)
 endif()
 
 set(CMAKE_CXX_STANDARD 23)
