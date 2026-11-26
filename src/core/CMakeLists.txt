@@ -48,7 +48,7 @@ endif()
 
 target_link_libraries(
   pointless_core
-  PUBLIC glaze::glaze spdlog::spdlog
+  PUBLIC glaze::glaze spdlog::spdlog pointless_definitions
   PRIVATE cpr::cpr ZLIB::ZLIB)
 
 if(APPLE)
